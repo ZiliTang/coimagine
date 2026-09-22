@@ -46,6 +46,10 @@ def test_message_vector_is_one_hot_of_the_declared_length() -> None:
     for scheme in SCHEME_ORDER:
         vector = message_vector(scheme, physics, ("drove",))
         assert len(vector) == message_dim(scheme)
+        if payload_bits(scheme) == 0:
+            # silence contributes nothing: no constant column in the feature vector
+            assert vector == ()
+            continue
         assert sum(vector) == pytest.approx(1.0)
         assert set(vector) <= {0.0, 1.0}
 

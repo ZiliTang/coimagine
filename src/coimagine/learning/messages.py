@@ -25,7 +25,10 @@ from ..grid.state import HiddenPhysics
 #: ``scheme -> (bits, codebook)``. ``bits`` is the maximum payload per decision; the
 #: codebook is the inspectable discrete alphabet, never a float array.
 MESSAGE_SCHEMES: Dict[str, Tuple[int, Tuple[str, ...]]] = {
-    "none": (0, ("silent",)),
+    # A zero-bit scheme carries no payload at all: an empty codebook, so the receiver's
+    # observation gains nothing. Giving silence a one-symbol codebook would add a constant
+    # column to every feature vector for no information and shift the action slice.
+    "none": (0, ()),
     "traction": (1, ("grip", "slip")),
     "feedback": (2, tuple(FEEDBACK_SYMBOLS)),
 }

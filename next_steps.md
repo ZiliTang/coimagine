@@ -1624,3 +1624,18 @@ there, and even where it looks satisfied the learner cannot exploit it.
 This is the honest boundary of the project's one strong positive communication result: it is
 a statement about a decision structure, not about messaging in general, and the grid does not
 instantiate that structure.
+
+### Follow-up fix (same round)
+
+A zero-bit scheme was contributing a **one-symbol codebook**, which added a constant column
+to every feature vector for no information and shifted the action slice -- harmless for the
+network but it broke the replay, whose model was sized by default. Two changes:
+
+* `message_vector("none", ...)` now returns an **empty** tuple: silence genuinely carries no
+  payload, so a zero-bit channel cannot change the receiver's input dimension;
+* the replay sizes its model from the data rather than from the defaults.
+
+The transplant numbers are unchanged by the fix (`learned_value` 1.438 -> 1.337 with the
+message, `learned_moved` 1.050 -> 1.625), which also confirms that the constant column was
+being ignored and that every earlier `message_scheme="none"` measurement is equivalent to a
+genuinely silent channel.

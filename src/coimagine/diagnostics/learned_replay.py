@@ -190,9 +190,10 @@ def find_and_render_disagreement(
             physics_index.append(PHYSICS.index(situation.physics))
             poses.append(pose_to_index(situation.scene.obj.origin))
     x = np.asarray(features, dtype=np.float64)
-    model = MultiHeadMLP(seed=seed)
+    split = x.shape[1] - len(_ACTIONS)
+    model = MultiHeadMLP(seed=seed, obs_dim=split, action_dim=len(_ACTIONS))
     train(
-        model, x[:, : model.obs_dim], x[:, model.obs_dim:],
+        model, x[:, :split], x[:, split:],
         np.asarray(targets, dtype=np.float64),
         np.asarray(physics_index, dtype=np.int64),
         np.asarray(poses, dtype=np.int64),
