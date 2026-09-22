@@ -69,6 +69,11 @@ from .continuous_probe import (
     run_continuous_probe,
     write_continuous_report,
 )
+from .rollout_probe import (
+    ModeAblationSummary,
+    format_mode_ablation_markdown,
+    run_mode_ablation,
+)
 from .error_analysis import (
     ErrorAnalysis,
     analyse_errors,
@@ -133,6 +138,9 @@ __all__ = [
     "PolicySummary",
     "POLICIES",
     "EpisodeRecord",
+    "ModeAblationSummary",
+    "format_mode_ablation_markdown",
+    "run_mode_ablation",
     "ContinuousProbeResult",
     "DepthMetrics",
     "EpisodeComparison",

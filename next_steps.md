@@ -1639,3 +1639,46 @@ The transplant numbers are unchanged by the fix (`learned_value` 1.438 -> 1.337 
 message, `learned_moved` 1.050 -> 1.625), which also confirms that the constant column was
 being ignored and that every earlier `message_scheme="none"` measurement is equivalent to a
 genuinely silent channel.
+
+---
+
+## Round 30: the mode ablation, measured at the episode level at last
+
+Every earlier attempt at a mode ablation was confounded (leaked features) or unmeasurable
+(no headroom). This round measures it properly, and it required choosing the right policy.
+
+### First attempt: a floor effect
+
+With the **learned value** policy (round 28: 7% success overall), both ablated and unablated
+models score **0.000** on latched episodes and 0.000 on heavy ones. There is no headroom, so
+the ablation cannot be read. Reported rather than hidden, because a zero there is not an
+ablation result.
+
+### Second attempt: the outcome-greedy policy, which has headroom
+
+| ablated mode | training data | episodes | success | cost per success |
+|---|---|---|---|---|
+| latched | trained with | 300 | 0.000 | n/a |
+| latched | trained without | 300 | 0.000 | n/a |
+| heavy | trained with | 300 | **0.113** | 67.3 |
+| heavy | trained without | 300 | **0.013** | 597.0 |
+
+And a second seed confirms the direction: 0.110 versus 0.037 (3.0x) against 0.113 versus
+0.013 (8.7x). **Removing heavy objects from the training data cuts closed-loop success on
+heavy episodes by 3-9x, consistently in direction across seeds.**
+
+### What is and is not established
+
+* **Established**: training-distribution coverage of a contact mode matters at the *episode*
+  level, not only per sample. This is the first clean measurement of that, and it partially
+  rehabilitates the round-8 intuition -- which had been withdrawn in round 20 when the leak
+  was found, because the earlier evidence for it came through the leaked channel.
+* **Not established**: anything about the latched mode. The outcome-greedy policy never
+  releases (`release` does not move the object, so it is never the greedy choice), so it
+  cannot solve a latched object at all and there is no headroom. Measuring the ablation for
+  the constraint mode needs a policy that can prepare, which is a different experiment.
+* **Caveat**: the absolute numbers are low (11% versus 1-4%) and rest on two seeds.
+
+The general lesson repeats the project's pattern: **an ablation is only meaningful above the
+baseline's floor**, and quoting a zero from a policy that cannot do the task at all would
+have been a fabricated result.

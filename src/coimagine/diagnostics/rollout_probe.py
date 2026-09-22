@@ -332,6 +332,54 @@ def _summaries(name: str, records: Sequence[EpisodeRecord]) -> List[PolicySummar
     return out
 
 
+def fit_value_model(
+    situations: Sequence,
+    *,
+    epochs: int = 400,
+    seed: int = 0,
+    depth: int = DEPTH,
+) -> MultiHeadMLP:
+    """Fit the value model on a set of decision points.
+
+    Shared by every closed-loop experiment so an ablation changes only the training data,
+    never the training procedure.
+    """
+
+    import numpy as np
+
+    features: List[Tuple[float, ...]] = []
+    targets: List[List[float]] = []
+    values: List[float] = []
+    physics_index: List[int] = []
+    pose_index: List[int] = []
+    for situation in situations:
+        _ctx, _true, belief_values, _bp, _be = situation_quantities(
+            situation, depth=depth, fail_cost=DEFAULT_FAIL_COST
+        )
+        for action in ACTION_IDS:
+            moved, progress, enables = action_labels(situation.scene, action)
+            features.append(_features_for(situation, action))
+            targets.append([moved, progress, enables])
+            values.append(belief_values[action])
+            physics_index.append(PHYSICS.index(situation.physics))
+            pose_index.append(pose_to_index(situation.scene.obj.origin))
+
+    x = np.asarray(features, dtype=np.float64)
+    model = MultiHeadMLP(seed=seed)
+    train(
+        model,
+        x[:, : model.obs_dim],
+        x[:, model.obs_dim:],
+        np.asarray(targets, dtype=np.float64),
+        np.asarray(physics_index, dtype=np.int64),
+        np.asarray(pose_index, dtype=np.int64),
+        np.asarray(values, dtype=np.float64),
+        epochs=epochs,
+        seed=seed,
+    )
+    return model
+
+
 def run_rollout_probe(
     *,
     n_train_situations: int = 200,
@@ -528,3 +576,116 @@ def write_rollout_report(result: RolloutProbeResult, output_dir: str) -> Dict[st
     )
     paths["md"] = str(md_path)
     return paths
+
+
+# ---------------------------------------------------------------------------
+# Mode ablation at the episode level
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class ModeAblationSummary:
+    mode: str
+    model: str
+    n: int
+    success_rate: float
+    cost_per_success: float
+
+
+def run_mode_ablation(
+    *,
+    n_train_situations: int = 150,
+    n_episodes: int = 150,
+    epochs: int = 400,
+    seed: int = 0,
+    horizon: int = HORIZON,
+    policy: str = "learned_moved",
+) -> List[ModeAblationSummary]:
+    """Train with a physics mode removed from the data and measure it on that mode.
+
+    The question is whether **training coverage** of a contact mode determines what the
+    policy can do on episodes containing it, once the leaked channel is gone. Two modes are
+    ablated in turn -- the latched/constraint mode and heavy resistance -- and each is
+    evaluated on held-out episodes that actually contain it.
+    """
+
+    from ..grid.state import enumerate_hidden_physics
+
+    modes = {
+        "latched": lambda p: p.constraint == "constrained",
+        "heavy": lambda p: p.resistance >= 2,
+    }
+    everything = enumerate_hidden_physics()
+    out: List[ModeAblationSummary] = []
+
+    for mode, predicate in modes.items():
+        pool_full = tuple(everything)
+        pool_without = tuple(p for p in everything if not predicate(p))
+
+        models = {
+            "trained_with": fit_value_model(
+                generate_situations(
+                    n_scenes=n_train_situations, lead_in=2, seed=seed,
+                    physics_pool=pool_full,
+                ),
+                epochs=epochs, seed=seed,
+            ),
+            "trained_without": fit_value_model(
+                generate_situations(
+                    n_scenes=n_train_situations, lead_in=2, seed=seed,
+                    physics_pool=pool_without,
+                ),
+                epochs=epochs, seed=seed,
+            ),
+        }
+
+        episodes = generate_situations(
+            n_scenes=n_episodes, lead_in=0, seed=seed + 500_000,
+            physics_pool=tuple(p for p in everything if predicate(p)),
+        )
+        for name, model in models.items():
+            successes: List[int] = []
+            costs: List[float] = []
+            for index, situation in enumerate(episodes):
+                success, cost, _steps = run_episode(
+                    situation.scene,
+                    policy,
+                    model,
+                    horizon=horizon,
+                    rng=np.random.default_rng(index),
+                )
+                successes.append(success)
+                costs.append(cost)
+            rate = float(np.mean(successes)) if successes else float("nan")
+            mean_cost = float(np.mean(costs)) if costs else float("nan")
+            out.append(
+                ModeAblationSummary(
+                    mode=mode,
+                    model=f"{name} [{policy}]",
+                    n=len(episodes),
+                    success_rate=rate,
+                    cost_per_success=(mean_cost / rate if rate > 0 else float("inf")),
+                )
+            )
+    return out
+
+
+def format_mode_ablation_markdown(summaries: Sequence[ModeAblationSummary]) -> str:
+    lines = [
+        "Each row is the same closed-loop policy, differing only in whether the ablated "
+        "mode was present in its training data. Episodes contain that mode.",
+        "",
+        "| ablated mode | training data | episodes | success rate | cost per success |",
+        "|---|---|---|---|---|",
+    ]
+    for summary in summaries:
+        per = (
+            "n/a"
+            if summary.cost_per_success == float("inf")
+            else f"{summary.cost_per_success:.2f}"
+        )
+        lines.append(
+            f"| {summary.mode} | {summary.model} | {summary.n} | "
+            f"{summary.success_rate:.3f} | {per} |"
+        )
+    return "\n".join(lines)
