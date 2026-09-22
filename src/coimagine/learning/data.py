@@ -141,6 +141,7 @@ class FeasibilitySample:
     scene_id: int = 0
     progress: int = 0
     enables: int = 0
+    public_history: Tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -151,7 +152,10 @@ class Situation:
     initial_scene: Scene              # the state before the lead-in
     skills: Tuple[JointSkill, ...]    # the lead-in actions that were executed
     history_a: Tuple[str, ...]
+    #: The teammate's feedback. Used **only** by the centralized reference (``O_central``
+    #: legitimately sees both sides' available histories); never by a deployment policy.
     history_b: Tuple[str, ...]
+    public_history: Tuple[str, ...]
     physics: HiddenPhysics
     scan: OccupancyScan
     scene_id: int
@@ -195,6 +199,7 @@ def generate_situations(
         current = scene
         history_a: List[str] = []
         history_b: List[str] = []
+        public_history: List[str] = []
         skills: List[JointSkill] = []
         for _ in range(lead_in):
             action_id = rng.choice(tuple(lead_in_actions))
@@ -203,6 +208,7 @@ def generate_situations(
             successor, result = execute(current, joint, noise=fb_noise, rng=rng)
             history_a.append(result.feedback[0])
             history_b.append(result.feedback[1])
+            public_history.append(result.y_public)
             current = successor
             if current.is_goal():
                 break
@@ -214,6 +220,7 @@ def generate_situations(
                 skills=tuple(skills),
                 history_a=tuple(history_a),
                 history_b=tuple(history_b),
+                public_history=tuple(public_history),
                 physics=physics,
                 scan=scan,
                 scene_id=built - 1,
@@ -289,14 +296,14 @@ def generate_dataset(
 
         current = scene
         history_a: List[str] = []
-        history_b: List[str] = []
+        public_history: List[str] = []
         for _ in range(lead_in):
             action_id = rng.choice(ACTION_IDS)
             successor, result = execute(
                 current, _joint_for(current, action_id), noise=fb_noise, rng=rng
             )
             history_a.append(result.feedback[0])
-            history_b.append(result.feedback[1])
+            public_history.append(result.y_public)
             current = successor
             if current.is_goal():
                 break
@@ -307,7 +314,8 @@ def generate_dataset(
             samples.append(
                 FeasibilitySample(
                     features=sample_vector(
-                        scan, current.robot_pose(0), tuple(history_a), tuple(history_b), action_id
+                        scan, current.robot_pose(0), tuple(history_a),
+                        tuple(public_history), action_id,
                     ),
                     feasible=moved,
                     object_origin=current.obj.origin,
@@ -317,6 +325,7 @@ def generate_dataset(
                     scene_id=scenes_built - 1,
                     progress=progress,
                     enables=enables,
+                    public_history=tuple(public_history),
                 )
             )
     return Dataset(samples)

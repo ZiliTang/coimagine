@@ -96,3 +96,32 @@ def test_learning_probe_reports_and_separates_the_modes(tmp_path) -> None:
     paths = write_probe_report(result, str(tmp_path))
     assert "md" in paths and "json" in paths
     assert "balanced accuracy" in format_probe_markdown(result)
+
+
+def test_learner_features_do_not_see_the_teammate_private_feedback() -> None:
+    """The information boundary, tested directly.
+
+    A deployment policy may use its own scan, its own feedback and public information.
+    The teammate's private feedback symbols are not observable without a message, so
+    holding everything else fixed and changing only the teammate's history must leave the
+    feature vector identical. An earlier version of the encoder fed the teammate's
+    feedback straight in, which is exactly the leak this guards against.
+    """
+
+    from dataclasses import replace
+
+    from coimagine.learning.data import generate_situations
+    from coimagine.diagnostics.decision_probe import _features_for
+    from coimagine.learning.features import ACTION_IDS
+
+    situation = generate_situations(n_scenes=3, lead_in=2, seed=0)[0]
+    tampered = replace(situation, history_b=("slipped", "slipped", "slipped"))
+    for action in ACTION_IDS:
+        assert _features_for(situation, action) == _features_for(tampered, action)
+
+    # ... while the public record *is* visible, so changing it must change the features.
+    altered = replace(situation, public_history=("moved", "moved"))
+    assert any(
+        _features_for(situation, action) != _features_for(altered, action)
+        for action in ACTION_IDS
+    )

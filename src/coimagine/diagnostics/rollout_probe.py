@@ -202,6 +202,7 @@ def run_episode(
     skills: List = []
     history_a: List[str] = []
     history_b: List[str] = []
+    public_history: List[str] = []
     total_cost = 0.0
 
     for step in range(horizon):
@@ -230,7 +231,8 @@ def run_episode(
             obs = np.asarray(
                 [
                     sample_vector(
-                        scan, current.robot_pose(0), tuple(history_a), tuple(history_b), action
+                        scan, current.robot_pose(0), tuple(history_a),
+                        tuple(public_history), action,
                     )
                     for action in ACTION_IDS
                 ],
@@ -263,6 +265,7 @@ def run_episode(
         skills.append(joint)
         history_a.append(result.feedback[0])
         history_b.append(result.feedback[1])
+        public_history.append(result.y_public)
         current = successor
         # The released flag is part of the state, so the oracle's own model must
         # track it. Leaving it pinned at the initial value made a successful release

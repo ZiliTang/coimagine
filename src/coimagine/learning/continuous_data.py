@@ -57,14 +57,14 @@ def continuous_features(
     scan: OccupancyScan,
     own_pose: Cell,
     feedback_a: Sequence[str],
-    feedback_b: Sequence[str],
+    public_events: Sequence[str],
     angle: float,
     force: float,
 ) -> Tuple[float, ...]:
     from .features import observation_vector
 
     return (
-        observation_vector(scan, own_pose, feedback_a, feedback_b)
+        observation_vector(scan, own_pose, feedback_a, public_events)
         + continuous_action_vector(angle, force)
     )
 
@@ -104,14 +104,14 @@ def generate_continuous_dataset(
 
         current = scene
         history_a: List[str] = []
-        history_b: List[str] = []
+        public_history: List[str] = []
         for _ in range(lead_in):
             action_id = rng.choice(("push:0:E", "push:1:E", "co_push:E", "probe:0:E"))
             successor, result = _execute_cached(
                 current, _joint_for(current, action_id)
             )
             history_a.append(result.feedback[0])
-            history_b.append(result.feedback[1])
+            public_history.append(result.y_public)
             current = successor
             if current.is_goal():
                 break
@@ -123,8 +123,8 @@ def generate_continuous_dataset(
                 samples.append(
                     ContinuousSample(
                         features=continuous_features(
-                            scan, current.robot_pose(0), tuple(history_a), tuple(history_b),
-                            angle, force,
+                            scan, current.robot_pose(0), tuple(history_a),
+                            tuple(public_history), angle, force,
                         ),
                         moved=int(outcome.moved),
                         angle=angle,

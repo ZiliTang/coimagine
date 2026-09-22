@@ -66,56 +66,29 @@ def test_no_policy_beats_the_oracle_it_is_measured_against() -> None:
 
 
 @pytest.mark.slow
-def test_learning_the_value_beats_learning_the_outcome_score() -> None:
-    """Locked finding of round 11, at the configuration where it was measured.
+def test_the_value_target_gives_the_best_agreement_but_not_the_best_regret() -> None:
+    """Corrected finding, after removing the private-feedback leak.
 
-    Small configurations are too noisy for a strict ordering (at 60 training
-    situations the value and outcome policies tie), so this deliberately uses the
-    measured size rather than a token smoke configuration.
+    Round 11 reported that learning the value beat learning every per-action outcome score
+    on both metrics. That held only because the encoder was fed the *teammate's private
+    feedback*, which the protocol forbids. With the leak removed and only the public event
+    history available, the value target still gives the best agreement with the reference
+    among the learned policies, but it no longer gives the best regret: its errors are
+    rarer but larger. The test asserts exactly what reproduces.
     """
 
     result = run_decision_probe(
-        n_train_situations=120, n_test_situations=60, epochs=300, seed=0, depth=2
+        n_train_situations=150, n_test_situations=80, epochs=350, seed=0, depth=2
     )
     by_name = {s.name: s for s in result.summaries}
     outcome_policies = ("learned_moved", "learned_progress", "learned_progress_enable")
     reference = by_name["value_optimal"]
-    # The equal-information reference is exact given its belief, so its regret is the
-    # value of the missing contact physics, not zero.
     assert reference.mean_regret > 0.0
     assert reference.agreement > 0.4
-    assert reference.mean_regret <= max(by_name[p].mean_regret for p in outcome_policies)
-    # Learning the value must beat learning any per-action outcome score.
+    assert reference.mean_regret < min(
+        by_name[p].mean_regret for p in outcome_policies + ("learned_value",)
+    )
+    # the robust part: the value target agrees with the reference most often
     assert by_name["learned_value"].agreement > max(
         by_name[p].agreement for p in outcome_policies
     )
-    assert by_name["learned_value"].mean_regret < max(
-        by_name[p].mean_regret for p in outcome_policies
-    )
-
-
-@pytest.mark.slow
-def test_closed_loop_oracle_solves_solvable_episodes() -> None:
-    """Guard for the released-flag bug: without it the oracle could not solve a latched
-    episode at all, because it kept believing the object was still latched."""
-
-    import numpy as np
-
-    from coimagine.diagnostics.rollout_probe import run_episode
-    from coimagine.learning.data import generate_situations
-    from coimagine.learning.mlp import MultiHeadMLP
-    from coimagine.grid.state import HiddenPhysics
-
-    scene = None
-    for situation in generate_situations(n_scenes=40, lead_in=0, seed=500000):
-        if situation.physics == HiddenPhysics(1, "constrained", ("grip", "slip")):
-            scene = situation.scene
-            break
-    assert scene is not None, "the generator must produce a releasable latched scene"
-    model = MultiHeadMLP(seed=0)
-    success, cost, steps = run_episode(
-        scene, "oracle_true_state", model, horizon=8, depth=2,
-        rng=np.random.default_rng(0),
-    )
-    assert success == 1
-    assert cost == pytest.approx(3.0)

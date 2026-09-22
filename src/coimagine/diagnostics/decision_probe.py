@@ -169,7 +169,7 @@ def _features_for(situation: Situation, action_id: str) -> Tuple[float, ...]:
         situation.scan,
         situation.scene.robot_pose(0),
         situation.history_a,
-        situation.history_b,
+        situation.public_history,
         action_id,
     )
 

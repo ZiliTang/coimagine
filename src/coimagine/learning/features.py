@@ -33,11 +33,18 @@ ACTION_IDS: Tuple[str, ...] = (
 #: Cell kinds encoded in the scan plane. Index 0 of each cell's block means "unknown".
 CELL_KINDS: Tuple[str, ...] = (KIND_FREE, KIND_WALL, KIND_OBJECT, KIND_ROBOT)
 
+#: The **public** event the environment broadcasts every step. This is the only channel
+#: through which one robot can learn anything about the other's contribution, absent a
+#: message: the teammate's own feedback symbols are private and must never be an input.
+PUBLIC_SYMBOLS: Tuple[str, ...] = ("moved", "stalled")
+
 #: Grid side length; the scan plane is ``GRID * GRID`` cells with one block each.
 GRID = 6
 N_CELL_BLOCKS = len(CELL_KINDS) + 1  # +1 for "unknown"
 
-OBSERVATION_DIM = GRID * GRID * N_CELL_BLOCKS + 2 + 2 * len(FEEDBACK_SYMBOLS)
+OBSERVATION_DIM = (
+    GRID * GRID * N_CELL_BLOCKS + 2 + len(FEEDBACK_SYMBOLS) + len(PUBLIC_SYMBOLS)
+)
 FEATURE_DIM = OBSERVATION_DIM + len(ACTION_IDS)
 
 
@@ -54,16 +61,31 @@ def feedback_counts(history: Sequence[str]) -> Tuple[float, ...]:
     return tuple(counts)
 
 
+def counts(history: Sequence[str], symbols: Sequence[str]) -> Tuple[float, ...]:
+    """Normalised histogram of ``history`` over ``symbols``."""
+
+    values = [0.0] * len(symbols)
+    for symbol in history:
+        if symbol in symbols:
+            values[symbols.index(symbol)] += 1.0
+    total = sum(values)
+    if total:
+        values = [v / total for v in values]
+    return tuple(values)
+
+
 def observation_vector(
     scan: OccupancyScan,
     own_pose: Cell,
     feedback_a: Sequence[str],
-    feedback_b: Sequence[str],
+    public_events: Sequence[str],
 ) -> Tuple[float, ...]:
     """The observation half of the feature vector, which does **not** include the action.
 
-    Keeping the action out of this half is what lets the same encoder feed the
-    privileged decoder heads (object pose, contact physics) and the action head.
+    Contents, all deployment-legal for this robot: its own scan, its own pose, its own
+    feedback history, and the **public** event history. The teammate's private feedback is
+    deliberately absent -- it is not observable without a message, and including it would
+    hand the learner the answer.
     """
 
     plane = [0.0] * (GRID * GRID * N_CELL_BLOCKS)
@@ -76,7 +98,7 @@ def observation_vector(
     features.append(own_pose[0] / (GRID - 1))
     features.append(own_pose[1] / (GRID - 1))
     features.extend(feedback_counts(feedback_a))
-    features.extend(feedback_counts(feedback_b))
+    features.extend(counts(public_events, PUBLIC_SYMBOLS))
     assert len(features) == OBSERVATION_DIM, (len(features), OBSERVATION_DIM)
     return tuple(features)
 

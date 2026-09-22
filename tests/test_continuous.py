@@ -88,7 +88,9 @@ def test_outcome_reports_the_reason() -> None:
 
 
 def test_continuous_features_have_the_declared_dimension() -> None:
-    assert continuous_feature_dim() == 190 + CONTINUOUS_ACTION_DIM
+    from coimagine.learning.features import OBSERVATION_DIM
+
+    assert continuous_feature_dim() == OBSERVATION_DIM + CONTINUOUS_ACTION_DIM
     assert len(continuous_action_vector(0.0, FORCE_MAX)) == CONTINUOUS_ACTION_DIM
     # the action encoding is bounded and direction-preserving
     s, c, f = continuous_action_vector(0.0, 1.0)

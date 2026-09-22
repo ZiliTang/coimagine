@@ -1105,3 +1105,63 @@ Only 27 of 120 decision points are pushable, so the threshold MAE rests on a sma
 the can-push balanced accuracy (0.732) is moderate; and the probe still uses robot 0's own
 scan with the object's placement taken from the simulator, so it is a *physics*-inference
 probe, not yet a full perception-plus-physics probe.
+
+---
+
+## Round 20: the learner was reading the teammate's private feedback
+
+Chasing the teammate-slipping weakness (three independent measurements) turned up a
+**protocol violation in the feature encoder**: the observation vector included
+``feedback_counts(history_b)`` -- the teammate's **private** feedback symbols.
+`AGENTS.md` forbids exactly this ("pass ... the teammate's private history to a deployment
+policy"), and it is not observable without a message.
+
+### The fix
+
+The observation half is now: the robot's own scan, its own pose, its own feedback history,
+and the **public** event history (``moved``/``stalled``). The teammate's private history is
+kept in ``Situation`` because the centralized reference (``O_central``) legitimately sees
+both sides' available histories -- but it is never an input to the learned policy.
+
+A test guards the boundary directly: holding everything else fixed and changing only
+``history_b`` must leave the feature vector **identical**, while changing the public record
+must change it.
+
+### What the leak was doing
+
+It was inflating the round-11 headline. Corrected decision-level numbers (150 training /
+80 held-out / depth 2):
+
+| policy | mean regret | agreement |
+|---|---|---|
+| value_optimal (equal-information reference) | 0.425 | 0.688 |
+| analytic_progress | 0.512 | 0.450 |
+| analytic_progress_enable | 0.688 | 0.512 |
+| learned_moved | 1.050 | 0.125 |
+| learned_progress | 1.038 | 0.150 |
+| learned_progress_enable | 1.363 | 0.263 |
+| learned_value | **1.438** | **0.412** |
+
+**The clean round-11 claim no longer holds.** With the leak present the learned value beat
+every outcome policy on both metrics. With the leak removed it still has the **best agreement**
+among the learned policies (0.412 against 0.125-0.263) but the **worst regret** (1.438 against
+1.038-1.363): its errors are rarer but larger in magnitude. The claim is now split, and the
+test asserts only the part that reproduces.
+
+### Why this matters for the teammate-slipping weakness
+
+The weakness has a clean explanation once the leak is gone: **without a message, robot A
+cannot observe whether robot B is slipping.** It sees only the public ``moved``/``stalled``
+event, which does not say *who* failed to contribute. So the mode that the model cannot
+learn is precisely the mode that is information-theoretically unavailable to it -- which is
+the original motivation for communicating, and the first result in this project that points
+at messaging from evidence rather than from assumption.
+
+This strengthens the case for objective item (2)'s untouched half (limited messages) rather
+than more model work.
+
+### Unfinished
+
+Re-run the closed loop and the threshold probe under the corrected features (the numbers in
+rounds 17 and 19 were produced with the leak and must be re-measured); message channel; mode
+ablations; replays rebuilt for the new main line.

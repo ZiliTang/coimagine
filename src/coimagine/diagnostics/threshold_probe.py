@@ -127,7 +127,7 @@ def run_threshold_probe(
                     situation.scan,
                     scene.robot_pose(0),
                     situation.history_a,
-                    situation.history_b,
+                    situation.public_history,
                     PROBE_ANGLE,
                     FORCE_MAX,
                 )
@@ -172,7 +172,7 @@ def run_threshold_probe(
             [
                 continuous_features(
                     situation.scan, scene.robot_pose(0), situation.history_a,
-                    situation.history_b, PROBE_ANGLE, FORCE_MAX,
+                    situation.public_history, PROBE_ANGLE, FORCE_MAX,
                 )
             ],
             dtype=np.float64,
