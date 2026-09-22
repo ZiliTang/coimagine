@@ -58,6 +58,9 @@ from .message_necessity import (
 )
 from .threshold_probe import (
     ThresholdProbeResult,
+    format_continuous_rollout_markdown,
+    run_continuous_episode,
+    run_continuous_rollout,
     format_threshold_markdown,
     run_threshold_probe,
     write_threshold_report,
@@ -160,6 +163,9 @@ __all__ = [
     "necessity_samples",
     "run_learned_necessity",
     "ThresholdProbeResult",
+    "format_continuous_rollout_markdown",
+    "run_continuous_episode",
+    "run_continuous_rollout",
     "format_necessity_markdown",
     "run_necessity_comparison",
     "write_necessity_report",

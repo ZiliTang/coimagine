@@ -1767,3 +1767,47 @@ narrower than any single earlier round suggested:
 > built here do not match it over an episode; what does transfer is a **value** target at a
 > single decision, a **threshold regression** in the continuous setting, and the two rules about
 > **training coverage** and **message value** established in rounds 22-31.
+
+---
+
+## Round 33: continuous parameters in a closed loop, and it reproduces "you must try to learn"
+
+The threshold result (rounds 18-19) was a *single* decision. This closes the loop: an episode
+in which each step chooses a **force**, a push at force ``f`` costs ``1 + f``, the object
+advances a cell on success and the pushing robot advances with it, so the same contact holds
+for the next step. The object starts two pushes from the goal.
+
+| policy | episodes | success | mean cost | cost per success |
+|---|---|---|---|---|
+| oracle | 96 | 0.250 | 1.875 | 7.50 |
+| **learned** | 96 | **0.000** | **0.000** | n/a |
+| always maximum force | 96 | 0.250 | 3.750 | 15.00 |
+| always minimum force | 96 | 0.000 | 1.250 | n/a |
+
+### What happens and why
+
+**The learned policy never attempts anything** (success 0, cost 0). The episodes start from a
+**fresh scene**, so the observation carries no contact information and the physics is only the
+prior -- a quarter of the contacts are pushable. Faced with that, the cost-optimal one-step
+decision is to **decline**, and declining produces none of the evidence that would change the
+decision. So the policy is stuck: it declines forever and never learns.
+
+This is the **third setting** in which the project observes the same structure, and it is the
+round-23 result exactly: *learning requires trying, and a cost-optimal one-step rule declines.*
+
+Meanwhile **blind maximum force matches the oracle's success rate at twice the cost**
+(15.00 versus 7.50 per success). The oracle's 25% comes from privileged knowledge of which
+contacts are pushable; a silent policy cannot have it, so the pragmatic silent strategy is to
+push hard and accept the waste -- which is what the outcome-greedy policy did in the grid
+closed loop (round 28).
+
+### Consequence for the objective
+
+This was the last unstarted measurement. It does not add a new capability claim; it *confirms*
+the project's sharpest rule in a third setting, and it explains why the continuous result that
+did work (the threshold regression, round 19) worked: that experiment evaluated a **post
+lead-in** decision, where the observation already carries the evidence.
+
+The generalisation is worth stating plainly: **a learned one-step rule evaluated on
+informative states can look good and still fail from a cold start**, and reporting only the
+former would have been misleading.

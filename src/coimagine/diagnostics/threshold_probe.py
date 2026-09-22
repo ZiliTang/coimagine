@@ -35,7 +35,7 @@ from .. import __version__
 from ..grid.continuous import FORCE_MAX, FORCE_MIN, force_threshold, push_outcome
 from ..grid.planner import PHYSICS
 from ..learning.continuous_data import continuous_features
-from ..learning.data import generate_situations
+from ..learning.data import generate_situations, pose_to_index
 from ..learning.features import OBSERVATION_DIM
 from ..learning.messages import (
     SCHEME_ORDER,
@@ -43,6 +43,7 @@ from ..learning.messages import (
     message_vector,
     payload_bits,
 )
+from ..grid.state import HiddenPhysics, Scene
 from ..learning.mlp import MultiHeadMLP, train
 
 #: Base cost of a push; the total cost of a push at force f is BASE + f, so a heavier
@@ -94,6 +95,57 @@ class ThresholdProbeResult:
     meta: Dict[str, object] = field(default_factory=dict)
 
 
+def _threshold_training(situations, message_scheme: str = "none"):
+    """The two supervised targets plus the observation, for a set of situations.
+
+    Shared by the threshold probe and the continuous rollout so both train and evaluate
+    the identical model.
+    """
+
+    features: List[Tuple[float, ...]] = []
+    can_push: List[float] = []
+    thresholds: List[float] = []
+    mask: List[float] = []
+    physics_index: List[int] = []
+    poses: List[int] = []
+    from ..learning.data import pose_to_index
+
+    for situation in situations:
+        scene, pushable, threshold = _targets_for(situation)
+        features.append(
+            continuous_features(
+                situation.scan,
+                scene.robot_pose(0),
+                situation.history_a,
+                situation.public_history,
+                PROBE_ANGLE,
+                FORCE_MAX,
+            )
+            # The received message is appended to the observation. It is a declared
+            # codebook over the sender's own private state, and it is the only channel
+            # through which the teammate's traction can reach this robot.
+            + message_vector(
+                message_scheme, situation.physics, situation.history_b
+            )
+        )
+        can_push.append(float(pushable))
+        thresholds.append(threshold if np.isfinite(threshold) else 0.0)
+        mask.append(float(pushable))
+        physics_index.append(PHYSICS.index(situation.physics))
+        poses.append(pose_to_index(scene.obj.origin))
+    x = np.asarray(features, dtype=np.float64)
+    split = OBSERVATION_DIM + message_dim(message_scheme)
+    return (
+        x[:, :split],
+        x[:, split:],
+        np.asarray(can_push, dtype=np.float64),
+        np.asarray(thresholds, dtype=np.float64),
+        np.asarray(mask, dtype=np.float64),
+        np.asarray(physics_index, dtype=np.int64),
+        np.asarray(poses, dtype=np.int64),
+    )
+
+
 def _targets_for(situation):
     """The two supervised targets for one decision point, plus the observables."""
 
@@ -121,51 +173,9 @@ def run_threshold_probe(
         n_scenes=n_test_situations, lead_in=lead_in, seed=seed + 70_000
     )
 
-    def build(situations):
-        features: List[Tuple[float, ...]] = []
-        can_push: List[float] = []
-        thresholds: List[float] = []
-        mask: List[float] = []
-        physics_index: List[int] = []
-        poses: List[int] = []
-        from ..learning.data import pose_to_index
-
-        for situation in situations:
-            scene, pushable, threshold = _targets_for(situation)
-            features.append(
-                continuous_features(
-                    situation.scan,
-                    scene.robot_pose(0),
-                    situation.history_a,
-                    situation.public_history,
-                    PROBE_ANGLE,
-                    FORCE_MAX,
-                )
-                # The received message is appended to the observation. It is a declared
-                # codebook over the sender's own private state, and it is the only channel
-                # through which the teammate's traction can reach this robot.
-                + message_vector(
-                    message_scheme, situation.physics, situation.history_b
-                )
-            )
-            can_push.append(float(pushable))
-            thresholds.append(threshold if np.isfinite(threshold) else 0.0)
-            mask.append(float(pushable))
-            physics_index.append(PHYSICS.index(situation.physics))
-            poses.append(pose_to_index(scene.obj.origin))
-        x = np.asarray(features, dtype=np.float64)
-        split = OBSERVATION_DIM + message_dim(message_scheme)
-        return (
-            x[:, :split],
-            x[:, split:],
-            np.asarray(can_push, dtype=np.float64),
-            np.asarray(thresholds, dtype=np.float64),
-            np.asarray(mask, dtype=np.float64),
-            np.asarray(physics_index, dtype=np.int64),
-            np.asarray(poses, dtype=np.int64),
-        )
-
-    obs, action, can_push, thresholds, mask, physics_index, poses = build(train_situations)
+    obs, action, can_push, thresholds, mask, physics_index, poses = _threshold_training(
+        train_situations, message_scheme
+    )
     positive_rate = float(can_push.mean())
     model = MultiHeadMLP(
         seed=seed,
@@ -734,5 +744,194 @@ def format_joint_comparison_markdown(summaries: Sequence[JointSummary]) -> str:
             f"{summary.mean_regret:.3f} | {summary.success_rate:.3f} | "
             f"{summary.teammate_slips_n} | {summary.teammate_slips_regret:.3f} | "
             f"{summary.teammate_slips_success:.3f} |"
+        )
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Continuous parameters in a closed loop
+# ---------------------------------------------------------------------------
+
+
+def _continuous_scene(physics: HiddenPhysics) -> Scene:
+    """Object two pushes from the goal, both robots on its west face."""
+
+    from ..grid import scene_from_ascii
+
+    grid = [["."] * 6 for _ in range(6)]
+    for dx in (0, 1):
+        for dy in (0, 1):
+            grid[1 + dy][2 + dx] = "O"
+    for y in range(6):
+        grid[y][4] = "T"
+        grid[y][5] = "T"
+    grid[1][1] = "A"
+    grid[2][1] = "B"
+    rows = ["".join(grid[y]) for y in range(5, -1, -1)]
+    return scene_from_ascii(rows, name="continuous", hidden=physics)
+
+
+def run_continuous_episode(
+    physics: HiddenPhysics,
+    policy: str,
+    model: MultiHeadMLP,
+    *,
+    horizon: int = 6,
+    radius: int = 5,
+    seed: int = 0,
+) -> Tuple[int, float, int]:
+    """One episode in which each step chooses a force.
+
+    A push at force ``f`` costs ``1 + f``. On success the object advances one cell along the
+    chosen axis and the pushing robot advances with it, so the same contact holds for the next
+    step. The direction is fixed east; **the force is the decision**, which is what the
+    threshold probe regresses, so this is the continuous decision inside a closed loop.
+    """
+
+    from dataclasses import replace
+
+    from ..grid.continuous import FORCE_MIN, push_outcome
+    from ..grid.sensing import SensorNoise, apply_noise, ray_cast
+    from ..grid.state import ObjectState, RobotState
+
+    rng = np.random.default_rng(seed)
+    scene = _continuous_scene(physics)
+    history_a: List[str] = []
+    public_history: List[str] = []
+    total = 0.0
+    steps = 0
+
+    for step in range(horizon):
+        if scene.is_goal():
+            return 1, total, step
+        scan = apply_noise(ray_cast(scene, 0, radius=radius), SensorNoise(), rng)
+        feature = np.asarray(
+            [
+                continuous_features(
+                    scan, scene.robot_pose(0), tuple(history_a),
+                    tuple(public_history), PROBE_ANGLE, FORCE_MAX,
+                )
+            ],
+            dtype=np.float64,
+        )
+        split = OBSERVATION_DIM
+        obs_one = feature[:, :split]
+        act_one = feature[:, split:]
+
+        gripper = 1.0 if physics.traction[0] == "grip" else 0.0
+        if policy == "oracle":
+            force = (
+                min(max(physics.resistance / gripper, FORCE_MIN), FORCE_MAX)
+                if gripper > 0
+                else FORCE_MIN
+            )
+            attempt = gripper > 0
+        elif policy == "learned":
+            probability = float(model.predict_outcomes(obs_one, act_one)[0, 0])
+            force = float(model.predict_threshold(obs_one, act_one)[0])
+            force = min(max(force, FORCE_MIN), FORCE_MAX)
+            attempt = probability >= 0.5
+        elif policy == "always_max":
+            force, attempt = FORCE_MAX, True
+        elif policy == "always_min":
+            force, attempt = 0.25, True
+        else:
+            raise ValueError(policy)
+
+        if not attempt:
+            break
+        steps += 1
+        total += PUSH_BASE_COST + force
+        outcome = push_outcome(scene, {0: force}, PROBE_ANGLE)
+        if not outcome.moved:
+            break
+        delta = outcome.direction.delta
+        moved = ObjectState(scene.obj.origin).translated(delta)
+        robots = tuple(
+            RobotState(r.robot_id, (r.pose[0] + delta[0], r.pose[1] + delta[1]))
+            if r.robot_id == 0
+            else r
+            for r in scene.robots
+        )
+        history_a.append("drove")
+        public_history.append("moved")
+        scene = replace(scene, obj=moved, robots=robots)
+
+    return int(scene.is_goal()), total, steps
+
+
+def run_continuous_rollout(
+    *,
+    n_train_situations: int = 200,
+    n_episodes: int = 120,
+    epochs: int = 400,
+    seed: int = 0,
+    horizon: int = 6,
+) -> List[Dict[str, object]]:
+    """Train the threshold model once, then run every policy on the same episode set."""
+
+    from ..grid.state import enumerate_hidden_physics
+
+    train_situations = generate_situations(
+        n_scenes=n_train_situations, lead_in=2, seed=seed
+    )
+    obs, action, can_push, thresholds, mask, physics_index, poses = _threshold_training(
+        train_situations
+    )
+    positive_rate = float(can_push.mean())
+    model = MultiHeadMLP(
+        seed=seed,
+        obs_dim=obs.shape[1],
+        action_dim=action.shape[1],
+        positive_weight=(1.0 - positive_rate) / positive_rate if positive_rate > 0 else 1.0,
+    )
+    targets = np.concatenate([can_push[:, None], np.zeros((len(can_push), 2))], axis=1)
+    train(
+        model, obs, action, targets, physics_index, poses,
+        thresholds=thresholds, threshold_mask=mask, epochs=epochs, seed=seed,
+    )
+
+    pool = enumerate_hidden_physics()
+    rows: List[Dict[str, object]] = []
+    for policy in ("oracle", "learned", "always_max", "always_min"):
+        successes, costs = [], []
+        for index in range(n_episodes):
+            physics = pool[index % len(pool)]
+            success, cost, _steps = run_continuous_episode(
+                physics, policy, model, horizon=horizon, seed=index
+            )
+            successes.append(success)
+            costs.append(cost)
+        rate = float(np.mean(successes))
+        mean_cost = float(np.mean(costs))
+        rows.append(
+            {
+                "policy": policy,
+                "n": n_episodes,
+                "success_rate": rate,
+                "mean_cost": mean_cost,
+                "cost_per_success": (mean_cost / rate if rate > 0 else float("inf")),
+            }
+        )
+    return rows
+
+
+def format_continuous_rollout_markdown(rows: Sequence[Dict[str, object]]) -> str:
+    lines = [
+        "A push at force f costs 1 + f; the object needs two pushes to reach the goal and the "
+        "force is the decision.",
+        "",
+        "| policy | episodes | success rate | mean cost | cost per success |",
+        "|---|---|---|---|---|",
+    ]
+    for row in rows:
+        per = (
+            "n/a"
+            if row["cost_per_success"] == float("inf")
+            else f"{row['cost_per_success']:.2f}"
+        )
+        lines.append(
+            f"| {row['policy']} | {row['n']} | {row['success_rate']:.3f} | "
+            f"{row['mean_cost']:.3f} | {per} |"
         )
     return "\n".join(lines)
