@@ -315,3 +315,209 @@ def write_necessity_report(result: NecessityResult, output_dir: str) -> Dict[str
     )
     paths["md"] = str(md_path)
     return paths
+
+
+# ---------------------------------------------------------------------------
+# Learned version: can a model extract the message's information on its own?
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class LearnedNecessitySummary:
+    scheme: str
+    bits: int
+    n: int
+    accuracy: float
+    balanced_accuracy: float
+    mean_regret: float
+    success_rate: float
+    silent_baseline_regret: float
+    oracle_regret: float
+
+
+def necessity_samples(
+    *,
+    n_scenes: int = 200,
+    message_scheme: str = "none",
+    seed: int = 0,
+    radius: int = 5,
+    lead_in: int = 0,
+) -> List[Tuple[Tuple[float, ...], Tuple[float, ...], int, int]]:
+    """(observation, action, label, teammate_grips) tuples for the necessity decision.
+
+    ``lead_in`` defaults to zero on purpose. Any real lead-in that produces public
+    evidence -- for instance a co-push that moved the object -- would reveal the
+    teammate's traction through the public record, and the message would be redundant.
+    With a fresh scene the only channel carrying that fact is the message, which is
+    exactly the comparison being measured.
+    """
+
+    from ..grid.dynamics import execute
+    from ..grid.sensing import SensorNoise, apply_noise, ray_cast
+    from ..learning.continuous_data import continuous_action_vector
+    from ..learning.data import _joint_for
+    from ..learning.features import observation_vector
+    from ..learning.messages import message_vector
+
+    rng = np.random.default_rng(seed)
+    out = []
+    for scene_id in range(n_scenes):
+        teammate_grips = bool(rng.integers(0, 2))
+        origin = (2, 1 + int(rng.integers(0, 2)))
+        scene = necessity_scene(teammate_grips)
+        scan = apply_noise(ray_cast(scene, 0, radius=radius), SensorNoise(), rng)
+
+        history_a: List[str] = []
+        public_history: List[str] = []
+        current = scene
+        for _ in range(lead_in):
+            successor, result = execute(current, _joint_for(current, "push:0:E"))
+            history_a.append(result.feedback[0])
+            public_history.append(result.y_public)
+            current = successor
+
+        observation = observation_vector(
+            scan, current.robot_pose(0), tuple(history_a), tuple(public_history)
+        ) + message_vector(message_scheme, current.physics, ())
+        action = continuous_action_vector(ANGLE, 1.0)
+        label = int(push_outcome(scene, {0: 1.0, 1: 1.0}, ANGLE).moved)
+        out.append((observation, action, label, int(teammate_grips)))
+    return out
+
+
+def _optimal_push_threshold(force: float) -> float:
+    """The probability above which attempting the push beats declining.
+
+    Derived from the declared costs rather than hard-coded: attempting costs ``1 + f``
+    plus the penalty with probability ``1 - p``; declining costs the penalty with
+    probability ``p``. Attempting is better when ``p >= (1 + f + penalty) / (2 * penalty)``.
+    """
+
+    return (PUSH_BASE_COST + force + FAIL_PENALTY) / (2.0 * FAIL_PENALTY)
+
+
+def run_learned_necessity(
+    *,
+    schemes: Sequence[str] = ("none", "traction"),
+    n_train_scenes: int = 400,
+    n_test_scenes: int = 200,
+    epochs: int = 400,
+    seed: int = 0,
+) -> List[LearnedNecessitySummary]:
+    """Train the same model with and without the message and compare decision quality."""
+
+    from ..learning.features import OBSERVATION_DIM
+    from ..learning.messages import message_dim, payload_bits
+    from ..learning.mlp import MultiHeadMLP, train
+
+    out: List[LearnedNecessitySummary] = []
+    for scheme in schemes:
+        split = OBSERVATION_DIM + message_dim(scheme)
+        train_samples = necessity_samples(
+            n_scenes=n_train_scenes, message_scheme=scheme, seed=seed
+        )
+        test_samples = necessity_samples(
+            n_scenes=n_test_scenes, message_scheme=scheme, seed=seed + 40_000
+        )
+        obs = np.asarray([s[0][:split] for s in train_samples], dtype=np.float64)
+        action = np.asarray([s[1] for s in train_samples], dtype=np.float64)
+        label = np.asarray([s[2] for s in train_samples], dtype=np.float64)
+        model = MultiHeadMLP(
+            seed=seed, obs_dim=split, action_dim=action.shape[1]
+        )
+        targets = np.concatenate(
+            [label[:, None], np.zeros((len(label), 2))], axis=1
+        )
+        train(model, obs, action, targets, epochs=epochs, seed=seed)
+
+        test_obs = np.asarray([s[0][:split] for s in test_samples], dtype=np.float64)
+        test_action = np.asarray([s[1] for s in test_samples], dtype=np.float64)
+        test_label = np.asarray([s[2] for s in test_samples], dtype=np.float64)
+        prob = model.predict_outcomes(test_obs, test_action)[:, 0]
+        predicted = (prob >= _optimal_push_threshold(1.0)).astype(int)
+
+        accuracy = float((predicted == test_label).mean())
+        recalls = []
+        if (test_label == 1).any():
+            recalls.append(float((predicted[test_label == 1] == 1).mean()))
+        if (test_label == 0).any():
+            recalls.append(float((predicted[test_label == 0] == 0).mean()))
+
+        regrets: List[float] = []
+        successes: List[int] = []
+        for sample, decision in zip(test_samples, predicted):
+            teammate_grips = bool(sample[3])
+            solvable = 1 if teammate_grips else 0
+            oracle_cost = PUSH_BASE_COST + 1.0 if solvable else 0.0
+            if decision:
+                cost = (
+                    PUSH_BASE_COST + 1.0
+                    if solvable
+                    else PUSH_BASE_COST + 1.0 + FAIL_PENALTY
+                )
+                success = solvable
+            else:
+                cost = 0.0
+                success = 0
+            if solvable and not success:
+                regrets.append(FAIL_PENALTY + (cost - oracle_cost))
+            else:
+                regrets.append(cost - oracle_cost)
+            successes.append(success)
+
+        # The silent analytic baseline, for reference: it never has the information.
+        silent_regrets = []
+        for sample in test_samples:
+            solvable = 1 if sample[3] else 0
+            oracle_cost = PUSH_BASE_COST + 1.0 if solvable else 0.0
+            # declining is optimal below the threshold for p = 1/2
+            decision = 0.5 >= _optimal_push_threshold(1.0)
+            if decision:
+                cost = PUSH_BASE_COST + 1.0 if solvable else PUSH_BASE_COST + 1.0 + FAIL_PENALTY
+                success = solvable
+            else:
+                cost, success = 0.0, 0
+            if solvable and not success:
+                silent_regrets.append(FAIL_PENALTY + (cost - oracle_cost))
+            else:
+                silent_regrets.append(cost - oracle_cost)
+
+        out.append(
+            LearnedNecessitySummary(
+                scheme=scheme,
+                bits=payload_bits(scheme),
+                n=len(test_samples),
+                accuracy=accuracy,
+                balanced_accuracy=float(np.mean(recalls)) if recalls else float("nan"),
+                mean_regret=float(np.mean(regrets)),
+                success_rate=float(np.mean(successes)),
+                silent_baseline_regret=float(np.mean(silent_regrets)),
+                oracle_regret=0.0,
+            )
+        )
+    return out
+
+
+def format_learned_necessity_markdown(
+    summaries: Sequence[LearnedNecessitySummary],
+) -> str:
+    lines = [
+        f"A co-push is attempted when the predicted success probability reaches "
+        f"{_optimal_push_threshold(1.0):.2f}, the threshold implied by the declared costs.",
+        "",
+        "| scheme | bits | n | accuracy | balanced accuracy | mean regret | success |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for summary in summaries:
+        lines.append(
+            f"| {summary.scheme} | {summary.bits} | {summary.n} | "
+            f"{summary.accuracy:.3f} | {summary.balanced_accuracy:.3f} | "
+            f"{summary.mean_regret:.3f} | {summary.success_rate:.3f} |"
+        )
+    if summaries:
+        lines += [
+            "",
+            f"For reference, the silent analytic policy scores "
+            f"{summaries[0].silent_baseline_regret:.3f} regret and the oracle 0.000.",
+        ]
+    return "\n".join(lines)

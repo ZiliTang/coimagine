@@ -79,3 +79,58 @@ def test_report_mentions_the_message_value() -> None:
     text = format_necessity_markdown(result)
     assert "Value of one bit" in text
     assert "necessary" in text
+
+
+def test_push_threshold_is_derived_from_the_declared_costs() -> None:
+    """Attempting beats declining when p >= (1 + f + penalty) / (2 * penalty)."""
+
+    from coimagine.diagnostics.message_necessity import _optimal_push_threshold
+
+    assert _optimal_push_threshold(1.0) == pytest.approx(
+        (PUSH_BASE_COST + 1.0 + FAIL_PENALTY) / (2.0 * FAIL_PENALTY)
+    )
+    # with the declared numbers the threshold sits between a coin flip and certainty
+    assert 0.5 < _optimal_push_threshold(1.0) < 1.0
+
+
+def test_necessity_samples_have_the_declared_shapes() -> None:
+    from coimagine.diagnostics.message_necessity import necessity_samples
+    from coimagine.learning.features import OBSERVATION_DIM
+    from coimagine.learning.messages import message_dim
+
+    for scheme in ("none", "traction"):
+        samples = necessity_samples(n_scenes=8, message_scheme=scheme, seed=0)
+        assert len(samples) == 8
+        expected_obs = OBSERVATION_DIM + message_dim(scheme)
+        for observation, action, label, grips in samples:
+            assert len(observation) == expected_obs
+            assert len(action) == 3
+            assert label in (0, 1) and grips in (0, 1)
+        # the label is exactly the teammate's traction in this construction
+        assert all(label == grips for _o, _a, label, grips in samples)
+
+
+@pytest.mark.slow
+def test_learned_model_reaches_the_oracle_only_with_the_message() -> None:
+    """The decisive finding: with one bit the learned model is exactly optimal; without it
+    it is at chance, because the deciding fact is not observable through any other channel."""
+
+    from coimagine.diagnostics.message_necessity import (
+        format_learned_necessity_markdown,
+        run_learned_necessity,
+    )
+
+    summaries = {
+        s.scheme: s
+        for s in run_learned_necessity(
+            n_train_scenes=80, n_test_scenes=40, epochs=120, seed=0
+        )
+    }
+    assert summaries["none"].balanced_accuracy == pytest.approx(0.5, abs=0.15)
+    assert summaries["none"].mean_regret > 1.0
+    assert summaries["traction"].balanced_accuracy > 0.9
+    assert summaries["traction"].mean_regret == pytest.approx(0.0, abs=1e-9)
+    assert summaries["traction"].success_rate > 0.3
+    assert "implied by the declared costs" in format_learned_necessity_markdown(
+        list(summaries.values())
+    )

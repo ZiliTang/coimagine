@@ -1287,3 +1287,45 @@ pays:
    fact is private.
 
 The rule from round 21 now has a positive instance to go with its three negative ones.
+
+---
+
+## Round 23: the learned model reaches the oracle with one bit, and chance without it
+
+Round 22 showed the information *has* value. This round asks the learning question: can a
+trained model actually extract it? `run_learned_necessity` trains the identical model twice,
+once with the message channel and once without.
+
+The dataset deliberately uses **no lead-in**. Any real lead-in that produced public evidence
+-- a co-push that moved the object, say -- would reveal the teammate's traction through the
+public record and make the message redundant. On a fresh scene the message is the only
+channel carrying that fact, which is the comparison worth measuring.
+
+A co-push is attempted when the predicted success probability reaches **0.60**, which is the
+threshold *implied by the declared costs* (`p >= (1 + f + penalty) / (2 * penalty)`), not a
+hand-picked number.
+
+| scheme | bits | accuracy | balanced accuracy | mean regret | success |
+|---|---|---|---|---|---|
+| none | 0 | 0.453 | **0.500** | 4.373 | 0.000 |
+| traction | 1 | 1.000 | **1.000** | **0.000** | 0.547 |
+
+**With one bit the learned model is exactly optimal** -- perfect classification, zero regret,
+the oracle's success rate. **Without it the same model is at chance** (balanced accuracy
+0.500) and scores exactly the silent analytic baseline's regret (4.373).
+
+This is the cleanest result in the project so far because it is decisive in both directions:
+
+* it is not a capacity problem -- the same architecture reaches the optimum;
+* it is not an artifact of a hand-written rule -- the policy is the trained model's own
+  probability plus a threshold derived from the declared costs;
+* and the failure without the message is exactly chance, which is what an
+  information-theoretic limit looks like.
+
+The framing the project can now defend: **a learned model is limited by what it can observe,
+not by what it can represent -- and a one-bit message about the one private fact that decides
+the outcome is enough to take it from chance to optimal.**
+
+Figure/detail: the necessity testbed uses a slipping robot A (so the teammate is required),
+a private teammate traction, and a light object (so a co-push works exactly when the
+teammate grips).
