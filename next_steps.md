@@ -1382,3 +1382,52 @@ when they will not.
 Also fixed here: the three policies were initially drawn on *different* random episodes,
 which swamped a one-attempt effect with sampling noise; they now share one episode set per
 horizon.
+
+---
+
+## Round 25: the error profile reverses once the leak is gone
+
+Round 15's headline -- "the worst mechanism is the one the project cares about: teammate
+slips, 59% disagreement" -- was measured with the private-feedback leak still present. Re-run
+with the corrected features (250 training / 140 held-out decision points, depth 2):
+
+| mechanism | n | disagreement (leak-free) | disagreement (with leak) |
+|---|---|---|---|
+| latched+heavy | 15 | **0.533** | 0.200 |
+| plain | 17 | **0.529** | 0.353 |
+| latched+heavy+slips | 18 | 0.500 | 0.167 |
+| heavy+slips | 23 | 0.435 | 0.130 |
+| latched+slips | 14 | 0.429 | 0.071 |
+| heavy | 19 | 0.368 | 0.263 |
+| latched | 17 | 0.353 | 0.059 |
+| teammate slips | 17 | **0.235** | 0.588 |
+
+Overall disagreement rises from **22.9% to 42.1%**: the leak had been making the model look
+about twice as good as it is.
+
+Two claims from round 15 are now withdrawn:
+
+1. **"The model is worst at teammate slips" is false.** With the leak it was the worst
+   (0.588); without it, it is the **best** (0.235). The ordering reversed. What the leak did
+   was give the model a channel to the teammate's symbols that it could not actually use
+   well, and the subgroup where that mattered most was exactly the one being highlighted.
+2. **The absolute numbers in the leaked table are meaningless** and should not be quoted.
+
+What survives:
+
+* **errors concentrate near the goal** -- distance 1: 0.769, distance 2: 0.478, distance 3:
+  0.281, the same ordering as before;
+* the dominant confusion is now `wait -> co_push:E` (20 of 59 errors): the reference waits and
+  the model co-pushes. The reference's waits are not idling -- in 62 of its 73 waits the
+  true-state oracle waits too (85%), the round-16 finding, which reproduces.
+
+So the honest current statement is: **the learned model agrees with the equal-information
+reference on 58% of held-out decisions, its errors are worst on latched-and-heavy and plain
+situations, and they concentrate one step from the goal.** The earlier "slipping teammate is
+the weak spot" narrative is gone, and with it the round-20 story that the weak spot was
+information-theoretically unavailable. That story was true of the *leaked* model; for the
+corrected model the weak spots are elsewhere.
+
+The message-necessity results (rounds 22-24) do not depend on any of this: they use a
+purpose-built testbed with declared costs and a hand-specified information structure, not the
+error analysis.
