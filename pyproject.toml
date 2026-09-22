@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coimagine"
+version = "0.9.1"
+description = "Local-observation Gate-A benchmark for imagined evolving coordination topologies"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "CoImagine contributors"}]
+dependencies = [
+  "matplotlib>=3.7",
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+coimagine-demo = "coimagine.cli:demo_main"
+coimagine-gatea = "coimagine.cli:gate_a_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"

@@ -1,0 +1,74 @@
+name: pilot_full
+execution:
+  progress: true
+  workers: 1
+  resume: false
+output_dir: outputs/gate_a/pilot_v05_local_iet_full
+reporting:
+  render_supplementary: true
+planning:
+  horizon: 2
+  candidate_budget: 12
+  max_arity: 4
+main_experiment:
+  enabled: true
+  showcase_seed: 0
+  horizons:
+  - 2
+  - 3
+  candidate_budget: 8
+  max_steps: 5
+  seed_start: 0
+  seed_stop: 24
+  observation_radius: 6
+natural:
+  seed_start: 0
+  seed_stop: 1
+  blocker_counts:
+  - 1
+  - 2
+  - 3
+  robot_counts:
+  - 2
+  - 3
+diagnostic:
+  seeds_per_task: 1
+  tasks:
+  - edge_creation
+  - edge_destruction
+  - edge_replacement
+  - higher_order_conflict
+  - positive_higher_order_synergy
+  - hold_pass
+  - reveal_act
+local_belief:
+  observation_radius: 6
+  modes:
+  - symbolic_local_belief
+  tasks:
+  - edge_creation
+  - edge_replacement
+  - hold_pass
+  - reveal_act
+scaling:
+  entity_counts:
+  - 1
+  - 2
+  - 3
+  - 5
+  - 8
+  - 12
+  options_per_entity: 4
+  robot_counts:
+  - 2
+  - 3
+  - 4
+  - 5
+  - 6
+  - 8
+  factor_arities:
+  - 1
+  - 2
+  - 3
+  - 4
+  candidates_per_robot: 3

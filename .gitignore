@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+outputs/
+data/
+.vscode/
+.idea/
+**:Zone.Identifier
+# local packaged snapshot
+coimagine.zip
