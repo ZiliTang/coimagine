@@ -989,3 +989,68 @@ Two consequences, in order:
    *learned* model can match that planner when the dynamics are not given. That question
    requires the continuous-parameter action space, where the exact planner is not
    available -- which is objective item 3 and still not started.
+
+---
+
+## Round 18: continuous contact parameters, and the first setting the exact planner cannot be copied
+
+Objective item 3, the last unstarted piece, is now implemented. `grid/continuous.py`
+replaces the discrete action template with continuous parameters:
+
+* a **push angle** in degrees (0 = east, 90 = north) and a **force** in ``[0, 2]``;
+* the nearest axis is selected by the cosine alignment, and the push succeeds when the
+  direction is geometrically legal, the object is not latched, and
+  ``sum_i traction_i * force_i >= resistance``.
+
+The feasible set is therefore a **rectangle in (angle, force)**: an angular window of
++-45 degrees around a free axis, crossed with a force threshold -- and that threshold is
+**set by the hidden contact physics**. Measured:
+
+| physics | force threshold (A alone) | feasible at f=1.0? |
+|---|---|---|
+| resistance 1, free, A grips | 1.0 | yes, within +-45 degrees |
+| resistance 2, free, A grips | 2.0 | no (needs f=2.0) |
+| resistance 1, free, A slips | infinite | no, at any force |
+| resistance 1 latched | 1.0 | no, until released |
+
+So "what can this robot do next" is now a region whose boundary encodes exactly the
+quantity the robot cannot observe.
+
+### The learned model does not recover the region
+
+`diagnostics/continuous_probe.py` evaluates on held-out scenes with region-level metrics
+(region IoU, force-threshold error, decision success:
+
+| configuration | region IoU | threshold error | decision success | balanced accuracy |
+|---|---|---|---|---|
+| unweighted BCE | 0.725 | +2.000 | 0.275 | 0.756 |
+| positive-weighted BCE | 0.134 | +0.023 | 0.275 | 0.943 |
+
+Read carefully, neither is good:
+
+* **unweighted**: the labels are 3.7% positive, so the model minimises loss by predicting
+  "never feasible". Per-sample accuracy is 0.966 and the IoU looks respectable (0.725)
+  only because the latched scenes are correctly empty. The force threshold is 2.0 too
+  high, so it finds almost no feasible push, and its decisions succeed 27.5% of the time.
+* **positive-weighted** (weight 12.5, set from the training rate): the threshold error
+  collapses to +0.023, i.e. the boundary is finally in the right place, but the region IoU
+  **falls to 0.134** because the model now over-predicts feasibility, and the decision
+  success does not move (0.275). A correct average threshold with a poor region is not
+  useful for choosing a direction and a force.
+
+**This is the first setting where the exact planner cannot be trivially copied**: with
+continuous parameters there is no small candidate list to enumerate and no hand-written
+decision rule to compare against. And it is where the learned model fails.
+
+### Also fixed
+
+`1 / (1 + exp(-logit))` overflowed once the positive-class weight drove logits to -30;
+replaced with a numerically stable logistic that branches on the sign.
+
+### Unfinished
+
+The continuous probe needs a better formulation before it means anything: the binary
+per-(angle, force) target under heavy imbalance is the wrong object. A threshold
+regression, or a region-valued output, is the natural next attempt. Also still open:
+mode ablations at the decision and episode level, communication, and replays rebuilt for
+the new main line.

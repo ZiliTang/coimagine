@@ -26,6 +26,22 @@ import numpy as np
 from .features import ACTION_IDS, OBSERVATION_DIM
 
 
+def _sigmoid(logit: np.ndarray) -> np.ndarray:
+    """Numerically stable logistic.
+
+    A plain ``1 / (1 + exp(-logit))`` overflows once the logit is very negative, which
+    happens as soon as the positive-class weight is large: the model drives logits to
+    -30 and the exponential warns and loses precision.
+    """
+
+    out = np.empty_like(logit, dtype=np.float64)
+    positive = logit >= 0
+    out[positive] = 1.0 / (1.0 + np.exp(-logit[positive]))
+    exp = np.exp(logit[~positive])
+    out[~positive] = exp / (1.0 + exp)
+    return out
+
+
 def _he(shape, rng: np.random.Generator) -> np.ndarray:
     fan_in = shape[0]
     return rng.normal(0.0, np.sqrt(2.0 / fan_in), size=shape)
@@ -55,6 +71,12 @@ class MultiHeadMLP:
 
     #: Divisor applied to value targets so the MSE is on a comparable scale.
     value_scale: float = 20.0
+
+    #: Weight on positive examples in the outcome BCE. The continuous probe's labels are
+    #: 3.7% positive, where an unweighted model minimises loss by predicting "never
+    #: feasible"; set this to ``(1 - p) / p`` from the training rate to counteract that.
+    #: It is a declared, standard reweighting, reported with the result, not tuned on test.
+    positive_weight: float = 1.0
 
     params: Dict[str, np.ndarray] = field(default_factory=dict)
 
@@ -120,13 +142,18 @@ class MultiHeadMLP:
         grads = {k: np.zeros_like(v) for k, v in p.items()}
 
         logit = cache["outcome_logit"]
-        prob = 1.0 / (1.0 + np.exp(-logit))
+        prob = _sigmoid(logit)
         eps = 1e-12
-        bce = -(targets * np.log(prob + eps) + (1 - targets) * np.log(1 - prob + eps))
+        weight = np.where(targets > 0.5, self.positive_weight, 1.0)
+        bce = weight * -(
+            targets * np.log(prob + eps) + (1 - targets) * np.log(1 - prob + eps)
+        )
         loss = self.feasibility_weight * float(bce.sum()) / n
         metrics = {"feasibility": loss}
 
-        d_logit = (self.feasibility_weight / n) * (prob - targets)
+        d_logit = (self.feasibility_weight / n) * np.where(
+            targets > 0.5, self.positive_weight * (prob - 1.0), prob
+        )
         grads["Wf2"] += cache["f1"].T @ d_logit
         grads["bf2"] += d_logit.sum(axis=0)
         d_f1 = (d_logit @ p["Wf2"].T) * (cache["f1"] > 0)
@@ -190,7 +217,7 @@ class MultiHeadMLP:
         """Probability of each action-outcome channel, shape ``(N, n_outcomes)``."""
 
         logit = self.forward(obs, action)["outcome_logit"]
-        return 1.0 / (1.0 + np.exp(-logit))
+        return _sigmoid(logit)
 
     def predict_feasibility(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
         """Channel 0 only: the probability that the object moves."""

@@ -35,6 +35,13 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .continuous_probe import (
+    ContinuousProbeResult,
+    ProbeMetrics,
+    format_continuous_markdown,
+    run_continuous_probe,
+    write_continuous_report,
+)
 from .error_analysis import (
     ErrorAnalysis,
     analyse_errors,
@@ -99,7 +106,12 @@ __all__ = [
     "PolicySummary",
     "POLICIES",
     "EpisodeRecord",
+    "ContinuousProbeResult",
     "ErrorAnalysis",
+    "ProbeMetrics",
+    "format_continuous_markdown",
+    "run_continuous_probe",
+    "write_continuous_report",
     "analyse_errors",
     "format_error_markdown",
     "render_error_figure",
