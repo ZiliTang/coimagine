@@ -1,0 +1,435 @@
+"""Closed-loop rollout: does a learned value actually drive an episode?
+
+Rounds 9-11 compared policies at single decision points. This module closes the loop:
+the chosen action is executed in the simulator, the robot takes a fresh scan and
+accumulates real feedback, and the policy decides again. Nothing about the future
+observation is assumed.
+
+Policies compared on identical episodes:
+
+* ``oracle_true_state`` -- the true state and true model: the ceiling;
+* ``true_model_belief`` -- the true model, but the contact physics only as the robot's
+  own posterior. This is the equal-information reference: the best any method can do
+  without knowing the hidden physics;
+* ``learned_value`` -- the network's predicted value, argmin;
+* ``learned_moved`` -- the network's predicted "will it move", argmax (the round-9
+  baseline, kept so the contrast survives into the closed loop).
+
+The released flag is tracked per hypothesis by replaying the committed action sequence
+inside each hypothesis, so release is handled rather than excluded.
+"""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import time
+from collections import defaultdict
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import numpy as np
+
+from .. import __version__
+from ..grid.dynamics import FeedbackNoise, feedback_likelihood
+from ..grid.planner import (
+    PHYSICS,
+    ContactContext,
+    DEFAULT_FAIL_COST,
+    HypKey,
+    _execute_cached,
+    full_value,
+    implied_history,
+)
+from ..grid.sensing import OccupancyScan, SensorNoise, apply_noise, ray_cast
+from ..grid.state import Scene
+from ..learning.data import candidates_for, generate_situations, pose_to_index
+from ..learning.data import sample_vector, _joint_for, action_labels
+from ..learning.features import ACTION_IDS
+from ..learning.mlp import MultiHeadMLP, train
+from .decision_probe import (
+    CHANNEL_MOVED,
+    _argmin,
+    _features_for,
+    _value_of_action,
+    posterior_over_physics,
+    situation_quantities,
+)
+
+POLICIES: Tuple[str, ...] = (
+    "oracle_true_state",
+    "true_model_belief",
+    "learned_value",
+    "learned_moved",
+)
+
+HORIZON = 8
+
+#: Lookahead depth used inside the closed loop. Depth 1 cannot value preparation at
+#: all: release only pays off through the push that follows it, which lies beyond a
+#: one-step cut, so a latched object leaves the one-step policy idling forever. Depth 2
+#: is the smallest setting in which preparation is visible.
+DEPTH = 2
+
+
+@dataclass
+class EpisodeRecord:
+    scene_id: int
+    policy: str
+    success: int
+    cost: float
+    steps: int
+    true_physics: str
+    constrained: int
+    heavy: int
+    teammate_slips: int
+
+
+@dataclass
+class PolicySummary:
+    name: str
+    n: int
+    success_rate: float
+    mean_cost: float
+    mean_steps: float
+
+
+@dataclass
+class RolloutProbeResult:
+    summaries: List[PolicySummary]
+    by_mode: Dict[str, List[PolicySummary]]
+    records: List[EpisodeRecord] = field(default_factory=list)
+    meta: Dict[str, object] = field(default_factory=dict)
+
+
+def _replayed_scene(initial_ctx: ContactContext, skills, hypothesis: HypKey) -> Scene:
+    """The scene one hypothesis implies after replaying the committed actions.
+
+    This is what makes release honest: the hypothesis' own ``released`` transition is
+    produced by the same dynamics, not assumed.
+    """
+
+    scene = initial_ctx.scene(hypothesis)
+    for skill in skills:
+        scene, _result = _execute_cached(scene, skill)
+    return scene
+
+
+def _belief_values(
+    initial_ctx: ContactContext,
+    skills,
+    history_a: Sequence[str],
+    history_b: Sequence[str],
+    candidates,
+    *,
+    depth: int,
+    fail_cost: float,
+) -> Dict[str, float]:
+    """Belief-weighted value of each candidate at the current decision point."""
+
+    weights: Dict[int, float] = {}
+    for index in range(len(PHYSICS)):
+        likelihood = 1.0
+        for robot_id, observed in ((0, history_a), (1, history_b)):
+            nominal = implied_history(
+                initial_ctx, skills, (index, False), robot_id
+            )
+            if len(nominal) != len(observed):
+                likelihood = 0.0
+                break
+            for seen, expected in zip(observed, nominal):
+                likelihood *= feedback_likelihood(seen, expected, FeedbackNoise())
+        weights[index] = likelihood
+    total = sum(weights.values())
+    if total <= 0.0:
+        weights = {index: 1.0 for index in weights}
+        total = float(len(weights))
+
+    values = {action: 0.0 for action in ACTION_IDS}
+    for index, weight in weights.items():
+        if weight <= 0.0:
+            continue
+        hypothesis: HypKey = (index, False)
+        scene = _replayed_scene(initial_ctx, skills, hypothesis)
+        ctx = ContactContext(scene.static, scene.obj.origin, scene.robots)
+        current_hyp: HypKey = (index, scene.released)
+        for action in ACTION_IDS:
+            values[action] += weight * _value_of_action(
+                ctx, current_hyp, action, candidates, depth=depth, fail_cost=fail_cost
+            )
+    return {action: value / total for action, value in values.items()}
+
+
+def run_episode(
+    initial_scene: Scene,
+    policy: str,
+    model: MultiHeadMLP,
+    *,
+    radius: int = 5,
+    horizon: int = HORIZON,
+    depth: int = 2,
+    fail_cost: float = DEFAULT_FAIL_COST,
+    sensor_noise: Optional[SensorNoise] = None,
+    feedback_noise: Optional[FeedbackNoise] = None,
+    rng: Optional[np.random.Generator] = None,
+) -> Tuple[int, float, int]:
+    """Run one closed-loop episode and return ``(success, cost, steps)``."""
+
+    candidates = candidates_for()
+    sensor_noise = sensor_noise or SensorNoise()
+    feedback_noise = feedback_noise or FeedbackNoise()
+    rng = rng or np.random.default_rng(0)
+
+    initial_ctx = ContactContext(
+        initial_scene.static, initial_scene.obj.origin, initial_scene.robots
+    )
+    true_hyp: HypKey = (PHYSICS.index(initial_scene.physics), False)
+
+    current = initial_scene
+    skills: List = []
+    history_a: List[str] = []
+    history_b: List[str] = []
+    total_cost = 0.0
+
+    for step in range(horizon):
+        if current.is_goal():
+            return 1, total_cost, step
+
+        scan: OccupancyScan = apply_noise(
+            ray_cast(current, 0, radius=radius), sensor_noise, rng
+        )
+        if policy == "oracle_true_state":
+            ctx = ContactContext(current.static, current.obj.origin, current.robots)
+            values = {
+                action: _value_of_action(
+                    ctx, true_hyp, action, candidates, depth=depth, fail_cost=fail_cost
+                )
+                for action in ACTION_IDS
+            }
+            action_id = _argmin(values)
+        elif policy == "true_model_belief":
+            values = _belief_values(
+                initial_ctx, tuple(skills), tuple(history_a), tuple(history_b),
+                candidates, depth=depth, fail_cost=fail_cost,
+            )
+            action_id = _argmin(values)
+        else:
+            obs = np.asarray(
+                [
+                    sample_vector(
+                        scan, current.robot_pose(0), tuple(history_a), tuple(history_b), action
+                    )
+                    for action in ACTION_IDS
+                ],
+                dtype=np.float64,
+            )
+            if policy == "learned_value":
+                predicted = model.predict_value(
+                    obs[:, : model.obs_dim], obs[:, model.obs_dim:]
+                )
+                action_id = _argmin(
+                    {a: float(predicted[i]) for i, a in enumerate(ACTION_IDS)}
+                )
+            elif policy == "learned_moved":
+                outcomes = model.predict_outcomes(
+                    obs[:, : model.obs_dim], obs[:, model.obs_dim:]
+                )
+                action_id = max(
+                    ACTION_IDS,
+                    key=lambda a: (
+                        float(outcomes[ACTION_IDS.index(a)][CHANNEL_MOVED]),
+                        a,
+                    ),
+                )
+            else:
+                raise ValueError(policy)
+
+        joint = _joint_for(current, action_id)
+        successor, result = _execute_cached(current, joint)
+        total_cost += result.cost
+        skills.append(joint)
+        history_a.append(result.feedback[0])
+        history_b.append(result.feedback[1])
+        current = successor
+
+    return int(current.is_goal()), total_cost, horizon
+
+
+def _summaries(name: str, records: Sequence[EpisodeRecord]) -> List[PolicySummary]:
+    out: List[PolicySummary] = []
+    for policy in POLICIES:
+        subset = [r for r in records if r.policy == policy]
+        if not subset:
+            out.append(PolicySummary(policy, 0, float("nan"), float("nan"), float("nan")))
+            continue
+        out.append(
+            PolicySummary(
+                name=policy,
+                n=len(subset),
+                success_rate=float(np.mean([r.success for r in subset])),
+                mean_cost=float(np.mean([r.cost for r in subset])),
+                mean_steps=float(np.mean([r.steps for r in subset])),
+            )
+        )
+    return out
+
+
+def run_rollout_probe(
+    *,
+    n_train_situations: int = 200,
+    n_episodes: int = 60,
+    epochs: int = 400,
+    seed: int = 0,
+    horizon: int = HORIZON,
+    lead_in: int = 2,
+) -> RolloutProbeResult:
+    """Train a value model, then run every policy on the same set of episodes."""
+
+    started = time.perf_counter()
+    train_situations = generate_situations(
+        n_scenes=n_train_situations, lead_in=lead_in, seed=seed
+    )
+    features: List[Tuple[float, ...]] = []
+    targets: List[List[float]] = []
+    values: List[float] = []
+    physics_index: List[int] = []
+    pose_index: List[int] = []
+    for situation in train_situations:
+        _ctx, _true, belief_values, _bp, _be = situation_quantities(situation)
+        for action in ACTION_IDS:
+            moved, progress, enables = action_labels(situation.scene, action)
+            features.append(_features_for(situation, action))
+            targets.append([moved, progress, enables])
+            values.append(belief_values[action])
+            physics_index.append(PHYSICS.index(situation.physics))
+            pose_index.append(pose_to_index(situation.scene.obj.origin))
+
+    x = np.asarray(features, dtype=np.float64)
+    model = MultiHeadMLP(seed=seed)
+    train(
+        model,
+        x[:, : model.obs_dim],
+        x[:, model.obs_dim:],
+        np.asarray(targets, dtype=np.float64),
+        np.asarray(physics_index, dtype=np.int64),
+        np.asarray(pose_index, dtype=np.int64),
+        np.asarray(values, dtype=np.float64),
+        epochs=epochs,
+        seed=seed,
+    )
+
+    episodes = generate_situations(
+        n_scenes=n_episodes, lead_in=0, seed=seed + 500_000
+    )
+    records: List[EpisodeRecord] = []
+    for episode_index, situation in enumerate(episodes):
+        for policy in POLICIES:
+            success, cost, steps = run_episode(
+                situation.scene,
+                policy,
+                model,
+                horizon=horizon,
+                rng=np.random.default_rng(episode_index),
+            )
+            records.append(
+                EpisodeRecord(
+                    scene_id=situation.scene_id,
+                    policy=policy,
+                    success=success,
+                    cost=cost,
+                    steps=steps,
+                    true_physics=situation.physics.label,
+                    constrained=int(situation.physics.constraint == "constrained"),
+                    heavy=int(situation.physics.resistance >= 2),
+                    teammate_slips=int(situation.physics.traction[1] == "slip"),
+                )
+            )
+
+    groups: Dict[str, List[EpisodeRecord]] = defaultdict(list)
+    for record in records:
+        if record.constrained:
+            groups["constrained"].append(record)
+        if record.heavy:
+            groups["heavy"].append(record)
+        if record.teammate_slips:
+            groups["teammate_slips"].append(record)
+
+    return RolloutProbeResult(
+        summaries=_summaries("all", records),
+        by_mode={name: _summaries(name, group) for name, group in sorted(groups.items())},
+        records=records,
+        meta={
+            "package_version": __version__,
+            "git_revision": _git_revision(),
+            "n_train_situations": len(train_situations),
+            "n_episodes": len(episodes),
+            "epochs": epochs,
+            "horizon": horizon,
+            "seed": seed,
+            "wall_clock_seconds": time.perf_counter() - started,
+        },
+    )
+
+
+def _git_revision() -> str:
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        return out.stdout.strip() or "unknown"
+    except OSError:
+        return "unknown"
+
+
+def format_rollout_markdown(result: RolloutProbeResult) -> str:
+    lines = [
+        "| group | policy | n | success rate | mean cost | mean steps |",
+        "|---|---|---|---|---|---|",
+    ]
+    for summary in result.summaries:
+        lines.append(
+            f"| all | {summary.name} | {summary.n} | {summary.success_rate:.3f} | "
+            f"{summary.mean_cost:.3f} | {summary.mean_steps:.2f} |"
+        )
+    for group, summaries in result.by_mode.items():
+        for summary in summaries:
+            lines.append(
+                f"| {group} | {summary.name} | {summary.n} | {summary.success_rate:.3f} | "
+                f"{summary.mean_cost:.3f} | {summary.mean_steps:.2f} |"
+            )
+    return "\n".join(lines)
+
+
+def write_rollout_report(result: RolloutProbeResult, output_dir: str) -> Dict[str, str]:
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    paths: Dict[str, str] = {}
+    json_path = out / "rollout_probe.json"
+    json_path.write_text(
+        json.dumps(
+            {
+                "meta": result.meta,
+                "summaries": [asdict(s) for s in result.summaries],
+                "by_mode": {k: [asdict(s) for s in v] for k, v in result.by_mode.items()},
+                "records": [asdict(r) for r in result.records],
+            },
+            indent=2,
+        )
+    )
+    paths["json"] = str(json_path)
+    md_path = out / "rollout_probe.md"
+    md_path.write_text(
+        "# Closed-loop rollout: does a learned value drive an episode?\n\n"
+        f"- git revision: `{result.meta['git_revision']}`\n"
+        f"- trained on {result.meta['n_train_situations']} situations, "
+        f"{result.meta['n_episodes']} episodes per policy, horizon {result.meta['horizon']}\n"
+        f"- wall clock: {result.meta['wall_clock_seconds']:.1f}s\n\n"
+        + format_rollout_markdown(result)
+        + "\n"
+    )
+    paths["md"] = str(md_path)
+    return paths

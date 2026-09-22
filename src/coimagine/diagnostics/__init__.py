@@ -35,6 +35,14 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .rollout_probe import (
+    RolloutProbeResult,
+    EpisodeRecord,
+    format_rollout_markdown,
+    run_episode,
+    run_rollout_probe,
+    write_rollout_report,
+)
 from .learning_probe import (
     ProbeResult,
     format_probe_markdown,
@@ -83,7 +91,13 @@ __all__ = [
     "DecisionRecord",
     "PolicySummary",
     "POLICIES",
+    "EpisodeRecord",
     "ProbeResult",
+    "RolloutProbeResult",
+    "format_rollout_markdown",
+    "run_episode",
+    "run_rollout_probe",
+    "write_rollout_report",
     "evaluate_decisions",
     "format_decision_markdown",
     "posterior_over_physics",

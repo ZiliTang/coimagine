@@ -472,10 +472,15 @@ def successors_public_only(
 # --------------------------------------------------------------------------
 
 
-#: Weight on the distance-to-goal heuristic used at the lookahead horizon. Without it
-#: the terminal value is flat and the planner cannot value partial progress, so it
-#: only works when the whole plan fits inside the lookahead.
-DEFAULT_PROGRESS_WEIGHT = 1.0
+#: Weight on the distance-to-goal heuristic used at the lookahead horizon.
+#:
+#: It must exceed the per-step action cost. With weight 1.0 (one cell of progress
+#: worth exactly one step) making progress and standing still are equivalent under the
+#: heuristic, so a belief-space planner facing a risky push prefers the free "wait" and
+#: never moves: measured, the equal-information policy then idles for the whole
+#: horizon. Weight 3.0 makes progress strictly preferable while still being a
+#: heuristic rather than a reward. The same weight is applied to every planner.
+DEFAULT_PROGRESS_WEIGHT = 3.0
 
 
 def _failure_value(
@@ -623,7 +628,17 @@ def full_value(
         if ObjectState(origin).within(ctx.static.target):
             return 0.0
         if left <= 0:
-            return fail_cost
+            # At the cut the value must still depend on the state, otherwise every
+            # action looks equally bad, the cheapest one wins, and a "wait" (which is
+            # free) becomes the argmin of a nominally value-optimal policy. The same
+            # distance-to-goal heuristic used by the belief-space value functions is
+            # applied here so all planners share one cut value.
+            return _failure_value(
+                {(origin, robots, hypothesis, (), ()): 1.0},
+                ctx.static,
+                fail_cost,
+                DEFAULT_PROGRESS_WEIGHT,
+            )
         best = float("inf")
         for candidate in candidates.candidates:
             scene = Scene(

@@ -626,3 +626,75 @@ Unfinished, unchanged: continuous contact parameters; the learned value is not y
 a closed-loop rollout (only compared at single decision points); one scene family only;
 the constraint and resistance modes have not been ablated at the decision level; no
 communication; visualisations and replays not yet rebuilt for the new main line.
+
+---
+
+## Round 12: two real value-function bugs, and a correction to rounds 9-11
+
+Building the closed-loop rollout exposed a correctness bug that **invalidates the
+decision-level numbers reported in rounds 9-11**.
+
+### Bug 1: the lookahead cut value was a state-independent constant
+
+`full_value` returned a flat `fail_cost` at its depth cut. That is not a heuristic --
+it ignores the state entirely. Consequence: `_value_of_action` (one step plus
+`full_value(depth 0)`) returned "immediate cost + 20" for every action, so
+
+* the "value-optimal" reference collapsed to *pick the cheapest action* (and `wait` is
+  free, so it idled forever);
+* the value head was trained to reproduce that same degenerate quantity;
+* the two therefore agreed, which is where the reported 94.7% agreement came from.
+
+Fixed: the cut now uses the same distance-to-goal heuristic as the belief-space value
+functions, so every planner shares one state-dependent cut value.
+
+### Bug 2: the progress weight made idling optimal
+
+With the cut value fixed, the progress weight still had to exceed the per-step action
+cost. At weight 1.0 one cell of progress is worth exactly one step, so a belief-space
+planner facing a risky push is indifferent between progress and standing still, and the
+free "wait" wins: the equal-information policy measured **zero cost over a whole
+horizon**, i.e. it never moved at all. Weight raised to 3.0, applied identically to
+every planner.
+
+### Also found: depth 1 cannot value preparation
+
+Even with both fixes, a one-step lookahead cannot see that `release` pays off through
+the push that follows it, because that lies beyond the cut. A latched object left the
+one-step oracle idling with zero cost. The closed loop therefore uses depth 2; the
+depth-1 decision probes could not have measured preparation either.
+
+### Corrected decision-level numbers (120 train / 60 held out / depth 2)
+
+| policy | mean regret | agreement |
+|---|---|---|
+| value_optimal (equal-information reference) | 0.433 | 0.667 |
+| analytic_progress | 0.533 | 0.450 |
+| analytic_progress_enable | 0.733 | 0.517 |
+| learned_moved | 1.383 | 0.117 |
+| learned_progress | 1.383 | 0.117 |
+| learned_progress_enable | 1.517 | 0.217 |
+| learned_value | 0.967 | 0.450 |
+
+The reference's regret is no longer zero, and that is correct: it is the equal-information
+reference measured against the true-state oracle, so its regret *is* the value of the
+missing contact physics.
+
+**The qualitative conclusion survives** -- learning the value beats learning a per-action
+outcome score (agreement 0.450 versus 0.117, regret 0.967 versus 1.383) and comes close
+to the equal-information reference -- but the reported magnitude was an artefact and is
+withdrawn. `results.md` carries the correction.
+
+### Closed-loop rollout: built, not yet conclusive
+
+`diagnostics/rollout_probe.py` now runs real episodes (the action is executed, a fresh
+scan is taken, feedback accumulates, release is tracked per hypothesis by replaying the
+committed actions). It is **not yet conclusive**: the depth-2 reference still fails on
+latched objects that require release plus a push, and some generated episodes are
+unsolvable (both robots slipping gives zero capacity). No closed-loop claim is made this
+round.
+
+Tests: the two assertions that encoded the old expectations ("the reference is exactly
+optimal, regret 0.000") were wrong and have been replaced; small test configurations are
+too noisy for a strict ordering, so the empirical claim is locked at the configuration
+where it was measured.
