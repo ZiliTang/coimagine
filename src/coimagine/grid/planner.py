@@ -30,6 +30,7 @@ Planner classes
 from __future__ import annotations
 
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Dict, List, Mapping, Optional, Sequence, Tuple
 
 from .candidates import Candidate, CandidateSet, generate_candidates
@@ -63,6 +64,9 @@ HYPOTHESES: Tuple[HypKey, ...] = tuple(
 #: Candidate kinds meaningful once the robots are at contact. Contact acquisition
 #: (repositioning) is handled by the public geometric layer.
 CONTACT_KINDS = frozenset({"co_push", "push", "probe", "release", "wait"})
+#: The pose-agnostic public set also allows repositioning, because a robot that does
+#: not know where the object is must be allowed to go and look.
+PUBLIC_KINDS = CONTACT_KINDS | {"reposition"}
 
 DEFAULT_FAIL_COST = 20.0
 
@@ -85,6 +89,23 @@ class ContactContext:
             physics=PHYSICS[hyp[0]],
             released=hyp[1],
         )
+
+
+def _useful_direction(ctx: ContactContext, direction) -> bool:
+    """Public prune: a push is useful only if it does not move the object away."""
+
+    if not ctx.static.target:
+        return True
+    moved = ObjectState(ctx.origin).translated(direction.delta)
+    if not all(ctx.static.in_bounds(c) and not ctx.static.is_wall(c) for c in moved.cells):
+        return False
+
+    def distance(cells) -> int:
+        return min(
+            abs(c[0] - t[0]) + abs(c[1] - t[1]) for c in cells for t in ctx.static.target
+        )
+
+    return distance(moved.cells) <= distance(ObjectState(ctx.origin).cells)
 
 
 def _geometrically_plausible(ctx: ContactContext, joint: JointSkill) -> bool:
@@ -110,6 +131,8 @@ def _geometrically_plausible(ctx: ContactContext, joint: JointSkill) -> bool:
         if skill.kind in (SKILL_PUSH, SKILL_PROBE):
             if not push_contact_ok(scene, robot_id, skill.direction):
                 return False
+            if not _useful_direction(ctx, skill.direction):
+                return False
             active = True
         elif skill.kind == SKILL_RELEASE:
             if not release_contact_ok(scene, robot_id):
@@ -120,17 +143,53 @@ def _geometrically_plausible(ctx: ContactContext, joint: JointSkill) -> bool:
     return active
 
 
-def contact_candidates(ctx: ContactContext) -> CandidateSet:
-    """Public contact candidates, pruned to geometrically executable skills."""
+def contact_candidates(ctx: ContactContext, *, public: bool = False) -> CandidateSet:
+    """Contact candidates.
 
-    full = generate_candidates(ctx.static, tuple(r.pose for r in ctx.robots))
-    kept = [
-        candidate
-        for candidate in full.candidates
-        if candidate.kind in CONTACT_KINDS
-        and _geometrically_plausible(ctx, candidate.joint)
-    ]
-    return CandidateSet(tuple(kept))
+    ``public=True`` returns the **pose-agnostic template set**: every direction and
+    every contact skill, with no geometric pruning by the object's position. This is
+    what a robot that does not know where the object is may legitimately enumerate,
+    and it is the set the calibrated testbed uses. ``public=False`` additionally
+    prunes by the (true) object geometry, which is a privileged operation and is
+    kept only for the earlier reference experiments.
+    """
+
+    full = generate_candidates(
+        ctx.static,
+        tuple(r.pose for r in ctx.robots),
+        max_reposition_targets=64 if public else 4,
+    )
+    kinds = PUBLIC_KINDS if public else CONTACT_KINDS
+    kept = [c for c in full.candidates if c.kind in kinds]
+    if public:
+        return CandidateSet(tuple(kept))
+    return CandidateSet(
+        tuple(c for c in kept if _geometrically_plausible(ctx, c.joint))
+    )
+
+
+def belief_from_posterior(posterior, robots: Tuple[RobotState, ...]) -> PBelief:
+    """Convert a scan-based posterior over ``(origin, physics, released)`` into the
+    planner's public entry format.
+
+    This is the bridge that lets the planner run on a robot's **estimated** object
+    pose instead of the simulator's true one.
+    """
+
+    belief: PBelief = {}
+    for hypothesis, weight in posterior.items():
+        if weight <= 0.0:
+            continue
+        index = PHYSICS.index(hypothesis.physics)
+        entry: PEntry = (
+            hypothesis.origin,
+            robots,
+            (index, bool(hypothesis.released)),
+            (),
+            (),
+        )
+        belief[entry] = belief.get(entry, 0.0) + weight
+    return _normalise(belief)  # type: ignore[return-value]
 
 
 def initial_contact_belief(ctx: ContactContext) -> PBelief:
@@ -143,6 +202,13 @@ def initial_contact_belief(ctx: ContactContext) -> PBelief:
     initial = tuple((index, False) for index in range(len(PHYSICS)))
     weight = 1.0 / len(initial)
     return {(ctx.origin, ctx.robots, hyp, (), ()): weight for hyp in initial}
+
+
+@lru_cache(maxsize=300_000)
+def _execute_cached(scene: Scene, joint: JointSkill):
+    """Deterministic transition, memoised: the planner calls it thousands of times."""
+
+    return execute(scene, joint)
 
 
 def _normalise(weights: Mapping[object, float]) -> Dict[object, float]:
@@ -294,7 +360,7 @@ class ConsequenceGridCodec(GridCodec):
             success = 0.0
             for hyp, weight in posterior.items():
                 scene = ctx.scene(hyp)
-                successor, _result = execute(scene, candidate.joint)
+                successor, _result = _execute_cached(scene, candidate.joint)
                 if successor.obj.within(ctx.static.target):
                     success += weight
             predicted.append(success)
@@ -333,7 +399,7 @@ def successors_codec(
             static=ctx.static, obj=ObjectState(origin), robots=robots,
             physics=PHYSICS[hyp[0]], released=hyp[1],
         )
-        successor, result = execute(scene, joint)
+        successor, result = _execute_cached(scene, joint)
         immediate += weight * result.cost
         new_h_a = h_a + (result.feedback[0],)
         new_h_b = h_b + (result.feedback[1],)
@@ -366,7 +432,7 @@ def successors_central(
             static=ctx.static, obj=ObjectState(origin), robots=robots,
             physics=PHYSICS[hyp[0]], released=hyp[1],
         )
-        successor, result = execute(scene, joint)
+        successor, result = _execute_cached(scene, joint)
         immediate += weight * result.cost
         key = (result.feedback[0], result.feedback[1], result.y_public)
         bucket = buckets.setdefault(key, {})
@@ -390,7 +456,7 @@ def successors_public_only(
             static=ctx.static, obj=ObjectState(origin), robots=robots,
             physics=PHYSICS[hyp[0]], released=hyp[1],
         )
-        successor, result = execute(scene, joint)
+        successor, result = _execute_cached(scene, joint)
         immediate += weight * result.cost
         bucket = buckets.setdefault(result.y_public, {})
         entry: CEntry = (successor.obj.origin, successor.robots, (hyp[0], successor.released))
@@ -406,12 +472,36 @@ def successors_public_only(
 # --------------------------------------------------------------------------
 
 
-def _failure_value(belief: Mapping[object, float], static: StaticMap, fail_cost: float) -> float:
+#: Weight on the distance-to-goal heuristic used at the lookahead horizon. Without it
+#: the terminal value is flat and the planner cannot value partial progress, so it
+#: only works when the whole plan fits inside the lookahead.
+DEFAULT_PROGRESS_WEIGHT = 1.0
+
+
+def _failure_value(
+    belief: Mapping[object, float],
+    static: StaticMap,
+    fail_cost: float,
+    progress_weight: float = DEFAULT_PROGRESS_WEIGHT,
+) -> float:
+    """Terminal value: failure risk plus a distance-to-goal heuristic.
+
+    The heuristic is what lets a shallow lookahead prefer "move the object closer"
+    over "do nothing"; it is a search heuristic, not a reward term, and is applied
+    identically to every planner in a comparison.
+    """
+
     risk = 0.0
+    progress = 0.0
     for entry, weight in belief.items():
-        if not ObjectState(entry[0]).within(static.target):
-            risk += weight
-    return fail_cost * risk
+        cells = ObjectState(entry[0]).cells
+        if cells <= static.target:
+            continue
+        risk += weight
+        progress += weight * min(
+            abs(c[0] - t[0]) + abs(c[1] - t[1]) for c in cells for t in static.target
+        )
+    return fail_cost * risk + progress_weight * progress
 
 
 def _goal_reached(belief: Mapping[object, float], static: StaticMap) -> bool:
@@ -609,8 +699,17 @@ def choose_action(
     *,
     fail_cost: float = DEFAULT_FAIL_COST,
     true_hyp: Optional[HypKey] = None,
+    current_ctx: Optional[ContactContext] = None,
 ) -> Tuple[Optional[Candidate], float]:
-    """Pick the first joint action for a planner class."""
+    """Pick the first joint action for a planner class.
+
+    ``ctx`` is the **initial** context and is what the codec uses to reconstruct a
+    hypothesis' implied feedback history. ``current_ctx`` is the state as it is now,
+    which is what the geometry and the full-information planner must use; without it
+    a multi-step plan is evaluated from stale robot poses.
+    """
+
+    current = current_ctx if current_ctx is not None else ctx
 
     memo: Dict[object, float] = {}
     best_candidate: Optional[Candidate] = None
@@ -639,9 +738,9 @@ def choose_action(
         if true_hyp is None:
             raise ValueError("The full-information planner needs the true hypothesis.")
         for candidate in candidates.candidates:
-            successor, result = execute(ctx.scene(true_hyp), candidate.joint)
+            successor, result = _execute_cached(current.scene(true_hyp), candidate.joint)
             total = result.cost + full_value(
-                ctx, (true_hyp[0], successor.released), candidates,
+                current, (true_hyp[0], successor.released), candidates,
                 spec.depth - 1, fail_cost=fail_cost,
                 start_origin=successor.obj.origin,
                 start_robots=successor.robots,
@@ -744,7 +843,7 @@ def _filtered_belief(
             static=ctx.static, obj=ObjectState(origin), robots=robots,
             physics=PHYSICS[hyp[0]], released=hyp[1],
         )
-        successor, result = execute(scene, joint)
+        successor, result = _execute_cached(scene, joint)
         if not matches(result):
             continue
         new_hyp: HypKey = (hyp[0], successor.released)
@@ -769,6 +868,9 @@ def evaluate_planner(
     *,
     horizon: int = 3,
     fail_cost: float = DEFAULT_FAIL_COST,
+    initial_belief: Optional[PBelief] = None,
+    public_candidates: bool = False,
+    candidate_ids: Optional[Sequence[str]] = None,
 ) -> EpisodeResult:
     """Exact closed-loop expected cost of a receding-horizon planner.
 
@@ -798,14 +900,20 @@ def evaluate_planner(
 
         # Candidates are regenerated from public information at every boundary, so
         # both robots always agree on the ID space even as the geometry changes.
-        candidates = contact_candidates(state_ctx)
+        candidates = contact_candidates(state_ctx, public=public_candidates)
+        if candidate_ids is not None:
+            allowed = set(candidate_ids)
+            candidates = CandidateSet(
+                tuple(c for c in candidates.candidates if c.candidate_id in allowed)
+            )
         chosen, _value = choose_action(
-            spec, ctx, belief, candidates, skills, fail_cost=fail_cost, true_hyp=hyp
+            spec, ctx, belief, candidates, skills, fail_cost=fail_cost, true_hyp=hyp,
+            current_ctx=state_ctx,
         )
         if chosen is None:
             return fail_cost, 0.0, 0.0
 
-        successor_true, realised = execute(state_ctx.scene(hyp), chosen.joint)
+        successor_true, realised = _execute_cached(state_ctx.scene(hyp), chosen.joint)
         new_hyp: HypKey = (hyp[0], successor_true.released)
         new_ctx = ContactContext(
             static=ctx.static,
@@ -831,7 +939,7 @@ def evaluate_planner(
             return realised.cost + fail_cost, 0.0, 1.0
         return realised.cost + cost, success, 1.0 + steps
 
-    belief = initial_contact_belief(ctx)
+    belief = initial_belief if initial_belief is not None else initial_contact_belief(ctx)
     expected_cost, success, steps = rollout(belief, ctx, true_hyp, (), (), 0, ())
     return EpisodeResult(
         planner=spec.label,

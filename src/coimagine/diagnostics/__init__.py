@@ -1,5 +1,22 @@
 """Micro oracle diagnostics: run the suite and write the gap report."""
 
+from .calibration import (
+    CALIBRATION_CANDIDATES,
+    CALIBRATION_TARGET,
+    CalibrationRecord,
+    build_calibration_scene,
+    format_calibration_markdown,
+    run_calibration,
+    write_calibration_report,
+)
+from .grid_suite import (
+    DEFAULT_PLANNERS,
+    SuiteRecord,
+    SuiteSummary,
+    format_suite_markdown,
+    run_grid_suite,
+    write_suite_report,
+)
 from .grid_gate import (
     GATE_CONFIGS,
     GateRecord,
@@ -23,7 +40,20 @@ from .sweeps import (
 )
 
 __all__ = [
+    "CALIBRATION_CANDIDATES",
+    "CALIBRATION_TARGET",
+    "CalibrationRecord",
+    "DEFAULT_PLANNERS",
+    "build_calibration_scene",
+    "format_calibration_markdown",
+    "run_calibration",
+    "write_calibration_report",
     "DiagnosticConfig",
+    "SuiteRecord",
+    "SuiteSummary",
+    "format_suite_markdown",
+    "run_grid_suite",
+    "write_suite_report",
     "GATE_CONFIGS",
     "GateRecord",
     "GateReport",

@@ -211,3 +211,58 @@ Still open:
   unreleased hypotheses in that branch).
 - A0/A1 (public-information-sufficient and stall-cause) work at depth 2 today; the
   grid scenario suite can start there.
+
+---
+
+## Round 5: calibration of the non-privileged predictor
+
+The main line was realigned in `docs/CoImagine_研究主线对齐_v1.md`: the paper's claim
+is now **"what must the shared prediction retain so that each robot can correctly
+derive what it can do next"**, and the thesis only bites when the state is uncertain.
+Before building any learned model, the testbed has to show that a predictor which is
+*not* privileged but *does* know the transition rules measurably loses to the ceiling.
+
+`python -m coimagine.diagnostics.run_calibration` (module
+`src/coimagine/diagnostics/calibration.py`) measures exactly that: the true-state
+planner versus a planner that uses the same known rules but the robot's own
+scan-estimated object pose and contact-physics prior, with identical candidates,
+lookahead depth and cost.
+
+| radius | belief placements | p(correct origin) | p(correct physics) | ceiling | non-privileged | gap |
+|---|---|---|---|---|---|---|
+| 2 | 2 | 0.50 | 0.063 | 3.00 | 4.00 | **1.00** |
+| 3 | 1 | 1.00 | 0.063 | 3.00 | 7.00 | **4.00** |
+| 6 | 1 | 1.00 | 0.063 | 3.00 | 7.00 | **4.00** |
+| 2 | 2 | 0.50 | 0.063 | 3.00 | 4.00 | **1.00** |
+| 3 | 1 | 1.00 | 0.063 | 3.00 | 4.00 | **1.00** |
+| 6 | 1 | 1.00 | 0.063 | 3.00 | 4.00 | **1.00** |
+
+Mean gap 2.00; the gap is strictly positive in every run, which satisfies the
+precondition for starting the learned model. Two honest caveats:
+
+1. **Most of the gap is the contact-physics belief, not localisation.** With a wide
+   scan the object's pose is known exactly (`p(correct origin) = 1.00`) and the gap is
+   still 1.00–4.00, because the physics is still the flat prior. The scan carries no
+   physics information by construction, so that part must come from contact feedback.
+2. **The numbers are not monotone in sensing quality** (radius 3/6 gives a *larger*
+   gap than radius 2 in one configuration). The outcome is dominated by discrete
+   first-action tie-breaks, so the magnitudes are not yet a reliable quantitative
+   target. Averaging over many placements and seeds is required before using the gap
+   as a benchmark.
+
+Real bugs found and fixed while calibrating:
+
+- the true-state planner evaluated every boundary from the **initial** robot poses, so
+  it could never follow through a multi-step plan (it looked as if the ceiling could
+  not solve a solvable task);
+- the terminal value was a flat failure penalty, so no planner could value partial
+  progress; a distance-to-goal heuristic was added and is applied identically to all
+  planners;
+- the planner's candidate generator pruned geometry using the **true** object pose; a
+  pose-agnostic public template set is now available and is what the calibrated
+  planner uses.
+
+Next: average the calibration over many placements/seeds to get a stable target,
+separate the pose component from the physics component explicitly, and only then
+start the multi-task latent world model (privileged-pose decoder head plus
+multi-step feasibility loss).

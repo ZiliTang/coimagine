@@ -251,6 +251,45 @@ def draw_object(
             )
 
 
+def draw_belief_heatmap(
+    ax,
+    marginal: Mapping[Cell, float],
+    static: StaticMap,
+    *,
+    zorder: float = 3.6,
+    max_cells: int = 2,
+) -> None:
+    """Overlay a robot's posterior over the object origin as a translucent map."""
+
+    from matplotlib.cm import ScalarMappable
+    from matplotlib.colors import Normalize
+
+    if not marginal:
+        return
+    top = max(marginal.values())
+    if top <= 0.0:
+        return
+    cmap = plt.get_cmap("Purples")
+    norm = Normalize(vmin=0.0, vmax=top)
+    for origin, weight in sorted(marginal.items(), key=lambda kv: -kv[1])[:12]:
+        if weight <= 1e-4:
+            continue
+        cells = ObjectState(origin).cells
+        color = cmap(norm(weight))
+        for cell in cells:
+            if not static.in_bounds(cell):
+                continue
+            ax.add_patch(
+                _cell_rect(
+                    cell,
+                    facecolor=color,
+                    edgecolor="none",
+                    alpha=0.55,
+                    zorder=zorder,
+                )
+            )
+
+
 def draw_robots(
     ax, robots: Sequence[RobotState], *, zorder: float = 6.0, show_heading: bool = True
 ) -> None:

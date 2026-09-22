@@ -98,6 +98,89 @@ def with_hidden(scene: Scene, physics: HiddenPhysics) -> Scene:
     return replace(scene, physics=physics)
 
 
+def with_target(scene: Scene, target_cells) -> Scene:
+    """Replace the goal region programmatically.
+
+    A 2x2 object moved by one cell always overlaps its previous footprint, so a
+    one-push goal region cannot be written with ``T`` in the ASCII map (a cell cannot
+    be both ``O`` and ``T``). Setting it explicitly keeps the scenes reviewable while
+    allowing single-push task variants.
+    """
+
+    from .state import StaticMap
+
+    static = StaticMap(
+        width=scene.static.width,
+        height=scene.static.height,
+        walls=scene.static.walls,
+        target=frozenset(target_cells),
+        name=scene.static.name,
+    )
+    return replace(scene, static=static)
+
+
+# --------------------------------------------------------------------------
+# A0-A3 mechanism scenes (execution prompt stage 2)
+# --------------------------------------------------------------------------
+
+# Both robots are on the west face; one cooperative push east reaches the goal.
+_A_BASE = (
+    "......",
+    "AOO...",
+    "BOO...",
+    "......",
+    "......",
+    "......",
+)
+#: Goal region one push east of the object's start (object starts at origin (1, 3)).
+_A_TARGET = frozenset({(2, 3), (3, 3), (2, 4), (3, 4)})
+
+
+def _a_scene(name: str, physics: HiddenPhysics) -> Scene:
+    scene = scene_from_ascii(_A_BASE, name=name, hidden=physics)
+    return with_target(scene, _A_TARGET)
+
+
+def a0_public_sufficient() -> Scene:
+    """A0: a cooperative push works for every contact type; messaging adds nothing."""
+
+    return _a_scene(
+        "A0_public_sufficient",
+        HiddenPhysics(resistance=1, constraint="free", traction=("grip", "grip")),
+    )
+
+
+def a1_stall_cause() -> Scene:
+    """A1: the same push stalls for different reasons; recovery differs by cause."""
+
+    return _a_scene(
+        "A1_stall_cause",
+        HiddenPhysics(resistance=2, constraint="free", traction=("grip", "grip")),
+    )
+
+
+def a2_preparation() -> Scene:
+    """A2: a latched object needs an explicit release before the push."""
+
+    return _a_scene(
+        "A2_preparation",
+        HiddenPhysics(resistance=1, constraint="constrained", traction=("grip", "grip")),
+    )
+
+
+def a3_identify_prepare_execute() -> Scene:
+    """A3: identify the cause, prepare the contact, then execute."""
+
+    return _a_scene(
+        "A3_identify_prepare_execute",
+        HiddenPhysics(resistance=2, constraint="constrained", traction=("grip", "grip")),
+    )
+
+
+def mechanism_scenes() -> Tuple[Scene, ...]:
+    return (a0_public_sufficient(), a1_stall_cause(), a2_preparation(), a3_identify_prepare_execute())
+
+
 # --------------------------------------------------------------------------
 # Scene library
 # --------------------------------------------------------------------------

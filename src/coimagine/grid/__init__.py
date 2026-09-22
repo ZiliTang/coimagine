@@ -54,6 +54,11 @@ from .dynamics import (
 from .gallery import render_gallery, render_noise_comparison
 from .scenes import (
     ASCII_BY_NAME,
+    a0_public_sufficient,
+    a1_stall_cause,
+    a2_preparation,
+    a3_identify_prepare_execute,
+    mechanism_scenes,
     corner_goal,
     default_scenes,
     narrow_passage,
@@ -61,6 +66,7 @@ from .scenes import (
     pillar_occlusion,
     scene_from_ascii,
     with_hidden,
+    with_target,
 )
 from .sensing import (
     KIND_FREE,
@@ -177,4 +183,10 @@ __all__ = [
     "update_with_scan",
     "valid_object_origins",
     "with_hidden",
+    "with_target",
+    "mechanism_scenes",
+    "a0_public_sufficient",
+    "a1_stall_cause",
+    "a2_preparation",
+    "a3_identify_prepare_execute",
 ]
