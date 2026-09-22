@@ -450,3 +450,67 @@ Honest limitations:
 decision-level gap against the true-model ceiling at equal information -- the comparison
 round 6 defined. Then ablate the constraint mode and resistance the same way. Only after
 that is the "learned feasibility head versus the known decision rule" contrast meaningful.
+
+---
+
+## Round 9: the learned head at the decision -- and a correction to round 8
+
+Round 8 measured the learned model per sample. Round 9 wires it into the decision and
+measures **regret**: the true-model value of the action each policy picks, minus the
+value of the best action. Values are computed by the simulator, so a preparation action
+such as release is valued by the dynamics rather than asserted by us.
+
+Two baselines of different kinds are needed to read the result correctly:
+
+* **value-optimal** -- argmin of the belief-weighted true-model value. This is what the
+  planner does with a correct model at equal information.
+* **analytic-greedy** -- the *same greedy rule the network implements* (argmax of the
+  probability that the object moves), but with the analytic probability. This isolates
+  the model from the rule.
+
+400 training situations, 200 held-out, two-step lead-in, 500 epochs:
+
+| group | n | value-optimal regret | analytic-greedy regret | learned-greedy regret |
+|---|---|---|---|---|
+| all | 200 | 0.000 | 0.405 | **1.100** |
+| constrained | 100 | 0.000 | 0.420 | 1.000 |
+| heavy | 105 | 0.000 | 0.362 | 0.981 |
+| teammate slips | 95 | 0.000 | 0.326 | 0.958 |
+
+| group | n | value-optimal agreement | analytic-greedy agreement | learned-greedy agreement |
+|---|---|---|---|---|
+| all | 200 | 1.000 | 0.580 | **0.090** |
+
+Three findings, one of which contradicts what round 8 predicted:
+
+1. **The value-optimal policy is exact here even with a diffuse belief.** Two noiseless
+   lead-in actions usually leave about three consistent contact types (median maximum
+   posterior mass 1/3, and the true type is never excluded), yet the belief-weighted
+   argmin equals the oracle argmin in every one of the 200 situations. The ambiguity in
+   this scene family does not change which action is best -- the geometry dominates.
+2. **The greedy decision rule is itself wrong for the task**: 0.405 regret and 58%
+   agreement, because "will the object move" is not "does this action make progress".
+3. **The learned model is much worse than the analytic model under the identical rule**:
+   1.100 regret and 9% agreement. The learned feasibility head is not yet usable as a
+   decision component.
+
+**Correction to round 8.** Round 8 found that a model trained without the
+teammate-slipping mode predicts that mode zero times, and I speculated that this
+representational collapse would show up as decision-level damage. It does not, at least
+here: the full and the slipping-ablated models give the same decision-level numbers
+(agreement 0.090 versus 0.080; the slipping subgroup is identical at 0.042). The reason
+is that the learned greedy rule is already failing for a more basic reason, which
+swamps the mode-specific effect. The honest statement is therefore narrower than the
+round-8 note: **a representational collapse is a real property of the learned latent,
+but it has not been shown to cause decision-level damage.** The round-7 planner-level
+result (a model *class* that excludes a mode fails outright, gap 18.00) stands; what
+does not follow is that a *classifier* trained without a mode inherits that failure.
+
+**Where this leaves the programme.** The learned model as currently built -- a
+per-action feasibility classifier used greedily -- cannot serve a rollout. What it
+lacks is not accuracy but the two things the alignment document identified: a
+prediction of *progress* (not merely motion) and a prediction of *enablement* (whether
+an action creates new feasible actions, which is how release earns its place). Next
+round: add an enablement head and a progress-oriented target, re-run this exact regret
+comparison, and only then re-attempt the mode ablation -- there is no point ablating a
+mode while the baseline rule is still broken.

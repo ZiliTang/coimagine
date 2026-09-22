@@ -98,6 +98,93 @@ class FeasibilitySample:
     scene_id: int = 0
 
 
+@dataclass(frozen=True)
+class Situation:
+    """A decision point: the state after a lead-in, plus what the robot observed."""
+
+    scene: Scene                      # the state *at* the decision point
+    initial_scene: Scene              # the state before the lead-in
+    skills: Tuple[JointSkill, ...]    # the lead-in actions that were executed
+    history_a: Tuple[str, ...]
+    history_b: Tuple[str, ...]
+    physics: HiddenPhysics
+    scan: OccupancyScan
+    scene_id: int
+
+
+def generate_situations(
+    *,
+    n_scenes: int = 200,
+    lead_in: int = 2,
+    radius: int = 5,
+    scan_noise: float = 0.0,
+    feedback_noise: float = 0.0,
+    seed: int = 0,
+    physics_pool: Optional[Sequence[HiddenPhysics]] = None,
+    lead_in_actions: Sequence[str] = ("push:0:E", "push:1:E", "co_push:E", "probe:0:E"),
+) -> List[Situation]:
+    """Decision points reached by driving each scene through a real lead-in episode.
+
+    ``lead_in_actions`` deliberately excludes ``release`` so that the released flag is
+    constant across a situation; that keeps the equal-information baseline honest
+    without inventing a release tracker.
+    """
+
+    rng = random.Random(seed)
+    pool = tuple(physics_pool) if physics_pool is not None else enumerate_hidden_physics()
+    scan_noise_model = SensorNoise(drop_prob=scan_noise)
+    fb_noise = FeedbackNoise(flip_prob=feedback_noise)
+    out: List[Situation] = []
+
+    built = 0
+    attempts = 0
+    while built < n_scenes and attempts < n_scenes * 40:
+        attempts += 1
+        physics = rng.choice(pool)
+        origins = valid_origins(probe_scene((2, 2), physics))
+        if not origins:
+            continue
+        scene = probe_scene(rng.choice(origins), physics)
+        built += 1
+
+        current = scene
+        history_a: List[str] = []
+        history_b: List[str] = []
+        skills: List[JointSkill] = []
+        for _ in range(lead_in):
+            action_id = rng.choice(tuple(lead_in_actions))
+            joint = _joint_for(current, action_id)
+            skills.append(joint)
+            successor, result = execute(current, joint, noise=fb_noise, rng=rng)
+            history_a.append(result.feedback[0])
+            history_b.append(result.feedback[1])
+            current = successor
+            if current.is_goal():
+                break
+        scan = apply_noise(ray_cast(current, 0, radius=radius), scan_noise_model, rng)
+        out.append(
+            Situation(
+                scene=current,
+                initial_scene=scene,
+                skills=tuple(skills),
+                history_a=tuple(history_a),
+                history_b=tuple(history_b),
+                physics=physics,
+                scan=scan,
+                scene_id=built - 1,
+            )
+        )
+    return out
+
+
+def candidates_for(action_ids: Sequence[str] = ACTION_IDS):
+    """Build the candidate set for the probe's action template."""
+
+    from ..grid.candidates import Candidate, CandidateSet
+
+    return CandidateSet(tuple(Candidate(a, _joint_for(None, a)) for a in action_ids))
+
+
 @dataclass
 class Dataset:
     samples: List[FeasibilitySample] = field(default_factory=list)
@@ -191,7 +278,7 @@ def generate_dataset(
     return Dataset(samples)
 
 
-def _joint_for(scene: Scene, action_id: str) -> JointSkill:
+def _joint_for(scene: Optional[Scene], action_id: str) -> JointSkill:
     """Build the joint skill for a candidate id."""
 
     east = Direction.EAST

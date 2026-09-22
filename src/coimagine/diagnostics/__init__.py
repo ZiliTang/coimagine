@@ -24,6 +24,16 @@ from .calibration import (
     run_calibration,
     write_calibration_report,
 )
+from .decision_probe import (
+    DecisionProbeResult,
+    DecisionRecord,
+    DecisionSummary,
+    evaluate_decisions,
+    format_decision_markdown,
+    posterior_over_physics,
+    run_decision_probe,
+    write_decision_report,
+)
 from .learning_probe import (
     ProbeResult,
     format_probe_markdown,
@@ -68,7 +78,15 @@ __all__ = [
     "MODEL_ERROR_VARIANTS",
     "FactorRecord",
     "ModelGapRecord",
+    "DecisionProbeResult",
+    "DecisionRecord",
+    "DecisionSummary",
     "ProbeResult",
+    "evaluate_decisions",
+    "format_decision_markdown",
+    "posterior_over_physics",
+    "run_decision_probe",
+    "write_decision_report",
     "format_probe_markdown",
     "run_learning_probe",
     "teammate_slips",
