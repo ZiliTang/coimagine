@@ -15,32 +15,47 @@ no general-model API in this round.
 ### 1.1 True state
 
 ```
-s = (x, theta)
+s = (pose_self, x_object, c, theta)
 ```
 
-- `x` — **public configuration**: the coarse, shareable task/contact configuration.
-  In the micro family `x ∈ {CONTACT, PREPARED, GOAL}`; in the grid it is the coarse
-  object pose / occupancy known to both sides.
+- `pose_self` — each robot's **own pose**. Own global localization is allowed: a
+  robot knows where it is. This is the only global quantity a robot is handed.
+- `x_object`, `c` — the object's pose and the current contact configuration. These
+  are **not public**. A robot may only estimate them from its own egocentric sensing
+  `o_i`. There is **no broadcast ground-truth object or global environment
+  coordinate**, and no real-time global reconstruction is assumed.
 - `theta` — **hidden physical type**, stationary within an episode. In the micro
   family `theta ∈ {HEAVY, SLIP}` (or irrelevant for M0). In the grid
-  `theta = (r, c, tau)` with resistance `r ∈ {1,2}`, constraint mode
-  `c ∈ {free, constrained}` and local traction `tau`.
+  `theta = (r, c_mode, tau)` with resistance `r ∈ {1,2,3}`, constraint mode
+  `c_mode ∈ {free, constrained}` and local traction `tau`.
 
-`x` is the part of the state that may be shared at the specified (low) frequency.
 `theta` is never public. The simulator owns `s`.
+
+**Micro-stage caveat.** The Stage 1 micro family deliberately abstracts perception
+away: the contact configuration is a single public symbol
+`x ∈ {CONTACT, PREPARED, GOAL}` and sensing is reduced to a private binary feedback.
+The micro stage therefore tests protocol and oracle logic only and **does not satisfy
+the egocentric-sensing constraint**. That constraint binds Stage 2 (grid) and every
+later 3D experiment; see section 9.
 
 ### 1.2 Public context `C_t`
 
 ```
-C_t = (task, coarse geometry, y_pub[0..t], a[0..t-1], m_A[0..t-1], m_B[0..t-1],
-       candidate set + stable IDs, protocol version, timestamps)
+C_t = (task specification, own pose, y_pub[0..t], a[0..t-1], m_A[0..t-1],
+       m_B[0..t-1], candidate set + stable IDs, protocol version, timestamps)
 ```
 
-- `y_pub` — common motion feedback at the specified frequency (grid: object moved /
-  stalled; micro: `moved` / `stalled`).
+- `task specification` — goal region, robot/skill model, and the static scene
+  *class*. It contains no current object pose and no live occupancy map.
+- `y_pub` — coarse motion event of the object (`moved` / `stalled`). Both robots are
+  in contact with the same object and can detect this event through their own
+  sensing; the protocol treats it as commonly observable. It is an **event**, not a
+  coordinate. If even this event must be private, say so and it moves into `o_i`.
 - `a[t]` — the committed joint action at boundary `t`.
 - `m_i[t]` — robot `i`'s message at boundary `t`.
-- Candidate IDs are assigned by a deterministic public rule from public geometry.
+- Candidate IDs are assigned by a deterministic rule from the **frozen candidate
+  template space**, not from the current object estimate, so that both sides agree
+  on IDs while scoring them with different private beliefs (section 9).
 
 ### 1.3 Private history `h_i,t`
 
@@ -168,6 +183,7 @@ out of `T`, `O` and the unified cost.
 | `O_central` | both robots' observation histories, true model | exact POMDP / expectimax over the joint information state | complete-observation-sharing reference |
 | `O_codec` | a fixed message encoding rule `mu`, true model | exact planning over the public policy whose future messages pass through the same `mu` | isolates message-representation loss |
 | `O_B` | same `B`-bit budget and same protocol class as deployment | enumerate local message rules and public action rules | fair optimal reference for tiny instances |
+| `O_replan_no_message_branch` | same codec and horizon, but lookahead branches only on the public observation | exact closed-loop expectation of a message-blind controller that replans after execution | **C2 control**: isolates the value of anticipating the next round's message |
 | `TrueModelLimitedSearch` | true model, node/depth limited | e.g. myopic depth-1 or node-capped expectimax | computation-limit diagnostic, **not** optimal |
 
 Every result reports: actual horizon, strategy class, whether the codec is fixed,
@@ -179,8 +195,14 @@ When instance, cost and horizon match, strategy classes are nested, and the cent
 method can simulate communication, verify:
 
 ```
-J_full* <= J_central* <= J_B* <= J_codec*
+J_full* <= J_central* <= J_B* <= J_codec* <= J_replan_no_message_branch*
 ```
+
+The last inequality is the **C2 claim** and only has to hold where private evidence is
+produced after the decision and used later. It must be an equality when the task has
+no decision-relevant future evidence, and it must be an equality at `B = 0` (there is
+no message to anticipate). `O_replan_no_message_branch` is a controller, not an
+optimum; its `exact` flag is `False` even though its expectation is computed exactly.
 
 In the first delivery `O_B` is exact for a **single decision boundary** (`H = 1`).
 Multi-step exact `O_B` is a Dec-POMDP and is reported as `incomplete` with the
@@ -203,9 +225,13 @@ Exact enumeration size is reported per instance by the runner.
   correlated joint local table makes `o_A` and `o_B` partial, complementary evidence.
   `HEAVY` succeeds with `CO_PUSH` from `CONTACT`; `SLIP` requires `RELEASE_B` first.
   Expectation: with `B = 0` the team cannot beat the prior-optimal action; a short
-  message changes the committed action.
+  message changes the committed action. **This is the C1 instance**: the evidence is
+  used in the current round, so a compact posterior message is already sufficient.
 - **M2 — costly identification.** As M1, but the initial local observation is weakly
-  informative and `PROBE` produces a sharp observation at cost `c_probe`. Two
+  informative and `PROBE` produces a sharp observation at cost `c_probe`. The probe's
+  value only materialises one boundary later, after its result has been *messaged*.
+  **This is the C2 instance**: the exact `O_codec` reaches `O_central`, while the
+  same codec without a future-message branch is no better than `B = 0`. Two
   negative controls:
   - *M2-uninformative*: the probe observation is independent of `theta`; the exact
     policy must not probe.
@@ -224,11 +250,28 @@ engine; no instance-specific reward term is allowed.
 
 - 6×6 map, two robots, one 2×2 object, obstacles, target region; translation only
   (a rotation interface is retained but not required).
-- Public: geometry, committed actions, low-frequency object pose. Private: own
-  drive/slip feedback.
-- Hidden resistance `r ∈ {1,2}`; a single robot's push capacity is 1, same-direction
+- **Sensing (binding constraint).** Each robot has its own global localization
+  (its own pose is known to itself) and an **egocentric, occlusion-aware ray lidar**
+  (or an egocentric occupancy patch) of radius `R`. The object's pose and the live
+  environment occupancy are sensed, never broadcast, and no real-time global
+  reconstruction is assumed. Step 2 must reuse the archived
+  `_old/gate_a/src/coimagine/envs/grid/environment.py::visible_cells_from_pose`
+  primitive (occlusion-aware Bresenham ray casting, `observation_radius`), with
+  attribution, and add sensor noise. Planar/global *coordinates* of the object are
+  not part of `C_t`.
+- Public: task specification, own pose, committed actions, protocol, exchanged
+  messages. Private: the raw scan and the robot's own drive/slip feedback.
+- Candidate IDs stay public: they are enumerated from the frozen task/candidate
+  template space, not instantiated from the current object estimate, so both sides
+  agree on IDs while scoring them with different private beliefs. A shared,
+  quantized object-pose estimate may be sent, but only through the message budget.
+- Hidden resistance `r ∈ {1,2,3}`; a single robot's push capacity is 1, same-direction
   cooperative capacity is 2.
-- Candidate generation from public geometry only; hidden `r` must not prune candidates.
+- Hidden `r` must not prune candidates. Geometric legality is evaluated against each
+  robot's own estimate, not against simulator truth.
+- **Diagnostic separation.** Object-localization error must be reported separately
+  from hidden-physics belief error, so a method cannot fail because it cannot see
+  rather than because of its message or planning.
 - Large grids use `TrueModelLimitedSearch` and are never labelled "exact optimal".
 
 ---

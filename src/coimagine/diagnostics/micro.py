@@ -38,6 +38,7 @@ from ..exact import (
     o_central,
     o_codec,
     o_full,
+    o_replan_no_message_branch,
     true_model_limited_search,
 )
 from ..toy import MicroModel, all_instances
@@ -148,10 +149,14 @@ def run_micro_diagnostics(
             report.records.append(_record(central, mechanism))
 
             codec_results: Dict[str, OracleResult] = {}
+            replan_results: Dict[str, OracleResult] = {}
             for codec in config.codecs():
                 result = o_codec(limited, codec)
                 codec_results[codec.name] = result
                 report.records.append(_record(result, mechanism))
+                control = o_replan_no_message_branch(limited, codec)
+                replan_results[codec.name] = control
+                report.records.append(_record(control, mechanism))
 
             if horizon == 1:
                 for bits in config.bits:
@@ -186,6 +191,14 @@ def run_micro_diagnostics(
             )
             for name, value in codec_results.items():
                 report.gaps[f"{prefix}.J_codec[{name}]"] = value.expected_cost
+            for name, value in replan_results.items():
+                report.gaps[f"{prefix}.J_replan[{name}]"] = value.expected_cost
+                report.gaps[f"{prefix}.c2_future_message_value[{name}]"] = (
+                    value.expected_cost - codec_results[name].expected_cost
+                )
+            report.gaps[f"{prefix}.c2_future_message_value"] = report.gaps[
+                f"{prefix}.c2_future_message_value[posterior-mode]"
+            ]
             if horizon == 1:
                 o_b = o_b_exact(limited, 1)
                 report.gaps[f"{prefix}.J_B(bits=1)"] = o_b.expected_cost
@@ -298,6 +311,32 @@ def format_gap_markdown(reports: Sequence[InstanceReport]) -> str:
                 pub=g["H3.public_only"],
                 msg=g["H3.best_message_value"],
                 comp=g["H3.computation"],
+            )
+        )
+    lines.append("")
+    lines.append(
+        "C2 control (H=3, bits=1): `O_codec` anticipates the next message; "
+        "`O_replan` uses the same codec but a lookahead blind to the next message, "
+        "then replans. The gap must be 0 where information cannot change the "
+        "decision and where B=0."
+    )
+    lines.append("")
+    lines.append(
+        "| instance | O_codec null (B=0) | O_codec mode (B=1) | O_replan mode (B=1) | C2 value | O_central |"
+    )
+    lines.append("|---|---|---|---|---|---|")
+    for report in reports:
+        g = report.gaps
+        if "H3.c2_future_message_value[posterior-mode]" not in g:
+            continue
+        lines.append(
+            "| {name} | {null:.4f} | {mode:.4f} | {replan:.4f} | {c2:.4f} | {central:.4f} |".format(
+                name=report.instance,
+                null=g["H3.J_codec[null]"],
+                mode=g["H3.J_codec[posterior-mode]"],
+                replan=g["H3.J_replan[posterior-mode]"],
+                c2=g["H3.c2_future_message_value"],
+                central=g["H3.J_central"],
             )
         )
     return "\n".join(lines)

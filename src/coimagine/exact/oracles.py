@@ -31,6 +31,8 @@ from .filter import (
     goal_probability,
     initial_central_beliefs,
     initial_public_beliefs,
+    marginal_state,
+    normalize,
     public_expected_cost,
     public_goal_probability,
     signature,
@@ -625,3 +627,202 @@ def true_model_limited_search(
             else "not optimal by construction; reported as a computation-limit diagnostic"
         ),
     )
+
+
+# --------------------------------------------------------------------------
+# C2 control: replanning without modelling the next round's message
+# --------------------------------------------------------------------------
+
+
+def _restricted_successors(
+    model: MicroModel, belief: StateBelief, action: str
+) -> Dict[str, Tuple[float, StateBelief]]:
+    """Lookahead that branches on the **public observation only**.
+
+    The controller predicts that the next boundary brings ``y'`` and nothing else:
+    it never predicts the next round's private messages. This is deliberately not a
+    model of the protocol; it defines the C2 control arm.
+    """
+
+    buckets: Dict[str, Dict[Tuple[str, str], float]] = {}
+    for (x, theta), w in belief.items():
+        for x_next, tx in model.transition(x, theta, action).items():
+            if tx <= 0.0:
+                continue
+            for ((_o_a, _o_b), y2), po in model.observation(
+                x, theta, action, x_next
+            ).items():
+                if po <= 0.0:
+                    continue
+                bucket = buckets.setdefault(y2, {})
+                entry = (x_next, theta)
+                bucket[entry] = bucket.get(entry, 0.0) + w * tx * po
+
+    out: Dict[str, Tuple[float, StateBelief]] = {}
+    for y2, weights in buckets.items():
+        total = sum(weights.values())
+        if total > 0.0:
+            out[y2] = (total, normalize(weights))  # type: ignore[arg-type]
+    return out
+
+
+class _ReplanPlanner:
+    """Chooses actions with a message-blind lookahead on ``(x, theta)``."""
+
+    def __init__(self, model: MicroModel, depth_limit: Optional[int]) -> None:
+        self.model = model
+        self.depth_limit = depth_limit
+        self.nodes = 0
+        self._memo: Dict[Tuple[object, ...], float] = {}
+
+    def continuation(self, belief: StateBelief, depth: int) -> float:
+        model = self.model
+        key = (tuple(sorted(belief.items())), depth)
+        if key in self._memo:
+            return self._memo[key]
+        self.nodes += 1
+        if depth == 0:
+            value = model.fail_cost * (1.0 - goal_probability(model, belief))
+            self._memo[key] = value
+            return value
+        best = float("inf")
+        for action in model.actions:
+            total = sum(w * model.cost(x, action) for (x, _t), w in belief.items())
+            for _y, (prob, nxt) in _restricted_successors(model, belief, action).items():
+                total += prob * self.continuation(nxt, depth - 1)
+            if total < best:
+                best = total
+        self._memo[key] = best
+        return best
+
+    def choose(self, public_belief: PublicBelief, t: int) -> str:
+        model = self.model
+        belief = marginal_state(public_belief)
+        remaining = model.horizon - t - 1
+        depth = remaining if self.depth_limit is None else min(self.depth_limit, remaining)
+        best_action = model.actions[0]
+        best = float("inf")
+        for action in model.actions:
+            total = sum(w * model.cost(x, action) for (x, _t), w in belief.items())
+            for _y, (prob, nxt) in _restricted_successors(model, belief, action).items():
+                total += prob * self.continuation(nxt, depth)
+            if total < best - 1e-12:
+                best = total
+                best_action = action
+        return best_action
+
+
+def _replan_controller(
+    model: MicroModel, codec: Codec, depth_limit: Optional[int]
+) -> Tuple[float, Dict[Tuple[str, int, int], str], int, int]:
+    """Exact closed-loop expected cost of the message-blind controller.
+
+    Lookahead ignores future messages, but **execution follows the real protocol**:
+    the real observations arrive, the same codec produces the real messages, the
+    same public rule commits, and the controller replans. This is exactly the
+    execution-prompt baseline "same codec, no future-information branch, fixed
+    sequence planning plus replanning after execution".
+    """
+
+    planner = _ReplanPlanner(model, depth_limit)
+    candidates = model.actions
+    y0 = _initial_y(model)
+    memo: Dict[Tuple[object, ...], float] = {}
+    root_actions: Dict[Tuple[str, int, int], str] = {}
+    nodes = [0]
+
+    def value(
+        belief: PublicBelief,
+        t: int,
+        y_public: Tuple[str, ...],
+        actions: Tuple[str, ...],
+        messages: Tuple[Tuple[int, int], ...],
+    ) -> float:
+        key = (signature(belief), y_public, actions, t)
+        if key in memo:
+            return memo[key]
+        nodes[0] += 1
+        if t == model.horizon:
+            result = model.fail_cost * (1.0 - public_goal_probability(model, belief))
+            memo[key] = result
+            return result
+        action = planner.choose(belief, t)
+        total = public_expected_cost(model, belief, action)
+        for (y2, m_a, m_b), (prob, nxt, msg2) in successor_public_beliefs(
+            model, belief, action, y_public, actions, messages, codec, candidates
+        ).items():
+            total += prob * value(
+                nxt, t + 1, y_public + (y2,), actions + (action,), msg2
+            )
+        memo[key] = total
+        return total
+
+    expected_cost = 0.0
+    for (m_a, m_b), (belief, prob) in initial_public_beliefs(
+        model, y0, codec, candidates
+    ).items():
+        root_actions[(y0, m_a, m_b)] = planner.choose(belief, 0)
+        expected_cost += prob * value(belief, 0, (y0,), (), ())
+
+    return expected_cost, root_actions, planner.nodes, nodes[0]
+
+
+def o_replan_no_message_branch(
+    model: MicroModel, codec: Optional[Codec] = None, *, depth_limit: Optional[int] = None
+) -> OracleResult:
+    """The C2 control: same codec, lookahead blind to the next message.
+
+    C2's claim is that a planner which **anticipates how future local feedback enters
+    the public decision through the same codec** decides better than one which only
+    predicts physical outcomes and replans afterwards. This function computes the
+    second arm exactly, so the claim can be tested as
+    ``J(O_codec) < J(O_replan_no_message_branch)`` at a matched codec, horizon and
+    cost.
+
+    The value is the exact expectation of a deliberately suboptimal controller; it is
+    **not** an optimum, so ``exact`` is False. At ``B = 0`` it must equal
+    :func:`o_codec` (there is no message to predict); a task with no
+    decision-relevant future evidence must also show equality.
+    """
+
+    start = time.perf_counter()
+    codec = codec or NullCodec()
+    expected_cost, _roots, plan_nodes, loop_nodes = _replan_controller(
+        model, codec, depth_limit
+    )
+    depth_text = "full remaining horizon" if depth_limit is None else f"depth {depth_limit}"
+    return OracleResult(
+        name="O_replan_no_message_branch",
+        instance=model.name,
+        horizon=model.horizon,
+        expected_cost=expected_cost,
+        success_prob=float("nan"),
+        strategy_class=(
+            "same codec; lookahead branches only on the public observation; "
+            "executes, receives the real messages, then replans"
+        ),
+        codec=codec.name,
+        fixed_codec=True,
+        bits=codec.bits,
+        nodes=plan_nodes + loop_nodes,
+        seconds=time.perf_counter() - start,
+        exact=False,
+        note=(
+            f"exact expectation of a message-blind controller ({depth_text}); "
+            "C2 control arm, not an optimum"
+        ),
+    )
+
+
+def o_replan_root_actions(
+    model: MicroModel, codec: Optional[Codec] = None, *, depth_limit: Optional[int] = None
+) -> Dict[Tuple[str, int, int], str]:
+    """The message-blind controller's first action, keyed by ``(y_0, m_A, m_B)``.
+
+    Used to show that the control does **not** choose an information-gathering probe
+    whose only value lies in a message it refuses to model.
+    """
+
+    codec = codec or NullCodec()
+    _cost, roots, _p, _c = _replan_controller(model, codec, depth_limit)
+    return roots

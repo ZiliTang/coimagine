@@ -38,6 +38,8 @@ from .oracles import (
     o_central_root_actions,
     o_codec,
     o_full,
+    o_replan_no_message_branch,
+    o_replan_root_actions,
     true_model_limited_search,
 )
 
@@ -68,6 +70,8 @@ __all__ = [
     "o_central_root_actions",
     "o_codec",
     "o_full",
+    "o_replan_no_message_branch",
+    "o_replan_root_actions",
     "public_expected_cost",
     "public_goal_probability",
     "robot_posterior",

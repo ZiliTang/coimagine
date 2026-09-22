@@ -34,10 +34,58 @@ from ..exact import (  # noqa: E402
     o_central,
     o_central_root_actions,
     o_codec,
+    o_replan_no_message_branch,
 )
-from ..toy import build_m1, build_m2  # noqa: E402
+from ..toy import build_m0, build_m1, build_m2, build_m3  # noqa: E402
 
 PROBE_ACTION = "PROBE"
+
+
+def c2_control_figure(output_dir: str) -> str:
+    """Bars: no communication / message without future-message planning / method /
+    full-sharing optimum, for the C2 instance and its negative controls."""
+
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+
+    models = (
+        ("M0", build_m0(horizon=3)),
+        ("M1", build_m1(horizon=3)),
+        ("M2", build_m2(horizon=3, probe_cost=0.2)),
+        (
+            "M2-uninformative",
+            build_m2(horizon=3, probe_cost=0.2, probe_strength="none", name="M2-uninformative"),
+        ),
+        ("M3", build_m3(horizon=3)),
+    )
+    codec = PosteriorModeCodec(bits=1)
+    labels = ["B=0 public only", "B=1 no future-msg branch", "B=1 method", "O_central"]
+
+    values: List[List[float]] = [[], [], [], []]
+    names: List[str] = []
+    for name, model in models:
+        names.append(name)
+        values[0].append(o_codec(model, NullCodec()).expected_cost)
+        values[1].append(o_replan_no_message_branch(model, codec).expected_cost)
+        values[2].append(o_codec(model, codec).expected_cost)
+        values[3].append(o_central(model).expected_cost)
+
+    positions = list(range(len(models)))
+    width = 0.2
+    fig, ax = plt.subplots(figsize=(9, 3.8))
+    for index, (label, series) in enumerate(zip(labels, values)):
+        offset = (index - 1.5) * width
+        ax.bar([p + offset for p in positions], series, width=width, label=label)
+    ax.set_xticks(positions)
+    ax.set_xticklabels(names, fontsize=8)
+    ax.set_ylabel("expected cost")
+    ax.set_title("C2 control: does anticipating the next message change the decision?")
+    ax.legend(fontsize=8)
+    fig.tight_layout()
+    path = out / "fig_c2_control.png"
+    fig.savefig(path, dpi=160)
+    plt.close(fig)
+    return str(path)
 
 
 def communication_budget_curve(output_dir: str, bits: Sequence[int] = (0, 1, 2, 3)) -> str:
@@ -181,4 +229,5 @@ def run_all(output_dir: str) -> Dict[str, str]:
         "communication_budget": communication_budget_curve(output_dir),
         "probe_cost": probe_cost_sweep(output_dir),
         "feedback_strength": feedback_strength_sweep(output_dir),
+        "c2_control": c2_control_figure(output_dir),
     }
