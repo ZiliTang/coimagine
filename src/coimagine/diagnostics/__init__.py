@@ -35,6 +35,13 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .error_analysis import (
+    ErrorAnalysis,
+    analyse_errors,
+    format_error_markdown,
+    render_error_figure,
+    run_error_analysis,
+)
 from .rollout_probe import (
     RolloutProbeResult,
     EpisodeRecord,
@@ -92,6 +99,11 @@ __all__ = [
     "PolicySummary",
     "POLICIES",
     "EpisodeRecord",
+    "ErrorAnalysis",
+    "analyse_errors",
+    "format_error_markdown",
+    "render_error_figure",
+    "run_error_analysis",
     "ProbeResult",
     "RolloutProbeResult",
     "format_rollout_markdown",

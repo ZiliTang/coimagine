@@ -807,3 +807,69 @@ Continuous contact parameters; constraint and resistance modes not ablated at th
 decision or episode level; one scene family only; no communication; visualisations and
 replays not rebuilt for the new main line; and the reference's over-conservatism is now
 documented but not fixed.
+
+---
+
+## Round 15: where the learned value actually errs
+
+Objective item 4 asked for visualisation that shows **where** the learned model gets
+things wrong, not just how often. `diagnostics/error_analysis.py` does that: for every
+held-out decision point it compares the learned argmin against the belief-weighted
+reference argmin and breaks the disagreements down by contact mechanism and by distance
+to the goal, then renders it as a figure (PNG + PDF).
+
+250 training / 140 held-out decision points, lookahead depth 2. Overall disagreement
+**22.9%**.
+
+### By contact mechanism
+
+| mechanism | n | disagreement |
+|---|---|---|
+| teammate slips (S) | 17 | **0.588** |
+| plain | 17 | 0.353 |
+| heavy (H) | 19 | 0.263 |
+| latched+heavy (L+H) | 15 | 0.200 |
+| latched+heavy+slips (L+H+S) | 18 | 0.167 |
+| heavy+slips (H+S) | 23 | 0.130 |
+| latched+slips (L+S) | 14 | 0.071 |
+| latched (L) | 17 | 0.059 |
+
+### By distance to the goal
+
+| distance | n | disagreement |
+|---|---|---|
+| 1 | 13 | **0.692** |
+| 2 | 69 | 0.261 |
+| 3 | 57 | 0.088 |
+
+### What the model does when it is wrong
+
+| confusion (reference -> model) | count |
+|---|---|
+| co_push:E -> push:1:E | 8 |
+| co_push:E -> push:0:E | 8 |
+| co_push:E -> wait | 6 |
+| release:0:E -> wait | 4 |
+| push:0:E -> wait | 3 |
+| other | 6 |
+
+Four findings:
+
+1. **The worst mechanism is the one the project cares about**: the model errs on 59% of
+   teammate-slipping decisions, several times its error rate on latched objects (6%).
+2. **The dominant error is under-coordinating**: in 16 of 31 errors the reference says
+   "both robots push" and the model says "one robot pushes". It under-estimates the
+   coalition requirement, which is a resistance/coalition representation failure.
+3. **Errors concentrate one step from the goal** (69% at distance 1 against 9% at
+   distance 3): the model is least reliable exactly where the episode is about to end.
+4. **The model idles where the reference acts** in 14 cases (9 `co_push`/`push` -> `wait`,
+   4 `release` -> `wait`).
+
+**A confound that must be reported with these numbers**: the reference itself chooses the
+free `wait` in **74 of 140** decisions (53%). That is the documented over-conservatism --
+with the risk penalty identical for a productive and an unproductive action, and progress
+worth 3, waiting wins whenever the belief puts the push below about one third. So a share
+of the "disagreements" is the reference being wrong, not the model. The disagreement
+metric is only as good as the reference, and the reference is the next thing to fix.
+
+Figure: `outputs/grid/error_analysis/error_by_situation.{png,pdf}`.

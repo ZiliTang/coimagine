@@ -74,6 +74,19 @@ class DecisionRecord:
     teammate_slips: int
     constrained: int
     heavy: int
+    #: Worst-cell distance from the object to the goal region at this decision point.
+    distance_to_goal: int = 0
+
+    @property
+    def mechanism(self) -> str:
+        parts = []
+        if self.constrained:
+            parts.append("latched")
+        if self.heavy:
+            parts.append("heavy")
+        if self.teammate_slips:
+            parts.append("teammate_slips")
+        return "+".join(parts) if parts else "plain"
 
 
 @dataclass
@@ -279,9 +292,21 @@ def evaluate_decisions(
                 teammate_slips=int(situation.physics.traction[1] == "slip"),
                 constrained=int(situation.physics.constraint == "constrained"),
                 heavy=int(situation.physics.resistance >= 2),
+                distance_to_goal=_worst_cell_distance(situation.scene),
             )
         )
     return records
+
+
+def _worst_cell_distance(scene) -> int:
+    from ..grid.state import ObjectState
+
+    if not scene.static.target:
+        return 0
+    return max(
+        min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in scene.static.target)
+        for c in ObjectState(scene.obj.origin).cells
+    )
 
 
 def _summaries(name: str, records: Sequence[DecisionRecord]) -> List[PolicySummary]:
