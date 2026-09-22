@@ -54,3 +54,28 @@ def test_latched_episodes_are_a_floor_for_the_greedy_policy() -> None:
     assert latched
     for summary in latched:
         assert summary.success_rate == pytest.approx(0.0)
+
+
+@pytest.mark.slow
+def test_training_without_the_constraint_mode_eliminates_latched_success() -> None:
+    """Locked finding, and the sharpest ablation in the project.
+
+    With a policy that *can* prepare -- progress plus enablement, the only learned rule that
+    ever chooses release -- removing the latched mode from the training data takes success on
+    latched episodes to zero, against roughly ten percent when the mode is present. The greedy
+    motion policy cannot show this because it never releases, so it has a floor of zero either
+    way (see the floor test above).
+    """
+
+    summaries = run_mode_ablation(
+        n_train_situations=100,
+        n_episodes=150,
+        epochs=250,
+        seed=0,
+        policy="learned_progress_enable",
+    )
+    by = {(s.mode, s.model.split(" [")[0]): s for s in summaries}
+    with_mode = by[("latched", "trained_with")]
+    without_mode = by[("latched", "trained_without")]
+    assert with_mode.success_rate > 0.0
+    assert without_mode.success_rate == pytest.approx(0.0)

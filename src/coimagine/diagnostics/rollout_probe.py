@@ -50,7 +50,9 @@ from ..learning.data import sample_vector, _joint_for, action_labels
 from ..learning.features import ACTION_IDS
 from ..learning.mlp import MultiHeadMLP, train
 from .decision_probe import (
+    CHANNEL_ENABLES,
     CHANNEL_MOVED,
+    CHANNEL_PROGRESS,
     _argmin,
     _features_for,
     _value_of_action,
@@ -263,17 +265,34 @@ def run_episode(
                 action_id = _argmin(
                     {a: float(predicted[i]) for i, a in enumerate(ACTION_IDS)}
                 )
-            elif policy == "learned_moved":
+            elif policy in (
+                "learned_moved", "learned_progress", "learned_progress_enable"
+            ):
                 outcomes = model.predict_outcomes(
                     obs[:, : model.obs_dim], obs[:, model.obs_dim:]
                 )
-                action_id = max(
-                    ACTION_IDS,
-                    key=lambda a: (
-                        float(outcomes[ACTION_IDS.index(a)][CHANNEL_MOVED]),
-                        a,
-                    ),
-                )
+                if policy == "learned_moved":
+                    scores = {
+                        a: float(outcomes[i][CHANNEL_MOVED])
+                        for i, a in enumerate(ACTION_IDS)
+                    }
+                elif policy == "learned_progress":
+                    scores = {
+                        a: float(outcomes[i][CHANNEL_PROGRESS])
+                        for i, a in enumerate(ACTION_IDS)
+                    }
+                else:
+                    # progress plus enablement: this is the only learned rule that can
+                    # choose a preparation action such as release, because release does not
+                    # move the object and so never scores on the motion channel.
+                    scores = {
+                        a: float(
+                            outcomes[i][CHANNEL_PROGRESS]
+                            + outcomes[i][CHANNEL_ENABLES]
+                        )
+                        for i, a in enumerate(ACTION_IDS)
+                    }
+                action_id = max(ACTION_IDS, key=lambda a: (scores[a], a))
             else:
                 raise ValueError(policy)
 

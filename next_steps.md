@@ -1682,3 +1682,50 @@ heavy episodes by 3-9x, consistently in direction across seeds.**
 The general lesson repeats the project's pattern: **an ablation is only meaningful above the
 baseline's floor**, and quoting a zero from a policy that cannot do the task at all would
 have been a fabricated result.
+
+---
+
+## Round 31: the constraint-mode ablation collapses completely
+
+Round 30 could not measure the constraint ablation: the outcome-greedy policy never releases,
+so it cannot solve a latched object and both arms sat at a floor of zero. The fix is to give
+the learned policy a rule that can choose a preparation action. **Progress plus enablement** is
+the only learned rule that ever picks `release`, because release does not move the object and
+so never scores on the motion channel. The closed loop now supports it.
+
+With that policy, on latched episodes (300 per arm):
+
+| seed | trained with the mode | trained without the mode |
+|---|---|---|
+| 0 | 0.113 | **0.000** |
+| 1 | 0.087 | **0.000** |
+
+**Removing the latched mode from the training data eliminates success on latched episodes
+entirely -- zero out of three hundred, in both seeds -- against roughly ten percent when the
+mode is present.**
+
+Together with round 30's heavy-mode result (3-9x drop, 0.113/0.110 versus 0.013/0.037), the
+episode-level ablation is now measured for both modes:
+
+| ablated mode | policy that can show it | effect of removing it from training |
+|---|---|---|
+| constraint (latched) | progress + enablement | success goes to **zero** |
+| heavy resistance | outcome-greedy | success falls **3-9x** |
+
+### What this establishes, and how it relates to the earlier confusion
+
+**Training-distribution coverage of a contact mode determines closed-loop success on episodes
+containing that mode.** For the constraint mode the effect is total.
+
+This is the result that round 8's per-sample probe pointed at, was withdrawn in round 20 when
+the leaked channel was discovered, and is now re-established properly -- on episodes, with
+clean features, with a policy selected because it has headroom, and reproducible across seeds.
+The round-20 withdrawal was correct at the time (the evidence then was contaminated) and does
+not conflict with this: the conclusion is the same, but the support is now sound.
+
+### The methodological rule this round confirms
+
+An ablation is only meaningful above the baseline's floor. The same experiment gives "no
+effect" with one policy and a total collapse with another, and only the choice of policy
+distinguishes a real null from an unmeasurable one. Both the floor and the collapse are now
+locked by tests so neither can be mistaken for the other.
