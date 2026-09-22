@@ -39,6 +39,7 @@ from ..grid.planner import (
     DEFAULT_FAIL_COST,
     HypKey,
     _execute_cached,
+    central_q_values,
     full_value,
     implied_history,
 )
@@ -66,11 +67,11 @@ POLICIES: Tuple[str, ...] = (
 
 HORIZON = 8
 
-#: Lookahead depth used inside the closed loop. Depth 1 cannot value preparation at
-#: all: release only pays off through the push that follows it, which lies beyond a
-#: one-step cut, so a latched object leaves the one-step policy idling forever. Depth 2
-#: is the smallest setting in which preparation is visible.
-DEPTH = 2
+#: Lookahead depth used inside the closed loop. Depth 1 cannot value preparation at all
+#: (release only pays off through the push that follows it), and depth 2 cannot contain a
+#: reposition-plus-two-pushes plan, which is three actions: measured, depth 2 fails a
+#: latched solvable scene that depth 3 solves in four steps.
+DEPTH = 3
 
 
 @dataclass
@@ -131,8 +132,11 @@ def _belief_values(
     *,
     depth: int,
     fail_cost: float,
+    noise: Optional[FeedbackNoise] = None,
 ) -> Dict[str, float]:
     """Belief-weighted value of each candidate at the current decision point."""
+
+    noise = noise or FeedbackNoise()
 
     weights: Dict[int, float] = {}
     for index in range(len(PHYSICS)):
@@ -145,26 +149,28 @@ def _belief_values(
                 likelihood = 0.0
                 break
             for seen, expected in zip(observed, nominal):
-                likelihood *= feedback_likelihood(seen, expected, FeedbackNoise())
+                likelihood *= feedback_likelihood(seen, expected, noise)
         weights[index] = likelihood
     total = sum(weights.values())
     if total <= 0.0:
         weights = {index: 1.0 for index in weights}
         total = float(len(weights))
 
-    values = {action: 0.0 for action in ACTION_IDS}
+    # The reference is the exact belief-space backup, not a per-hypothesis average with a
+    # frozen belief. The frozen version cannot value an informative action, so it hedges
+    # and idles; see the round-16 correction.
+    belief: Dict[object, float] = {}
     for index, weight in weights.items():
         if weight <= 0.0:
             continue
-        hypothesis: HypKey = (index, False)
-        scene = _replayed_scene(initial_ctx, skills, hypothesis)
-        ctx = ContactContext(scene.static, scene.obj.origin, scene.robots)
-        current_hyp: HypKey = (index, scene.released)
-        for action in ACTION_IDS:
-            values[action] += weight * _value_of_action(
-                ctx, current_hyp, action, candidates, depth=depth, fail_cost=fail_cost
-            )
-    return {action: value / total for action, value in values.items()}
+        scene = _replayed_scene(initial_ctx, skills, (index, False))
+        belief[(scene.obj.origin, scene.robots, (index, scene.released))] = weight / total
+    static_ctx = ContactContext(
+        initial_ctx.static, initial_ctx.origin, initial_ctx.robots
+    )
+    return central_q_values(
+        static_ctx, belief, candidates, depth, fail_cost=fail_cost
+    )
 
 
 def run_episode(
@@ -217,7 +223,7 @@ def run_episode(
         elif policy == "true_model_belief":
             values = _belief_values(
                 initial_ctx, tuple(skills), tuple(history_a), tuple(history_b),
-                candidates, depth=depth, fail_cost=fail_cost,
+                candidates, depth=depth, fail_cost=fail_cost, noise=feedback_noise,
             )
             action_id = _argmin(values)
         else:
@@ -302,6 +308,7 @@ def run_rollout_probe(
     horizon: int = HORIZON,
     depth: int = DEPTH,
     lead_in: int = 2,
+    feedback_noise: float = 0.0,
 ) -> RolloutProbeResult:
     """Train a value model, then run every policy on the same set of episodes."""
 
@@ -310,9 +317,15 @@ def run_rollout_probe(
     # Episodes start from a *fresh* scene (lead_in 0) but drift forward, so training on
     # post-lead-in situations alone leaves the closed-loop states out of distribution.
     train_situations = list(
-        generate_situations(n_scenes=n_train_situations, lead_in=lead_in, seed=seed)
+        generate_situations(
+            n_scenes=n_train_situations, lead_in=lead_in, seed=seed,
+            feedback_noise=feedback_noise,
+        )
     ) + list(
-        generate_situations(n_scenes=n_train_situations // 2, lead_in=0, seed=seed + 77)
+        generate_situations(
+            n_scenes=n_train_situations // 2, lead_in=0, seed=seed + 77,
+            feedback_noise=feedback_noise,
+        )
     )
     features: List[Tuple[float, ...]] = []
     targets: List[List[float]] = []
@@ -350,8 +363,10 @@ def run_rollout_probe(
     )
 
     episodes = generate_situations(
-        n_scenes=n_episodes, lead_in=0, seed=seed + 500_000
+        n_scenes=n_episodes, lead_in=0, seed=seed + 500_000,
+        feedback_noise=feedback_noise,
     )
+    fb_noise = FeedbackNoise(flip_prob=feedback_noise)
     records: List[EpisodeRecord] = []
     for episode_index, situation in enumerate(episodes):
         oracle_success, _cost, _steps = run_episode(
@@ -360,6 +375,7 @@ def run_rollout_probe(
             model,
             horizon=horizon,
             depth=depth,
+            feedback_noise=fb_noise,
             rng=np.random.default_rng(episode_index),
         )
         for policy in POLICIES:
@@ -369,6 +385,7 @@ def run_rollout_probe(
                 model,
                 horizon=horizon,
                 depth=depth,
+                feedback_noise=fb_noise,
                 rng=np.random.default_rng(episode_index),
             )
             records.append(
@@ -410,6 +427,7 @@ def run_rollout_probe(
             "horizon": horizon,
             "depth": depth,
             "seed": seed,
+            "feedback_noise": feedback_noise,
             "wall_clock_seconds": time.perf_counter() - started,
         },
     )

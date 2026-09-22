@@ -930,3 +930,62 @@ A test asserted that some policy must reproduce the oracle's action. That is not
 invariant (the oracle may pick an action no policy chooses) and it was replaced with the
 real invariants: every policy picks from the same candidate template, and no regret is
 negative.
+
+---
+
+## Round 17: the bottleneck is the learned model, not the missing information
+
+The closed-loop reference was still the old frozen-belief average. It now uses the same
+exact belief-space backup as the decision probe (`central_q_values`) at depth 3, and the
+feedback channel is swept for noise. **The headline finding inverts round 13.**
+
+Solvable episodes (those the true-state oracle can solve), cost per success:
+
+| feedback noise | oracle | true-model + belief | learned value | learned moved |
+|---|---|---|---|---|
+| 0.0 | 1.000 / 2.92 | **1.000 / 3.43** | 0.262 / 16.62 | 0.459 / 12.14 |
+| 0.2 | 1.000 / 2.92 | **1.000 / 3.43** | 0.164 / 43.59 | 0.541 / 9.52 |
+| 0.4 | 1.000 / 2.92 | **1.000 / 3.43** | 0.049 / 159.67 | 0.475 / 11.48 |
+
+Three findings:
+
+1. **The information gap is essentially zero.** The equal-information reference succeeds on
+   **every** solvable episode, matching the full-information oracle exactly, at about 18%
+   more cost. Not knowing the contact physics costs extra *steps*, not failures -- provided
+   the planner reasons in belief space. This holds at every noise level tested.
+2. **The learned value is the bottleneck.** It reaches 26% of the reference at best and
+   **collapses under feedback noise** (0.262 -> 0.049 success; 16.62 -> 159.67 cost per
+   success) because it does not model the noise correctly.
+3. **The simple outcome-greedy policy beats the learned value in the closed loop and is
+   robust to noise** (0.459 / 0.541 / 0.475). This reverses the decision-point result of
+   round 11, where learning the value clearly beat learning the outcome score. Single-step
+   decision quality did not transfer to episodes.
+
+**Round 13's conclusion is withdrawn.** It reported that not knowing the contact physics
+"costs a great deal over a full episode" (reference 0.424 versus oracle 1.000). That was an
+artefact of the frozen-belief reference, which cannot value an informative action and
+therefore hedges. With the correct belief-space reference the gap is ~0.
+
+**Round 13's caveat is also withdrawn**: I had written that the reference was
+over-conservative and was beaten on raw success by an aggressive policy. With the correct
+reference it is never beaten on success by anything, and it is the aggressive policy that
+is now revealed as far behind.
+
+### What this means for the programme
+
+The premise of the learned-model work was "the model must close the gap to the true model".
+That premise is now much weaker: at equal information the exact planner is already
+essentially optimal, so a learned value model has almost no room to help *in this task*
+unless it is cheap or the model is unknown. Meanwhile the learned model as built is far
+behind a five-line greedy heuristic.
+
+Two consequences, in order:
+
+1. **The learned value must be fixed or abandoned before more is built on it.** It does
+   not model feedback noise, and its per-situation advantage does not survive into
+   episodes.
+2. **The honest framing for the paper is now**: with exact belief-space planning the
+   information asymmetry costs almost nothing in this task; the open problem is whether a
+   *learned* model can match that planner when the dynamics are not given. That question
+   requires the continuous-parameter action space, where the exact planner is not
+   available -- which is objective item 3 and still not started.
