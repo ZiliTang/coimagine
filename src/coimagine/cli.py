@@ -67,6 +67,24 @@ def _cmd_sweep(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_gallery(args: argparse.Namespace) -> int:
+    from .grid import default_scenes, render_gallery, render_noise_comparison
+
+    formats = tuple(f.strip() for f in args.formats.split(",") if f.strip())
+    paths = render_gallery(
+        args.output, scenes=default_scenes(), radius=args.radius, formats=formats
+    )
+    if args.noise_comparison:
+        scenes = {scene.static.name: scene for scene in default_scenes()}
+        scene = scenes.get(args.noise_scene, scenes[sorted(scenes)[0]])
+        paths += render_noise_comparison(
+            scene, args.output, radius=args.radius, formats=formats
+        )
+    for path in paths:
+        print(f"  {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="coimagine-2d",
@@ -98,6 +116,26 @@ def build_parser() -> argparse.ArgumentParser:
         "--output", default="outputs/micro/figures", help="figure output directory"
     )
     sweep.set_defaults(func=_cmd_sweep)
+
+    gallery = sub.add_parser(
+        "gallery", help="render the Stage 2 scene gallery (ground truth vs each robot)"
+    )
+    gallery.add_argument(
+        "--output", default="outputs/grid/scenes", help="figure output directory"
+    )
+    gallery.add_argument("--radius", type=int, default=6, help="lidar radius in cells")
+    gallery.add_argument(
+        "--formats", default="png,pdf", help="comma-separated output formats"
+    )
+    gallery.add_argument(
+        "--noise-comparison",
+        action="store_true",
+        help="also render a noiseless-versus-noisy information-state figure",
+    )
+    gallery.add_argument(
+        "--noise-scene", default="pillar_occlusion", help="scene for the noise comparison"
+    )
+    gallery.set_defaults(func=_cmd_gallery)
     return parser
 
 

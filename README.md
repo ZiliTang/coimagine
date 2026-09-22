@@ -10,7 +10,10 @@ preparation, identification and execution?** The old Gate A code is archived und
 [`_old/`](_old/README.md) and is never imported.
 
 Current status: **Stage 1 (micro finite-state oracles) complete; Stage 2 (6×6 grid)
-not started.** See [`results.md`](results.md) and [`next_steps.md`](next_steps.md).
+in progress** — the grid world model, egocentric ray sensing and the
+publication-quality scene renderer are implemented; dynamics, candidate generation,
+beliefs, A0–A3 and the baselines are next. See [`results.md`](results.md) and
+[`next_steps.md`](next_steps.md).
 
 ## What is implemented
 
@@ -27,6 +30,9 @@ not started.** See [`results.md`](results.md) and [`next_steps.md`](next_steps.m
 - `coimagine.diagnostics` — runs the micro oracle suite, writes the gap
   decomposition, and renders the communication-budget, probe-cost and
   feedback-reliability figures.
+- `coimagine.grid` — Stage 2: the discrete 6×6 world, occlusion-aware egocentric ray
+  sensing with an explicit noise model, and a publication-quality scene renderer
+  (ground truth versus each robot's information state) that emits PNG/PDF/SVG.
 
 No learning, no neural model and no external API are used in this round.
 
@@ -58,6 +64,9 @@ python -m coimagine.cli micro --output outputs/micro --print-table
 # render the budget / probe-cost / feedback-reliability / C2-control figures
 python -m coimagine.cli sweep --output outputs/micro/figures
 
+# Stage 2: render the scene gallery (ground truth vs each robot's information state)
+python -m coimagine.cli gallery --output outputs/grid/scenes --noise-comparison
+
 # convenience wrapper around the two steps above
 python scripts/run_micro_oracles.py
 ```
@@ -75,6 +84,14 @@ outputs/micro/
     ├── fig_probe_cost_sweep.png
     ├── fig_feedback_strength_sweep.png
     └── fig_c2_control.png
+```
+
+Stage 2 scene gallery:
+
+```text
+outputs/grid/scenes/
+├── scene_<name>.{png,pdf}             # ground truth | robot A view | robot B view
+└── noise_comparison_<name>.{png,pdf}  # noiseless vs noisy information state
 ```
 
 ## Read next
