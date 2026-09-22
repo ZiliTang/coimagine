@@ -33,6 +33,7 @@ from ..grid.planner import (
     DEFAULT_FAIL_COST,
     HypKey,
     _execute_cached,
+    central_q_values,
     full_value,
     implied_history,
 )
@@ -184,7 +185,7 @@ def _argmax(values: Dict[str, float]) -> str:
 def situation_quantities(
     situation: Situation,
     *,
-    depth: int = 1,
+    depth: int = 3,
     fail_cost: float = DEFAULT_FAIL_COST,
     candidates=None,
 ):
@@ -206,18 +207,30 @@ def situation_quantities(
         for action in ACTION_IDS
     }
     posterior = posterior_over_physics(situation)
-    belief_values = {action: 0.0 for action in ACTION_IDS}
+    # The equal-information reference is the exact belief-space backup: it branches on
+    # the joint observation and updates its belief **along the lookahead**, so an action
+    # that is merely informative is valued. A frozen-belief value function cannot do
+    # that and, measured, waits in more than half of all decisions.
+    #
+    # Known simplification, unchanged from earlier rounds: the belief is over the contact
+    # physics only, and the object's placement is taken from the simulator rather than
+    # estimated. The sensing-side estimate is the subject of the calibration module.
+    reference_belief = {
+        (ctx.origin, ctx.robots, (index, False)): weight
+        for index, weight in posterior.items()
+        if weight > 0.0
+    }
+    belief_values = central_q_values(
+        ctx, reference_belief, candidates, depth, fail_cost=fail_cost
+    )
+
     belief_progress = {action: 0.0 for action in ACTION_IDS}
     belief_enables = {action: 0.0 for action in ACTION_IDS}
     for index, weight in posterior.items():
         if weight <= 0.0:
             continue
-        hypothesis = (index, False)
-        scene = ctx.scene(hypothesis)
+        scene = ctx.scene((index, False))
         for action in ACTION_IDS:
-            belief_values[action] += weight * _value_of_action(
-                ctx, hypothesis, action, candidates, depth=depth, fail_cost=fail_cost
-            )
             _moved, progress, enables = action_labels(scene, action)
             belief_progress[action] += weight * progress
             belief_enables[action] += weight * enables
@@ -332,7 +345,7 @@ def run_decision_probe(
     lead_in: int = 2,
     epochs: int = 400,
     seed: int = 0,
-    depth: int = 1,
+    depth: int = 3,
     exclude_slipping_from_training: bool = False,
 ) -> DecisionProbeResult:
     started = time.perf_counter()

@@ -53,6 +53,11 @@ class ErrorAnalysis:
     learned_action_when_wrong: Dict[str, int]
     wait_fallbacks: int
     wait_used_by_reference: int
+    #: Of the reference's ``wait`` choices, how many are also the oracle's best action.
+    #: A high fraction means the reference is not idle-by-default: it waits where acting
+    #: genuinely does not help, which is what a rational planner should do when the
+    #: surviving hypotheses are unsolvable.
+    reference_wait_agrees_with_oracle: int
     confusion: Dict[str, int]
     n: int
     meta: Dict[str, object] = field(default_factory=dict)
@@ -77,6 +82,7 @@ def analyse_errors(
     confusion: Counter = Counter()
     wait_fallbacks = 0
     reference_wait = 0
+    reference_wait_correct = 0
 
     for record in records:
         mechanism = record.mechanism
@@ -84,6 +90,8 @@ def analyse_errors(
         distances[record.distance_to_goal] += 1
         if record.chosen[reference] == "wait":
             reference_wait += 1
+            if record.oracle_action == "wait":
+                reference_wait_correct += 1
         if record.chosen[policy] != record.chosen[reference]:
             mechanism_wrong[mechanism] += 1
             distance_wrong[record.distance_to_goal] += 1
@@ -105,6 +113,7 @@ def analyse_errors(
         learned_action_when_wrong=dict(wrong_actions.most_common()),
         wait_fallbacks=wait_fallbacks,
         wait_used_by_reference=reference_wait,
+        reference_wait_agrees_with_oracle=reference_wait_correct,
         confusion=dict(confusion.most_common()),
         n=total,
         meta={
@@ -224,8 +233,11 @@ def format_error_markdown(analysis: ErrorAnalysis) -> str:
     lines += [
         "",
         f"The model falls back to the free `wait` while the reference acts in "
-        f"**{analysis.wait_fallbacks}** cases; the reference itself chooses `wait` in "
-        f"{analysis.wait_used_by_reference} cases.",
+        f"**{analysis.wait_fallbacks}** cases. The reference chooses `wait` in "
+        f"{analysis.wait_used_by_reference} cases, and in "
+        f"**{analysis.reference_wait_agrees_with_oracle}** of those the true-state oracle "
+        f"also waits -- that is, acting genuinely does not help, so those are not "
+        f"idling.",
     ]
     return "\n".join(lines)
 

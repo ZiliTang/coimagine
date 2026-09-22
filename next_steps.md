@@ -873,3 +873,60 @@ of the "disagreements" is the reference being wrong, not the model. The disagree
 metric is only as good as the reference, and the reference is the next thing to fix.
 
 Figure: `outputs/grid/error_analysis/error_by_situation.{png,pdf}`.
+
+---
+
+## Round 16: the reference was not over-conservative after all, and a default-argument bug
+
+Round 15 flagged that the equal-information reference chose the free `wait` in 53% of
+decisions and called it over-conservatism. **That diagnosis was wrong and is corrected
+here.**
+
+### What the reference actually is now
+
+The reference had been the `public` planner, which branches only on the public
+`moved/stalled` event and ignores both robots' private feedback. It therefore cannot
+learn from a failed push. The grid planner already contained the correct object: an exact
+**belief-space backup** (`central_value`) that branches on the joint observation and
+updates the belief *along the lookahead*, which is what `docs/2d_protocol_spec.md` calls
+`O_central`. The reference is now that backup (`central_q_values`, newly exposed), at
+depth 3.
+
+### Why depth 3
+
+Measured on a latched, solvable scene: depth 2 fails (cost 21.00, success 0) while depth
+3 solves it in 4 steps. The plan needs reposition + two pushes, which is three actions,
+so a two-step lookahead cannot contain it. The decision probe had been running at depth 1
+and the closed loop at depth 2; both were too shallow for this task family.
+
+### The correction
+
+With the belief-space reference at depth 3, on 120 held-out decision points:
+
+* disagreement with the reference is **30.0%**;
+* the reference chooses `wait` in 62 decisions, and **in 52 of them (84%) the true-state
+  oracle also waits** -- acting genuinely does not help there, because the surviving
+  hypotheses are unsolvable (both robots slipping gives zero capacity; a heavy object with
+  only one gripping robot cannot move).
+
+So the reference is **not** idling by default; it waits where waiting is optimal. The
+round-15 warning that "part of the disagreement is the reference being wrong" is
+withdrawn. This also means the round-13 headline (the learned value reaching 83% of the
+reference) is measured against a genuinely strong reference and should be read at face
+value.
+
+### Bug 6: a default argument that silently ignored a constant
+
+`_cut_value(..., progress_weight: float = DEFAULT_PROGRESS_WEIGHT)` binds the constant at
+**function definition**, so assigning `planner.DEFAULT_PROGRESS_WEIGHT = 6.0` afterwards
+had no effect. A weight sweep therefore reported an identical wait rate for weights 3, 6,
+10 and 20 and appeared to prove the weight was irrelevant. The function now reads the
+module constant at call time. The sweep was re-run and the weight genuinely does not
+change the reference's wait rate -- but that had to be measured properly to be believed.
+
+### Also fixed
+
+A test asserted that some policy must reproduce the oracle's action. That is not an
+invariant (the oracle may pick an action no policy chooses) and it was replaced with the
+real invariants: every policy picks from the same candidate template, and no regret is
+negative.

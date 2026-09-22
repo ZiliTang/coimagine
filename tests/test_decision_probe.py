@@ -55,9 +55,14 @@ def test_no_policy_beats_the_oracle_it_is_measured_against() -> None:
     for record in result.records:
         for policy in POLICIES:
             assert record.regret[policy] >= -1e-9, (policy, record.scene_id)
-        # Every policy's action is one of the candidates, and the oracle's value is the
-        # minimum over them by construction.
-        assert record.oracle_action in record.chosen.values()
+        # Every policy picks from the same candidate template, and regret is measured
+        # against the true-model argmin, so it cannot be negative. (An earlier version of
+        # this test also asserted that some policy reproduced the oracle's action; that is
+        # not an invariant -- the oracle may pick an action no policy chooses.)
+        from coimagine.learning.features import ACTION_IDS
+
+        assert record.oracle_action in ACTION_IDS
+        assert set(record.chosen.values()) <= set(ACTION_IDS)
 
 
 @pytest.mark.slow

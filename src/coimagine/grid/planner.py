@@ -487,7 +487,7 @@ def _cut_value(
     belief: Mapping[object, float],
     static: StaticMap,
     fail_cost: float,
-    progress_weight: float = DEFAULT_PROGRESS_WEIGHT,
+    progress_weight: Optional[float] = None,
 ) -> float:
     """Heuristic cost-to-go at the lookahead cut.
 
@@ -509,6 +509,12 @@ def _cut_value(
     worth exactly one step and standing still is as good as advancing. The same function
     is applied identically to every planner.
     """
+
+    # Read the module constant at call time rather than binding it as a default
+    # argument: a default binds at definition, so mutating the constant later silently
+    # has no effect, which made an earlier weight sweep look like the weight did nothing.
+    if progress_weight is None:
+        progress_weight = DEFAULT_PROGRESS_WEIGHT
 
     risk = 0.0
     progress = 0.0
@@ -623,6 +629,39 @@ def central_value(
             best = total
     memo[key] = best
     return best
+
+
+def central_q_values(
+    ctx: ContactContext,
+    belief: CBelief,
+    candidates: CandidateSet,
+    depth: int,
+    *,
+    fail_cost: float = DEFAULT_FAIL_COST,
+    memo: Optional[Dict[object, float]] = None,
+) -> Dict[str, float]:
+    """Per-action Q values under the exact belief-space backup.
+
+    This is the equal-information reference: the planner does not know the hidden
+    physics, but it **updates its belief along the lookahead**, branching on the joint
+    observation. That is what lets it value an action that is informative as well as one
+    that is productive. A value function that keeps the belief frozen cannot do this, and
+    measured, such a planner waits in more than half of all decisions: with the risk
+    penalty identical for a productive and an unproductive action, standing still looks
+    as good as trying whenever the belief puts success below about one third.
+    """
+
+    memo = memo if memo is not None else {}
+    out: Dict[str, float] = {}
+    for candidate in candidates.candidates:
+        immediate, branches = successors_central(ctx, belief, candidate.joint)
+        total = immediate
+        for _obs, (prob, child) in branches.items():
+            total += prob * central_value(
+                ctx, child, candidates, depth - 1, fail_cost=fail_cost, memo=memo
+            )
+        out[candidate.candidate_id] = total
+    return out
 
 
 def full_value(
