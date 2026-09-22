@@ -35,6 +35,12 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .threshold_probe import (
+    ThresholdProbeResult,
+    format_threshold_markdown,
+    run_threshold_probe,
+    write_threshold_report,
+)
 from .continuous_probe import (
     ContinuousProbeResult,
     ProbeMetrics,
@@ -107,6 +113,10 @@ __all__ = [
     "POLICIES",
     "EpisodeRecord",
     "ContinuousProbeResult",
+    "ThresholdProbeResult",
+    "format_threshold_markdown",
+    "run_threshold_probe",
+    "write_threshold_report",
     "ErrorAnalysis",
     "ProbeMetrics",
     "format_continuous_markdown",

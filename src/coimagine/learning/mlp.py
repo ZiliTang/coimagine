@@ -72,6 +72,10 @@ class MultiHeadMLP:
     #: Divisor applied to value targets so the MSE is on a comparable scale.
     value_scale: float = 20.0
 
+    #: Weight on the force-threshold regression head, and the divisor for its target.
+    threshold_weight: float = 1.0
+    threshold_scale: float = 2.0
+
     #: Weight on positive examples in the outcome BCE. The continuous probe's labels are
     #: 3.7% positive, where an unweighted model minimises loss by predicting "never
     #: feasible"; set this to ``(1 - p) / p`` from the training rate to counteract that.
@@ -95,6 +99,8 @@ class MultiHeadMLP:
             "Wq": _he((h, self.n_cells), rng), "bq": np.zeros(self.n_cells),
             "Wv1": _he((h + a, h // 2), rng), "bv1": np.zeros(h // 2),
             "Wv2": _he((h // 2, 1), rng), "bv2": np.zeros(1),
+            "Wt1": _he((h + a, h // 2), rng), "bt1": np.zeros(h // 2),
+            "Wt2": _he((h // 2, 1), rng), "bt2": np.zeros(1),
         }
 
     # -- forward -----------------------------------------------------------
@@ -113,10 +119,13 @@ class MultiHeadMLP:
         outcome_logit = f1 @ p["Wf2"] + p["bf2"]
         v1 = np.maximum(0.0, joined @ p["Wv1"] + p["bv1"])
         value = (v1 @ p["Wv2"] + p["bv2"])[:, 0]
+        t1 = np.maximum(0.0, joined @ p["Wt1"] + p["bt1"])
+        threshold = (t1 @ p["Wt2"] + p["bt2"])[:, 0]
         return {
             "z1": z1, "z2": z2, "joined": joined, "f1": f1,
             "outcome_logit": outcome_logit,
             "v1": v1, "value": value,
+            "t1": t1, "threshold": threshold,
             "phys_logit": z2 @ p["Wp"] + p["bp"],
             "pose_logit": z2 @ p["Wq"] + p["bq"],
         }
@@ -130,6 +139,8 @@ class MultiHeadMLP:
         physics_index: Optional[np.ndarray] = None,
         pose_index: Optional[np.ndarray] = None,
         values: Optional[np.ndarray] = None,
+        thresholds: Optional[np.ndarray] = None,
+        threshold_mask: Optional[np.ndarray] = None,
     ) -> Tuple[float, Dict[str, np.ndarray], Dict[str, float]]:
         """Binary cross-entropy on the outcome channels, MSE on the value, plus the
         privileged decoders."""
@@ -174,6 +185,30 @@ class MultiHeadMLP:
             grads["Wv1"] += cache["joined"].T @ d_v1
             grads["bv1"] += d_v1.sum(axis=0)
             d_z2 = d_z2 + (d_v1 @ p["Wv1"].T[:, : self.hidden])
+
+        if thresholds is not None:
+            # Regress the force threshold only where a push is possible at all; the
+            # threshold is undefined (infinite) otherwise, so those samples are masked
+            # rather than given an arbitrary target.
+            if threshold_mask is None:
+                threshold_mask = np.ones_like(thresholds)
+            mask = threshold_mask.astype(bool)
+            if mask.any():
+                target_t = thresholds[mask] / self.threshold_scale
+                residual = cache["threshold"][mask] - target_t
+                threshold_loss = self.threshold_weight * float((residual ** 2).mean())
+                loss += threshold_loss
+                metrics["threshold"] = threshold_loss
+                d_threshold = np.zeros_like(cache["threshold"])
+                d_threshold[mask] = (
+                    self.threshold_weight * 2.0 / max(1, int(mask.sum()))
+                ) * residual
+                grads["Wt2"] += cache["t1"].T @ d_threshold[:, None]
+                grads["bt2"] += d_threshold.sum(keepdims=True)
+                d_t1 = (d_threshold[:, None] @ p["Wt2"].T) * (cache["t1"] > 0)
+                grads["Wt1"] += cache["joined"].T @ d_t1
+                grads["bt1"] += d_t1.sum(axis=0)
+                d_z2 = d_z2 + (d_t1 @ p["Wt1"].T[:, : self.hidden])
 
         if physics_index is not None:
             phys_logit = cache["phys_logit"]
@@ -224,6 +259,11 @@ class MultiHeadMLP:
 
         return self.predict_outcomes(obs, action)[:, 0]
 
+    def predict_threshold(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Predicted force threshold, in the same units as the training target."""
+
+        return self.forward(obs, action)["threshold"] * self.threshold_scale
+
     def predict_value(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
         """Predicted action value, in the same units as the training target."""
 
@@ -243,6 +283,7 @@ class TrainHistory:
     physics: List[float] = field(default_factory=list)
     pose: List[float] = field(default_factory=list)
     value: List[float] = field(default_factory=list)
+    threshold: List[float] = field(default_factory=list)
 
 
 def train(
@@ -253,6 +294,8 @@ def train(
     physics_index: Optional[np.ndarray] = None,
     pose_index: Optional[np.ndarray] = None,
     values: Optional[np.ndarray] = None,
+    thresholds: Optional[np.ndarray] = None,
+    threshold_mask: Optional[np.ndarray] = None,
     *,
     epochs: int = 300,
     batch_size: int = 64,
@@ -280,6 +323,8 @@ def train(
                 None if physics_index is None else physics_index[idx],
                 None if pose_index is None else pose_index[idx],
                 None if values is None else values[idx],
+                None if thresholds is None else thresholds[idx],
+                None if threshold_mask is None else threshold_mask[idx],
             )
             step += 1
             for key, grad in grads.items():
@@ -296,6 +341,7 @@ def train(
             history.physics.append(metrics.get("physics", 0.0))
             history.pose.append(metrics.get("pose", 0.0))
             history.value.append(metrics.get("value", 0.0))
+            history.threshold.append(metrics.get("threshold", 0.0))
         history.losses.append(epoch_loss / max(1, batches))
         if verbose and (epoch % 50 == 0 or epoch == epochs - 1):
             print(f"epoch {epoch:4d} loss {history.losses[-1]:.4f}")

@@ -1054,3 +1054,54 @@ per-(angle, force) target under heavy imbalance is the wrong object. A threshold
 regression, or a region-valued output, is the natural next attempt. Also still open:
 mode ablations at the decision and episode level, communication, and replays rebuilt for
 the new main line.
+
+---
+
+## Round 19: the continuous formulation was wrong, not the approach
+
+Round 18 concluded that the learned model "does not recover the feasible region" on the
+continuous action space. That conclusion was about the **formulation**, and the formulation
+has been fixed.
+
+The binary-per-(angle, force) target under heavy imbalance was the wrong object. The physics
+says the right object is a **scalar**: inside the angular window a push works exactly when
+``force >= resistance / sum(traction)``. `diagnostics/threshold_probe.py` therefore
+regresses two targets directly:
+
+* **can push at all** -- whether a push at maximum force works (false when the robot slips,
+  the object is latched, or the direction is blocked);
+* **force threshold** -- the smallest working force, regressed only where a push is possible
+  (else the target is infinite and is masked rather than given an arbitrary value).
+
+Crucially the threshold is only decision-relevant if **force costs something**, which it now
+does: a push at force ``f`` costs ``1 + f``, and failing, or declining a possible push, costs
+a fixed penalty of 2. Soft pushes fail, hard pushes waste energy, and the optimum is exactly
+the threshold. The metric is therefore a regret in the task's own units.
+
+250 training / 120 held-out decision points, 500 epochs:
+
+| policy | mean regret | success rate |
+|---|---|---|
+| oracle | 0.000 | 1.000 |
+| **learned threshold** | **0.881** | **0.792** |
+| always maximum force | 3.192 | 0.692 |
+| always minimum force | 2.250 | 0.467 |
+
+Can-push balanced accuracy 0.732; threshold MAE **0.341 force units** on the 27 pushable
+points. **The learned model beats both fixed-force baselines substantially**, which the
+binary-grid formulation never did.
+
+### Where it is still weak
+
+By mechanism, the model is perfect on `plain` and `self_slips` (regret 0.000, success 1.000)
+but **loses to always-maximum-force on `teammate_slips`** (regret 1.897 versus 1.000, success
+0.333 versus 1.000). That is the third independent measurement pointing at the same weakness:
+the teammate's slipping mode is what this model does not capture. It is now the single most
+reproducible finding in the project, and it is a concrete target.
+
+### Caveats
+
+Only 27 of 120 decision points are pushable, so the threshold MAE rests on a small subset;
+the can-push balanced accuracy (0.732) is moderate; and the probe still uses robot 0's own
+scan with the object's placement taken from the simulator, so it is a *physics*-inference
+probe, not yet a full perception-plus-physics probe.
