@@ -483,17 +483,31 @@ def successors_public_only(
 DEFAULT_PROGRESS_WEIGHT = 3.0
 
 
-def _failure_value(
+def _cut_value(
     belief: Mapping[object, float],
     static: StaticMap,
     fail_cost: float,
     progress_weight: float = DEFAULT_PROGRESS_WEIGHT,
 ) -> float:
-    """Terminal value: failure risk plus a distance-to-goal heuristic.
+    """Heuristic cost-to-go at the lookahead cut.
 
-    The heuristic is what lets a shallow lookahead prefer "move the object closer"
-    over "do nothing"; it is a search heuristic, not a reward term, and is applied
-    identically to every planner in a comparison.
+    Two terms, both heuristics rather than rewards:
+
+    * ``fail_cost * risk`` -- a risk penalty on hypotheses that have not reached the
+      goal by the cut. The true terminal failure cost is charged once, at the real end
+      of the episode, so this term is a *lookahead* device. It is kept because removing
+      it makes a failed action and a neutral preparation action tie, and the fixed
+      tie-break then picks the failing one: measured, the belief-space planner stopped
+      solving a task the full-information planner solves in three steps. An unproductive
+      action must look worse than a productive one.
+    * ``progress_weight * distance`` -- distance to the goal, computed over the **worst**
+      object cell. Taking the minimum over the object's cells returns 0 as soon as the
+      object merely overlaps the goal region, which makes a half-on-the-goal object look
+      finished.
+
+    The weight must exceed the per-step action cost, otherwise one cell of progress is
+    worth exactly one step and standing still is as good as advancing. The same function
+    is applied identically to every planner.
     """
 
     risk = 0.0
@@ -503,8 +517,9 @@ def _failure_value(
         if cells <= static.target:
             continue
         risk += weight
-        progress += weight * min(
-            abs(c[0] - t[0]) + abs(c[1] - t[1]) for c in cells for t in static.target
+        progress += weight * max(
+            min(abs(c[0] - t[0]) + abs(c[1] - t[1]) for t in static.target)
+            for c in cells
         )
     return fail_cost * risk + progress_weight * progress
 
@@ -545,7 +560,7 @@ def codec_value(
     if _goal_reached(belief, ctx.static):
         return 0.0
     if depth <= 0:
-        return _failure_value(belief, ctx.static, fail_cost)
+        return _cut_value(belief, ctx.static, fail_cost)
     memo = memo if memo is not None else {}
     key = (
         ctx, _belief_key(belief), codec.name, codec.bits, tuple(skills), depth, predict_messages,
@@ -591,7 +606,7 @@ def central_value(
     if _goal_reached(belief, ctx.static):
         return 0.0
     if depth <= 0:
-        return _failure_value(belief, ctx.static, fail_cost)
+        return _cut_value(belief, ctx.static, fail_cost)
     memo = memo if memo is not None else {}
     key = (ctx, _belief_key(belief), "central", depth)
     if key in memo:
@@ -633,11 +648,8 @@ def full_value(
             # free) becomes the argmin of a nominally value-optimal policy. The same
             # distance-to-goal heuristic used by the belief-space value functions is
             # applied here so all planners share one cut value.
-            return _failure_value(
-                {(origin, robots, hypothesis, (), ()): 1.0},
-                ctx.static,
-                fail_cost,
-                DEFAULT_PROGRESS_WEIGHT,
+            return _cut_value(
+                {(origin, robots, hypothesis, (), ()): 1.0}, ctx.static, fail_cost
             )
         best = float("inf")
         for candidate in candidates.candidates:

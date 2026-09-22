@@ -759,3 +759,51 @@ better reference would separate the true terminal cost from the cut heuristic.
 Continuous contact parameters; the constraint and resistance modes are still not ablated
 at the decision or episode level; one scene family only; no communication; visualisations
 and replays not yet rebuilt for the new main line.
+
+---
+
+## Round 14: a fourth heuristic bug, and a design decision that went back
+
+### Bug 5: the distance heuristic used the minimum over object cells
+
+`_cut_value` measured the distance from the object to the goal as the **minimum** over
+all object cells of the distance to the nearest goal cell. That returns 0 as soon as the
+object merely *overlaps* the goal region, so an object sitting half on the goal looked
+finished and the planner stopped pushing. The constant failure-cost term had been hiding
+it. Fixed to use the **worst** object cell: every cell must be able to reach the goal.
+
+This is unambiguously a correctness fix and it did not change any closed-loop conclusion
+(see below), which is a useful check on how much the earlier numbers depended on it.
+
+### A design decision I tried and reversed
+
+Charging the failure cost at the lookahead cut double-counts the true terminal cost, which
+is already charged once when the episode really ends. I removed it, since with the risk
+term gone the planner should be less over-conservative.
+
+Measured, it made things worse: a *failed* action and a *neutral preparation* action then
+tie, because both leave the object where it is and cost a step, and the fixed tie-break
+picks the failing one. The belief-space planner stopped solving a task that the
+full-information planner solves in three steps. The risk term is therefore back, and it
+is documented as what it is -- a lookahead heuristic whose job is to make an unproductive
+action look worse than a productive one, not a terminal cost.
+
+### Closed-loop results are unchanged
+
+| policy | success rate | mean cost | cost per success |
+|---|---|---|---|
+| oracle_true_state | 1.000 | 2.941 | 2.94 |
+| true_model_belief | 0.424 | 1.153 | **2.72** |
+| learned_value | 0.353 | 1.812 | 5.13 |
+| learned_moved | 0.471 | 5.412 | 11.50 |
+
+The qualitative picture from round 13 holds: the learned value reaches 83% of the
+equal-information reference's success rate, the crude outcome policy wins on raw success
+at several times the cost, and the reference itself is well below the ceiling.
+
+### Still unfinished
+
+Continuous contact parameters; constraint and resistance modes not ablated at the
+decision or episode level; one scene family only; no communication; visualisations and
+replays not rebuilt for the new main line; and the reference's over-conservatism is now
+documented but not fixed.
