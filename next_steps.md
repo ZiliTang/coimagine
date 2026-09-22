@@ -1517,3 +1517,61 @@ outcome. The renderer is deterministic, and a test asserts the disagreement list
 from the two traces rather than asserted.
 
 Output: `outputs/grid/replays/learned_vs_reference_scene0.{png,pdf}`.
+
+---
+
+## Round 28: re-measuring the headline numbers after the leak fix
+
+Several headline results were produced **before** the information-boundary fix, when the
+learner was being fed the teammate's private feedback. This round re-runs them. One survives;
+one does not.
+
+### The closed loop changes completely
+
+Solvable episodes (the 85 the true-state oracle can solve), corrected features:
+
+| policy | success (corrected) | success (leaked, round 17) | cost per success (corrected) |
+|---|---|---|---|
+| oracle_true_state | 1.000 | 1.000 | 2.94 |
+| true_model_belief | **1.000** | 1.000 | 3.47 |
+| **learned_value** | **0.071** | 0.471 | **84.30** |
+| learned_moved | **0.588** | 0.541 | 8.26 |
+
+**The learned value collapses from 47% to 7% success**, and its cost per success rises from
+11.58 to 84.30. The simple outcome-greedy policy is essentially unchanged (0.541 -> 0.588)
+and is now **eight times more efficient** than the learned value.
+
+So round 17's reading -- "the learned value is the bottleneck but reaches 47% of the
+reference" -- is replaced by: **without the leaked channel the learned value fails outright,
+and the crude outcome-greedy policy is the better learned policy in the closed loop.** The
+narrative that the value target was the right thing (rounds 11, 13, 17) holds at the *single
+decision* level (round 20: best agreement, worst regret) and fails at the *episode* level.
+
+The reference is unaffected and still matches the oracle exactly in success, at 18% more cost.
+
+### The threshold result survives
+
+| policy | mean regret (corrected) | mean regret (leaked, round 19) |
+|---|---|---|
+| oracle | 0.000 | 0.000 |
+| **learned threshold** | **0.891** | 0.881 |
+| always maximum force | 3.192 | 3.192 |
+| always minimum force | 2.250 | 2.250 |
+
+Unchanged in substance, and the threshold MAE actually improves (0.341 -> 0.189 force units;
+can-push balanced accuracy 0.732 -> 0.692). **The conclusion that regressing the force
+threshold beats both fixed-force baselines is robust to the correction.**
+
+### The honest current picture
+
+* **Continuous, single decision**: the learned model works, and clearly beats the
+  fixed-force baselines. Robust.
+* **Discrete, single decision**: the learned value has the best agreement with the reference
+  and the worst regret; no learned policy is close to the reference.
+* **Discrete, closed loop**: the reference is optimal; the crude outcome-greedy policy reaches
+  59%; **the learned value fails at 7%**.
+
+The pattern worth noting is that the model which looks best at a single decision is the worst
+over an episode, and the one that looks worst at a single decision is the best over an
+episode. Reporting either level alone would be misleading, and the leaked run was hiding the
+discrepancy by making every learned policy look better.
