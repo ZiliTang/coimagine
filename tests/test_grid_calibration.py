@@ -16,8 +16,10 @@ from coimagine.diagnostics import (
     CALIBRATION_CANDIDATES,
     CALIBRATION_TARGET,
     build_calibration_scene,
+    build_staged_scene,
     format_calibration_markdown,
     run_calibration,
+    run_model_gap,
     write_calibration_report,
 )
 from coimagine.grid.planner import ContactContext, contact_candidates
@@ -46,7 +48,7 @@ def test_non_privileged_predictor_loses_to_the_ceiling() -> None:
     """Locked finding: the gap is strictly positive in the calibrated setup."""
 
     records, _summary = run_calibration(
-        radii=(2, 6), origins=((2, 1), (2, 2)), seeds=(0,)
+        radii=(2, 6), origins=((2, 1), (2, 2)), seeds=(0,), frames=(1,)
     )
     assert len(records) == 4
     for record in records:
@@ -61,6 +63,16 @@ def test_non_privileged_predictor_loses_to_the_ceiling() -> None:
     assert all(r.p_correct_physics < 0.1 for r in records)
 
 
+def test_multi_frame_estimation_resolves_an_ambiguous_pose() -> None:
+    """More viewpoints must not make the robot's estimate worse."""
+
+    single, _ = run_calibration(radii=(2,), origins=((2, 2),), seeds=(0,), frames=(1,))
+    multi, _ = run_calibration(radii=(2,), origins=((2, 2),), seeds=(0,), frames=(3,))
+    assert single[0].belief_origins > 1
+    assert multi[0].belief_origins <= single[0].belief_origins
+    assert multi[0].p_correct_origin >= single[0].p_correct_origin
+
+
 def test_calibration_report_writes_files(tmp_path) -> None:
     records, summary = run_calibration(radii=(6,), origins=((2, 2),), seeds=(0,))
     paths = write_calibration_report(records, summary, str(tmp_path))
@@ -69,3 +81,24 @@ def test_calibration_report_writes_files(tmp_path) -> None:
     assert "radius" in format_calibration_markdown(records)
     for key in ("csv", "json", "md"):
         assert key in paths
+
+
+def test_staged_scene_puts_both_robots_on_the_west_face() -> None:
+    scene = build_staged_scene((2, 1))
+    assert scene.obj.origin == (2, 1)
+    assert {r.robot_id: r.pose for r in scene.robots} == {0: (1, 1), 1: (1, 2)}
+
+
+def test_model_error_gap_is_dominated_by_the_contact_mode() -> None:
+    """Locked finding: at equal information, the contact/constraint mode is what a
+    wrong model must get right; resistance and traction errors are tolerated here."""
+
+    records = {r.model: r for r in run_model_gap()}
+    assert records["true_model"].gap_vs_true_model == pytest.approx(0.0)
+    # A wrong constraint mode is catastrophic: the planner waits for a release that
+    # the environment will never grant.
+    assert records["thinks_latched"].gap_vs_true_model > 1.0
+    assert records["thinks_latched"].success == pytest.approx(0.0)
+    # Wrong resistance or wrong teammate traction does not change this decision.
+    assert records["thinks_heavy"].gap_vs_true_model == pytest.approx(0.0)
+    assert records["thinks_b_slips"].gap_vs_true_model == pytest.approx(0.0)

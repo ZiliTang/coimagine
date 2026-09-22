@@ -871,7 +871,15 @@ def evaluate_planner(
     initial_belief: Optional[PBelief] = None,
     public_candidates: bool = False,
     candidate_ids: Optional[Sequence[str]] = None,
+    model_hyp: Optional[HypKey] = None,
 ) -> EpisodeResult:
+    """Evaluate a receding-horizon planner.
+
+    ``true_hyp`` is the physics the *environment* executes. ``model_hyp`` is the
+    physics the *planner* uses; when they differ the planner is running with a wrong
+    world model at the same information level, which is how the model-error gap is
+    measured (as opposed to the value-of-information gap, which is irreducible).
+    """
     """Exact closed-loop expected cost of a receding-horizon planner.
 
     The controller is re-planned at every boundary with its own (possibly
@@ -907,7 +915,10 @@ def evaluate_planner(
                 tuple(c for c in candidates.candidates if c.candidate_id in allowed)
             )
         chosen, _value = choose_action(
-            spec, ctx, belief, candidates, skills, fail_cost=fail_cost, true_hyp=hyp,
+            spec, ctx, belief, candidates, skills, fail_cost=fail_cost,
+            # Vary the model's *physics parameters* only: the released flag is an
+            # observed contact state and is held equal to the environment's.
+            true_hyp=((model_hyp[0], hyp[1]) if model_hyp is not None else hyp),
             current_ctx=state_ctx,
         )
         if chosen is None:

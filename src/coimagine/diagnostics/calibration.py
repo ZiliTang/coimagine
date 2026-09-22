@@ -68,6 +68,11 @@ CALIBRATION_CANDIDATES: Tuple[str, ...] = (
 
 PHYSICS_CALIBRATION = HiddenPhysics(resistance=1, constraint="free", traction=("grip", "grip"))
 
+#: A public approach route for robot A. It is fixed before the episode, depends on no
+#: hidden quantity, and gives the robot several viewpoints so that multi-frame
+#: estimation can be compared with a single scan.
+PUBLIC_APPROACH_WAYPOINTS: Tuple[Cell, ...] = ((0, 2), (0, 1), (0, 0))
+
 
 def build_calibration_scene(
     origin: Cell, target=frozenset(CALIBRATION_TARGET)
@@ -92,6 +97,7 @@ def build_calibration_scene(
 class CalibrationRecord:
     true_origin: Cell
     radius: int
+    frames: int
     noise: float
     seed: int
     belief_origins: int
@@ -103,11 +109,48 @@ class CalibrationRecord:
     success: float
 
 
+def multi_frame_posterior(
+    scene: Scene,
+    robot_id: int,
+    waypoints: Sequence[Cell],
+    radius: int,
+    noise: SensorNoise,
+    seed: int,
+):
+    """Posterior over ``(origin, physics)`` after scanning from several viewpoints.
+
+    The robot walks a **public** route and accumulates its own scans, so this is a
+    legitimate deployment-side estimate: no privileged quantity is read.
+    """
+
+    import random
+
+    from ..grid.belief import Belief
+    from ..grid.state import RobotState
+    from dataclasses import replace
+
+    rng = random.Random(seed)
+    prior = uniform_prior(scene.static, robot_poses=tuple(r.pose for r in scene.robots))
+    posterior = prior
+    other = next(r for r in scene.robots if r.robot_id != robot_id)
+    for pose in waypoints:
+        local = replace(
+            scene,
+            robots=(RobotState(robot_id, pose), other),
+        )
+        scan = apply_noise(ray_cast(local, robot_id, radius), noise, rng)
+        posterior = update_with_scan(posterior, scan, scene.static, noise)
+        if not posterior:
+            break
+    return posterior
+
+
 def run_calibration(
     *,
     radii: Sequence[int] = (2, 3, 6),
     origins: Sequence[Cell] = ((2, 1), (2, 2)),
-    seeds: Sequence[int] = (0,),
+    seeds: Sequence[int] = (0, 1, 2),
+    frames: Sequence[int] = (1, 3),
     noise: float = 0.0,
     depth: int = 3,
     horizon: int = 5,
@@ -125,15 +168,13 @@ def run_calibration(
             candidate_ids=CALIBRATION_CANDIDATES,
         )
         for radius in radii:
+          for frames_count in frames:
             for seed in seeds:
                 sensor_noise = SensorNoise(drop_prob=noise)
-                prior = uniform_prior(
-                    scene.static, robot_poses=tuple(r.pose for r in scene.robots)
+                posterior = multi_frame_posterior(
+                    scene, 0, PUBLIC_APPROACH_WAYPOINTS[:frames_count],
+                    radius, sensor_noise, seed,
                 )
-                scan = apply_noise(
-                    ray_cast(scene, 0, radius=radius), sensor_noise, __import__("random").Random(seed)
-                )
-                posterior = update_with_scan(prior, scan, scene.static, sensor_noise)
                 belief = belief_from_posterior(posterior, scene.robots)
                 result = evaluate_planner(
                     planner_spec("public", 0, depth=depth), ctx, hypothesis,
@@ -146,6 +187,7 @@ def run_calibration(
                     CalibrationRecord(
                         true_origin=scene.obj.origin,
                         radius=radius,
+                        frames=frames_count,
                         noise=noise,
                         seed=seed,
                         belief_origins=len({h.origin for h in posterior}),
@@ -162,6 +204,7 @@ def run_calibration(
         "package_version": __version__,
         "git_revision": _git_revision(),
         "radii": list(radii),
+        "frames": list(frames),
         "origins": [list(o) for o in origins],
         "depth": depth,
         "horizon": horizon,
@@ -200,6 +243,30 @@ def format_calibration_markdown(records: Sequence[CalibrationRecord]) -> str:
         mean_gap = sum(r.gap for r in records) / len(records)
         lines.append("")
         lines.append(f"Mean gap over {len(records)} runs: **{mean_gap:.2f}**.")
+        lines.append("")
+        lines.append("### Separation of the two losses")
+        lines.append("")
+        lines.append("A gap measured with the pose known exactly can only come from the")
+        lines.append("unknown contact physics; an ambiguous pose adds a localisation component.")
+        lines.append("")
+        lines.append("| radius | frames | mean p(correct origin) | gap, pose exact | gap, pose ambiguous |")
+        lines.append("|---|---|---|---|---|")
+        buckets: Dict[Tuple[int, int], List[CalibrationRecord]] = {}
+        for record in records:
+            buckets.setdefault((record.radius, record.frames), []).append(record)
+        for (radius, frames_count), group in sorted(buckets.items()):
+            exact = [r.gap for r in group if r.p_correct_origin >= 0.999]
+            ambiguous = [r.gap for r in group if r.p_correct_origin < 0.999]
+            mean = lambda xs: (sum(xs) / len(xs)) if xs else float("nan")
+            lines.append(
+                "| {r} | {f} | {p:.2f} | {e} | {a} |".format(
+                    r=radius,
+                    f=frames_count,
+                    p=sum(r.p_correct_origin for r in group) / len(group),
+                    e=("n/a" if not exact else f"{mean(exact):.2f}"),
+                    a=("n/a" if not ambiguous else f"{mean(ambiguous):.2f}"),
+                )
+            )
     return "\n".join(lines)
 
 
@@ -234,3 +301,102 @@ def write_calibration_report(
     )
     paths["md"] = str(md_path)
     return paths
+
+
+# ---------------------------------------------------------------------------
+# Model-error gap: a wrong model at the *same* information level
+# ---------------------------------------------------------------------------
+
+#: Named wrong models. Each varies one aspect of the contact physics while the
+#: planner keeps exactly the same information (same belief, same observation history).
+MODEL_ERROR_VARIANTS: Tuple[Tuple[str, HiddenPhysics], ...] = (
+    ("true_model", PHYSICS_CALIBRATION),
+    ("thinks_latched", HiddenPhysics(1, "constrained", ("grip", "grip"))),
+    ("thinks_heavy", HiddenPhysics(2, "free", ("grip", "grip"))),
+    ("thinks_b_slips", HiddenPhysics(1, "free", ("grip", "slip"))),
+    ("thinks_heavy_latched_slip", HiddenPhysics(2, "constrained", ("grip", "slip"))),
+)
+
+STAGED_CANDIDATES: Tuple[str, ...] = (
+    "co_push:E", "push:0:E", "push:1:E", "probe:0:E", "release:0:E", "wait",
+)
+
+
+@dataclass
+class ModelGapRecord:
+    true_physics: str
+    model: str
+    cost: float
+    success: float
+    gap_vs_true_model: float
+
+
+def build_staged_scene(origin: Cell, target=frozenset(CALIBRATION_TARGET)) -> Scene:
+    """Both robots already on the west face, so only the push decision is left.
+
+    Staging is removed on purpose: with the robots already in contact, the only
+    remaining difficulty is the unknown contact physics, so a cost difference cannot
+    be blamed on repositioning.
+    """
+
+    ox, oy = origin
+    grid = [["."] * 6 for _ in range(6)]
+    for dx in (0, 1):
+        for dy in (0, 1):
+            grid[oy + dy][ox + dx] = "O"
+    for (x, y) in target:
+        grid[y][x] = "T"
+    grid[oy][ox - 1] = "A"
+    grid[oy + 1][ox - 1] = "B"
+    rows = ["".join(grid[y]) for y in range(5, -1, -1)]
+    return scene_from_ascii(rows, name=f"staged_{origin}", hidden=PHYSICS_CALIBRATION)
+
+
+def run_model_gap(
+    *,
+    origin: Cell = (2, 1),
+    depth: int = 3,
+    horizon: int = 5,
+) -> List[ModelGapRecord]:
+    """Cost of each wrong model against the true model, at identical information."""
+
+    scene = build_staged_scene(origin)
+    ctx = ContactContext(scene.static, scene.obj.origin, scene.robots)
+    truth = PHYSICS_CALIBRATION
+    hypothesis = (PHYSICS.index(truth), False)
+    records: List[ModelGapRecord] = []
+    baseline = None
+    for label, model in MODEL_ERROR_VARIANTS:
+        model_hyp = (PHYSICS.index(model), False)
+        result = evaluate_planner(
+            planner_spec("full", depth=depth), ctx, hypothesis,
+            horizon=horizon, public_candidates=True,
+            candidate_ids=STAGED_CANDIDATES, model_hyp=model_hyp,
+        )
+        if baseline is None:
+            baseline = result.expected_cost
+        records.append(
+            ModelGapRecord(
+                true_physics=truth.label,
+                model=label,
+                cost=result.expected_cost,
+                success=result.success_prob,
+                gap_vs_true_model=result.expected_cost - baseline,
+            )
+        )
+    return records
+
+
+def format_model_gap_markdown(records: Sequence[ModelGapRecord]) -> str:
+    lines = [
+        f"True physics: `{records[0].true_physics}`" if records else "",
+        "",
+        "| model used by the planner | cost | success | gap vs true model |",
+        "|---|---|---|---|",
+    ]
+    for record in records:
+        lines.append(
+            f"| {record.model} | {record.cost:.2f} | {record.success:.1f} | "
+            f"{record.gap_vs_true_model:.2f} |"
+        )
+    return "\n".join(lines)

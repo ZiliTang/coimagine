@@ -2,6 +2,12 @@
 
 from .calibration import (
     CALIBRATION_CANDIDATES,
+    MODEL_ERROR_VARIANTS,
+    STAGED_CANDIDATES,
+    ModelGapRecord,
+    build_staged_scene,
+    format_model_gap_markdown,
+    run_model_gap,
     CALIBRATION_TARGET,
     CalibrationRecord,
     build_calibration_scene,
@@ -42,6 +48,12 @@ from .sweeps import (
 __all__ = [
     "CALIBRATION_CANDIDATES",
     "CALIBRATION_TARGET",
+    "MODEL_ERROR_VARIANTS",
+    "ModelGapRecord",
+    "STAGED_CANDIDATES",
+    "build_staged_scene",
+    "format_model_gap_markdown",
+    "run_model_gap",
     "CalibrationRecord",
     "DEFAULT_PLANNERS",
     "build_calibration_scene",

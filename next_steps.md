@@ -266,3 +266,73 @@ Next: average the calibration over many placements/seeds to get a stable target,
 separate the pose component from the physics component explicitly, and only then
 start the multi-task latent world model (privileged-pose decoder head plus
 multi-step feasibility loss).
+
+---
+
+## Round 6: what the calibration actually shows, and the corrected decision
+
+The calibration was stabilised (multi-frame estimation, 36 runs over placements,
+sensing radii and scan seeds) and the two candidate gaps were separated. The result
+changed the decision.
+
+### Gap 1 -- value of information: real, small, and irreducible
+
+With the true model on both sides and only the *state* estimated, the non-privileged
+planner pays exactly **one extra step** (cost 3.00 versus 2.00) when the object is
+free, and **zero** when it is constrained:
+
+| true contact physics | true model + true state | true model + estimated state | gap |
+|---|---|---|---|
+| r=1 free | 2.00 | 3.00 | 1.00 |
+| r=2 free | 2.00 | 3.00 | 1.00 |
+| r=1 constrained | 3.00 | 3.00 | 0.00 |
+
+That step is the optimal hedge against not knowing the contact physics -- it is the
+price of the missing information, not a defect a learned model could remove. **A
+learned world model cannot close this gap**, so it is the wrong target.
+
+Multi-frame estimation works as intended: at a two-cell sensing radius a single scan
+leaves two plausible placements, and three viewpoints along a public route resolve it
+to one (`p(correct origin)` 0.50 -> 1.00), matching a wide scan.
+
+An earlier, larger number (gap 2.50) was an artefact: with staging left in the task,
+the estimator parked a robot on the cell its teammate needed and paid a three-step
+repositioning detour. Removing staging from the comparison collapsed it to the clean
+one-step identification cost above.
+
+### Gap 2 -- model error at equal information: this is the one that matters
+
+The correct target is a **wrong model given exactly the same information**. Varying
+one aspect of the contact physics at a time, with the robots already at contact:
+
+| model used by the planner | cost | success | gap |
+|---|---|---|---|
+| true model | 2.00 | 1.0 | 0.00 |
+| thinks the object is latched | 25.00 | 0.0 | **23.00** |
+| thinks the object is heavy | 2.00 | 1.0 | 0.00 |
+| thinks the teammate slips | 2.00 | 1.0 | 0.00 |
+| thinks heavy + latched + slipping | 20.00 | 0.0 | **18.00** |
+
+**A model that gets the contact/constraint mode wrong fails completely; a model that
+gets the resistance or the traction wrong is tolerated in this task.** So the testbed
+*can* discriminate models, but only through the discrete contact mode. That is a sharp
+requirement for any learned model: it must represent the latch/release state, and it
+is not yet required to represent resistance or traction magnitudes.
+
+### Decision
+
+The precondition for a learned world model is met only in the narrow sense above. Do
+**not** start the neural model yet, because:
+
+1. the large gap is caused by a single discrete mode, which a much simpler structured
+   model (or a correct hand-coded mode variable) already captures;
+2. resistance and traction errors currently cost nothing, so the learning problem is
+   too narrow to justify a latent world model;
+3. the target metric -- model error at equal information -- is now defined and
+   implemented, which is the prerequisite for any learned-model comparison.
+
+Next round: widen the testbed so that resistance and traction also change the decision
+(tasks where the number of pushers and who is gripping determines success, and where
+partial progress must be predicted), re-run the model-error table, and only if a
+wrong *continuous* or *multi-factor* model measurably loses, build the multi-task
+latent world model on top.
