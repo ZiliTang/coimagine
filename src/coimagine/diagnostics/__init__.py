@@ -35,6 +35,13 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .multistep_probe import (
+    DepthMetrics,
+    MultiStepResult,
+    format_multistep_markdown,
+    run_multistep_probe,
+    write_multistep_report,
+)
 from .message_necessity import (
     EpisodeSummary,
     LearnedNecessitySummary,
@@ -121,7 +128,12 @@ __all__ = [
     "POLICIES",
     "EpisodeRecord",
     "ContinuousProbeResult",
+    "DepthMetrics",
     "EpisodeSummary",
+    "MultiStepResult",
+    "format_multistep_markdown",
+    "run_multistep_probe",
+    "write_multistep_report",
     "LearnedNecessitySummary",
     "format_episode_markdown",
     "run_episode_message_value",

@@ -1431,3 +1431,58 @@ corrected model the weak spots are elsewhere.
 The message-necessity results (rounds 22-24) do not depend on any of this: they use a
 purpose-built testbed with declared costs and a hand-specified information structure, not the
 error analysis.
+
+---
+
+## Round 26: the multi-step feasibility loss does not earn its keep
+
+The alignment document proposed adding a "feasibility prediction loss at several imagined
+rollout steps". This round implements it and tests it, with the control that decides the
+question.
+
+Two models share an architecture and a training budget: a **shallow** model trained only on
+depth-0 states, and a **multi-step** model trained on states taken from depths ``0..H-1`` of
+real rollouts (the simulator advanced by the action the analytic one-step value prefers, so
+the states are the ones a competent planner reaches). Both are evaluated at every depth on
+held-out scenes.
+
+### First pass looked positive, and the control killed it
+
+| depth | shallow | multi-step |
+|---|---|---|
+| 0 | 0.698 | 0.728 |
+| 1 | 0.703 | **0.815** |
+| 2 | 0.741 | **0.872** |
+
+But the multi-step model saw **2364** samples against the shallow model's **870** -- 2.7
+times as much data. Matching the budget by giving the shallow model the same number of
+depth-0 samples from extra scenes:
+
+| scenes / epochs | depth | shallow | multi-step |
+|---|---|---|---|
+| 60 / 120 | 0 | 0.609 | **0.660** |
+| 60 / 120 | 2 | **0.747** | 0.625 |
+| 120 / 250 | 0 | **0.760** | 0.725 |
+| 120 / 250 | 1 | **0.887** | 0.814 |
+| 250 / 400 | 0 | **0.822** | 0.760 |
+| 250 / 400 | 1 | **0.963** | 0.888 |
+| 250 / 400 | 2 | **1.000** | 0.747 |
+
+**With the budget matched the multi-step model never dominates, and at the largest scale it
+loses at every depth.** The apparent gain was the extra data, not the multi-step loss.
+
+### The motivating premise is also false
+
+The shallow model does **not** degrade with depth -- its balanced accuracy *rises* with depth
+(0.822 -> 0.963 -> 1.000 at the largest scale). Deeper rollout states are not harder here;
+they are states where the object is closer to the goal and fewer actions do anything, which
+makes the labels cleaner.
+
+### Practical conclusion
+
+If you want better feasibility estimates at depth, **collect more depth-0 data** rather than
+training at multiple depths. That is a cheaper change with a better result, and it is worth
+recording because the opposite is an intuitive design choice.
+
+The test asserts the robust part -- that dominance fails -- rather than a direction, because
+the direction flips with scale at the two smaller configurations.
