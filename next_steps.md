@@ -1165,3 +1165,69 @@ than more model work.
 Re-run the closed loop and the threshold probe under the corrected features (the numbers in
 rounds 17 and 19 were produced with the leak and must be re-measured); message channel; mode
 ablations; replays rebuilt for the new main line.
+
+---
+
+## Round 21: a limited message channel, and it is still worth nothing here
+
+Round 20 argued that the teammate-slipping weakness is an information limit, so a message
+should help. This round built the channel and tested it. **The channel exists; the value
+does not, yet, and the reason is instructive.**
+
+### The channel
+
+`learning/messages.py` declares three inspectable codebooks, each a function of the
+sender's **own** private state or history:
+
+| scheme | bits | codebook |
+|---|---|---|
+| `none` | 0 | silent |
+| `traction` | 1 | grip / slip |
+| `feedback` | 2 | the four feedback symbols |
+
+The receiver appends the decoded message to its own observation. A test asserts the channel
+actually changes the receiver's input (otherwise it is not a channel) and that the payload
+can distinguish every symbol in its codebook.
+
+### Result 1: the single-robot decision cannot benefit by construction
+
+In the threshold probe the action is *this robot* pushing alone, so the teammate's traction
+is irrelevant. Measured, the message does not help -- and the 1-bit traction message
+actively **hurts** the teammate-slipping subgroup (regret 0.823 -> 1.230, success 0.667 ->
+0.562) by adding an input that carries no information about the decision.
+
+That is a design error of mine caught by measurement: I had been treating "the
+teammate-slips subgroup" in that probe as if the teammate mattered there. It does not.
+
+### Result 2: in the joint decision a fair baseline removes the apparent gain
+
+The joint probe compares **solo push** against **co-push**, where the teammate's traction
+genuinely decides the outcome.
+
+| silent baseline | bits | mean regret | success |
+|---|---|---|---|
+| "always solo" (straw man) | 0 | 0.676 | 0.294 |
+| 1-bit message | 1 | 0.353 | 0.294 |
+| **expected-cost under a prior** (fair) | 0 | **0.000** | 0.412 |
+| 1-bit / 2-bit message against it | 1 / 2 | **0.000** | 0.412 |
+
+Against the straw man the message appeared to halve the regret. Against a **rational silent
+policy** that reasons about the chance its teammate grips, the message adds **exactly
+nothing**. The earlier gain was an artifact of the baseline, and the fair comparison is the
+one that counts.
+
+The deeper reason is that the message is not needed for *this* decision: a silent policy
+already accounts for the teammate in expectation, and the co-push option is only
+*cheaper*, never *necessary*. A message only pays when the teammate is **necessary and not
+substitutable** -- for example a heavy object where a solo push is impossible at any force,
+rather than merely more expensive.
+
+### What the testbed needs before messaging can be judged
+
+A decision where the teammate's contribution is **required**, not merely cheaper: resistance
+above what one robot can deliver at any force, so that "solo" is not an option. The
+perception and learning machinery can stay as it is; the *scenario* has to change. This is
+the third time this project has found messaging to be worth zero in a testbed that did not
+need it (the micro design gate, the grid gate, and now here), and the pattern is now clear
+enough to state as a rule: **message value shows up only where the silent policy's
+expectation is genuinely wrong, and its errors are not recoverable by hedging.**

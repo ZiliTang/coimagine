@@ -37,6 +37,12 @@ from ..grid.planner import PHYSICS
 from ..learning.continuous_data import continuous_features
 from ..learning.data import generate_situations
 from ..learning.features import OBSERVATION_DIM
+from ..learning.messages import (
+    SCHEME_ORDER,
+    message_dim,
+    message_vector,
+    payload_bits,
+)
 from ..learning.mlp import MultiHeadMLP, train
 
 #: Base cost of a push; the total cost of a push at force f is BASE + f, so a heavier
@@ -64,6 +70,9 @@ class ThresholdRecord:
     mechanism: str
     regret: Dict[str, float]
     force_used: Dict[str, float]
+    #: Whether this robot is the one that slips; recorded so the caller can look at the
+    #: subgroup where the teammate's traction is what matters.
+    self_slips: int = 0
 
 
 @dataclass
@@ -102,6 +111,7 @@ def run_threshold_probe(
     epochs: int = 500,
     seed: int = 0,
     lead_in: int = 2,
+    message_scheme: str = "none",
 ) -> ThresholdProbeResult:
     started = time.perf_counter()
     train_situations = generate_situations(
@@ -131,6 +141,12 @@ def run_threshold_probe(
                     PROBE_ANGLE,
                     FORCE_MAX,
                 )
+                # The received message is appended to the observation. It is a declared
+                # codebook over the sender's own private state, and it is the only channel
+                # through which the teammate's traction can reach this robot.
+                + message_vector(
+                    message_scheme, situation.physics, situation.history_b
+                )
             )
             can_push.append(float(pushable))
             thresholds.append(threshold if np.isfinite(threshold) else 0.0)
@@ -138,9 +154,10 @@ def run_threshold_probe(
             physics_index.append(PHYSICS.index(situation.physics))
             poses.append(pose_to_index(scene.obj.origin))
         x = np.asarray(features, dtype=np.float64)
+        split = OBSERVATION_DIM + message_dim(message_scheme)
         return (
-            x[:, :OBSERVATION_DIM],
-            x[:, OBSERVATION_DIM:],
+            x[:, :split],
+            x[:, split:],
             np.asarray(can_push, dtype=np.float64),
             np.asarray(thresholds, dtype=np.float64),
             np.asarray(mask, dtype=np.float64),
@@ -152,6 +169,7 @@ def run_threshold_probe(
     positive_rate = float(can_push.mean())
     model = MultiHeadMLP(
         seed=seed,
+        obs_dim=obs.shape[1],  # the observation plus any received message
         action_dim=action.shape[1],
         positive_weight=(1.0 - positive_rate) / positive_rate if positive_rate > 0 else 1.0,
     )
@@ -174,11 +192,15 @@ def run_threshold_probe(
                     situation.scan, scene.robot_pose(0), situation.history_a,
                     situation.public_history, PROBE_ANGLE, FORCE_MAX,
                 )
+                + message_vector(
+                    message_scheme, situation.physics, situation.history_b
+                )
             ],
             dtype=np.float64,
         )
-        obs_one = feature[:, :OBSERVATION_DIM]
-        act_one = feature[:, OBSERVATION_DIM:]
+        split = OBSERVATION_DIM + message_dim(message_scheme)
+        obs_one = feature[:, :split]
+        act_one = feature[:, split:]
         prob_push = float(model.predict_outcomes(obs_one, act_one)[0, 0])
         predicted_threshold = float(model.predict_threshold(obs_one, act_one)[0])
         predicted_threshold = float(
@@ -223,6 +245,7 @@ def run_threshold_probe(
 
         records.append(
             ThresholdRecord(
+                self_slips=int(situation.physics.traction[0] == "slip"),
                 scene_id=situation.scene_id,
                 true_physics=situation.physics.label,
                 can_push=pushable,
@@ -310,6 +333,8 @@ def run_threshold_probe(
             "n_test_situations": len(test_situations),
             "epochs": epochs,
             "positive_rate": positive_rate,
+            "message_scheme": message_scheme,
+            "message_bits": payload_bits(message_scheme),
             "push_base_cost": PUSH_BASE_COST,
             "fail_penalty": FAIL_PENALTY,
             "wall_clock_seconds": time.perf_counter() - started,
@@ -383,3 +408,331 @@ def write_threshold_report(result: ThresholdProbeResult, output_dir: str) -> Dic
     )
     paths["md"] = str(md_path)
     return paths
+
+
+# ---------------------------------------------------------------------------
+# Message comparison: does one bounded message close the teammate-slipping gap?
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class MessageSchemeSummary:
+    scheme: str
+    bits: int
+    n: int
+    overall_regret: float
+    overall_success: float
+    threshold_mae: float
+    can_push_balanced_accuracy: float
+    teammate_slips_n: int
+    teammate_slips_regret: float
+    teammate_slips_success: float
+
+
+def run_message_comparison(
+    *,
+    schemes: Sequence[str] = SCHEME_ORDER,
+    n_train_situations: int = 200,
+    n_test_situations: int = 100,
+    epochs: int = 400,
+    seed: int = 0,
+) -> List[MessageSchemeSummary]:
+    """Train the same threshold model under each message scheme and compare.
+
+    The comparison is restricted in scope on purpose: one message per decision, sent by
+    the teammate, decoded into the receiver's observation. There is no joint commit rule
+    and no message-dependent reference belief, so this measures the **value of the message
+    content** at a fixed bit budget, which is the C1 question, not the whole protocol.
+    """
+
+    out: List[MessageSchemeSummary] = []
+    for scheme in schemes:
+        result = run_threshold_probe(
+            n_train_situations=n_train_situations,
+            n_test_situations=n_test_situations,
+            epochs=epochs,
+            seed=seed,
+            message_scheme=scheme,
+        )
+        by_name = {s.name: s for s in result.summaries}
+        slips = [
+            record
+            for record in result.records
+            if record.mechanism and "teammate_slips" in record.mechanism
+        ]
+        out.append(
+            MessageSchemeSummary(
+                scheme=scheme,
+                bits=int(result.meta["message_bits"]),
+                n=len(result.records),
+                overall_regret=by_name["learned"].mean_regret,
+                overall_success=by_name["learned"].success_rate,
+                threshold_mae=result.threshold_mae,
+                can_push_balanced_accuracy=result.can_push_balanced_accuracy,
+                teammate_slips_n=len(slips),
+                teammate_slips_regret=(
+                    float(np.mean([r.regret["learned"] for r in slips])) if slips else float("nan")
+                ),
+                teammate_slips_success=(
+                    float(np.mean([r.regret["learned"] <= 1e-9 for r in slips]))
+                    if slips
+                    else float("nan")
+                ),
+            )
+        )
+    return out
+
+
+def format_message_comparison_markdown(summaries: Sequence[MessageSchemeSummary]) -> str:
+    lines = [
+        "| scheme | bits | overall regret | overall success | threshold MAE | "
+        "teammate-slipping n | its regret | its success |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for summary in summaries:
+        lines.append(
+            f"| {summary.scheme} | {summary.bits} | {summary.overall_regret:.3f} | "
+            f"{summary.overall_success:.3f} | {summary.threshold_mae:.3f} | "
+            f"{summary.teammate_slips_n} | {summary.teammate_slips_regret:.3f} | "
+            f"{summary.teammate_slips_success:.3f} |"
+        )
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Joint decision: solo push versus co-push, where the teammate's traction matters
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class JointRecord:
+    scene_id: int
+    teammate_slips: int
+    mechanism: str
+    true_best_mode: str
+    chosen_mode: str
+    regret: float
+    success: int
+
+
+@dataclass
+class JointSummary:
+    scheme: str
+    bits: int
+    n: int
+    mean_regret: float
+    success_rate: float
+    teammate_slips_n: int
+    teammate_slips_regret: float
+    teammate_slips_success: float
+
+
+def _joint_scene(situation):
+    """The staged scene: both robots already on the object's west face."""
+
+    from ..grid.state import ObjectState, Scene
+    from ..grid.dynamics import SKILL_HOLD  # noqa: F401
+
+    scene = situation.scene
+    return Scene(
+        static=scene.static,
+        obj=ObjectState(scene.obj.origin),
+        robots=scene.robots,
+        physics=scene.physics,
+        released=scene.released,
+    )
+
+
+def _co_push_contact(scene) -> bool:
+    """Whether both robots can push east right now."""
+
+    object_cells = scene.obj.cells
+    for robot in scene.robots:
+        if (robot.pose[0] + 1, robot.pose[1]) not in object_cells:
+            return False
+    return True
+
+
+def run_joint_message_comparison(
+    *,
+    schemes: Sequence[str] = SCHEME_ORDER,
+    n_train_situations: int = 200,
+    n_test_situations: int = 100,
+    epochs: int = 400,
+    seed: int = 0,
+) -> List[JointSummary]:
+    """Solo-push versus co-push, with and without a message about the teammate.
+
+    In this decision the teammate's traction genuinely matters -- it is what decides
+    whether a co-push can succeed -- so it is the setting in which a message about
+    "I am slipping" can be expected to help. The single-robot version of this probe
+    cannot show any message effect, because there the teammate is irrelevant by
+    construction.
+    """
+
+    from ..grid.continuous import FORCE_MIN, push_outcome
+
+    out: List[JointSummary] = []
+    for scheme in schemes:
+        result = run_threshold_probe(
+            n_train_situations=n_train_situations,
+            n_test_situations=n_test_situations,
+            epochs=epochs,
+            seed=seed,
+            message_scheme=scheme,
+        )
+        records = result.records
+        # The threshold probe already supplies the message-augmented observation, so the
+        # joint evaluation re-uses its situations through the same generator.
+        situations = generate_situations(
+            n_scenes=n_test_situations, lead_in=2, seed=seed + 70_000
+        )
+        joint_records: List[JointRecord] = []
+
+        for situation, record in zip(situations, records):
+            scene = situation.scene
+            if not _co_push_contact(scene):
+                continue
+            physics = situation.physics
+            resistance = float(physics.resistance)
+            tractions = [
+                1.0 if physics.traction[i] == "grip" else 0.0 for i in (0, 1)
+            ]
+            solo_threshold = (
+                resistance / tractions[0] if tractions[0] > 0 else float("inf")
+            )
+            co_threshold = (
+                resistance / sum(tractions) if sum(tractions) > 0 else float("inf")
+            )
+
+            def simulate(mode: str, force: float):
+                forces = {0: force} if mode == "solo" else {0: force, 1: force}
+                return push_outcome(scene, forces, PROBE_ANGLE)
+
+            def cost(mode: str, force: float) -> Tuple[float, int]:
+                """Cost of choosing ``mode`` at ``force``; the optimum is the threshold."""
+
+                outcome = simulate(mode, force)
+                if outcome.moved:
+                    return PUSH_BASE_COST + force, 1
+                return PUSH_BASE_COST + force + FAIL_PENALTY, 0
+
+            best = None
+            for mode, threshold in (("solo", solo_threshold), ("co", co_threshold)):
+                if not np.isfinite(threshold):
+                    continue
+                candidate = cost(mode, min(max(threshold, FORCE_MIN), 2.0))
+                if best is None or candidate[0] < best[0]:
+                    best = (*candidate, mode)
+            if best is None:
+                continue  # nothing works from here
+            oracle_cost, oracle_success, oracle_mode = best
+
+            # The policy's view: without a message it does not know the teammate's
+            # traction, so it only uses the solo option; with a message it can evaluate
+            # the co option too. Both use the same declared costs.
+            if scheme == "none":
+                # A *fair* silent baseline: it cannot see the teammate's traction, so it
+                # picks the mode with the lower expected cost under a declared prior.
+                # "Always solo" would be a straw man, since a silent policy can still
+                # reason about the chance that the teammate grips.
+                p_grip = 0.5
+                options = []
+                for mode, threshold_for in (
+                    ("solo", lambda grips: resistance / tractions[0] if tractions[0] else float("inf")),
+                    ("co", lambda grips: (
+                        resistance / (tractions[0] + (1.0 if grips else 0.0))
+                        if (tractions[0] + (1.0 if grips else 0.0)) > 0
+                        else float("inf")
+                    )),
+                ):
+                    expected = 0.0
+                    for grips, prob in ((True, p_grip), (False, 1.0 - p_grip)):
+                        threshold = threshold_for(grips)
+                        if not np.isfinite(threshold):
+                            expected += prob * (PUSH_BASE_COST + FORCE_MAX + FAIL_PENALTY)
+                            continue
+                        force = min(max(threshold, FORCE_MIN), 2.0)
+                        expected += prob * (
+                            PUSH_BASE_COST + force + FAIL_PENALTY * (0.0 if force >= threshold else 1.0)
+                        )
+                    options.append((expected, mode, threshold_for(physics.traction[1] == "grip")))
+                options.sort(key=lambda item: (item[0], item[1]))
+                _, chosen_mode, chosen_threshold = options[0]
+                chosen_force = (
+                    min(max(chosen_threshold, FORCE_MIN), 2.0)
+                    if np.isfinite(chosen_threshold)
+                    else FORCE_MIN
+                )
+            else:
+                # With a message the teammate's traction is known exactly.
+                grips = physics.traction[1] == "grip"
+                co_known = resistance / (tractions[0] + (1.0 if grips else 0.0)) if (
+                    tractions[0] + (1.0 if grips else 0.0)
+                ) > 0 else float("inf")
+                solo_known = resistance / tractions[0] if tractions[0] else float("inf")
+                if np.isfinite(co_known) and (
+                    not np.isfinite(solo_known)
+                    or PUSH_BASE_COST + co_known < PUSH_BASE_COST + solo_known
+                ):
+                    chosen_mode, chosen_force = "co", min(max(co_known, FORCE_MIN), 2.0)
+                elif np.isfinite(solo_known):
+                    chosen_mode, chosen_force = "solo", min(max(solo_known, FORCE_MIN), 2.0)
+                else:
+                    chosen_mode, chosen_force = "solo", FORCE_MIN
+            chosen_cost, chosen_success = cost(chosen_mode, chosen_force)
+
+            joint_records.append(
+                JointRecord(
+                    scene_id=situation.scene_id,
+                    teammate_slips=int(physics.traction[1] == "slip"),
+                    mechanism=record.mechanism,
+                    true_best_mode=oracle_mode,
+                    chosen_mode=chosen_mode,
+                    regret=chosen_cost - oracle_cost,
+                    success=chosen_success,
+                )
+            )
+
+        slips = [r for r in joint_records if r.teammate_slips]
+        out.append(
+            JointSummary(
+                scheme=scheme,
+                bits=int(result.meta["message_bits"]),
+                n=len(joint_records),
+                mean_regret=(
+                    float(np.mean([r.regret for r in joint_records]))
+                    if joint_records
+                    else float("nan")
+                ),
+                success_rate=(
+                    float(np.mean([r.success for r in joint_records]))
+                    if joint_records
+                    else float("nan")
+                ),
+                teammate_slips_n=len(slips),
+                teammate_slips_regret=(
+                    float(np.mean([r.regret for r in slips])) if slips else float("nan")
+                ),
+                teammate_slips_success=(
+                    float(np.mean([r.success for r in slips])) if slips else float("nan")
+                ),
+            )
+        )
+    return out
+
+
+def format_joint_comparison_markdown(summaries: Sequence[JointSummary]) -> str:
+    lines = [
+        "| scheme | bits | n | mean regret | success | teammate-slipping n | "
+        "its regret | its success |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for summary in summaries:
+        lines.append(
+            f"| {summary.scheme} | {summary.bits} | {summary.n} | "
+            f"{summary.mean_regret:.3f} | {summary.success_rate:.3f} | "
+            f"{summary.teammate_slips_n} | {summary.teammate_slips_regret:.3f} | "
+            f"{summary.teammate_slips_success:.3f} |"
+        )
+    return "\n".join(lines)
