@@ -152,3 +152,34 @@ grid interaction:
 - [ ] Oracle gap table, communication-budget curve, probe-cost curve, 2–3 replays
       (including each robot's scan and belief evolution).
 - [ ] Update `results.md` with the grid numbers; list unfinished items.
+
+---
+
+## Update after the grid planner (round 3)
+
+Implemented `coimagine.grid.planner`: a six-way planner panel over the contact
+hypothesis (32 hidden contact types), a closed-loop **exact** expectation (Stage 2 has
+no process noise), and per-boundary regeneration of the public candidate ID space.
+
+Verified:
+
+- the full-information planner reaches the optimum on the reference scenario
+  (2 pushes = cost 2.0; a latched object needs a release = 3.0);
+- `public`, `codec`, `observation`, `consequence` and `replan` all solve the
+  reference scenario;
+- the C2 control coincides with the method here, matching the design gate;
+- a latched object is rationally ignored under a uniform prior because it is only
+  2 of 32 hypotheses — scenario design for A2/A3 must give that mode prior mass or
+  early evidence, it is not a planner bug.
+
+Open correctness item (next round):
+
+- **`central` disagrees with `codec` on the reference scenario** (2.3 versus 2.0,
+  where complete observation sharing must be no worse). The trace shows `central`
+  choosing `probe` at step 1 on a tie while `codec` chooses `co_push`; the
+  full-sharing value is therefore not yet trustworthy and the ordering
+  `J_central <= J_codec` is deliberately **not** asserted in the test suite until it
+  is fixed.
+
+Also improved in this round: a successful push now advances the pushers with the
+object, so multi-step pushing no longer needs a reposition between every cell.

@@ -244,3 +244,49 @@ def test_feedback_channel_is_a_valid_distribution() -> None:
         sample_feedback(OBS_DROVE, always, rng) != OBS_DROVE for _ in range(5)
     )
     assert sample_feedback(OBS_DROVE, FeedbackNoise(), rng) == OBS_DROVE
+
+
+# Two cooperative pushes east: the object ends inside a 2x2 goal on the far side.
+TWO_PUSH = (
+    ".....",
+    "AOOTT",
+    "BOOTT",
+    ".....",
+)
+
+
+def test_pushers_walk_with_the_object_across_two_boundaries() -> None:
+    """A successful push advances the pushers, so no reposition is needed."""
+
+    scene = _scene(TWO_PUSH, GRIP2)
+    assert not scene.is_goal()
+    joint = JointSkill((_push(), _push()))
+
+    first_scene, first = execute(scene, joint)
+    assert first.y_public == Y_MOVED
+    assert first_scene.obj.origin == (2, 1)
+    assert first_scene.robot_pose(0) == (1, 2)
+    assert first_scene.robot_pose(1) == (1, 1)
+    assert not first_scene.is_goal()
+
+    second_scene, second = execute(first_scene, joint)
+    assert second.y_public == Y_MOVED
+    assert second_scene.obj.origin == (3, 1)
+    assert second_scene.is_goal()
+
+
+def test_pusher_does_not_advance_into_a_blocked_cell() -> None:
+    """If the forward cell is a wall the pusher stays put but the object still moves."""
+
+    rows = (
+        ".....",
+        "AOO.#",
+        "BOO.#",
+        ".....",
+    )
+    scene = _scene(rows, GRIP1)
+    joint = JointSkill((_push(), LocalSkill(SKILL_HOLD)))
+    successor, result = execute(scene, joint)
+    assert result.y_public == Y_MOVED
+    # Robot A would step to (1, 2), which is free, so it advances.
+    assert successor.robot_pose(0) == (1, 2)

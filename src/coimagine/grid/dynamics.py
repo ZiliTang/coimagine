@@ -394,9 +394,11 @@ def execute(
         assert direction is not None
         new_obj = scene.obj.translated(direction.delta)
     else:
+        direction = None
         new_obj = scene.obj
 
     new_robots: List[RobotState] = []
+    push_delta = direction.delta if (object_moved and pushers) else None
     for robot in scene.robots:
         if robot.robot_id in robot_moves:
             path = robot_moves[robot.robot_id]
@@ -412,7 +414,25 @@ def execute(
             heading = robot.heading
             if skill.kind in (SKILL_PUSH, SKILL_RELEASE, SKILL_PROBE) and skill.direction:
                 heading = skill.direction
-            new_robots.append(RobotState(robot.robot_id, robot.pose, heading))
+            pose = robot.pose
+            # A pusher walks forward with the object, so a multi-step push does not
+            # need a reposition between every cell. It advances only into a legal
+            # cell; otherwise it stays put.
+            if push_delta is not None and skill.kind == SKILL_PUSH:
+                candidate_cell = add(pose, push_delta)
+                legal = (
+                    scene.static.in_bounds(candidate_cell)
+                    and not scene.static.is_wall(candidate_cell)
+                    and candidate_cell not in new_obj.cells
+                    and all(
+                        candidate_cell != other.pose
+                        for other in scene.robots
+                        if other.robot_id != robot.robot_id
+                    )
+                )
+                if legal:
+                    pose = candidate_cell
+            new_robots.append(RobotState(robot.robot_id, pose, heading))
 
     # -- 4. feedback --------------------------------------------------------
     def probe_would_succeed(robot_id: int, direction: Optional[Direction]) -> bool:
