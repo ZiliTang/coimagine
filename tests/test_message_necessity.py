@@ -134,3 +134,70 @@ def test_learned_model_reaches_the_oracle_only_with_the_message() -> None:
     assert "implied by the declared costs" in format_learned_necessity_markdown(
         list(summaries.values())
     )
+
+
+def test_the_message_equals_knowing_over_a_whole_episode() -> None:
+    """A message policy reproduces the oracle exactly, at every horizon."""
+
+    from coimagine.diagnostics.message_necessity import run_episode_message_value
+    from collections import defaultdict
+
+    summaries = run_episode_message_value(horizons=(1, 4), n_episodes=300, seed=0)
+    groups = defaultdict(dict)
+    for summary in summaries:
+        groups[summary.horizon][summary.policy] = summary
+    for horizon, group in groups.items():
+        assert group["message"].mean_cost == pytest.approx(group["oracle"].mean_cost)
+        assert group["message"].success_rate == pytest.approx(
+            group["oracle"].success_rate
+        )
+        assert group["silent"].mean_cost > group["message"].mean_cost
+        # silence recovers after one attempt, so its success is not lower, only costlier
+        assert group["silent"].success_rate == pytest.approx(
+            group["message"].success_rate
+        ), horizon
+
+
+def test_message_value_is_one_experiment_and_does_not_grow_with_the_horizon() -> None:
+    """The value of the message is the cost of the single experiment it replaces.
+
+    A silent team that experiments once learns the teammate's traction from the public
+    outcome, so its loss is one wasted attempt no matter how long the task is. The value
+    is therefore flat in the horizon, and only its *relative* share shrinks.
+    """
+
+    from coimagine.diagnostics.message_necessity import run_episode_message_value
+    from collections import defaultdict
+
+    summaries = run_episode_message_value(
+        horizons=(1, 2, 4, 8), n_episodes=600, seed=0
+    )
+    groups = defaultdict(dict)
+    for summary in summaries:
+        groups[summary.horizon][summary.policy] = summary
+
+    values = {}
+    for horizon, group in groups.items():
+        values[horizon] = group["silent"].mean_cost - group["message"].mean_cost
+        # one attempt costs 2 and is wasted half the time
+        assert values[horizon] == pytest.approx(1.0, abs=0.4), horizon
+    # flat in the horizon rather than growing
+    assert max(values.values()) - min(values.values()) < 0.6
+    # while the relative share falls
+    relative = {
+        h: values[h] / groups[h]["message"].mean_cost for h in groups
+    }
+    assert relative[1] > relative[8]
+
+
+def test_episode_markdown_reports_the_value() -> None:
+    from coimagine.diagnostics.message_necessity import (
+        format_episode_markdown,
+        run_episode_message_value,
+    )
+
+    text = format_episode_markdown(
+        run_episode_message_value(horizons=(1,), n_episodes=50, seed=0)
+    )
+    assert "Message value" in text
+    assert "horizon 1" in text

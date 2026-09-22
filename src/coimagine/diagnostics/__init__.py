@@ -36,6 +36,7 @@ from .decision_probe import (
     write_decision_report,
 )
 from .message_necessity import (
+    EpisodeSummary,
     LearnedNecessitySummary,
     NecessityResult,
     format_necessity_markdown,
@@ -120,7 +121,10 @@ __all__ = [
     "POLICIES",
     "EpisodeRecord",
     "ContinuousProbeResult",
+    "EpisodeSummary",
     "LearnedNecessitySummary",
+    "format_episode_markdown",
+    "run_episode_message_value",
     "NecessityResult",
     "format_learned_necessity_markdown",
     "necessity_samples",

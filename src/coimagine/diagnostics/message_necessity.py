@@ -521,3 +521,153 @@ def format_learned_necessity_markdown(
             f"{summaries[0].silent_baseline_regret:.3f} regret and the oracle 0.000.",
         ]
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Multi-step episodes: does the message value survive once outcomes accumulate?
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class EpisodeSummary:
+    horizon: int
+    policy: str
+    n: int
+    mean_cost: float
+    success_rate: float
+    regret_first_decision: float
+    regret_later_decisions: float
+
+
+def run_episode_message_value(
+    *,
+    horizons: Sequence[int] = (1, 2, 4),
+    n_episodes: int = 400,
+    seed: int = 0,
+) -> List[EpisodeSummary]:
+    """A task needing ``h`` co-pushes, with and without one bit at the start.
+
+    Two modelling decisions matter and are declared:
+
+    * **The failure cost scales with the horizon** (``10 * h``). With a flat failure cost,
+      a long successful episode costs more than failing it, so the task stops being worth
+      doing at all -- there is no completion reward anywhere in the cost model. Scaling it
+      keeps "winning" strictly better than "failing" at every horizon while staying within
+      the project's "action cost plus explicit failure cost" convention.
+    * **A failed attempt costs only the attempt.** Charging the full episode-failure cost to
+      every failed push would make trying never worthwhile, and learning requires trying.
+
+    The oracle knows the teammate's traction throughout. The **message** policy learns it
+    from one bit at the first decision. The **silent** policy starts at even odds and
+    updates from the public outcome, which identifies a deterministic co-push after a
+    single attempt -- so its regret should be concentrated in the first decision.
+    """
+
+    rng = np.random.default_rng(seed)
+    out: List[EpisodeSummary] = []
+
+    for horizon in horizons:
+        failure_cost = 10.0 * horizon
+        attempt_cost = PUSH_BASE_COST + 1.0
+
+        # One episode set per horizon, shared by every policy. Drawing separately for each
+        # policy would compare them on different episodes and swamp a one-attempt effect
+        # with sampling noise.
+        episode_grips = [bool(rng.integers(0, 2)) for _ in range(n_episodes)]
+
+        for policy in ("oracle", "message", "silent"):
+            costs: List[float] = []
+            successes: List[int] = []
+            first_regrets: List[float] = []
+            later_regrets: List[float] = []
+
+            for grips in episode_grips:
+                solvable = 1 if grips else 0
+                oracle_total = attempt_cost * horizon if solvable else failure_cost
+
+                if policy == "oracle":
+                    plan_try = [bool(solvable)] * horizon
+                elif policy == "message":
+                    plan_try = [grips] * horizon
+                else:
+                    # silent: begin at even odds; the optimal action under p=0.5 is to
+                    # decline, but declining can never reveal anything, so a silent team
+                    # that declines stays ignorant. It therefore compares trying once
+                    # (which may win the whole episode) against the certain failure.
+                    p_first = 0.5
+                    expected_try = p_first * attempt_cost * horizon + (
+                        1 - p_first
+                    ) * (attempt_cost + failure_cost)
+                    expected_decline = failure_cost
+                    try_first = expected_try < expected_decline
+                    if not try_first:
+                        plan_try = [False] * horizon
+                    else:
+                        # try; a successful first attempt reveals that the teammate grips,
+                        # a failed one that it slips
+                        plan_try = [True] + [grips] * (horizon - 1)
+
+                total = 0.0
+                pushed = 0
+                for step in range(horizon):
+                    if step >= len(plan_try) or not plan_try[step]:
+                        break
+                    total += attempt_cost
+                    if not grips:
+                        break
+                    pushed += 1
+                won = 1 if pushed == horizon else 0
+                if not won:
+                    total += failure_cost
+
+                costs.append(total)
+                successes.append(won)
+                episode_regret = total - oracle_total
+                # attribute it: the first decision versus everything after
+                if horizon == 1:
+                    first_regrets.append(episode_regret)
+                else:
+                    first_regrets.append(0.0)
+                    later_regrets.append(episode_regret)
+
+            out.append(
+                EpisodeSummary(
+                    horizon=horizon,
+                    policy=policy,
+                    n=n_episodes,
+                    mean_cost=float(np.mean(costs)),
+                    success_rate=float(np.mean(successes)),
+                    regret_first_decision=(
+                        float(np.mean(first_regrets)) if first_regrets else 0.0
+                    ),
+                    regret_later_decisions=(
+                        float(np.mean(later_regrets)) if later_regrets else 0.0
+                    ),
+                )
+            )
+    return out
+
+
+def format_episode_markdown(summaries: Sequence[EpisodeSummary]) -> str:
+    lines = [
+        "| horizon | policy | mean cost | success rate |",
+        "|---|---|---|---|",
+    ]
+    for summary in summaries:
+        lines.append(
+            f"| {summary.horizon} | {summary.policy} | {summary.mean_cost:.3f} | "
+            f"{summary.success_rate:.3f} |"
+        )
+    lines += ["", "Message value (silent cost minus message cost):", ""]
+    by_horizon: Dict[int, Dict[str, EpisodeSummary]] = {}
+    for summary in summaries:
+        by_horizon.setdefault(summary.horizon, {})[summary.policy] = summary
+    for horizon in sorted(by_horizon):
+        group = by_horizon[horizon]
+        value = group["silent"].mean_cost - group["message"].mean_cost
+        lines.append(
+            f"- horizon {horizon}: **{value:.3f}** "
+            f"(silent success {group['silent'].success_rate:.3f} versus message "
+            f"{group['message'].success_rate:.3f})"
+        )
+    return "\n".join(lines)

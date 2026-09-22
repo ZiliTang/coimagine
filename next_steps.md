@@ -1329,3 +1329,56 @@ the outcome is enough to take it from chance to optimal.**
 Figure/detail: the necessity testbed uses a slipping robot A (so the teammate is required),
 a private teammate traction, and a light object (so a co-push works exactly when the
 teammate grips).
+
+---
+
+## Round 24: the message is worth exactly one experiment
+
+Round 23 measured a single decision, where the message was worth 4.373 regret. This round
+asks what happens over a **multi-step episode**, where the public record itself may reveal
+the fact and make the message redundant.
+
+Setup: a task needing ``h`` co-pushes, robot A slipping throughout (so the teammate is
+required), the teammate's traction fixed for the episode and private. Two modelling
+decisions are declared, and both matter:
+
+* **the failure cost scales with the horizon** (``10 * h``). With a flat failure cost a long
+  successful episode costs more than failing it, so the task stops being worth doing at all
+  -- there is no completion reward anywhere in the cost model;
+* **a failed attempt costs only the attempt.** Charging the full episode-failure cost to
+  every failed push makes trying never worthwhile, and learning requires trying.
+
+| horizon | oracle | message | silent | message value | relative |
+|---|---|---|---|---|---|
+| 1 | 5.730 | 5.730 | 6.662 | **0.932** | 16.3% |
+| 2 | 11.920 | 11.920 | 12.910 | **0.990** | 8.3% |
+| 4 | 23.240 | 23.240 | 24.192 | **0.953** | 4.1% |
+| 8 | 47.200 | 47.200 | 48.175 | **0.975** | 2.1% |
+| 16 | 100.960 | 100.960 | 102.037 | **1.078** | 1.1% |
+
+Three findings:
+
+1. **The message policy reproduces the oracle exactly at every horizon** -- identical cost
+   and identical success rate.
+2. **The message's value is flat in the horizon, at about 1.0.** That is precisely the
+   expected cost of the one wasted attempt (an attempt costs 2 and is wasted half the time).
+   **A message substitutes for one experiment, and for nothing more.**
+3. **Only the relative value decays**, as roughly ``1 / (6h)``.
+
+### The unifying statement, combining rounds 23 and 24
+
+* **Single decision**: with even odds the optimal action is to *decline* (the threshold
+  implied by the costs is 0.6), so a silent team never experiments, never learns, and loses
+  the whole task -- regret 4.373.
+* **Episode**: with the failure cost scaled to the horizon, one experiment is worth running,
+  so a silent team tries once, reads the teammate's traction off the public outcome, and
+  matches the message from then on -- regret one attempt.
+
+So whether silence learns at all depends on whether the horizon makes the experiment
+worthwhile, and **the value of communicating is exactly the cost of the experiment it
+replaces**. That is a sharper and more useful statement than "messages help": it predicts
+when they will not.
+
+Also fixed here: the three policies were initially drawn on *different* random episodes,
+which swamped a one-attempt effect with sampling noise; they now share one episode set per
+horizon.
