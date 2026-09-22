@@ -1,21 +1,16 @@
-"""Decision-level probe: what does a learned feasibility rule cost a planner?
+"""Decision-level probe: what does a learned action model cost a planner?
 
-Round 8 evaluated the learned head per sample. This module evaluates it where it
-matters: at the decision.
+The comparison is built so that two different failures can be told apart:
 
-For every held-out decision point we score each candidate action under the **true**
-physics, which gives
+* a **decision rule** that is wrong for the task (predicting motion instead of
+  progress, or ignoring preparation), measured by the *matched analytic* rule that
+  uses the same rule with the correct model;
+* a **model** that is wrong, measured as the extra regret the learned model incurs
+  under the identical rule.
 
-* the oracle action -- the argmin, i.e. regret zero by construction;
-* the **analytic** action -- the argmin of the belief-weighted value, which is the
-  equal-information rule the planner would use with a correct model;
-* the **learned** action -- the argmax of the network's predicted feasibility.
-
-The metric is regret: the true-model value of the chosen action minus that of the
-oracle. That keeps the comparison honest, because the value of a *preparation* action
-such as release is computed by the simulator, not asserted by us -- so a policy that
-cannot represent "release is worth doing" shows up as regret rather than as a hidden
-modelling choice.
+Action values are computed by the simulator, so a preparation action such as release
+earns its place through the dynamics rather than through an assertion. Regret is the
+true-model value of the chosen action minus that of the best action.
 """
 
 from __future__ import annotations
@@ -37,14 +32,34 @@ from ..grid.planner import (
     ContactContext,
     DEFAULT_FAIL_COST,
     HypKey,
+    _execute_cached,
     full_value,
     implied_history,
 )
-from ..grid.state import HiddenPhysics
-from ..learning.data import Situation, candidates_for, generate_situations, pose_to_index
-from ..learning.features import ACTION_IDS, sample_vector
+from ..learning.data import (
+    Situation,
+    action_labels,
+    candidates_for,
+    generate_situations,
+    pose_to_index,
+    sample_vector,
+)
+from ..learning.features import ACTION_IDS
 from ..learning.mlp import MultiHeadMLP, train
-from ..learning.data import sample_to_arrays
+
+#: Policy names in report order. ``value_optimal`` and the ``analytic_*`` rows are the
+#: equal-information references; the ``learned_*`` rows are the models under test.
+POLICIES: Tuple[str, ...] = (
+    "value_optimal",
+    "analytic_progress",
+    "analytic_progress_enable",
+    "learned_moved",
+    "learned_progress",
+    "learned_progress_enable",
+)
+
+#: Channel indices of the action head.
+CHANNEL_MOVED, CHANNEL_PROGRESS, CHANNEL_ENABLES = 0, 1, 2
 
 
 @dataclass
@@ -52,39 +67,26 @@ class DecisionRecord:
     scene_id: int
     true_physics: str
     oracle_action: str
-    analytic_action: str
-    learned_action: str
-    analytic_greedy_action: str
     oracle_value: float
-    analytic_value: float
-    learned_value: float
-    analytic_regret: float
-    learned_regret: float
-    analytic_greedy_value: float
-    analytic_greedy_regret: float
+    chosen: Dict[str, str]
+    regret: Dict[str, float]
     teammate_slips: int
     constrained: int
     heavy: int
 
 
 @dataclass
-class DecisionSummary:
+class PolicySummary:
     name: str
     n: int
-    mean_analytic_regret: float
-    mean_learned_regret: float
-    analytic_agreement: float
-    learned_agreement: float
-    analytic_success: float
-    learned_success: float
-    analytic_greedy_regret: float
-    analytic_greedy_agreement: float
+    mean_regret: float
+    agreement: float
 
 
 @dataclass
 class DecisionProbeResult:
-    overall: DecisionSummary
-    by_mode: Dict[str, DecisionSummary]
+    summaries: List[PolicySummary]
+    by_mode: Dict[str, List[PolicySummary]]
     records: List[DecisionRecord] = field(default_factory=list)
     meta: Dict[str, object] = field(default_factory=dict)
 
@@ -98,10 +100,6 @@ def _value_of_action(
     depth: int,
     fail_cost: float,
 ) -> float:
-    """True-model value of taking ``action_id`` now, one step plus the heuristic."""
-
-    from ..grid.planner import _execute_cached
-
     candidate = candidates.by_id(action_id)
     successor, result = _execute_cached(ctx.scene(hyp), candidate.joint)
     if successor.is_goal():
@@ -118,14 +116,13 @@ def _value_of_action(
 
 
 def posterior_over_physics(
-    situation: Situation,
-    *,
-    noise: Optional[FeedbackNoise] = None,
+    situation: Situation, *, noise: Optional[FeedbackNoise] = None
 ) -> Dict[int, float]:
-    """The robot's posterior over the 16 contact types given its lead-in feedback.
+    """Posterior over the 16 contact types given the robot's own lead-in feedback.
 
-    Computed the honest way: simulate each hypothesis through the *same* lead-in
-    actions and score the observed feedback under the feedback channel.
+    Computed by simulating each hypothesis through the *same* lead-in actions and
+    scoring the observed feedback under the feedback channel. The prior is uniform,
+    and a hypothesis whose implied history cannot be formed gets zero weight.
     """
 
     noise = noise or FeedbackNoise()
@@ -135,7 +132,7 @@ def posterior_over_physics(
         situation.initial_scene.robots,
     )
     weights: Dict[int, float] = {}
-    for index, _physics in enumerate(PHYSICS):
+    for index in range(len(PHYSICS)):
         hypothesis = (index, False)
         likelihood = 1.0
         for robot_id, observed in ((0, situation.history_a), (1, situation.history_b)):
@@ -162,6 +159,14 @@ def _features_for(situation: Situation, action_id: str) -> Tuple[float, ...]:
     )
 
 
+def _argmin(values: Dict[str, float]) -> str:
+    return min(ACTION_IDS, key=lambda a: (values[a], a))
+
+
+def _argmax(values: Dict[str, float]) -> str:
+    return max(ACTION_IDS, key=lambda a: (values[a], a))
+
+
 def evaluate_decisions(
     situations: Sequence[Situation],
     model: MultiHeadMLP,
@@ -184,61 +189,62 @@ def evaluate_decisions(
             )
             for action in ACTION_IDS
         }
-        oracle_action = min(true_values, key=lambda a: (true_values[a], a))
+        oracle_action = _argmin(true_values)
 
         posterior = posterior_over_physics(situation)
         belief_values = {action: 0.0 for action in ACTION_IDS}
+        belief_progress = {action: 0.0 for action in ACTION_IDS}
+        belief_enables = {action: 0.0 for action in ACTION_IDS}
         for index, weight in posterior.items():
             if weight <= 0.0:
                 continue
             hypothesis = (index, False)
+            scene = ctx.scene(hypothesis)
             for action in ACTION_IDS:
                 belief_values[action] += weight * _value_of_action(
                     ctx, hypothesis, action, candidates, depth=depth, fail_cost=fail_cost
                 )
-        analytic_action = min(belief_values, key=lambda a: (belief_values[a], a))
-
-        # The *matched* analytic baseline: the same greedy feasibility rule the
-        # network implements, but with the analytic success probability from the
-        # belief. Comparing learned against analytic this way isolates the model,
-        # while comparing either against the oracle isolates the decision rule.
-        from ..grid.planner import _execute_cached
-
-        moved_prob = {action: 0.0 for action in ACTION_IDS}
-        for index, weight in posterior.items():
-            if weight <= 0.0:
-                continue
-            hypothesis = (index, False)
-            for action in ACTION_IDS:
-                successor, result = _execute_cached(
-                    ctx.scene(hypothesis), candidates.by_id(action).joint
-                )
-                moved_prob[action] += weight * (1.0 if result.y_public == "moved" else 0.0)
-        analytic_greedy_action = max(moved_prob, key=lambda a: (moved_prob[a], a))
+                _moved, progress, enables = action_labels(scene, action)
+                belief_progress[action] += weight * progress
+                belief_enables[action] += weight * enables
 
         obs = np.asarray(
             [_features_for(situation, action) for action in ACTION_IDS], dtype=np.float64
         )
-        prob = model.predict_feasibility(obs[:, : model.obs_dim], obs[:, model.obs_dim:])
-        learned_index = int(np.argmax(prob))
-        learned_action = ACTION_IDS[learned_index]
+        outcomes = model.predict_outcomes(obs[:, : model.obs_dim], obs[:, model.obs_dim:])
+        learned = {action: outcomes[i] for i, action in enumerate(ACTION_IDS)}
 
+        chosen = {
+            "value_optimal": _argmin(belief_values),
+            "analytic_progress": _argmax(belief_progress),
+            "analytic_progress_enable": _argmax(
+                {a: belief_progress[a] + belief_enables[a] for a in ACTION_IDS}
+            ),
+            "learned_moved": _argmax(
+                {a: float(learned[a][CHANNEL_MOVED]) for a in ACTION_IDS}
+            ),
+            "learned_progress": _argmax(
+                {a: float(learned[a][CHANNEL_PROGRESS]) for a in ACTION_IDS}
+            ),
+            "learned_progress_enable": _argmax(
+                {
+                    a: float(learned[a][CHANNEL_PROGRESS] + learned[a][CHANNEL_ENABLES])
+                    for a in ACTION_IDS
+                }
+            ),
+        }
         oracle_value = true_values[oracle_action]
         records.append(
             DecisionRecord(
                 scene_id=situation.scene_id,
                 true_physics=situation.physics.label,
                 oracle_action=oracle_action,
-                analytic_action=analytic_action,
-                learned_action=learned_action,
-                analytic_greedy_action=analytic_greedy_action,
                 oracle_value=oracle_value,
-                analytic_value=true_values[analytic_action],
-                learned_value=true_values[learned_action],
-                analytic_regret=true_values[analytic_action] - oracle_value,
-                learned_regret=true_values[learned_action] - oracle_value,
-                analytic_greedy_value=true_values[analytic_greedy_action],
-                analytic_greedy_regret=true_values[analytic_greedy_action] - oracle_value,
+                chosen=chosen,
+                regret={
+                    name: true_values[action] - oracle_value
+                    for name, action in chosen.items()
+                },
                 teammate_slips=int(situation.physics.traction[1] == "slip"),
                 constrained=int(situation.physics.constraint == "constrained"),
                 heavy=int(situation.physics.resistance >= 2),
@@ -247,27 +253,20 @@ def evaluate_decisions(
     return records
 
 
-def _summarise(name: str, records: Sequence[DecisionRecord]) -> DecisionSummary:
+def _summaries(name: str, records: Sequence[DecisionRecord]) -> List[PolicySummary]:
     if not records:
-        return DecisionSummary(
-            name, 0, float("nan"), float("nan"), float("nan"), float("nan"),
-            float("nan"), float("nan"), float("nan"), float("nan"),
+        return [PolicySummary(p, 0, float("nan"), float("nan")) for p in POLICIES]
+    return [
+        PolicySummary(
+            name=policy,
+            n=len(records),
+            mean_regret=float(np.mean([r.regret[policy] for r in records])),
+            agreement=float(
+                np.mean([r.chosen[policy] == r.oracle_action for r in records])
+            ),
         )
-    n = len(records)
-    return DecisionSummary(
-        name=name,
-        n=n,
-        mean_analytic_regret=float(np.mean([r.analytic_regret for r in records])),
-        mean_learned_regret=float(np.mean([r.learned_regret for r in records])),
-        analytic_agreement=float(np.mean([r.analytic_action == r.oracle_action for r in records])),
-        learned_agreement=float(np.mean([r.learned_action == r.oracle_action for r in records])),
-        analytic_success=float(np.mean([r.analytic_regret <= 1e-9 for r in records])),
-        learned_success=float(np.mean([r.learned_regret <= 1e-9 for r in records])),
-        analytic_greedy_regret=float(np.mean([r.analytic_greedy_regret for r in records])),
-        analytic_greedy_agreement=float(
-            np.mean([r.analytic_greedy_action == r.oracle_action for r in records])
-        ),
-    )
+        for policy in POLICIES
+    ]
 
 
 def run_decision_probe(
@@ -288,38 +287,37 @@ def run_decision_probe(
         n_scenes=n_test_situations, lead_in=lead_in, seed=seed + 10_000
     )
     if exclude_slipping_from_training:
-        train_situations = [s for s in train_situations if s.physics.traction[1] != "slip"]
+        train_situations = [
+            s for s in train_situations if s.physics.traction[1] != "slip"
+        ]
 
-    # Build the training tensors from the same situations the evaluation uses.
-    samples = []
+    features: List[Tuple[float, ...]] = []
+    targets: List[List[float]] = []
+    physics_index: List[int] = []
+    pose_index: List[int] = []
     for situation in train_situations:
         for action in ACTION_IDS:
-            from ..grid.dynamics import execute as _execute
+            moved, progress, enables = action_labels(situation.scene, action)
+            features.append(_features_for(situation, action))
+            targets.append([moved, progress, enables])
+            physics_index.append(PHYSICS.index(situation.physics))
+            pose_index.append(pose_to_index(situation.scene.obj.origin))
 
-            from ..learning.data import _joint_for
-
-            successor, result = _execute(situation.scene, _joint_for(situation.scene, action))
-            samples.append(
-                (
-                    _features_for(situation, action),
-                    1.0 if result.y_public == "moved" else 0.0,
-                    PHYSICS.index(situation.physics),
-                    pose_to_index(situation.scene.obj.origin),
-                )
-            )
-    x = np.asarray([s[0] for s in samples], dtype=np.float64)
-    y = np.asarray([s[1] for s in samples], dtype=np.float64)
-    physics_index = np.asarray([s[2] for s in samples], dtype=np.int64)
-    pose_index = np.asarray([s[3] for s in samples], dtype=np.int64)
-
+    x = np.asarray(features, dtype=np.float64)
+    t = np.asarray(targets, dtype=np.float64)
     model = MultiHeadMLP(seed=seed)
     train(
-        model, x[:, : model.obs_dim], x[:, model.obs_dim:], y,
-        physics_index, pose_index, epochs=epochs, seed=seed,
+        model,
+        x[:, : model.obs_dim],
+        x[:, model.obs_dim:],
+        t,
+        np.asarray(physics_index, dtype=np.int64),
+        np.asarray(pose_index, dtype=np.int64),
+        epochs=epochs,
+        seed=seed,
     )
 
     records = evaluate_decisions(test_situations, model, depth=depth)
-    overall = _summarise("all", records)
     groups: Dict[str, List[DecisionRecord]] = defaultdict(list)
     for record in records:
         if record.teammate_slips:
@@ -328,11 +326,12 @@ def run_decision_probe(
             groups["constrained"].append(record)
         if record.heavy:
             groups["heavy"].append(record)
-    by_mode = {name: _summarise(name, group) for name, group in sorted(groups.items())}
 
     return DecisionProbeResult(
-        overall=overall,
-        by_mode=by_mode,
+        summaries=_summaries("all", records),
+        by_mode={
+            name: _summaries(name, group) for name, group in sorted(groups.items())
+        },
         records=records,
         meta={
             "package_version": __version__,
@@ -352,7 +351,10 @@ def run_decision_probe(
 def _git_revision() -> str:
     try:
         out = subprocess.run(
-            ["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True, check=False
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True,
+            text=True,
+            check=False,
         )
         return out.stdout.strip() or "unknown"
     except OSError:
@@ -361,24 +363,20 @@ def _git_revision() -> str:
 
 def format_decision_markdown(result: DecisionProbeResult) -> str:
     lines = [
-        "| group | n | value-optimal regret | analytic-greedy regret | learned-greedy regret |",
+        "| group | policy | n | mean regret | agreement with oracle |",
         "|---|---|---|---|---|",
     ]
-    for summary in [result.overall] + list(result.by_mode.values()):
+    for summary in result.summaries:
         lines.append(
-            f"| {summary.name} | {summary.n} | {summary.mean_analytic_regret:.3f} | "
-            f"{summary.analytic_greedy_regret:.3f} | {summary.mean_learned_regret:.3f} |"
+            f"| all | {summary.name} | {summary.n} | {summary.mean_regret:.3f} | "
+            f"{summary.agreement:.3f} |"
         )
-    lines += [
-        "",
-        "| group | n | value-optimal agreement | analytic-greedy agreement | learned-greedy agreement |",
-        "|---|---|---|---|---|",
-    ]
-    for summary in [result.overall] + list(result.by_mode.values()):
-        lines.append(
-            f"| {summary.name} | {summary.n} | {summary.analytic_agreement:.3f} | "
-            f"{summary.analytic_greedy_agreement:.3f} | {summary.learned_agreement:.3f} |"
-        )
+    for group, summaries in result.by_mode.items():
+        for summary in summaries:
+            lines.append(
+                f"| {group} | {summary.name} | {summary.n} | {summary.mean_regret:.3f} | "
+                f"{summary.agreement:.3f} |"
+            )
     return "\n".join(lines)
 
 
@@ -386,24 +384,24 @@ def write_decision_report(result: DecisionProbeResult, output_dir: str) -> Dict[
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     paths: Dict[str, str] = {}
-
     json_path = out / "decision_probe.json"
     json_path.write_text(
         json.dumps(
             {
                 "meta": result.meta,
-                "overall": asdict(result.overall),
-                "by_mode": {k: asdict(v) for k, v in result.by_mode.items()},
+                "summaries": [asdict(s) for s in result.summaries],
+                "by_mode": {
+                    k: [asdict(s) for s in v] for k, v in result.by_mode.items()
+                },
                 "records": [asdict(r) for r in result.records],
             },
             indent=2,
         )
     )
     paths["json"] = str(json_path)
-
     md_path = out / "decision_probe.md"
     md_path.write_text(
-        "# Decision-level probe: what does a learned feasibility rule cost?\n\n"
+        "# Decision-level probe: what does a learned action model cost?\n\n"
         f"- git revision: `{result.meta['git_revision']}`\n"
         f"- {result.meta['n_train_situations']} training situations, "
         f"{result.meta['n_test_situations']} test situations, lead-in "

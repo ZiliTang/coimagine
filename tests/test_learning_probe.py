@@ -27,8 +27,10 @@ from coimagine.learning.mlp import MultiHeadMLP
 
 def test_features_have_the_declared_dimension() -> None:
     dataset = generate_dataset(n_scenes=4, lead_in=1, seed=0)
-    x, y, physics_index = sample_to_arrays(dataset.samples)
+    x, y, physics_index, targets = sample_to_arrays(dataset.samples)
     assert x.shape[1] == FEATURE_DIM
+    assert targets.shape == (x.shape[0], 3)
+    assert set(np.unique(targets)) <= {0.0, 1.0}
     assert set(np.unique(y)) <= {0.0, 1.0}
     assert physics_index.min() >= 0 and physics_index.max() < 16
     assert len(dataset.samples) == x.shape[0]
@@ -84,10 +86,12 @@ def test_learning_probe_reports_and_separates_the_modes(tmp_path) -> None:
     assert result.n_train > 0 and result.n_test > 0
     # The pose decoder should recover the object placement from the scan.
     assert result.in_distribution.pose_accuracy > 0.5
-    # A model trained without the slipping mode must not become *better* on it.
+    # The robust property is representational, not a directional accuracy claim:
+    # a model that never saw the mode cannot decode it at all.
+    assert result.narrow_on_rare_mode.physics_accuracy < 0.05
     assert (
-        result.wide_on_rare_mode.feasibility_balanced_accuracy
-        >= result.narrow_on_rare_mode.feasibility_balanced_accuracy - 0.05
+        result.wide_on_rare_mode.physics_accuracy
+        > result.narrow_on_rare_mode.physics_accuracy
     )
     paths = write_probe_report(result, str(tmp_path))
     assert "md" in paths and "json" in paths

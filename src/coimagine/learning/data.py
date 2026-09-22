@@ -85,6 +85,49 @@ def probe_scene(origin: Cell, physics: HiddenPhysics) -> Scene:
     return scene_from_ascii(rows, name=f"probe_{origin[0]}_{origin[1]}", hidden=physics)
 
 
+#: The pushing actions used when asking whether an action enabled anything.
+PUSH_ACTIONS: Tuple[str, ...] = ("push:0:E", "push:1:E", "co_push:E")
+
+
+def _min_distance_to_target(scene: Scene) -> int:
+    return min(
+        abs(c[0] - t[0]) + abs(c[1] - t[1])
+        for c in scene.obj.cells
+        for t in scene.static.target
+    )
+
+
+def action_labels(scene: Scene, action_id: str) -> Tuple[int, int, int]:
+    """The three supervised outcomes of taking ``action_id`` in ``scene``.
+
+    1. **moved** -- the object physically moved this step;
+    2. **progress** -- the object ended *closer* to the goal region than it started,
+       which is the thing a planner actually wants, and which stops a greedy rule from
+       pushing the object straight past the goal;
+    3. **enables** -- some push that failed before this action now succeeds, which is
+       how a preparation action such as release earns its place even though it does not
+       move anything itself.
+    """
+
+    joint = _joint_for(scene, action_id)
+    successor, result = execute(scene, joint)
+    moved = int(result.y_public == "moved")
+    before = _min_distance_to_target(scene)
+    after = _min_distance_to_target(successor)
+    progress = int(after < before)
+
+    enables = 0
+    for push in PUSH_ACTIONS:
+        _, before_result = execute(scene, _joint_for(scene, push))
+        if before_result.y_public == "moved":
+            continue
+        _, after_result = execute(successor, _joint_for(successor, push))
+        if after_result.y_public == "moved":
+            enables = 1
+            break
+    return moved, progress, enables
+
+
 @dataclass(frozen=True)
 class FeasibilitySample:
     """One (situation, action) pair with its labels."""
@@ -96,6 +139,8 @@ class FeasibilitySample:
     action_id: str
     moved: int
     scene_id: int = 0
+    progress: int = 0
+    enables: int = 0
 
 
 @dataclass(frozen=True)
@@ -258,10 +303,7 @@ def generate_dataset(
 
         scan = apply_noise(ray_cast(current, 0, radius=radius), scan_noise_model, rng)
         for action_id in ACTION_IDS:
-            successor, result = execute(
-                current, _joint_for(current, action_id), noise=fb_noise, rng=rng
-            )
-            moved = 1 if result.y_public == "moved" else 0
+            moved, progress, enables = action_labels(current, action_id)
             samples.append(
                 FeasibilitySample(
                     features=sample_vector(
@@ -273,6 +315,8 @@ def generate_dataset(
                     action_id=action_id,
                     moved=moved,
                     scene_id=scenes_built - 1,
+                    progress=progress,
+                    enables=enables,
                 )
             )
     return Dataset(samples)
@@ -308,8 +352,11 @@ def sample_to_arrays(samples: Sequence[FeasibilitySample]):
         raise ValueError("no samples")
     x = np.asarray([s.features for s in samples], dtype=np.float64)
     y = np.asarray([s.feasible for s in samples], dtype=np.float64)
+    targets = np.asarray(
+        [[s.moved, s.progress, s.enables] for s in samples], dtype=np.float64
+    )
     physics_index = np.asarray([PHYSICS.index(s.physics) for s in samples], dtype=np.int64)
-    return x, y, physics_index
+    return x, y, physics_index, targets
 
 
 def pose_to_index(origin: Cell, grid: int = GRID) -> int:

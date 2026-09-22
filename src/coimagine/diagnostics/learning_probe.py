@@ -61,7 +61,7 @@ class ProbeResult:
 
 
 def _evaluate(model: MultiHeadMLP, samples: Sequence) -> SplitMetrics:
-    x, y, physics_index = sample_to_arrays(samples)
+    x, y, physics_index, _targets = sample_to_arrays(samples)
     action = x[:, model.obs_dim:]
     obs = x[:, : model.obs_dim]
     prob = model.predict_feasibility(obs, action)
@@ -122,13 +122,13 @@ def run_learning_probe(
     rare_test = test_set.filter(teammate_slips)
 
     def fit(subset: Dataset) -> MultiHeadMLP:
-        x, y, physics_index = sample_to_arrays(subset.samples)
+        x, y, physics_index, targets = sample_to_arrays(subset.samples)
         pose_index = np.asarray(
             [pose_to_index(s.object_origin) for s in subset.samples], dtype=np.int64
         )
         model = MultiHeadMLP(seed=seed)
         train(
-            model, x[:, : model.obs_dim], x[:, model.obs_dim:], y,
+            model, x[:, : model.obs_dim], x[:, model.obs_dim:], targets,
             physics_index, pose_index,
             epochs=epochs, seed=seed, verbose=verbose,
         )
@@ -144,7 +144,7 @@ def run_learning_probe(
     wide_metrics = _evaluate(wide, rare_test.samples)
     wide_metrics.name = "wide_model_trained_with_slipping"
 
-    x, y, _ = sample_to_arrays(test_set.samples)
+    x, y, _, _ = sample_to_arrays(test_set.samples)
     majority = float(max(y.mean(), 1.0 - y.mean()))
 
     return ProbeResult(

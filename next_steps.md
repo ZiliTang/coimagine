@@ -514,3 +514,61 @@ an action creates new feasible actions, which is how release earns its place). N
 round: add an enablement head and a progress-oriented target, re-run this exact regret
 comparison, and only then re-attempt the mode ablation -- there is no point ablating a
 mode while the baseline rule is still broken.
+
+---
+
+## Round 10: reshaping the target did not rescue the greedy rule (negative result)
+
+Round 9 concluded that the learned head lacked a prediction of *progress* and of
+*enablement*. Round 10 implemented exactly that:
+
+* the action head now predicts three channels -- **moves**, **progress** (the object
+  ends strictly closer to the goal) and **enables** (a push that failed before this
+  action now succeeds, which is how release earns its place);
+* the labels behave as designed: `enables` fires **only** for release (4 of 120 samples
+  in the small dataset), `progress` only for pushes;
+* six policies are compared, each with a matched analytic twin so the rule and the
+  model can be judged separately.
+
+500 training situations, 250 held-out, 600 epochs:
+
+| group | policy | mean regret | agreement with oracle |
+|---|---|---|---|
+| all | value_optimal | **0.000** | **1.000** |
+| all | analytic_progress | 2.428 | 0.516 |
+| all | analytic_progress_enable | 2.652 | 0.292 |
+| all | learned_moved | 0.892 | 0.092 |
+| all | learned_progress | 0.972 | 0.080 |
+| all | learned_progress_enable | 1.132 | 0.080 |
+
+Per mode, the same pattern: on constrained objects `analytic_progress` reaches 0.620
+agreement but `analytic_progress_enable` falls to 0.289; on heavy objects 0.617 versus
+0.323; on slipping teammate 0.659 versus 0.318. Every learned variant sits at 0.00-0.09.
+
+**The redesign made things worse, not better.** Three things follow:
+
+1. **The reference is sound.** The belief-weighted value rule is still exact (0.000
+   regret, 100% agreement) even though the belief is diffuse, so the comparison has a
+   meaningful anchor and the greedy policies are genuinely bad rather than badly scored.
+2. **Enabling supervision backfired.** `progress + enables` is worse than `progress`
+   alone for both the analytic and the learned policies. The enablement label is very
+   sparse (release only), so adding it mostly promotes release in situations that do not
+   need it.
+3. **The honest scope of this negative result.** A greedy argmax over a *sparse binary*
+   target is a weak decision rule, and this experiment shows that target engineering does
+   not rescue it. It does **not** show that progress or enablement supervision is useless
+   for a rollout -- only that it cannot help a rule that scores each action
+   independently and ignores consequences. The structure of the decision rule, not the
+   choice of target, is what failed.
+
+**Where this leaves the programme.** Two options, in order of preference:
+
+1. stop trying to make a per-action classifier serve the rollout, and instead have the
+   learned model predict a **value** (or a rollout-consistent multi-step quantity), which
+   is what the exact planner actually consumes -- this is the multi-step feasibility loss
+   the alignment document proposed, and it is untested;
+2. extend the action space to continuous contact parameters first, so that a per-action
+   score is at least a well-posed function to learn.
+
+Unfinished: the action space is still discrete; the learned model still is not inside a
+rollout; results.md has not been updated with any of rounds 5-10.

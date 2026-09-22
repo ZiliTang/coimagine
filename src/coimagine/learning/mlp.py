@@ -42,6 +42,11 @@ class MultiHeadMLP:
     n_cells: int = 36
     seed: int = 0
 
+    #: Number of action-outcome channels, in a fixed order:
+    #: 0 = the object moves, 1 = the object makes progress toward the goal,
+    #: 2 = the action enables a push that was not possible before.
+    n_outcomes: int = 3
+
     #: Loss weights. Fixed before training and reported; never tuned on the test set.
     feasibility_weight: float = 1.0
     physics_weight: float = 0.3
@@ -59,7 +64,7 @@ class MultiHeadMLP:
             "W1": _he((self.obs_dim, h), rng), "b1": np.zeros(h),
             "W2": _he((h, h), rng), "b2": np.zeros(h),
             "Wf1": _he((h + a, h // 2), rng), "bf1": np.zeros(h // 2),
-            "Wf2": _he((h // 2, 1), rng), "bf2": np.zeros(1),
+            "Wf2": _he((h // 2, self.n_outcomes), rng), "bf2": np.zeros(self.n_outcomes),
             "Wp": _he((h, self.n_physics), rng), "bp": np.zeros(self.n_physics),
             "Wq": _he((h, self.n_cells), rng), "bq": np.zeros(self.n_cells),
         }
@@ -77,10 +82,10 @@ class MultiHeadMLP:
         z2 = np.maximum(0.0, z1 @ p["W2"] + p["b2"])
         joined = np.concatenate([z2, action], axis=1)
         f1 = np.maximum(0.0, joined @ p["Wf1"] + p["bf1"])
-        feas_logit = (f1 @ p["Wf2"] + p["bf2"])[:, 0]
+        outcome_logit = f1 @ p["Wf2"] + p["bf2"]
         return {
             "z1": z1, "z2": z2, "joined": joined, "f1": f1,
-            "feas_logit": feas_logit,
+            "outcome_logit": outcome_logit,
             "phys_logit": z2 @ p["Wp"] + p["bp"],
             "pose_logit": z2 @ p["Wq"] + p["bq"],
         }
@@ -90,27 +95,30 @@ class MultiHeadMLP:
         self,
         obs: np.ndarray,
         action: np.ndarray,
-        feasible: np.ndarray,
+        targets: np.ndarray,
         physics_index: Optional[np.ndarray] = None,
         pose_index: Optional[np.ndarray] = None,
     ) -> Tuple[float, Dict[str, np.ndarray], Dict[str, float]]:
+        """Binary cross-entropy on every action-outcome channel, plus the decoders."""
+
+        if targets.ndim == 1:
+            targets = targets[:, None]
         cache = self.forward(obs, action)
         p = self.params
         n = obs.shape[0]
         grads = {k: np.zeros_like(v) for k, v in p.items()}
 
-        # feasibility: binary cross-entropy on the logit
-        logit = cache["feas_logit"]
+        logit = cache["outcome_logit"]
         prob = 1.0 / (1.0 + np.exp(-logit))
         eps = 1e-12
-        bce = -(feasible * np.log(prob + eps) + (1 - feasible) * np.log(1 - prob + eps))
+        bce = -(targets * np.log(prob + eps) + (1 - targets) * np.log(1 - prob + eps))
         loss = self.feasibility_weight * float(bce.sum()) / n
         metrics = {"feasibility": loss}
 
-        d_logit = (self.feasibility_weight / n) * (prob - feasible)
-        grads["Wf2"] += cache["f1"].T @ d_logit[:, None]
-        grads["bf2"] += d_logit.sum(keepdims=True)
-        d_f1 = (d_logit[:, None] @ p["Wf2"].T) * (cache["f1"] > 0)
+        d_logit = (self.feasibility_weight / n) * (prob - targets)
+        grads["Wf2"] += cache["f1"].T @ d_logit
+        grads["bf2"] += d_logit.sum(axis=0)
+        d_f1 = (d_logit @ p["Wf2"].T) * (cache["f1"] > 0)
         grads["Wf1"] += cache["joined"].T @ d_f1
         grads["bf1"] += d_f1.sum(axis=0)
         d_z2 = d_f1 @ p["Wf1"].T[:, : self.hidden]
@@ -145,7 +153,6 @@ class MultiHeadMLP:
             grads["bq"] += d_pose.sum(axis=0)
             d_z2 = d_z2 + d_pose @ p["Wq"].T
 
-        # trunk backward
         d_z2 = d_z2 * (cache["z2"] > 0)
         grads["W2"] += cache["z1"].T @ d_z2
         grads["b2"] += d_z2.sum(axis=0)
@@ -154,9 +161,16 @@ class MultiHeadMLP:
         grads["b1"] += d_z1.sum(axis=0)
         return loss, grads, metrics
 
-    def predict_feasibility(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
-        logit = self.forward(obs, action)["feas_logit"]
+    def predict_outcomes(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Probability of each action-outcome channel, shape ``(N, n_outcomes)``."""
+
+        logit = self.forward(obs, action)["outcome_logit"]
         return 1.0 / (1.0 + np.exp(-logit))
+
+    def predict_feasibility(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Channel 0 only: the probability that the object moves."""
+
+        return self.predict_outcomes(obs, action)[:, 0]
 
     def predict_physics(self, obs: np.ndarray) -> np.ndarray:
         logit = self.forward(obs, np.zeros((obs.shape[0], self.action_dim)))["phys_logit"]
@@ -177,7 +191,7 @@ def train(
     model: MultiHeadMLP,
     obs: np.ndarray,
     action: np.ndarray,
-    feasible: np.ndarray,
+    targets: np.ndarray,
     physics_index: Optional[np.ndarray] = None,
     pose_index: Optional[np.ndarray] = None,
     *,
@@ -203,7 +217,7 @@ def train(
         for start in range(0, n, batch_size):
             idx = order[start:start + batch_size]
             loss, grads, metrics = model.loss_and_grads(
-                obs[idx], action[idx], feasible[idx],
+                obs[idx], action[idx], targets[idx],
                 None if physics_index is None else physics_index[idx],
                 None if pose_index is None else pose_index[idx],
             )
