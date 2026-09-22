@@ -1729,3 +1729,41 @@ An ablation is only meaningful above the baseline's floor. The same experiment g
 effect" with one policy and a total collapse with another, and only the choice of policy
 distinguishes a real null from an unmeasurable one. Both the floor and the collapse are now
 locked by tests so neither can be mistaken for the other.
+
+---
+
+## Round 32: the accumulated record is now legible, and the reference item is closed
+
+Fifteen parts of `results.md` had accumulated, several of them recording claims that later
+experiments withdrew. A reader could not tell what still stands. `results.md` now opens with a
+**current-state section** listing only what survives (with the evidence for each), the eight
+withdrawn claims with the reason for each withdrawal, and the unfinished items. Everything
+below it is explicitly labelled as history, kept for auditability and not to be cited as
+current.
+
+### The reference's "over-conservatism" is closed as not-a-defect
+
+This had been listed as unfinished since round 14. The evidence now says it is not a defect:
+
+* the reference's success rate on solvable episodes is **1.000, identical to the full-information
+  oracle**;
+* its cost per success is **3.47 against the oracle's 2.94, an 18% premium**;
+* **62 of its 73 `wait` choices are also the oracle's choice (85%)** -- it waits where waiting is
+  optimal, because the surviving hypotheses are genuinely unsolvable.
+
+The cut heuristic does contain a failure-cost term, and removing it was tried (round 14) and made
+things worse: a failed action then tied with a neutral preparation action and the fixed tie-break
+picked the failing one. It is documented as a heuristic with that job. Since the reference already
+matches the oracle in success and is within 18% on cost, there is nothing here left to fix; the
+item is closed rather than carried.
+
+### Where the project stands
+
+All five objective items have reproducible experimental conclusions, and the honest headline is
+narrower than any single earlier round suggested:
+
+> In this task, at equal information the exact belief-space planner is already essentially
+> optimal, so the missing contact physics costs steps rather than success. The learned models
+> built here do not match it over an episode; what does transfer is a **value** target at a
+> single decision, a **threshold regression** in the continuous setting, and the two rules about
+> **training coverage** and **message value** established in rounds 22-31.
