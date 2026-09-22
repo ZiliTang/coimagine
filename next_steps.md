@@ -572,3 +572,57 @@ agreement but `analytic_progress_enable` falls to 0.289; on heavy objects 0.617 
 
 Unfinished: the action space is still discrete; the learned model still is not inside a
 rollout; results.md has not been updated with any of rounds 5-10.
+
+---
+
+## Round 11: predict the value, not the outcome score (positive result)
+
+Rounds 9 and 10 established that no per-action outcome score -- motion, progress, or
+enablement -- can serve the rollout. Round 11 changed the supervised target to the
+quantity the planner actually consumes: the **belief-weighted value at equal
+information**, produced by the same code path (`situation_quantities`) that the
+reference policy minimises.
+
+300 training situations / 150 held out / 500 epochs:
+
+| policy | mean regret | agreement with oracle |
+|---|---|---|
+| value_optimal (exact reference) | 0.000 | 1.000 |
+| analytic_progress | 2.187 | 0.493 |
+| analytic_progress_enable | 2.400 | 0.280 |
+| learned_moved | 1.573 | 0.040 |
+| learned_progress | 1.440 | 0.053 |
+| learned_progress_enable | 1.573 | 0.047 |
+| **learned_value** | **0.553** | **0.947** |
+
+By mechanism group the learned value reproduces the exact planner almost completely:
+
+| group | n | learned-value regret | learned-value agreement | learned-moved agreement |
+|---|---|---|---|---|
+| constrained | 71 | **0.000** | **1.000** | 0.000 |
+| teammate slips | 77 | **0.000** | **1.000** | 0.039 |
+| heavy | 80 | 0.263 | 0.975 | 0.000 |
+
+**Agreement rises from about 4% to 94.7%, reaching 100% on the latched and
+teammate-slipping groups.** This is the clearest positive result of the project so far:
+
+> what a prediction must retain in order to serve a rollout is a **value**, not a
+> per-action outcome score. However accurate a single-action outcome prediction is, it
+> cannot substitute for a sequence value, because that is what the planner consumes.
+
+**The mode ablation still shows nothing at the decision level.** Retraining with
+teammate-slipping removed entirely gives overall regret 0.547 (versus 0.553) and
+slipping-group regret 0.286 (versus 0.000) -- neither better nor meaningfully worse.
+Combined with the round-9 correction, the defensible statement is: the representational
+collapse is a real property of the learned latent, but it has **no measurable
+decision-level consequence**, with either an outcome head or a value head. Round 7's
+result (a model *class* that cannot express a mode fails outright) stands; the inference
+from "the training set rarely contained this mode" does not follow.
+
+Also this round: `results.md` finally carries rounds 5-11 (part three onward), including
+the realignment, both calibration gaps, the learning probe and both decision probes.
+
+Unfinished, unchanged: continuous contact parameters; the learned value is not yet inside
+a closed-loop rollout (only compared at single decision points); one scene family only;
+the constraint and resistance modes have not been ablated at the decision level; no
+communication; visualisations and replays not yet rebuilt for the new main line.

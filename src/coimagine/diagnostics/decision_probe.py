@@ -56,6 +56,7 @@ POLICIES: Tuple[str, ...] = (
     "learned_moved",
     "learned_progress",
     "learned_progress_enable",
+    "learned_value",
 )
 
 #: Channel indices of the action head.
@@ -167,6 +168,49 @@ def _argmax(values: Dict[str, float]) -> str:
     return max(ACTION_IDS, key=lambda a: (values[a], a))
 
 
+def situation_quantities(
+    situation: Situation,
+    *,
+    depth: int = 1,
+    fail_cost: float = DEFAULT_FAIL_COST,
+    candidates=None,
+):
+    """Everything the probe needs about one decision point, under one code path.
+
+    Training targets and evaluation references are produced here, so a learned value
+    head is trained against exactly the quantity the reference policy minimises.
+    """
+
+    candidates = candidates if candidates is not None else candidates_for()
+    ctx = ContactContext(
+        situation.scene.static, situation.scene.obj.origin, situation.scene.robots
+    )
+    true_hyp = (PHYSICS.index(situation.physics), False)
+    true_values = {
+        action: _value_of_action(
+            ctx, true_hyp, action, candidates, depth=depth, fail_cost=fail_cost
+        )
+        for action in ACTION_IDS
+    }
+    posterior = posterior_over_physics(situation)
+    belief_values = {action: 0.0 for action in ACTION_IDS}
+    belief_progress = {action: 0.0 for action in ACTION_IDS}
+    belief_enables = {action: 0.0 for action in ACTION_IDS}
+    for index, weight in posterior.items():
+        if weight <= 0.0:
+            continue
+        hypothesis = (index, False)
+        scene = ctx.scene(hypothesis)
+        for action in ACTION_IDS:
+            belief_values[action] += weight * _value_of_action(
+                ctx, hypothesis, action, candidates, depth=depth, fail_cost=fail_cost
+            )
+            _moved, progress, enables = action_labels(scene, action)
+            belief_progress[action] += weight * progress
+            belief_enables[action] += weight * enables
+    return ctx, true_values, belief_values, belief_progress, belief_enables
+
+
 def evaluate_decisions(
     situations: Sequence[Situation],
     model: MultiHeadMLP,
@@ -178,35 +222,16 @@ def evaluate_decisions(
     records: List[DecisionRecord] = []
 
     for situation in situations:
-        ctx = ContactContext(
-            situation.scene.static, situation.scene.obj.origin, situation.scene.robots
+        (
+            _ctx,
+            true_values,
+            belief_values,
+            belief_progress,
+            belief_enables,
+        ) = situation_quantities(
+            situation, depth=depth, fail_cost=fail_cost, candidates=candidates
         )
-        true_hyp = (PHYSICS.index(situation.physics), False)
-
-        true_values = {
-            action: _value_of_action(
-                ctx, true_hyp, action, candidates, depth=depth, fail_cost=fail_cost
-            )
-            for action in ACTION_IDS
-        }
         oracle_action = _argmin(true_values)
-
-        posterior = posterior_over_physics(situation)
-        belief_values = {action: 0.0 for action in ACTION_IDS}
-        belief_progress = {action: 0.0 for action in ACTION_IDS}
-        belief_enables = {action: 0.0 for action in ACTION_IDS}
-        for index, weight in posterior.items():
-            if weight <= 0.0:
-                continue
-            hypothesis = (index, False)
-            scene = ctx.scene(hypothesis)
-            for action in ACTION_IDS:
-                belief_values[action] += weight * _value_of_action(
-                    ctx, hypothesis, action, candidates, depth=depth, fail_cost=fail_cost
-                )
-                _moved, progress, enables = action_labels(scene, action)
-                belief_progress[action] += weight * progress
-                belief_enables[action] += weight * enables
 
         obs = np.asarray(
             [_features_for(situation, action) for action in ACTION_IDS], dtype=np.float64
@@ -233,6 +258,12 @@ def evaluate_decisions(
                 }
             ),
         }
+        predicted_value = model.predict_value(
+            obs[:, : model.obs_dim], obs[:, model.obs_dim:]
+        )
+        chosen["learned_value"] = _argmin(
+            {a: float(predicted_value[i]) for i, a in enumerate(ACTION_IDS)}
+        )
         oracle_value = true_values[oracle_action]
         records.append(
             DecisionRecord(
@@ -293,13 +324,18 @@ def run_decision_probe(
 
     features: List[Tuple[float, ...]] = []
     targets: List[List[float]] = []
+    values: List[float] = []
     physics_index: List[int] = []
     pose_index: List[int] = []
     for situation in train_situations:
+        _ctx, _true, belief_values, _bp, _be = situation_quantities(
+            situation, depth=depth, fail_cost=DEFAULT_FAIL_COST
+        )
         for action in ACTION_IDS:
             moved, progress, enables = action_labels(situation.scene, action)
             features.append(_features_for(situation, action))
             targets.append([moved, progress, enables])
+            values.append(belief_values[action])
             physics_index.append(PHYSICS.index(situation.physics))
             pose_index.append(pose_to_index(situation.scene.obj.origin))
 
@@ -313,6 +349,7 @@ def run_decision_probe(
         t,
         np.asarray(physics_index, dtype=np.int64),
         np.asarray(pose_index, dtype=np.int64),
+        np.asarray(values, dtype=np.float64),
         epochs=epochs,
         seed=seed,
     )

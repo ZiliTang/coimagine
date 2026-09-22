@@ -51,6 +51,10 @@ class MultiHeadMLP:
     feasibility_weight: float = 1.0
     physics_weight: float = 0.3
     pose_weight: float = 0.3
+    value_weight: float = 1.0
+
+    #: Divisor applied to value targets so the MSE is on a comparable scale.
+    value_scale: float = 20.0
 
     params: Dict[str, np.ndarray] = field(default_factory=dict)
 
@@ -67,6 +71,8 @@ class MultiHeadMLP:
             "Wf2": _he((h // 2, self.n_outcomes), rng), "bf2": np.zeros(self.n_outcomes),
             "Wp": _he((h, self.n_physics), rng), "bp": np.zeros(self.n_physics),
             "Wq": _he((h, self.n_cells), rng), "bq": np.zeros(self.n_cells),
+            "Wv1": _he((h + a, h // 2), rng), "bv1": np.zeros(h // 2),
+            "Wv2": _he((h // 2, 1), rng), "bv2": np.zeros(1),
         }
 
     # -- forward -----------------------------------------------------------
@@ -83,9 +89,12 @@ class MultiHeadMLP:
         joined = np.concatenate([z2, action], axis=1)
         f1 = np.maximum(0.0, joined @ p["Wf1"] + p["bf1"])
         outcome_logit = f1 @ p["Wf2"] + p["bf2"]
+        v1 = np.maximum(0.0, joined @ p["Wv1"] + p["bv1"])
+        value = (v1 @ p["Wv2"] + p["bv2"])[:, 0]
         return {
             "z1": z1, "z2": z2, "joined": joined, "f1": f1,
             "outcome_logit": outcome_logit,
+            "v1": v1, "value": value,
             "phys_logit": z2 @ p["Wp"] + p["bp"],
             "pose_logit": z2 @ p["Wq"] + p["bq"],
         }
@@ -98,8 +107,10 @@ class MultiHeadMLP:
         targets: np.ndarray,
         physics_index: Optional[np.ndarray] = None,
         pose_index: Optional[np.ndarray] = None,
+        values: Optional[np.ndarray] = None,
     ) -> Tuple[float, Dict[str, np.ndarray], Dict[str, float]]:
-        """Binary cross-entropy on every action-outcome channel, plus the decoders."""
+        """Binary cross-entropy on the outcome channels, MSE on the value, plus the
+        privileged decoders."""
 
         if targets.ndim == 1:
             targets = targets[:, None]
@@ -122,6 +133,20 @@ class MultiHeadMLP:
         grads["Wf1"] += cache["joined"].T @ d_f1
         grads["bf1"] += d_f1.sum(axis=0)
         d_z2 = d_f1 @ p["Wf1"].T[:, : self.hidden]
+
+        if values is not None:
+            target = values / self.value_scale
+            residual = cache["value"] - target
+            value_loss = self.value_weight * float((residual ** 2).mean())
+            loss += value_loss
+            metrics["value"] = value_loss
+            d_value = (self.value_weight * 2.0 / n) * residual
+            grads["Wv2"] += cache["v1"].T @ d_value[:, None]
+            grads["bv2"] += d_value.sum(keepdims=True)
+            d_v1 = (d_value[:, None] @ p["Wv2"].T) * (cache["v1"] > 0)
+            grads["Wv1"] += cache["joined"].T @ d_v1
+            grads["bv1"] += d_v1.sum(axis=0)
+            d_z2 = d_z2 + (d_v1 @ p["Wv1"].T[:, : self.hidden])
 
         if physics_index is not None:
             phys_logit = cache["phys_logit"]
@@ -172,6 +197,11 @@ class MultiHeadMLP:
 
         return self.predict_outcomes(obs, action)[:, 0]
 
+    def predict_value(self, obs: np.ndarray, action: np.ndarray) -> np.ndarray:
+        """Predicted action value, in the same units as the training target."""
+
+        return self.forward(obs, action)["value"] * self.value_scale
+
     def predict_physics(self, obs: np.ndarray) -> np.ndarray:
         logit = self.forward(obs, np.zeros((obs.shape[0], self.action_dim)))["phys_logit"]
         shifted = logit - logit.max(axis=1, keepdims=True)
@@ -185,6 +215,7 @@ class TrainHistory:
     feasibility: List[float] = field(default_factory=list)
     physics: List[float] = field(default_factory=list)
     pose: List[float] = field(default_factory=list)
+    value: List[float] = field(default_factory=list)
 
 
 def train(
@@ -194,6 +225,7 @@ def train(
     targets: np.ndarray,
     physics_index: Optional[np.ndarray] = None,
     pose_index: Optional[np.ndarray] = None,
+    values: Optional[np.ndarray] = None,
     *,
     epochs: int = 300,
     batch_size: int = 64,
@@ -220,6 +252,7 @@ def train(
                 obs[idx], action[idx], targets[idx],
                 None if physics_index is None else physics_index[idx],
                 None if pose_index is None else pose_index[idx],
+                None if values is None else values[idx],
             )
             step += 1
             for key, grad in grads.items():
@@ -235,6 +268,7 @@ def train(
             history.feasibility.append(metrics.get("feasibility", 0.0))
             history.physics.append(metrics.get("physics", 0.0))
             history.pose.append(metrics.get("pose", 0.0))
+            history.value.append(metrics.get("value", 0.0))
         history.losses.append(epoch_loss / max(1, batches))
         if verbose and (epoch % 50 == 0 or epoch == epochs - 1):
             print(f"epoch {epoch:4d} loss {history.losses[-1]:.4f}")
