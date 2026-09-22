@@ -336,3 +336,59 @@ Next round: widen the testbed so that resistance and traction also change the de
 partial progress must be predicted), re-run the model-error table, and only if a
 wrong *continuous* or *multi-factor* model measurably loses, build the multi-task
 latent world model on top.
+
+---
+
+## Round 7: widening the testbed -- which physics factors actually matter
+
+Round 6 showed that a wrong *resistance* or *traction* cost nothing, because with the
+robots already at contact the robust cooperative push works either way. The testbed was
+therefore too narrow to study a model. It is now widened: robot A starts on the
+object's west face and robot B starts two cells away, so "A pushes alone" and "bring B
+and push together" are genuinely different plans with different costs, and the number
+of effective pushers and who is gripping both change the outcome.
+
+### Factor sensitivity -- with a prior that expects the wrong regime
+
+| factor | truth | prior expects it | prior expects the other | gap |
+|---|---|---|---|---|
+| resistance | r=2, free, grip/grip | 3.00 | 4.00 | **1.00** |
+| traction | r=1, free, B slips | 3.00 | 4.00 | **1.00** |
+| constraint | r=1, latched | 3.00 | 4.00 | **1.00** |
+
+All three factors now change the decision. The cost of expecting the wrong regime is a
+uniform one-step recovery, because the belief updates from the feedback and the planner
+switches plans.
+
+### Representability -- when the model class cannot express the truth at all
+
+| factor | truth | class contains it | class excludes it | gap | success |
+|---|---|---|---|---|---|
+| resistance | r=2, free, grip/grip | 4.00 | 4.00 | 0.00 | 1.0 |
+| traction | r=1, free, B slips | 4.00 | 22.00 | **18.00** | **0.0** |
+| constraint | r=1, latched | 4.00 | 22.00 | **18.00** | **0.0** |
+
+**A model class that cannot represent the teammate's traction, or cannot represent the
+contact/constraint mode, fails outright.** Excluding heavy resistance from the class
+costs nothing, because the robust plan brings the teammate anyway.
+
+### What this means for the learned model
+
+The requirement is now precise, and it is a *representation* requirement rather than an
+accuracy requirement:
+
+* the model **must** be able to express *who can actually push* (the teammate's local
+  traction) and *whether the object is latched* (the constraint mode); getting these
+  wrong or omitting them is catastrophic, not merely costly;
+* resistance only has to be represented well enough for the planner to recover from a
+  wrong prior, which costs one step.
+
+This is exactly the design hypothesis behind the multi-task latent: the latent must
+preserve the discrete contact structure, and it is not enough to predict geometry well.
+
+The precondition for the learned model is now both met and *measurable*: the testbed can
+distinguish a model that carries these modes from one that does not, by a gap of 18.00
+with success falling to zero. Next round: build the multi-task latent world model
+(privileged-pose decoder head plus multi-step feasibility loss) and check whether a
+model learned from data discovers these modes, or whether the action space must first be
+extended to continuous contact parameters.

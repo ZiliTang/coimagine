@@ -16,10 +16,13 @@ from coimagine.diagnostics import (
     CALIBRATION_CANDIDATES,
     CALIBRATION_TARGET,
     build_calibration_scene,
+    build_contact_scene,
     build_staged_scene,
     format_calibration_markdown,
     run_calibration,
+    run_factor_sensitivity,
     run_model_gap,
+    run_representability_gap,
     write_calibration_report,
 )
 from coimagine.grid.planner import ContactContext, contact_candidates
@@ -102,3 +105,35 @@ def test_model_error_gap_is_dominated_by_the_contact_mode() -> None:
     # Wrong resistance or wrong teammate traction does not change this decision.
     assert records["thinks_heavy"].gap_vs_true_model == pytest.approx(0.0)
     assert records["thinks_b_slips"].gap_vs_true_model == pytest.approx(0.0)
+
+
+def test_every_physics_factor_changes_the_decision() -> None:
+    """Widened testbed: resistance, traction and the constraint mode all bite.
+
+    This is what the earlier, staged-only testbed failed to show (resistance and
+    traction errors cost nothing there), so it is the regression guard for the
+    testbed being wide enough to study a model at all.
+    """
+
+    records = run_factor_sensitivity()
+    assert {r.factor for r in records} == {"resistance", "traction", "constraint"}
+    for record in records:
+        assert record.gap > 0.0, record
+
+
+def test_unrepresentable_contact_modes_are_catastrophic() -> None:
+    """A model class that cannot express the truth fails outright for the two
+    contact-mode factors; resistance is recoverable because the robust plan happens
+    to bring the teammate anyway."""
+
+    records = {r.factor: r for r in run_representability_gap()}
+    for factor in ("traction", "constraint"):
+        record = records[factor]
+        assert record.gap > 10.0, record
+        assert record.missing_success == pytest.approx(0.0)
+    assert records["resistance"].gap == pytest.approx(0.0)
+
+
+def test_contact_scene_staging_makes_teamwork_a_real_choice() -> None:
+    scene = build_contact_scene()
+    assert {r.robot_id: r.pose for r in scene.robots} == {0: (1, 1), 1: (1, 3)}

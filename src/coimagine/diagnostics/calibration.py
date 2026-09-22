@@ -38,12 +38,13 @@ from ..grid.belief import localization_metrics, physics_metrics, uniform_prior, 
 from ..grid.planner import (
     PHYSICS,
     ContactContext,
+    PBelief,
     belief_from_posterior,
     evaluate_planner,
     planner_spec,
 )
 from ..grid.sensing import SensorNoise, apply_noise, ray_cast
-from ..grid.state import Cell, HiddenPhysics, Scene
+from ..grid.state import Cell, HiddenPhysics, Scene, enumerate_hidden_physics
 
 #: Goal region used by the calibration scenes: two cells wide, three tall, so that a
 #: two-cell east push from either ambiguous placement lands inside it.
@@ -398,5 +399,182 @@ def format_model_gap_markdown(records: Sequence[ModelGapRecord]) -> str:
         lines.append(
             f"| {record.model} | {record.cost:.2f} | {record.success:.1f} | "
             f"{record.gap_vs_true_model:.2f} |"
+        )
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Widened testbed: does each physics factor actually change the decision?
+# ---------------------------------------------------------------------------
+
+#: A is on the west face; B is two cells north and must reposition to help. This
+#: staging is what makes "push alone" and "bring the teammate" genuinely different
+#: plans, so the number of effective pushers and who is gripping both matter.
+CONTACT_CANDIDATES: Tuple[str, ...] = (
+    "reposition:1:1,2", "co_push:E", "push:0:E", "push:1:E",
+    "probe:0:E", "release:0:E", "wait",
+)
+
+
+def build_contact_scene(target=frozenset(CALIBRATION_TARGET)) -> Scene:
+    """A is at the object's west face; B is two cells away and must reposition."""
+
+    grid = [["."] * 6 for _ in range(6)]
+    for dx in (0, 1):
+        for dy in (0, 1):
+            grid[1 + dy][2 + dx] = "O"
+    for (x, y) in target:
+        grid[y][x] = "T"
+    grid[1][1] = "A"
+    grid[3][1] = "B"
+    rows = ["".join(grid[y]) for y in range(5, -1, -1)]
+    return scene_from_ascii(rows, name="contact", hidden=PHYSICS_CALIBRATION)
+
+
+def _prior(scene: Scene, high: HiddenPhysics, low: HiddenPhysics, p_high: float) -> PBelief:
+    return {
+        (scene.obj.origin, scene.robots, (PHYSICS.index(high), False), (), ()): p_high,
+        (scene.obj.origin, scene.robots, (PHYSICS.index(low), False), (), ()): 1.0 - p_high,
+    }
+
+
+def _uniform_class(scene: Scene, physics_list: Sequence[HiddenPhysics]) -> PBelief:
+    weight = 1.0 / len(physics_list)
+    return {
+        (scene.obj.origin, scene.robots, (PHYSICS.index(p), False), (), ()): weight
+        for p in physics_list
+    }
+
+
+@dataclass
+class FactorRecord:
+    factor: str
+    truth: str
+    expects_right: float
+    expects_wrong: float
+    gap: float
+
+
+@dataclass
+class RepresentabilityRecord:
+    factor: str
+    truth: str
+    full_class_cost: float
+    missing_class_cost: float
+    gap: float
+    missing_success: float
+
+
+#: Pairs of (expected regime, truth) that differ in exactly one physics factor.
+REGIME_CASES: Tuple[Tuple[str, HiddenPhysics, HiddenPhysics], ...] = (
+    ("resistance", HiddenPhysics(1, "free", ("grip", "grip")), HiddenPhysics(2, "free", ("grip", "grip"))),
+    ("traction", HiddenPhysics(1, "free", ("grip", "grip")), HiddenPhysics(1, "free", ("slip", "grip"))),
+    ("constraint", HiddenPhysics(1, "free", ("grip", "grip")), HiddenPhysics(1, "constrained", ("grip", "grip"))),
+)
+
+#: Cases whose truth lies *outside* the model class the planner is given.
+REPRESENTABILITY_CASES: Tuple[Tuple[str, HiddenPhysics, str], ...] = (
+    ("resistance", HiddenPhysics(2, "free", ("grip", "grip")), "resistance==1"),
+    ("traction", HiddenPhysics(1, "free", ("slip", "grip")), "traction==(grip,grip)"),
+    ("constraint", HiddenPhysics(1, "constrained", ("grip", "grip")), "constraint==free"),
+)
+
+
+def run_factor_sensitivity(*, depth: int = 3, horizon: int = 6) -> List[FactorRecord]:
+    """Cost when the prior expects the right regime versus the wrong one."""
+
+    scene = build_contact_scene()
+    ctx = ContactContext(scene.static, scene.obj.origin, scene.robots)
+    spec = planner_spec("public", 0, depth=depth)
+    records: List[FactorRecord] = []
+    for factor, base, other in REGIME_CASES:
+        hypothesis = (PHYSICS.index(other), False)
+        right = evaluate_planner(
+            spec, ctx, hypothesis, horizon=horizon,
+            initial_belief=_prior(scene, other, base, 0.99),
+            public_candidates=True, candidate_ids=CONTACT_CANDIDATES,
+        )
+        wrong = evaluate_planner(
+            spec, ctx, hypothesis, horizon=horizon,
+            initial_belief=_prior(scene, base, other, 0.99),
+            public_candidates=True, candidate_ids=CONTACT_CANDIDATES,
+        )
+        records.append(
+            FactorRecord(
+                factor=factor,
+                truth=other.label,
+                expects_right=right.expected_cost,
+                expects_wrong=wrong.expected_cost,
+                gap=wrong.expected_cost - right.expected_cost,
+            )
+        )
+    return records
+
+
+def run_representability_gap(*, depth: int = 3, horizon: int = 6) -> List[RepresentabilityRecord]:
+    """Cost when the truth lies outside the model class entirely."""
+
+    scene = build_contact_scene()
+    ctx = ContactContext(scene.static, scene.obj.origin, scene.robots)
+    spec = planner_spec("public", 0, depth=depth)
+    everything = enumerate_hidden_physics()
+    records: List[RepresentabilityRecord] = []
+    for factor, truth, _excluded in REPRESENTABILITY_CASES:
+        if factor == "resistance":
+            missing = tuple(p for p in everything if p.resistance != truth.resistance)
+        elif factor == "traction":
+            missing = tuple(p for p in everything if p.traction != truth.traction)
+        else:
+            missing = tuple(p for p in everything if p.constraint != truth.constraint)
+        full = everything
+        hypothesis = (PHYSICS.index(truth), False)
+        good = evaluate_planner(
+            spec, ctx, hypothesis, horizon=horizon,
+            initial_belief=_uniform_class(scene, full),
+            public_candidates=True, candidate_ids=CONTACT_CANDIDATES,
+        )
+        bad = evaluate_planner(
+            spec, ctx, hypothesis, horizon=horizon,
+            initial_belief=_uniform_class(scene, missing),
+            public_candidates=True, candidate_ids=CONTACT_CANDIDATES,
+        )
+        records.append(
+            RepresentabilityRecord(
+                factor=factor,
+                truth=truth.label,
+                full_class_cost=good.expected_cost,
+                missing_class_cost=bad.expected_cost,
+                gap=bad.expected_cost - good.expected_cost,
+                missing_success=bad.success_prob,
+            )
+        )
+    return records
+
+
+def format_widened_markdown(
+    factors: Sequence[FactorRecord], representability: Sequence[RepresentabilityRecord]
+) -> str:
+    lines = [
+        "### Factor sensitivity (does this factor change the decision at all?)",
+        "",
+        "| factor | truth | prior expects it | prior expects the other | gap |",
+        "|---|---|---|---|---|",
+    ]
+    for record in factors:
+        lines.append(
+            f"| {record.factor} | {record.truth} | {record.expects_right:.2f} | "
+            f"{record.expects_wrong:.2f} | {record.gap:.2f} |"
+        )
+    lines += [
+        "",
+        "### Representability (what if the model class cannot express the truth?)",
+        "",
+        "| factor | truth | class contains it | class excludes it | gap | success |",
+        "|---|---|---|---|---|---|",
+    ]
+    for record in representability:
+        lines.append(
+            f"| {record.factor} | {record.truth} | {record.full_class_cost:.2f} | "
+            f"{record.missing_class_cost:.2f} | {record.gap:.2f} | {record.missing_success:.1f} |"
         )
     return "\n".join(lines)
