@@ -1811,3 +1811,51 @@ lead-in** decision, where the observation already carries the evidence.
 The generalisation is worth stating plainly: **a learned one-step rule evaluated on
 informative states can look good and still fail from a cold start**, and reporting only the
 former would have been misleading.
+
+---
+
+## Round 34: the experiment helps, and then it stops helping
+
+Round 33 found that the continuous cold-start policy never attempts anything. If the only
+missing ingredient is the experiment, then forcing one should recover the oracle. This round
+tests that causally, and it half-works -- which is the informative part.
+
+First, a correctness fix: **a failed push no longer ends the episode.** It costs the attempt,
+records `strained`/`stalled`, and the robot may try again. Ending the episode on failure made
+exploration impossible and was hiding the cold-start problem.
+
+Then a policy that attempts regardless of its estimate for the first ``k`` steps:
+
+| policy | success | cost per success |
+|---|---|---|
+| oracle | 0.250 | 20.00 |
+| learned (no experiment) | **0.000** | n/a |
+| **learned + 1 experiment** | **0.125** | 24.13 |
+| always maximum force | 0.250 | 60.00 |
+| always minimum force | 0.000 | 7.50 |
+
+And sweeping the number of experiments:
+
+| experiments | success | cost per success |
+|---|---|---|
+| 1 | 0.125 | 24.1 |
+| 2 | 0.125 | 42.5 |
+| 4 | 0.125 | 83.0 |
+
+**One experiment takes the policy from 0% to 12.5% -- half the oracle -- and further
+experiments add only cost.**
+
+### What this establishes
+
+* **The cold-start mechanism is causal, not descriptive.** The evidence really was the missing
+  ingredient: supplying it moves success from zero to half.
+* **The remaining gap is the decision rule, not the information.** With the same evidence in
+  hand, the learned rule plateaus at half the oracle while the oracle uses it fully. This is the
+  same conclusion the discrete closed loop reached from the other direction (round 28: the
+  reference matches the oracle, the learned policies do not).
+
+This also sharpens the contrast with the necessity testbed: there, substituting a message for
+an experiment reaches the **optimum** (round 23), because that testbed's decision rule is
+exact. In the continuous cold-start setting the same substitution reaches **half**, because the
+rule is learned. **The value of information and the ability to use it are separate
+quantities**, and this project has now measured each one separately.

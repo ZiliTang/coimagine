@@ -57,6 +57,11 @@ FAIL_PENALTY = 2.0
 #: Pushing direction used by the probe: straight east, inside the angular window.
 PROBE_ANGLE = 0.0
 
+#: How many leading steps the exploring policy attempts regardless of its estimate. One is
+#: the minimum that produces any evidence at all; more costs more but may be needed before the
+#: learner's updated estimate crosses its decision threshold.
+EXPLORE_STEPS = 1
+
 BASELINES: Tuple[str, ...] = ("oracle", "learned", "always_max", "always_min")
 
 
@@ -826,11 +831,18 @@ def run_continuous_episode(
                 else FORCE_MIN
             )
             attempt = gripper > 0
-        elif policy == "learned":
+        elif policy in ("learned", "learned_explore"):
             probability = float(model.predict_outcomes(obs_one, act_one)[0, 0])
             force = float(model.predict_threshold(obs_one, act_one)[0])
             force = min(max(force, FORCE_MIN), FORCE_MAX)
-            attempt = probability >= 0.5
+            if policy == "learned_explore" and step < EXPLORE_STEPS:
+                # One deliberate experiment: attempt regardless of the probability. The
+                # feedback from this attempt is the evidence the cost-optimal rule would
+                # never have gathered.
+                attempt = True
+                force = max(force, 1.0)
+            else:
+                attempt = probability >= 0.5
         elif policy == "always_max":
             force, attempt = FORCE_MAX, True
         elif policy == "always_min":
@@ -844,7 +856,12 @@ def run_continuous_episode(
         total += PUSH_BASE_COST + force
         outcome = push_outcome(scene, {0: force}, PROBE_ANGLE)
         if not outcome.moved:
-            break
+            # A failed push costs the attempt and the episode continues: the robot may try
+            # again, and the feedback it just received is real evidence. Ending the episode
+            # here would make exploration impossible and hide the cold-start problem.
+            history_a.append("strained")
+            public_history.append("stalled")
+            continue
         delta = outcome.direction.delta
         moved = ObjectState(scene.obj.origin).translated(delta)
         robots = tuple(
@@ -893,7 +910,7 @@ def run_continuous_rollout(
 
     pool = enumerate_hidden_physics()
     rows: List[Dict[str, object]] = []
-    for policy in ("oracle", "learned", "always_max", "always_min"):
+    for policy in ("oracle", "learned", "learned_explore", "always_max", "always_min"):
         successes, costs = [], []
         for index in range(n_episodes):
             physics = pool[index % len(pool)]

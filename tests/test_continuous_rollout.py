@@ -62,3 +62,45 @@ def test_cold_start_declines_and_never_learns() -> None:
     assert "cost per success" in format_continuous_rollout_markdown(
         list(rows.values())
     )
+
+
+@pytest.mark.slow
+def test_a_forced_experiment_helps_but_plateaus_below_the_oracle() -> None:
+    """Locked finding: one deliberate experiment takes the cold-start policy from zero to
+    half the oracle's success, and more experiments add only cost.
+
+    So the binding constraint is the learned decision rule, not the missing evidence: in the
+    purpose-built necessity testbed the same substitution (a message for an experiment)
+    reaches the optimum, because there the decision rule is exact.
+    """
+
+    import coimagine.diagnostics.threshold_probe as threshold_probe
+    from coimagine.diagnostics.threshold_probe import run_continuous_rollout
+
+    original = threshold_probe.EXPLORE_STEPS
+    try:
+        threshold_probe.EXPLORE_STEPS = 1
+        one = {
+            r["policy"]: r
+            for r in run_continuous_rollout(
+                n_train_situations=60, n_episodes=32, epochs=120, seed=0
+            )
+        }
+        threshold_probe.EXPLORE_STEPS = 4
+        four = {
+            r["policy"]: r
+            for r in run_continuous_rollout(
+                n_train_situations=60, n_episodes=32, epochs=120, seed=0
+            )
+        }
+    finally:
+        threshold_probe.EXPLORE_STEPS = original
+
+    # one experiment lifts the policy strictly above the declining baseline
+    assert one["learned"]["success_rate"] == pytest.approx(0.0)
+    assert one["learned_explore"]["success_rate"] > 0.0
+    # ... but never to the oracle, and four experiments do not do better than one
+    assert one["learned_explore"]["success_rate"] <= one["oracle"]["success_rate"]
+    assert four["learned_explore"]["success_rate"] <= one["learned_explore"]["success_rate"] + 1e-9
+    # while costing strictly more
+    assert four["learned_explore"]["cost_per_success"] > one["learned_explore"]["cost_per_success"]
