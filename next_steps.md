@@ -108,3 +108,47 @@ Do not silently approximate and call it `O_B`.
 - [ ] Re-run the gap decomposition at grid scale; update `results.md`.
 - [ ] Produce the replay sequences.
 - [ ] Report object-localization error separately from hidden-physics belief error.
+
+---
+
+## Update after the Stage 2 design gate
+
+The gate (`python -m coimagine.cli gate`) measured, on a finite abstraction of the
+grid interaction:
+
+* **C1 has room at a multi-step horizon.** With six hidden types and four correlated
+  feedback symbols, a naive compact posterior is strictly worse than a better one-bit
+  representation (`H3.c1_room` = 0.167 informed / 0.333 blind). This is the first
+  configuration in the project where the message representation matters at all.
+* **C2 is zero in every configuration tested.** Explicitly anticipating the next
+  round's message never changed the first decision, because pushing and repositioning
+  are simultaneously the physically right and the informative actions, and the
+  re-planning control consumes the real messages after execution.
+
+### What this changes
+
+1. **Grid line = C1 + mechanism evidence.** Build A0–A3 around message
+   representation under the sensing constraint, not around future-message planning.
+2. **C2 becomes an explicitly designed branch, not a default claim.** It only has a
+   chance if the scenario contains a decision whose *only* justification is the
+   information it will produce. Concretely, add one scenario with a **costly or
+   irreversible wrong attempt** (e.g. a blind cooperative push that displaces the
+   object away from the goal and costs extra recovery steps) or a **costly,
+   non-informative preparation**. Re-run the gate on it before featuring C2.
+3. **Do not add information-gain or enabling rewards** to manufacture C2. The
+   asymmetry must come from the transition and observation model.
+4. A negative C2 result at grid scale is a legitimate, reportable outcome and is
+   consistent with v6 stop condition 3.
+
+### Revised near-term checklist
+
+- [x] Grid world, egocentric ray sensing, publication-quality scenes.
+- [x] Dynamics, hidden physics, candidates, per-robot belief filter.
+- [x] Design gate for C1 and C2.
+- [ ] A0–A3 mechanism scenes on the real grid, with a grid belief-space planner
+      (public-only / compact posterior / consequence summary / full sharing /
+      no-future-message branch / limited search).
+- [ ] Scenarios with a costly wrong attempt, to give C2 a fair test.
+- [ ] Oracle gap table, communication-budget curve, probe-cost curve, 2–3 replays
+      (including each robot's scan and belief evolution).
+- [ ] Update `results.md` with the grid numbers; list unfinished items.

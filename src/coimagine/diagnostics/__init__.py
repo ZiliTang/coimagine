@@ -1,5 +1,13 @@
 """Micro oracle diagnostics: run the suite and write the gap report."""
 
+from .grid_gate import (
+    GATE_CONFIGS,
+    GateRecord,
+    GateReport,
+    format_gate_markdown,
+    run_grid_gate,
+    write_gate_report,
+)
 from .micro import (
     DiagnosticConfig,
     OracleRecord,
@@ -16,6 +24,12 @@ from .sweeps import (
 
 __all__ = [
     "DiagnosticConfig",
+    "GATE_CONFIGS",
+    "GateRecord",
+    "GateReport",
+    "format_gate_markdown",
+    "run_grid_gate",
+    "write_gate_report",
     "OracleRecord",
     "communication_budget_curve",
     "feedback_strength_sweep",

@@ -85,6 +85,21 @@ def _cmd_gallery(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_gate(args: argparse.Namespace) -> int:
+    from .diagnostics import format_gate_markdown, run_grid_gate, write_gate_report
+
+    reports, summary = run_grid_gate()
+    paths = write_gate_report(reports, summary, args.output)
+    print(f"git revision: {summary['git_revision']}")
+    print(f"wall clock: {summary['wall_clock_seconds']:.2f}s")
+    for name, path in paths.items():
+        print(f"  {name}: {path}")
+    if args.print_table:
+        print()
+        print(format_gate_markdown(reports))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="coimagine-2d",
@@ -136,6 +151,16 @@ def build_parser() -> argparse.ArgumentParser:
         "--noise-scene", default="pillar_occlusion", help="scene for the noise comparison"
     )
     gallery.set_defaults(func=_cmd_gallery)
+
+    gate = sub.add_parser(
+        "gate",
+        help="run the Stage 2 design gate (C1 room / C2 value) before the grid suite",
+    )
+    gate.add_argument(
+        "--output", default="outputs/grid/gate", help="gate report output directory"
+    )
+    gate.add_argument("--print-table", action="store_true", help="print the gate tables")
+    gate.set_defaults(func=_cmd_gate)
     return parser
 
 
