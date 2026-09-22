@@ -1231,3 +1231,59 @@ the third time this project has found messaging to be worth zero in a testbed th
 need it (the micro design gate, the grid gate, and now here), and the pattern is now clear
 enough to state as a rule: **message value shows up only where the silent policy's
 expectation is genuinely wrong, and its errors are not recoverable by hedging.**
+
+---
+
+## Round 22: the first clean positive message value
+
+Round 21 stated the rule: a message pays only where the teammate is **necessary**, not
+merely cheaper. This round builds exactly that decision and finally measures a positive
+value.
+
+### The construction
+
+`diagnostics/message_necessity.py`, using only physics values the model already has:
+
+* robot A **slips**, which A knows about itself, so a solo push is impossible at any force
+  -- the teammate is genuinely required;
+* robot B's traction is **private to B**;
+* the object is light, so a co-push works **exactly when B grips**.
+
+Costs follow the project's convention: a push at force ``f`` costs ``1 + f``, and a failed
+push or a **declined winnable task** costs a penalty of 10.
+
+| policy | mean regret | success rate |
+|---|---|---|
+| oracle | 0.000 | 0.555 |
+| **one bit** | **0.000** | **0.555** |
+| silent (hedges) | **4.440** | **0.000** |
+| always co-push | 5.340 | 0.555 |
+| always decline | 4.440 | 0.000 |
+
+**One bit is exactly optimal, and it is worth 4.440 regret plus 55.5 percentage points of
+success.** Split by the teammate's private state: where the teammate grips, silence loses
+8.000 by declining a winnable task while one bit wins; where the teammate slips, silence
+happens to be right and one bit is equally right.
+
+### A degenerate cost model found on the way
+
+The first version set the penalty to 2.0 -- exactly the cost of a successful co-push. Under
+it, declining a winnable task broke even with winning it, so "do nothing" looked free, the
+silent policy scored regret 0.000, and the message appeared to be worth nothing. The price
+of a missed task must clearly exceed the cost of achieving it, or the objective disappears.
+This is the same convention the planner already uses (failure cost 20 against action costs
+of order 1); the module now states it explicitly and a test guards it.
+
+### Why this is the first positive one
+
+This is the fourth testbed in which messaging has been measured, and the only one where it
+pays:
+
+1. the micro design gate -- zero, because trying is physically correct anyway;
+2. the grid gate -- zero, for the same reason;
+3. the threshold and joint probes (round 21) -- zero, because the teammate was only
+   *cheaper*, never *necessary*, so a silent policy could hedge correctly;
+4. here -- large and exactly optimal, because the teammate is necessary and the deciding
+   fact is private.
+
+The rule from round 21 now has a positive instance to go with its three negative ones.

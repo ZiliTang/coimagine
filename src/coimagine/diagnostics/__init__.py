@@ -35,6 +35,12 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .message_necessity import (
+    NecessityResult,
+    format_necessity_markdown,
+    run_necessity_comparison,
+    write_necessity_report,
+)
 from .threshold_probe import (
     ThresholdProbeResult,
     format_threshold_markdown,
@@ -113,7 +119,11 @@ __all__ = [
     "POLICIES",
     "EpisodeRecord",
     "ContinuousProbeResult",
+    "NecessityResult",
     "ThresholdProbeResult",
+    "format_necessity_markdown",
+    "run_necessity_comparison",
+    "write_necessity_report",
     "format_threshold_markdown",
     "run_threshold_probe",
     "write_threshold_report",
