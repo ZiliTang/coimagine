@@ -84,6 +84,10 @@ class EpisodeRecord:
     constrained: int
     heavy: int
     teammate_slips: int
+    #: Whether the true-state oracle solves this episode at all. Some generated
+    #: episodes are simply unsolvable (both robots slipping gives zero capacity), and
+    #: scoring every policy on them only dilutes the comparison.
+    solvable: int = 0
 
 
 @dataclass
@@ -93,6 +97,8 @@ class PolicySummary:
     success_rate: float
     mean_cost: float
     mean_steps: float
+    #: Mean cost divided by success rate: the cost of actually finishing a task.
+    cost_per_success: float
 
 
 @dataclass
@@ -252,6 +258,11 @@ def run_episode(
         history_a.append(result.feedback[0])
         history_b.append(result.feedback[1])
         current = successor
+        # The released flag is part of the state, so the oracle's own model must
+        # track it. Leaving it pinned at the initial value made a successful release
+        # invisible to the oracle: it kept believing the object was still latched,
+        # released again, and never pushed.
+        true_hyp = (true_hyp[0], successor.released)
 
     return int(current.is_goal()), total_cost, horizon
 
@@ -261,15 +272,22 @@ def _summaries(name: str, records: Sequence[EpisodeRecord]) -> List[PolicySummar
     for policy in POLICIES:
         subset = [r for r in records if r.policy == policy]
         if not subset:
-            out.append(PolicySummary(policy, 0, float("nan"), float("nan"), float("nan")))
+            out.append(
+                PolicySummary(policy, 0, float("nan"), float("nan"), float("nan"), float("nan"))
+            )
             continue
+        success_rate = float(np.mean([r.success for r in subset]))
+        mean_cost = float(np.mean([r.cost for r in subset]))
         out.append(
             PolicySummary(
                 name=policy,
                 n=len(subset),
-                success_rate=float(np.mean([r.success for r in subset])),
-                mean_cost=float(np.mean([r.cost for r in subset])),
+                success_rate=success_rate,
+                mean_cost=mean_cost,
                 mean_steps=float(np.mean([r.steps for r in subset])),
+                cost_per_success=(
+                    mean_cost / success_rate if success_rate > 0 else float("inf")
+                ),
             )
         )
     return out
@@ -282,13 +300,19 @@ def run_rollout_probe(
     epochs: int = 400,
     seed: int = 0,
     horizon: int = HORIZON,
+    depth: int = DEPTH,
     lead_in: int = 2,
 ) -> RolloutProbeResult:
     """Train a value model, then run every policy on the same set of episodes."""
 
     started = time.perf_counter()
-    train_situations = generate_situations(
-        n_scenes=n_train_situations, lead_in=lead_in, seed=seed
+    # Training must cover the state distribution the closed loop actually visits.
+    # Episodes start from a *fresh* scene (lead_in 0) but drift forward, so training on
+    # post-lead-in situations alone leaves the closed-loop states out of distribution.
+    train_situations = list(
+        generate_situations(n_scenes=n_train_situations, lead_in=lead_in, seed=seed)
+    ) + list(
+        generate_situations(n_scenes=n_train_situations // 2, lead_in=0, seed=seed + 77)
     )
     features: List[Tuple[float, ...]] = []
     targets: List[List[float]] = []
@@ -296,7 +320,13 @@ def run_rollout_probe(
     physics_index: List[int] = []
     pose_index: List[int] = []
     for situation in train_situations:
-        _ctx, _true, belief_values, _bp, _be = situation_quantities(situation)
+        # The value target must be computed at the same lookahead depth as the
+        # planner that will consume it. At depth 1 the target cannot see that release
+        # enables a later push, so it labels release as strictly worse than waiting --
+        # and a model trained on that target learns to idle.
+        _ctx, _true, belief_values, _bp, _be = situation_quantities(
+            situation, depth=depth, fail_cost=DEFAULT_FAIL_COST
+        )
         for action in ACTION_IDS:
             moved, progress, enables = action_labels(situation.scene, action)
             features.append(_features_for(situation, action))
@@ -324,12 +354,21 @@ def run_rollout_probe(
     )
     records: List[EpisodeRecord] = []
     for episode_index, situation in enumerate(episodes):
+        oracle_success, _cost, _steps = run_episode(
+            situation.scene,
+            "oracle_true_state",
+            model,
+            horizon=horizon,
+            depth=depth,
+            rng=np.random.default_rng(episode_index),
+        )
         for policy in POLICIES:
             success, cost, steps = run_episode(
                 situation.scene,
                 policy,
                 model,
                 horizon=horizon,
+                depth=depth,
                 rng=np.random.default_rng(episode_index),
             )
             records.append(
@@ -343,11 +382,14 @@ def run_rollout_probe(
                     constrained=int(situation.physics.constraint == "constrained"),
                     heavy=int(situation.physics.resistance >= 2),
                     teammate_slips=int(situation.physics.traction[1] == "slip"),
+                    solvable=oracle_success,
                 )
             )
 
     groups: Dict[str, List[EpisodeRecord]] = defaultdict(list)
     for record in records:
+        if record.solvable:
+            groups["solvable"].append(record)
         if record.constrained:
             groups["constrained"].append(record)
         if record.heavy:
@@ -366,6 +408,7 @@ def run_rollout_probe(
             "n_episodes": len(episodes),
             "epochs": epochs,
             "horizon": horizon,
+            "depth": depth,
             "seed": seed,
             "wall_clock_seconds": time.perf_counter() - started,
         },
@@ -387,20 +430,21 @@ def _git_revision() -> str:
 
 def format_rollout_markdown(result: RolloutProbeResult) -> str:
     lines = [
-        "| group | policy | n | success rate | mean cost | mean steps |",
-        "|---|---|---|---|---|---|",
+        "| group | policy | n | success rate | mean cost | mean steps | cost per success |",
+        "|---|---|---|---|---|---|---|",
     ]
-    for summary in result.summaries:
-        lines.append(
-            f"| all | {summary.name} | {summary.n} | {summary.success_rate:.3f} | "
-            f"{summary.mean_cost:.3f} | {summary.mean_steps:.2f} |"
+    def row(group: str, summary: PolicySummary) -> str:
+        per = "n/a" if summary.cost_per_success == float("inf") else f"{summary.cost_per_success:.2f}"
+        return (
+            f"| {group} | {summary.name} | {summary.n} | {summary.success_rate:.3f} | "
+            f"{summary.mean_cost:.3f} | {summary.mean_steps:.2f} | {per} |"
         )
+
+    for summary in result.summaries:
+        lines.append(row("all", summary))
     for group, summaries in result.by_mode.items():
         for summary in summaries:
-            lines.append(
-                f"| {group} | {summary.name} | {summary.n} | {summary.success_rate:.3f} | "
-                f"{summary.mean_cost:.3f} | {summary.mean_steps:.2f} |"
-            )
+            lines.append(row(group, summary))
     return "\n".join(lines)
 
 

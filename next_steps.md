@@ -698,3 +698,64 @@ Tests: the two assertions that encoded the old expectations ("the reference is e
 optimal, regret 0.000") were wrong and have been replaced; small test configurations are
 too noisy for a strict ordering, so the empirical claim is locked at the configuration
 where it was measured.
+
+---
+
+## Round 13: the closed loop works; three bugs found while building it
+
+Building and validating the closed loop exposed three real defects, all now fixed, and
+produced the first end-to-end numbers.
+
+### Bug 3: the oracle never updated the released flag
+
+`run_episode` pinned the true hypothesis at `(physics, released=False)` for the whole
+episode. After a successful release the oracle still believed the object was latched, so
+it released again instead of pushing and never solved a latched episode. Fixed by
+tracking `successor.released`.
+
+With bugs 1-3 fixed, the true-state oracle solves **100% of solvable episodes**.
+
+### Bug 4: the value labels were computed at a shallower depth than the planner
+
+The closed loop plans at depth 2, but the training labels were built with
+`situation_quantities(situation)` at its default depth 1. Depth 1 cannot see that release
+enables a later push, so the *labels themselves* said that release and pushing were worse
+than waiting. The learned value therefore learned to idle, and measured **0.000 success
+and 0.000 cost over a whole horizon**. Fixed by computing the labels at the closed-loop
+depth.
+
+This is a general lesson worth keeping: the value target and the planner that consumes it
+must share a lookahead depth, otherwise the model is trained to reproduce a different
+objective than the one it is scored on.
+
+### Closed-loop results (200 episodes, 85 of which the oracle can solve)
+
+| policy | success rate | mean cost | cost per success |
+|---|---|---|---|
+| oracle_true_state (ceiling) | 1.000 | 2.941 | 2.94 |
+| true_model_belief (equal information) | 0.424 | 1.153 | **2.72** |
+| learned_value | 0.353 | 1.400 | 3.97 |
+| learned_moved | 0.588 | 4.765 | 8.10 |
+
+* The equal-information reference is far below the ceiling (0.424 versus 1.000): not
+  knowing the contact physics costs a great deal over a full episode, much more than the
+  single-step calibration suggested.
+* **The learned value reaches 83% of the reference's success rate and its cost per
+  success is within 46% (3.97 versus 2.72).** The model-error gap is real but modest.
+* **The crude outcome-score policy wins on raw success (0.588) but at three times the
+  cost** (8.10 versus 3.97 per success). It succeeds by always pushing; aggression is a
+  good heuristic for "push the object east", but it is not efficient.
+
+### Caveat on the reference
+
+The reference is exact *given its value function*, but that value function charges the
+full failure cost at every lookahead cut, which makes it over-conservative: it hedges
+into cheap actions and burns the horizon, which is why an aggressive policy can beat it
+on raw success. Comparisons against the reference should be read with that in mind; a
+better reference would separate the true terminal cost from the cut heuristic.
+
+### Still unfinished
+
+Continuous contact parameters; the constraint and resistance modes are still not ablated
+at the decision or episode level; one scene family only; no communication; visualisations
+and replays not yet rebuilt for the new main line.

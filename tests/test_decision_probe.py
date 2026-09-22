@@ -87,3 +87,30 @@ def test_learning_the_value_beats_learning_the_outcome_score() -> None:
     assert by_name["learned_value"].mean_regret < max(
         by_name[p].mean_regret for p in outcome_policies
     )
+
+
+@pytest.mark.slow
+def test_closed_loop_oracle_solves_solvable_episodes() -> None:
+    """Guard for the released-flag bug: without it the oracle could not solve a latched
+    episode at all, because it kept believing the object was still latched."""
+
+    import numpy as np
+
+    from coimagine.diagnostics.rollout_probe import run_episode
+    from coimagine.learning.data import generate_situations
+    from coimagine.learning.mlp import MultiHeadMLP
+    from coimagine.grid.state import HiddenPhysics
+
+    scene = None
+    for situation in generate_situations(n_scenes=40, lead_in=0, seed=500000):
+        if situation.physics == HiddenPhysics(1, "constrained", ("grip", "slip")):
+            scene = situation.scene
+            break
+    assert scene is not None, "the generator must produce a releasable latched scene"
+    model = MultiHeadMLP(seed=0)
+    success, cost, steps = run_episode(
+        scene, "oracle_true_state", model, horizon=8, depth=2,
+        rng=np.random.default_rng(0),
+    )
+    assert success == 1
+    assert cost == pytest.approx(3.0)
