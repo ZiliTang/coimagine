@@ -22,8 +22,13 @@ s = (pose_self, x_object, c, theta)
   robot knows where it is. This is the only global quantity a robot is handed.
 - `x_object`, `c` — the object's pose and the current contact configuration. These
   are **not public**. A robot may only estimate them from its own egocentric sensing
-  `o_i`. There is **no broadcast ground-truth object or global environment
-  coordinate**, and no real-time global reconstruction is assumed.
+  `o_i`. There is **no broadcast ground-truth object coordinate**, and no real-time
+  global reconstruction of the object is assumed.
+- **Static environment (decided).** Walls, obstacles and the goal region are a
+  **prior map known to every robot**; they are public and do not have to be
+  discovered. Only the *movable object* must be perceived on site. This keeps the
+  problem at "private contact belief + finite messages" instead of coupling it to
+  SLAM.
 - `theta` — **hidden physical type**, stationary within an episode. In the micro
   family `theta ∈ {HEAVY, SLIP}` (or irrelevant for M0). In the grid
   `theta = (r, c_mode, tau)` with resistance `r ∈ {1,2,3}`, constraint mode
@@ -46,11 +51,13 @@ C_t = (task specification, own pose, y_pub[0..t], a[0..t-1], m_A[0..t-1],
 ```
 
 - `task specification` — goal region, robot/skill model, and the static scene
-  *class*. It contains no current object pose and no live occupancy map.
-- `y_pub` — coarse motion event of the object (`moved` / `stalled`). Both robots are
-  in contact with the same object and can detect this event through their own
-  sensing; the protocol treats it as commonly observable. It is an **event**, not a
-  coordinate. If even this event must be private, say so and it moves into `o_i`.
+  *class*. Together with the **prior static map** (walls / obstacles / goal region,
+  decided public) it is known a priori. It contains no current object pose and no
+  live occupancy map.
+- `y_pub` — coarse motion event of the object (`moved` / `stalled`). **Decision: this
+  stays public.** Both robots are in contact with the same object and can detect the
+  event through their own sensing; it is an **event**, not a coordinate, so keeping
+  it public does not leak the object pose.
 - `a[t]` — the committed joint action at boundary `t`.
 - `m_i[t]` — robot `i`'s message at boundary `t`.
 - Candidate IDs are assigned by a deterministic rule from the **frozen candidate
@@ -252,15 +259,17 @@ engine; no instance-specific reward term is allowed.
   (a rotation interface is retained but not required).
 - **Sensing (binding constraint).** Each robot has its own global localization
   (its own pose is known to itself) and an **egocentric, occlusion-aware ray lidar**
-  (or an egocentric occupancy patch) of radius `R`. The object's pose and the live
-  environment occupancy are sensed, never broadcast, and no real-time global
-  reconstruction is assumed. Step 2 must reuse the archived
+  (or an egocentric occupancy patch) of radius `R`. The **prior static map is
+  known** (walls / obstacles / goal region); only the **movable object** is sensed,
+  never broadcast, and no real-time global reconstruction of the object is assumed.
+  Step 2 must reuse the archived
   `_old/gate_a/src/coimagine/envs/grid/environment.py::visible_cells_from_pose`
   primitive (occlusion-aware Bresenham ray casting, `observation_radius`), with
-  attribution, and add sensor noise. Planar/global *coordinates* of the object are
+  attribution, and add sensor noise. The object's planar/global *coordinates* are
   not part of `C_t`.
-- Public: task specification, own pose, committed actions, protocol, exchanged
-  messages. Private: the raw scan and the robot's own drive/slip feedback.
+- Public: task specification, prior static map, own pose, committed actions,
+  protocol, exchanged messages, and the coarse `moved`/`stalled` event. Private: the
+  raw scan and the robot's own drive/slip feedback.
 - Candidate IDs stay public: they are enumerated from the frozen task/candidate
   template space, not instantiated from the current object estimate, so both sides
   agree on IDs while scoring them with different private beliefs. A shared,

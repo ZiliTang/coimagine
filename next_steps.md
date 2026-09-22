@@ -95,8 +95,9 @@ Do not silently approximate and call it `O_B`.
 
 - [ ] Implement the egocentric ray lidar (port `visible_cells_from_pose`, add noise)
       and remove broadcast object pose from the public context.
-- [ ] Decide whether the static environment is a prior map or must be discovered
-      (see the open question raised with the project owner).
+- [x] Resolved: the static map (walls/obstacles/goal region) is a **prior known to
+      all robots**; only the movable object must be perceived on site. The coarse
+      `moved`/`stalled` event stays public.
 - [ ] Define the richer hidden `theta` and the calibrated joint observation table.
 - [ ] Verify both questions are non-degenerate on a mini grid *before* the full suite:
       a paired instance where the consequence summary and the posterior induce
