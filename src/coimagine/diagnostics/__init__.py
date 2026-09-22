@@ -24,6 +24,13 @@ from .calibration import (
     run_calibration,
     write_calibration_report,
 )
+from .learning_probe import (
+    ProbeResult,
+    format_probe_markdown,
+    run_learning_probe,
+    teammate_slips,
+    write_probe_report,
+)
 from .grid_suite import (
     DEFAULT_PLANNERS,
     SuiteRecord,
@@ -61,6 +68,11 @@ __all__ = [
     "MODEL_ERROR_VARIANTS",
     "FactorRecord",
     "ModelGapRecord",
+    "ProbeResult",
+    "format_probe_markdown",
+    "run_learning_probe",
+    "teammate_slips",
+    "write_probe_report",
     "REGIME_CASES",
     "REPRESENTABILITY_CASES",
     "RepresentabilityRecord",

@@ -32,3 +32,4 @@ norecursedirs = ["_old", ".venv", "build", "dist"]
 # (launch_testing / launch_ros) that fail to import when `lark` is absent.
 # They are unrelated to this project, so block them explicitly.
 addopts = "-q -p no:launch_testing -p no:launch_ros"
+markers = ["slow: long-running end-to-end tests"]

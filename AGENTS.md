@@ -26,9 +26,20 @@ pushing stage reusing geometric primitives.
 Out of scope — do **not** start these without an explicit instruction:
 
 - 3D simulation,双臂辅助仿真, mobile-robot hardware;
-- neural world models, learned message encoders, any training loop;
+- neural world models, learned message encoders, any training loop.
+
 - `option_prior` / general-model API calls (keep the interface, default off);
 - deleting or rewriting the `_old/` archive.
+
+> **Scope note (round 8).** The human collaborator gave an explicit instruction to
+> start the learned-model work: the calibration testbed showed that a model class
+> which cannot express the teammate's local traction, or the contact/constraint mode,
+> fails outright (gap 18.00, success 0). Learning work therefore lives in
+> `src/coimagine/learning/` and `src/coimagine/diagnostics/learning_probe.py`.
+> The frozen protocol still applies: features are built only from the robot's own scan,
+> its own feedback history and public information; privileged quantities are used as
+> labels and decoder targets only, never as inputs.
+
 
 ## 2. Do not
 

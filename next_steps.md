@@ -392,3 +392,61 @@ with success falling to zero. Next round: build the multi-task latent world mode
 (privileged-pose decoder head plus multi-step feasibility loss) and check whether a
 model learned from data discovers these modes, or whether the action space must first be
 extended to continuous contact parameters.
+
+---
+
+## Round 8: the learning probe -- coverage of a contact mode decides whether it exists
+
+The calibration established *what* a model must represent (round 7). Round 8 asks the
+learning question directly, with a hand-written NumPy MLP (`src/coimagine/learning/`,
+no heavy dependency, gradients verified numerically against finite differences).
+
+The probe takes samples from short **lead-in episodes**, so the robots have accumulated
+genuine contact feedback before each sample is labelled; on a fresh scene no model could
+tell a heavy object from a light one. Inputs are the robot's own scan, its own feedback
+history and public information only. Labels are the true action outcome, the true object
+placement and the true contact physics.
+
+600 scenes / 3600 samples, 70/30 scene split, 500 epochs:
+
+| evaluation set | n | feasibility accuracy | balanced accuracy | BCE |
+|---|---|---|---|---|
+| in distribution | 1080 | 0.939 | **0.740** | 0.503 |
+| trained **with** slipping, on held-out slipping cases | 552 | 0.958 | **0.779** | 0.415 |
+| trained **without** slipping, on held-out slipping cases | 552 | 0.911 | **0.735** | 0.543 |
+
+| evaluation set | physics decode | pose decode |
+|---|---|---|
+| in distribution | 0.306 | 0.944 |
+| trained with slipping | 0.185 | 0.978 |
+| trained without slipping | **0.000** | 0.978 |
+
+Two findings:
+
+1. **The latent does carry contact information.** Physics decode reaches 0.306 against
+   a 1/16 = 0.0625 chance rate, and the pose decoder recovers the object placement at
+   0.944 from the raw scan. Feasibility balanced accuracy is 0.740, well above the
+   0.915-accuracy majority baseline which is a trivial 0.085-positive classifier.
+2. **A mode that never appears in training is not merely mispredicted, it is
+   unrepresentable.** The model trained without the teammate-slipping mode predicts
+   that mode **0 times out of 552** (physics decode exactly 0.000), while the model that
+   saw it reaches 0.185. The per-sample feasibility cost is modest (+0.045 balanced
+   accuracy), but round 7 showed the *decision-level* cost of the same omission is
+   total failure (gap 18.00, success 0.0). Per-sample classification understates what
+   the omission does to a rollout.
+
+Honest limitations:
+
+- feasibility is heavily imbalanced (8.5% positive), so plain accuracy is near the
+  majority baseline; balanced accuracy and BCE are the metrics that mean anything;
+- in-distribution physics decode is still low in absolute terms (0.306), so the latent
+  carries the mode only partially;
+- one mode (teammate slipping) was ablated; resistance and the constraint mode should be
+  ablated the same way before any general claim;
+- the model is not yet wired into the planner, so no decision-level number has been
+  produced for a *learned* model yet.
+
+**Next round:** connect the learned feasibility head to the planner and measure the
+decision-level gap against the true-model ceiling at equal information -- the comparison
+round 6 defined. Then ablate the constraint mode and resistance the same way. Only after
+that is the "learned feasibility head versus the known decision rule" contrast meaningful.

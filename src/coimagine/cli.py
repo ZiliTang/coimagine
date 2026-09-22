@@ -161,7 +161,37 @@ def build_parser() -> argparse.ArgumentParser:
     )
     gate.add_argument("--print-table", action="store_true", help="print the gate tables")
     gate.set_defaults(func=_cmd_gate)
+
+    learn = sub.add_parser(
+        "learn",
+        help="run the learning probe: can a model discover the contact modes from data?",
+    )
+    learn.add_argument("--output", default="outputs/grid/learning", help="report directory")
+    learn.add_argument("--scenes", type=int, default=400, help="number of scenes to generate")
+    learn.add_argument("--epochs", type=int, default=400, help="training epochs")
+    learn.add_argument("--seed", type=int, default=0, help="random seed")
+    learn.add_argument("--print-table", action="store_true", help="print the probe tables")
+    learn.set_defaults(func=_cmd_learn)
     return parser
+
+
+def _cmd_learn(args: argparse.Namespace) -> int:
+    from .diagnostics.learning_probe import (
+        format_probe_markdown,
+        run_learning_probe,
+        write_probe_report,
+    )
+
+    result = run_learning_probe(n_scenes=args.scenes, epochs=args.epochs, seed=args.seed)
+    paths = write_probe_report(result, args.output)
+    print(f"git revision: {result.meta['git_revision']}")
+    print(f"wall clock: {result.wall_clock_seconds:.2f}s")
+    for name, path in paths.items():
+        print(f"  {name}: {path}")
+    if args.print_table:
+        print()
+        print(format_probe_markdown(result))
+    return 0
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
