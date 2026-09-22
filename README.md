@@ -55,7 +55,7 @@ python -m coimagine.cli check
 # run all micro oracle diagnostics (writes CSV/JSON/Markdown under outputs/micro)
 python -m coimagine.cli micro --output outputs/micro --print-table
 
-# render the budget / probe-cost / feedback-reliability figures
+# render the budget / probe-cost / feedback-reliability / C2-control figures
 python -m coimagine.cli sweep --output outputs/micro/figures
 
 # convenience wrapper around the two steps above
@@ -73,7 +73,8 @@ outputs/micro/
 └── figures/
     ├── fig_communication_budget.png
     ├── fig_probe_cost_sweep.png
-    └── fig_feedback_strength_sweep.png
+    ├── fig_feedback_strength_sweep.png
+    └── fig_c2_control.png
 ```
 
 ## Read next
