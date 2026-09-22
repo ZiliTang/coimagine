@@ -75,6 +75,7 @@ class DecisionRecord:
     teammate_slips: int
     constrained: int
     heavy: int
+    self_slips: int = 0
     #: Worst-cell distance from the object to the goal region at this decision point.
     distance_to_goal: int = 0
 
@@ -164,14 +165,24 @@ def posterior_over_physics(
     return {index: value / total for index, value in weights.items()}
 
 
-def _features_for(situation: Situation, action_id: str) -> Tuple[float, ...]:
+def _features_for(
+    situation: Situation, action_id: str, message_scheme: str = "none"
+) -> Tuple[float, ...]:
+    """The learner's observation. The received message is appended, nothing else.
+
+    The teammate's own feedback is **not** here: it is private and unobservable without a
+    message, and including it was the leak fixed in round 20.
+    """
+
+    from ..learning.messages import message_vector
+
     return sample_vector(
         situation.scan,
         situation.scene.robot_pose(0),
         situation.history_a,
         situation.public_history,
         action_id,
-    )
+    ) + message_vector(message_scheme, situation.physics, situation.history_b)
 
 
 def _argmin(values: Dict[str, float]) -> str:
@@ -243,6 +254,7 @@ def evaluate_decisions(
     *,
     depth: int = 1,
     fail_cost: float = DEFAULT_FAIL_COST,
+    message_scheme: str = "none",
 ) -> List[DecisionRecord]:
     candidates = candidates_for()
     records: List[DecisionRecord] = []
@@ -260,7 +272,11 @@ def evaluate_decisions(
         oracle_action = _argmin(true_values)
 
         obs = np.asarray(
-            [_features_for(situation, action) for action in ACTION_IDS], dtype=np.float64
+            [
+                _features_for(situation, action, message_scheme)
+                for action in ACTION_IDS
+            ],
+            dtype=np.float64,
         )
         outcomes = model.predict_outcomes(obs[:, : model.obs_dim], obs[:, model.obs_dim:])
         learned = {action: outcomes[i] for i, action in enumerate(ACTION_IDS)}
@@ -303,6 +319,7 @@ def evaluate_decisions(
                     for name, action in chosen.items()
                 },
                 teammate_slips=int(situation.physics.traction[1] == "slip"),
+                self_slips=int(situation.physics.traction[0] == "slip"),
                 constrained=int(situation.physics.constraint == "constrained"),
                 heavy=int(situation.physics.resistance >= 2),
                 distance_to_goal=_worst_cell_distance(situation.scene),
@@ -347,6 +364,7 @@ def run_decision_probe(
     seed: int = 0,
     depth: int = 3,
     exclude_slipping_from_training: bool = False,
+    message_scheme: str = "none",
 ) -> DecisionProbeResult:
     started = time.perf_counter()
     train_situations = generate_situations(
@@ -371,7 +389,7 @@ def run_decision_probe(
         )
         for action in ACTION_IDS:
             moved, progress, enables = action_labels(situation.scene, action)
-            features.append(_features_for(situation, action))
+            features.append(_features_for(situation, action, message_scheme))
             targets.append([moved, progress, enables])
             values.append(belief_values[action])
             physics_index.append(PHYSICS.index(situation.physics))
@@ -379,11 +397,17 @@ def run_decision_probe(
 
     x = np.asarray(features, dtype=np.float64)
     t = np.asarray(targets, dtype=np.float64)
-    model = MultiHeadMLP(seed=seed)
+    from ..learning.features import OBSERVATION_DIM
+    from ..learning.messages import message_dim, payload_bits
+
+    split = OBSERVATION_DIM + message_dim(message_scheme)
+    model = MultiHeadMLP(
+        seed=seed, obs_dim=split, action_dim=x.shape[1] - split
+    )
     train(
         model,
-        x[:, : model.obs_dim],
-        x[:, model.obs_dim:],
+        x[:, :split],
+        x[:, split:],
         t,
         np.asarray(physics_index, dtype=np.int64),
         np.asarray(pose_index, dtype=np.int64),
@@ -392,11 +416,15 @@ def run_decision_probe(
         seed=seed,
     )
 
-    records = evaluate_decisions(test_situations, model, depth=depth)
+    records = evaluate_decisions(
+        test_situations, model, depth=depth, message_scheme=message_scheme
+    )
     groups: Dict[str, List[DecisionRecord]] = defaultdict(list)
     for record in records:
         if record.teammate_slips:
             groups["teammate_slips"].append(record)
+        if record.self_slips:
+            groups["self_slips"].append(record)
         if record.constrained:
             groups["constrained"].append(record)
         if record.heavy:
@@ -418,6 +446,8 @@ def run_decision_probe(
             "depth": depth,
             "seed": seed,
             "exclude_slipping_from_training": exclude_slipping_from_training,
+            "message_scheme": message_scheme,
+            "message_bits": payload_bits(message_scheme),
             "wall_clock_seconds": time.perf_counter() - started,
         },
     )

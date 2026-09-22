@@ -1575,3 +1575,52 @@ The pattern worth noting is that the model which looks best at a single decision
 over an episode, and the one that looks worst at a single decision is the best over an
 episode. Reporting either level alone would be misleading, and the leaked run was hiding the
 discrepancy by making every learned policy look better.
+
+---
+
+## Round 29: the necessity rule does not transplant to the grid
+
+Rounds 22-24 established a clean rule in a purpose-built testbed: **a message is worth exactly
+the experiment it replaces**, and it pays only where the teammate is *necessary* rather than
+merely cheaper. The obvious check is whether that survives contact with the full simulator.
+It does not, and the reason is instructive.
+
+The message channel is now threaded into the grid decision probe (a declared 0/1-bit codebook
+carrying the teammate's traction, appended to the learner's observation). Grid decision
+points, 150 training / 80 held-out, depth 2:
+
+| group | policy | regret, no message | regret, 1-bit message |
+|---|---|---|---|
+| all | learned_value | 1.438 | **1.337** |
+| all | learned_progress_enable | 1.363 | **1.075** |
+| all | learned_moved | 1.050 | 1.625 |
+| self slips | learned_value | 0.450 | **0.475** |
+| self slips | learned_moved | 0.900 | 0.925 |
+| self slips | learned_progress | 0.900 | 0.900 |
+
+**The effect is small and mixed, and in the subgroup where the teammate's traction decides the
+outcome ("self slips") it is flat or slightly negative.**
+
+### Why the rule does not carry over
+
+* **The teammate is not necessary in the grid.** The candidate set contains `push:1:E`, a
+  push by the teammate alone, which works whenever the teammate grips. So this robot does not
+  need to know anything about its *own* contribution to choose: it needs to decide whether
+  *someone* will succeed, and the action set already offers that option. The clean testbed
+  made the teammate necessary by construction (the local robot slipping); the grid gives
+  escape routes.
+* **The learner is weak at the ranking, as measured everywhere else.** Even with the fact
+  revealed, turning a per-action value estimate into the right choice is exactly where the
+  value model has been shown to be unreliable (rounds 20, 25, 28).
+
+### What this means for the claims
+
+The necessity result itself stands: in a testbed with a hand-specified information structure
+and declared costs, one bit takes a silent team from chance to optimal, and the learned model
+reaches the oracle with it (round 23). What does **not** stand is any implication that the
+same channel helps in the grid as currently built. The rule's precondition is not satisfied
+there, and even where it looks satisfied the learner cannot exploit it.
+
+This is the honest boundary of the project's one strong positive communication result: it is
+a statement about a decision structure, not about messaging in general, and the grid does not
+instantiate that structure.
