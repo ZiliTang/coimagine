@@ -183,3 +183,31 @@ Open correctness item (next round):
 
 Also improved in this round: a successful push now advances the pushers with the
 object, so multi-step pushing no longer needs a reposition between every cell.
+
+
+---
+
+## Round 4: planner correctness fixes and what is still open
+
+Fixed three real bugs, all found by testing:
+
+1. **The value functions never recognised "already in the goal"**, so a planner at the
+   goal paid an extra probe and `central` looked worse than `codec` (2.3 vs 2.0).
+   A goal short-circuit in every value function and in action selection fixes it;
+   `J_full <= J_central <= J_codec` is now asserted in the tests.
+2. **The initial belief wrongly included `released=True`** hypotheses. An episode
+   starts unreleased; the prior is now 16 types.
+3. **The closed-loop driver passed an empty action history to the codec** at every
+   boundary, so the message computation collapsed and the belief degenerated to
+   B = 0. The committed action history is now threaded through.
+
+Still open:
+
+- **Depth-3 lookahead is too slow** (the run did not finish within the budget) and the
+  latched (constrained) A2/A3 case needs exactly three actions: release, then two
+  cooperative pushes. Required before A2/A3: memoise/prune the depth-3 search
+  (canonical belief keys, branch merging, or a bounded-node fallback), and check the
+  release branch's message split (the posterior-mode codec collapses released and
+  unreleased hypotheses in that branch).
+- A0/A1 (public-information-sufficient and stall-cause) work at depth 2 today; the
+  grid scenario suite can start there.

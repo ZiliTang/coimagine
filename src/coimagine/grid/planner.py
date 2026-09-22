@@ -134,8 +134,15 @@ def contact_candidates(ctx: ContactContext) -> CandidateSet:
 
 
 def initial_contact_belief(ctx: ContactContext) -> PBelief:
-    weight = 1.0 / len(HYPOTHESES)
-    return {(ctx.origin, ctx.robots, hyp, (), ()): weight for hyp in HYPOTHESES}
+    """Uniform over the 16 contact types, all **unreleased**.
+
+    An episode starts before any release, so ``released=True`` is not a valid
+    initial hypothesis; it becomes reachable only through a successful release.
+    """
+
+    initial = tuple((index, False) for index in range(len(PHYSICS)))
+    weight = 1.0 / len(initial)
+    return {(ctx.origin, ctx.robots, hyp, (), ()): weight for hyp in initial}
 
 
 def _normalise(weights: Mapping[object, float]) -> Dict[object, float]:
@@ -407,6 +414,20 @@ def _failure_value(belief: Mapping[object, float], static: StaticMap, fail_cost:
     return fail_cost * risk
 
 
+def _goal_reached(belief: Mapping[object, float], static: StaticMap) -> bool:
+    """True when every surviving hypothesis already has the object in the goal.
+
+    The episode ends there, so no further action may be charged. Without this check
+    the planners happily "act" inside the goal and pay a probe for nothing.
+    """
+
+    if not belief:
+        return False
+    return all(
+        ObjectState(entry[0]).within(static.target) for entry in belief
+    )
+
+
 def _as_pbelief(belief: CBelief) -> PBelief:
     return {
         (origin, robots, hyp, (), ()): weight
@@ -426,6 +447,8 @@ def codec_value(
     predict_messages: bool = True,
     memo: Optional[Dict[object, float]] = None,
 ) -> float:
+    if _goal_reached(belief, ctx.static):
+        return 0.0
     if depth <= 0:
         return _failure_value(belief, ctx.static, fail_cost)
     memo = memo if memo is not None else {}
@@ -470,6 +493,8 @@ def central_value(
     fail_cost: float = DEFAULT_FAIL_COST,
     memo: Optional[Dict[object, float]] = None,
 ) -> float:
+    if _goal_reached(belief, ctx.static):
+        return 0.0
     if depth <= 0:
         return _failure_value(belief, ctx.static, fail_cost)
     memo = memo if memo is not None else {}
@@ -590,6 +615,8 @@ def choose_action(
     memo: Dict[object, float] = {}
     best_candidate: Optional[Candidate] = None
     best_value = float("inf")
+    if _goal_reached(belief, ctx.static):
+        return None, 0.0
 
     if spec.kind == "central":
         shared: CBelief = {}
@@ -673,6 +700,7 @@ def _filtered_belief(
     true_h_a: Tuple[str, ...],
     true_h_b: Tuple[str, ...],
     candidates: CandidateSet,
+    skills: Sequence[JointSkill] = (),
 ) -> PBelief:
     """The planner's next public belief after the realised observation."""
 
@@ -694,19 +722,20 @@ def _filtered_belief(
             return result.y_public == realised.y_public
 
     else:
+        full_skills = tuple(skills) + (joint,)
         new_h_a = true_h_a + (realised.feedback[0],)
         new_h_b = true_h_b + (realised.feedback[1],)
         wanted_messages = (
-            codec.encode(ctx, (joint,), 0, new_h_a, candidates),
-            codec.encode(ctx, (joint,), 1, new_h_b, candidates),
+            codec.encode(ctx, full_skills, 0, new_h_a, candidates),
+            codec.encode(ctx, full_skills, 1, new_h_b, candidates),
         )
 
         def matches(result) -> bool:
             if result.y_public != realised.y_public:
                 return False
             return (
-                codec.encode(ctx, (joint,), 0, true_h_a + (result.feedback[0],), candidates),
-                codec.encode(ctx, (joint,), 1, true_h_b + (result.feedback[1],), candidates),
+                codec.encode(ctx, full_skills, 0, true_h_a + (result.feedback[0],), candidates),
+                codec.encode(ctx, full_skills, 1, true_h_b + (result.feedback[1],), candidates),
             ) == wanted_messages
 
     out: PBelief = {}
@@ -759,6 +788,7 @@ def evaluate_planner(
         true_h_a: Tuple[str, ...],
         true_h_b: Tuple[str, ...],
         t: int,
+        skills: Tuple[JointSkill, ...],
     ) -> Tuple[float, float, float]:
         nodes[0] += 1
         if ObjectState(state_ctx.origin).within(ctx.static.target):
@@ -770,7 +800,7 @@ def evaluate_planner(
         # both robots always agree on the ID space even as the geometry changes.
         candidates = contact_candidates(state_ctx)
         chosen, _value = choose_action(
-            spec, ctx, belief, candidates, (), fail_cost=fail_cost, true_hyp=hyp
+            spec, ctx, belief, candidates, skills, fail_cost=fail_cost, true_hyp=hyp
         )
         if chosen is None:
             return fail_cost, 0.0, 0.0
@@ -783,7 +813,8 @@ def evaluate_planner(
             robots=successor_true.robots,
         )
         next_belief = _filtered_belief(
-            spec, state_ctx, belief, chosen.joint, realised, true_h_a, true_h_b, candidates
+            spec, state_ctx, belief, chosen.joint, realised, true_h_a, true_h_b,
+            candidates, skills,
         )
         cost, success, steps = rollout(
             next_belief,
@@ -792,6 +823,7 @@ def evaluate_planner(
             true_h_a + (realised.feedback[0],),
             true_h_b + (realised.feedback[1],),
             t + 1,
+            skills + (chosen.joint,),
         )
         if not next_belief:
             # The observation is impossible under every surviving hypothesis; the
@@ -800,7 +832,7 @@ def evaluate_planner(
         return realised.cost + cost, success, 1.0 + steps
 
     belief = initial_contact_belief(ctx)
-    expected_cost, success, steps = rollout(belief, ctx, true_hyp, (), (), 0)
+    expected_cost, success, steps = rollout(belief, ctx, true_hyp, (), (), 0, ())
     return EpisodeResult(
         planner=spec.label,
         expected_cost=expected_cost,

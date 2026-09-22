@@ -59,7 +59,9 @@ def test_candidate_pruning_uses_public_geometry_only() -> None:
 def test_initial_belief_covers_all_contact_hypotheses() -> None:
     ctx = _context()
     belief = initial_contact_belief(ctx)
-    assert len(belief) == 32
+    # 16 contact types, all unreleased: an episode cannot start already released.
+    assert len(belief) == 16
+    assert all(entry[2][1] is False for entry in belief)
     assert sum(belief.values()) == pytest.approx(1.0)
 
 
@@ -70,6 +72,19 @@ def test_full_information_planner_reaches_the_optimum() -> None:
     assert evaluate_planner(spec, ctx, _hyp(GRIP2), horizon=3).expected_cost == pytest.approx(2.0)
     # A latched object needs an explicit release, so three boundaries.
     assert evaluate_planner(spec, ctx, _hyp(LATCHED), horizon=3).expected_cost == pytest.approx(3.0)
+
+
+def test_observation_sharing_is_never_worse_than_a_fixed_codec() -> None:
+    """J_full <= J_central <= J_codec on the reference scenario (depth 2)."""
+
+    ctx = _context()
+    for physics in (GRIP1, GRIP2):
+        hyp = _hyp(physics)
+        full = evaluate_planner(planner_spec("full", depth=2), ctx, hyp, horizon=3)
+        central = evaluate_planner(planner_spec("central", depth=2), ctx, hyp, horizon=3)
+        codec = evaluate_planner(planner_spec("codec", 1, 2), ctx, hyp, horizon=3)
+        assert full.expected_cost <= central.expected_cost + 1e-9
+        assert central.expected_cost <= codec.expected_cost + 1e-9
 
 
 def test_message_using_planners_reach_the_goal() -> None:
