@@ -160,8 +160,8 @@ def test_default_scenes_are_valid() -> None:
     names = {scene.static.name for scene in default_scenes()}
     assert names == {"open_transport", "pillar_occlusion", "narrow_passage", "corner_goal"}
     for scene in default_scenes():
-        assert scene.hidden.get("physics") is not None
-        assert scene.hidden.get("label")
+        assert isinstance(scene.physics, HiddenPhysics)
+        assert scene.hidden_label
 
 
 def test_gallery_renders_png_and_pdf(tmp_path) -> None:

@@ -10,7 +10,8 @@ Design constraints (``docs/2d_protocol_spec.md`` section 9):
   private.
 
 Coordinates are integer cells ``(x, y)`` with ``x`` the column and ``y`` the row.
-The drawing helpers in :mod:`coimagine.grid.viz` flip ``y`` for display.
+The drawing helpers in :mod:`coimagine.grid.viz` map cells directly, with ``y``
+increasing upwards.
 """
 
 from __future__ import annotations
@@ -42,6 +43,10 @@ class Direction(str, Enum):
     def label(self) -> str:
         return {"north": "N", "east": "E", "south": "S", "west": "W"}[self.value]
 
+    @property
+    def perpendicular(self) -> Tuple["Direction", "Direction"]:
+        return (self.rotated(1), self.rotated(3))
+
     def rotated(self, steps: int) -> "Direction":
         order = (Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST)
         return order[(order.index(self) + steps) % 4]
@@ -60,6 +65,10 @@ def chebyshev(a: Cell, b: Cell) -> int:
 
 def euclidean_sq(a: Cell, b: Cell) -> int:
     return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2
+
+
+def manhattan(a: Cell, b: Cell) -> int:
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
 
 # --------------------------------------------------------------------------
@@ -136,55 +145,14 @@ class RobotState:
     heading: Optional[Direction] = None
 
 
-@dataclass(frozen=True)
-class Scene:
-    """A fully observed simulator world.
-
-    This object is privileged: it holds the true object pose. Deployment code must
-    receive a :class:`~coimagine.grid.sensing.RobotInformationState` instead.
-    """
-
-    static: StaticMap
-    obj: ObjectState
-    robots: Tuple[RobotState, ...]
-    hidden: Mapping[str, object] = field(default_factory=dict)
-
-    def __post_init__(self) -> None:
-        if len(self.robots) != 2:
-            raise ValueError("Stage 2 is fixed at two robots.")
-        if len({r.robot_id for r in self.robots}) != 2:
-            raise ValueError("Robot ids must be unique.")
-        for robot in self.robots:
-            if not self.static.in_bounds(robot.pose):
-                raise ValueError(f"Robot {robot.robot_id} is out of bounds.")
-            if self.static.is_wall(robot.pose):
-                raise ValueError(f"Robot {robot.robot_id} starts inside a wall.")
-            if robot.pose in self.obj.cells:
-                raise ValueError(f"Robot {robot.robot_id} starts inside the object.")
-        for cell in self.obj.cells:
-            if not self.static.in_bounds(cell):
-                raise ValueError("The object sticks out of the map.")
-            if self.static.is_wall(cell):
-                raise ValueError("The object overlaps a wall.")
-
-    @property
-    def robot(self) -> Mapping[int, RobotState]:
-        return {r.robot_id: r for r in self.robots}
-
-    def is_goal(self) -> bool:
-        return self.obj.within(self.static.target)
-
-    def occupied_cells(self) -> FrozenSet[Cell]:
-        return self.obj.cells | frozenset(r.pose for r in self.robots)
-
-
 # --------------------------------------------------------------------------
 # Hidden physics
 # --------------------------------------------------------------------------
 
 #: Resistance thresholds map onto the coalition capacity model: a single robot has
-#: capacity 1, two robots pushing the same direction have capacity 2. A hidden
-#: resistance of 3 is therefore never satisfiable with two robots and is excluded.
+#: capacity 1, two robots pushing the same direction have capacity 2. The
+#: per-robot traction can reduce the effective capacity to 0 or 1, so resistance 2
+#: is sometimes unsatisfiable, which is exactly the interesting case.
 RESISTANCE_VALUES: Tuple[int, ...] = (1, 2)
 CONSTRAINT_VALUES: Tuple[str, ...] = ("free", "constrained")
 TRACTION_VALUES: Tuple[str, ...] = ("grip", "slip")
@@ -209,8 +177,7 @@ class HiddenPhysics:
     def effective_capacity(self, pushers: Tuple[int, ...]) -> int:
         """Coalition capacity after removing robots with no grip."""
 
-        gripping = [r for r in pushers if self.traction[r] == "grip"]
-        return len(gripping)
+        return len([r for r in pushers if self.traction[r] == "grip"])
 
     @property
     def label(self) -> str:
@@ -230,3 +197,74 @@ def enumerate_hidden_physics() -> Tuple[HiddenPhysics, ...]:
         for ta in TRACTION_VALUES
         for tb in TRACTION_VALUES
     )
+
+
+# --------------------------------------------------------------------------
+# Scene (the true simulator state)
+# --------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class Scene:
+    """A fully observed simulator world: geometry, object, robots, true physics.
+
+    This object is privileged. Deployment code must receive a
+    :class:`~coimagine.grid.sensing.RobotInformationState` instead.
+
+    ``released`` records the contact-mode transition: a successful release turns a
+    constrained object into a free one. It is part of the hidden state, not a
+    reward term.
+    """
+
+    static: StaticMap
+    obj: ObjectState
+    robots: Tuple[RobotState, ...]
+    physics: HiddenPhysics = HiddenPhysics()
+    released: bool = False
+
+    def __post_init__(self) -> None:
+        if len(self.robots) != 2:
+            raise ValueError("Stage 2 is fixed at two robots.")
+        if len({r.robot_id for r in self.robots}) != 2:
+            raise ValueError("Robot ids must be unique.")
+        for robot in self.robots:
+            if not self.static.in_bounds(robot.pose):
+                raise ValueError(f"Robot {robot.robot_id} is out of bounds.")
+            if self.static.is_wall(robot.pose):
+                raise ValueError(f"Robot {robot.robot_id} starts inside a wall.")
+            if robot.pose in self.obj.cells:
+                raise ValueError(f"Robot {robot.robot_id} starts inside the object.")
+        for cell in self.obj.cells:
+            if not self.static.in_bounds(cell):
+                raise ValueError("The object sticks out of the map.")
+            if self.static.is_wall(cell):
+                raise ValueError("The object overlaps a wall.")
+
+    @property
+    def robot(self) -> Mapping[int, RobotState]:
+        return {r.robot_id: r for r in self.robots}
+
+    @property
+    def hidden_label(self) -> str:
+        return self.physics.label + (" (released)" if self.released else "")
+
+    def is_goal(self) -> bool:
+        return self.obj.within(self.static.target)
+
+    def occupied_cells(self) -> FrozenSet[Cell]:
+        return self.obj.cells | frozenset(r.pose for r in self.robots)
+
+    def robot_pose(self, robot_id: int) -> Cell:
+        return self.robot[robot_id].pose
+
+    def with_robots(self, robots: Tuple[RobotState, ...]) -> "Scene":
+        return Scene(self.static, self.obj, robots, self.physics, self.released)
+
+    def with_object(self, obj: ObjectState, *, released: Optional[bool] = None) -> "Scene":
+        return Scene(
+            self.static,
+            obj,
+            self.robots,
+            self.physics,
+            self.released if released is None else released,
+        )

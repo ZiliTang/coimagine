@@ -333,8 +333,8 @@ def draw_ground_truth_panel(
         spine.set_color("#c98b8b")
         spine.set_linewidth(1.2)
 
-    if show_hidden and scene.hidden:
-        label = scene.hidden.get("label")
+    if show_hidden:
+        label = scene.hidden_label
         if label:
             ax.text(
                 0.98,

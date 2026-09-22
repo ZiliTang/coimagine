@@ -87,16 +87,15 @@ def scene_from_ascii(
         static=StaticMap(width, height, frozenset(walls), frozenset(target), name=name),
         obj=obj,
         robots=tuple(sorted(robots, key=lambda r: r.robot_id)),
-        hidden={},
+        physics=hidden if hidden is not None else HiddenPhysics(),
     )
-    return with_hidden(scene, hidden) if hidden is not None else scene
+    return scene
 
 
 def with_hidden(scene: Scene, physics: HiddenPhysics) -> Scene:
-    """Attach hidden physics and a printable label to a scene."""
+    """Attach hidden physics to a scene."""
 
-    hidden = {"physics": physics, "label": physics.label}
-    return replace(scene, hidden=hidden)
+    return replace(scene, physics=physics)
 
 
 # --------------------------------------------------------------------------
