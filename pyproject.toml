@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "coimagine"
-version = "0.9.1"
-description = "Local-observation Gate-A benchmark for imagined evolving coordination topologies"
+version = "0.1.0"
+description = "2D protocol core: private contact beliefs, finite-bit messages, exact oracles"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{name = "CoImagine contributors"}]
@@ -19,8 +19,7 @@ dependencies = [
 dev = ["pytest>=8.0"]
 
 [project.scripts]
-coimagine-demo = "coimagine.cli:demo_main"
-coimagine-gatea = "coimagine.cli:gate_a_main"
+coimagine-2d = "coimagine.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -28,4 +27,8 @@ where = ["src"]
 [tool.pytest.ini_options]
 pythonpath = ["src"]
 testpaths = ["tests"]
-addopts = "-q"
+norecursedirs = ["_old", ".venv", "build", "dist"]
+# The host's ROS iron site-packages register pytest11 plugins
+# (launch_testing / launch_ros) that fail to import when `lark` is absent.
+# They are unrelated to this project, so block them explicitly.
+addopts = "-q -p no:launch_testing -p no:launch_ros"
