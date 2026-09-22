@@ -75,6 +75,19 @@ DEPTH = 3
 
 
 @dataclass
+class StepTrace:
+    """One decision boundary of a closed-loop episode, for rendering."""
+
+    t: int
+    scene: Scene
+    scan: Optional[object]
+    action: str
+    y_public: str
+    feedback: Dict[int, str]
+    goal: bool
+
+
+@dataclass
 class EpisodeRecord:
     scene_id: int
     policy: str
@@ -185,8 +198,13 @@ def run_episode(
     sensor_noise: Optional[SensorNoise] = None,
     feedback_noise: Optional[FeedbackNoise] = None,
     rng: Optional[np.random.Generator] = None,
+    trace: Optional[List[StepTrace]] = None,
 ) -> Tuple[int, float, int]:
-    """Run one closed-loop episode and return ``(success, cost, steps)``."""
+    """Run one closed-loop episode and return ``(success, cost, steps)``.
+
+    Pass a list as ``trace`` to record every boundary; the renderer uses it to show what a
+    learned policy did next to the reference.
+    """
 
     candidates = candidates_for()
     sensor_noise = sensor_noise or SensorNoise()
@@ -262,6 +280,18 @@ def run_episode(
         joint = _joint_for(current, action_id)
         successor, result = _execute_cached(current, joint)
         total_cost += result.cost
+        if trace is not None:
+            trace.append(
+                StepTrace(
+                    t=step,
+                    scene=current,
+                    scan=scan,
+                    action=action_id,
+                    y_public=result.y_public,
+                    feedback=dict(result.feedback),
+                    goal=successor.is_goal(),
+                )
+            )
         skills.append(joint)
         history_a.append(result.feedback[0])
         history_b.append(result.feedback[1])

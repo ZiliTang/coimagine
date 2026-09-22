@@ -1486,3 +1486,34 @@ recording because the opposite is an intuitive design choice.
 
 The test asserts the robust part -- that dominance fails -- rather than a direction, because
 the direction flips with scale at the two smaller configurations.
+
+---
+
+## Round 27: the replay that shows where the learned model errs
+
+Objective item 4 asked for visualisation and replay showing **where** the learned model gets
+things wrong. The error analysis (rounds 15/25) gives the statistics; this adds the episode.
+
+`diagnostics/learned_replay.py` runs **both policies on the identical scene with identical
+observation noise** -- the network's predicted value and the exact belief-space reference --
+and renders them as two rows, one decision per column, with a red frame on every boundary
+where the two chose differently.
+
+The rendered example is a clean instance of the failure mode:
+
+* **learned value** (top row): probes at t=0, 1, 2 -- all three red, all three `stalled` --
+  then keeps probing at t=3, 4. The object never moves and the episode fails at cost 2.4.
+* **reference** (bottom row): co-pushes at t=0, 1, 2, the object advances into the goal
+  region, and the episode succeeds at cost 3.0.
+
+So the failure is not a wrong push or a wrong force: the learned model **probes instead of
+pushing** and burns the whole horizon, while the reference does the productive thing
+immediately. That matches the aggregate picture -- the dominant confusion in the corrected
+error analysis is `wait -> co_push:E`, i.e. the reference acts and the model stalls.
+
+Each cell draws the simulator's ground truth with the robot's own ray scan (square cells, so
+the sensing circle is not distorted into an ellipse), the committed action and the public
+outcome. The renderer is deterministic, and a test asserts the disagreement list is derived
+from the two traces rather than asserted.
+
+Output: `outputs/grid/replays/learned_vs_reference_scene0.{png,pdf}`.

@@ -35,6 +35,12 @@ from .decision_probe import (
     run_decision_probe,
     write_decision_report,
 )
+from .learned_replay import (
+    EpisodeComparison,
+    compare_policies,
+    find_and_render_disagreement,
+    render_comparison,
+)
 from .multistep_probe import (
     DepthMetrics,
     MultiStepResult,
@@ -129,6 +135,10 @@ __all__ = [
     "EpisodeRecord",
     "ContinuousProbeResult",
     "DepthMetrics",
+    "EpisodeComparison",
+    "compare_policies",
+    "find_and_render_disagreement",
+    "render_comparison",
     "EpisodeSummary",
     "MultiStepResult",
     "format_multistep_markdown",
