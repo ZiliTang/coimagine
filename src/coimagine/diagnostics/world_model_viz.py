@@ -361,7 +361,9 @@ def render_rollout_tree(
         if continuation is None:
             axes[1][column].axis("off")
         else:
-            second = model.predict_next(branch["imagined_observation"], int(continuation))
+            second = model.continue_from(
+                model.predict_next(observation, branch["action_index"]), int(continuation)
+            )
             draw_imagined_panel(
                 axes[1][column], second["observation"][0], static,
                 title=f"then {ACTION_IDS[int(continuation)]}", goal=goal,

@@ -152,6 +152,26 @@ class LatentWorldModel:
             )
         return results
 
+    def continue_from(self, predicted: Dict[str, np.ndarray], action: int) -> Dict[str, np.ndarray]:
+        """Imagine one more step starting from an already-imagined step.
+
+        The latent is carried forward **in latent space**. Going through the decoded
+        observation instead would re-encode the model's own blurry prediction and throw away
+        the bottleneck, which is the whole reason the latent exists.
+        """
+
+        return self._decode(self.step(predicted["latent"], action))
+
+    def _decode(self, latent: np.ndarray) -> Dict[str, np.ndarray]:
+        return {
+            "latent": latent,
+            "observation": self.observation_head(Tensor(latent)).data,
+            "physics_logits": self.physics_head(Tensor(latent)).data,
+            "pose_logits": self.pose_head(Tensor(latent)).data,
+            "cost": self.cost_head(Tensor(latent)).data[:, 0],
+            "moved_logit": self.moved_head(Tensor(latent)).data[:, 0],
+        }
+
     def predict_next(self, observation: np.ndarray, action: int) -> Dict[str, np.ndarray]:
         """One imagined step, with every head applied to the predicted latent."""
 
@@ -206,6 +226,11 @@ class DirectWorldModel:
         action_vector = np.zeros((count, N_ACTIONS))
         action_vector[:, action] = 1.0
         return concat([obs_tensor, Tensor(action_vector)])
+
+    def continue_from(self, predicted: Dict[str, np.ndarray], action: int) -> Dict[str, np.ndarray]:
+        """Imagine one more step; without a bottleneck the prediction is the next input."""
+
+        return self.predict_next(predicted["observation"], action)
 
     def predict_next(self, observation: np.ndarray, action: int) -> Dict[str, np.ndarray]:
         predicted = self.predictor(self._joined(observation, action)).data

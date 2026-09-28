@@ -220,7 +220,9 @@ def plan_with_model(
             terminal = first
         else:
             for continuation in range(len(ACTION_IDS)):
-                second = model.predict_next(first["observation"], continuation)
+                # Continue from the imagined step, not from its decoded observation: for the
+                # latent model that keeps the rollout inside the latent space.
+                second = model.continue_from(first, continuation)
                 value = float(second["cost"][0]) + progress_weight * _heuristic_from_pose_logits(
                     second["pose_logits"][0], goal
                 )

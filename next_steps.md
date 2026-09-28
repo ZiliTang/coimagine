@@ -1887,8 +1887,16 @@ figures that make the imagination inspectable (`diagnostics/world_model_viz.py`)
   next positions across the six candidate actions** (direct: 1.01) while being 0.884 accurate
   about where the object is. It learned to estimate state, not what actions do. Four of the six
   branches in the rendered figure are pixel-identical.
-* Closed loop: learned-model planning reaches **0.050** success, against **0.225 for random**.
-  The diagnosis and the failure agree, so the failure is explained rather than mysterious.
+* A bug had to be fixed first: the two-step lookahead decoded the imagined observation and
+  **re-encoded it** for the second step, throwing away the bottleneck. Continuing inside the
+  latent space (`continue_from`) took success from **0.050 to 0.125** and cost per success from
+  **45.70 to 14.40**.
+* Closed loop over 120 episodes: learned planning **0.125** success at the **lowest cost per
+  success of any planner (15.17)**, against random 0.200 at 27.06 and always-co-push 0.167 at
+  41.50. So it is the most efficient when it succeeds and the least likely to succeed -- it
+  declines early (mean cost 1.90), the same conservatism the cold-start result predicted.
+* The showcase episode reaches the goal and the action sequence is coherent: it **releases**
+  first (the correct preparation action for a latched object), then pushes three times.
 * `no_change` (repeat the current observation) beats both models on raw observation MSE. That
   metric is dominated by the static cells and should not be a headline; the pose accuracy is.
 
