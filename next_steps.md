@@ -1859,3 +1859,47 @@ an experiment reaches the **optimum** (round 23), because that testbed's decisio
 exact. In the continuous cold-start setting the same substitution reaches **half**, because the
 rule is learned. **The value of information and the ability to use it are separate
 quantities**, and this project has now measured each one separately.
+
+---
+
+## Rounds 33+: the encoder / latent transition / imagined-rollout chain
+
+The previous implementation had no encoder, no transition model and no imagined rollout -- it
+was a multi-head MLP predicting one-step outcomes from hand-built features. That gap is now
+closed, and the chain is measured.
+
+**What was built.** A hand-written reverse-mode autodiff engine (`learning/autograd.py`, every
+operator and a two-step rollout graph checked against finite differences, worst relative error
+1e-7); an encoder (188 -> 96 -> 32 latent), a latent transition (`[latent, action] -> latent`),
+privileged decoder heads (next observation, object cell, contact physics, cost, moved), and
+multi-step rollout training (`learning/world_model.py`); trajectory collection from robot A's own
+viewpoint (`learning/world_model_data.py`); a planner that imagines with the learned model and
+**never touches the simulator in its lookahead** (`diagnostics/world_model_probe.py`); and
+figures that make the imagination inspectable (`diagnostics/world_model_viz.py`).
+
+**What it establishes.**
+
+* The latent bottleneck works. After four imagined steps the object-position accuracy is
+  **0.833** for the latent model against **0.405** for the direct-prediction variant, with the
+  same data, budget and supervision. This is measured evidence for why a latent is worth having,
+  not an assertion.
+* **And the chain still cannot plan.** From one state the latent model names **1.14 different
+  next positions across the six candidate actions** (direct: 1.01) while being 0.884 accurate
+  about where the object is. It learned to estimate state, not what actions do. Four of the six
+  branches in the rendered figure are pixel-identical.
+* Closed loop: learned-model planning reaches **0.050** success, against **0.225 for random**.
+  The diagnosis and the failure agree, so the failure is explained rather than mysterious.
+* `no_change` (repeat the current observation) beats both models on raw observation MSE. That
+  metric is dominated by the static cells and should not be a headline; the pose accuracy is.
+
+**The fix that was tried and did not work.** The dynamics live in the 8.5% of transitions that
+move the object, so those rows were upweighted 30x in the pose and observation heads. Action
+sensitivity rose 1.14 -> 1.52 of 6, pose accuracy fell 0.884 -> 0.792, four-step pose accuracy
+fell 0.833 -> 0.690, and the closed loop did not move (0.050 either way) while costing more.
+Reweighting trades sensitivity against accuracy without changing the fact that the model is not
+action-conditioned.
+
+**Next.** The loss fits single states; it must instead penalise *branches that should differ but
+do not* -- decision-focused model learning rather than state fitting. The diagnostic to watch is
+`measure_action_sensitivity`, and the metric to report is branch separability, not observation
+MSE.

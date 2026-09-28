@@ -72,6 +72,25 @@ from .continuous_probe import (
     run_continuous_probe,
     write_continuous_report,
 )
+from .world_model_probe import (
+    ActionSensitivity,
+    ClosedLoopRow,
+    RolloutAccuracy,
+    evaluate_rollout_accuracy,
+    format_action_sensitivity,
+    format_closed_loop,
+    measure_action_sensitivity,
+    plan_with_model,
+    run_closed_loop,
+)
+from .world_model_viz import (
+    decode_observation,
+    render_branches,
+    render_episode_animation,
+    render_imagination_vs_reality,
+    render_rollout_tree,
+    run_episode_snapshots,
+)
 from .rollout_probe import (
     ModeAblationSummary,
     format_mode_ablation_markdown,
@@ -83,6 +102,25 @@ from .error_analysis import (
     format_error_markdown,
     render_error_figure,
     run_error_analysis,
+)
+from .world_model_probe import (
+    ActionSensitivity,
+    ClosedLoopRow,
+    RolloutAccuracy,
+    evaluate_rollout_accuracy,
+    format_action_sensitivity,
+    format_closed_loop,
+    measure_action_sensitivity,
+    plan_with_model,
+    run_closed_loop,
+)
+from .world_model_viz import (
+    decode_observation,
+    render_branches,
+    render_episode_animation,
+    render_imagination_vs_reality,
+    render_rollout_tree,
+    run_episode_snapshots,
 )
 from .rollout_probe import (
     RolloutProbeResult,
@@ -143,6 +181,21 @@ __all__ = [
     "EpisodeRecord",
     "ModeAblationSummary",
     "format_mode_ablation_markdown",
+    "ActionSensitivity",
+    "ClosedLoopRow",
+    "RolloutAccuracy",
+    "evaluate_rollout_accuracy",
+    "format_action_sensitivity",
+    "format_closed_loop",
+    "measure_action_sensitivity",
+    "plan_with_model",
+    "run_closed_loop",
+    "decode_observation",
+    "render_branches",
+    "render_episode_animation",
+    "render_imagination_vs_reality",
+    "render_rollout_tree",
+    "run_episode_snapshots",
     "run_mode_ablation",
     "ContinuousProbeResult",
     "DepthMetrics",

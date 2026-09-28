@@ -24,6 +24,15 @@ from .features import (
 )
 from .data import FeasibilitySample, generate_dataset, sample_to_arrays
 from .mlp import MultiHeadMLP, TrainHistory, train
+from .world_model import (
+    DirectWorldModel,
+    LatentWorldModel,
+    Trajectory,
+    Transition,
+    load_world_model,
+    save_world_model,
+    train_world_model,
+)
 
 __all__ = [
     "ACTION_IDS",
@@ -37,4 +46,11 @@ __all__ = [
     "sample_to_arrays",
     "sample_vector",
     "train",
+    "DirectWorldModel",
+    "LatentWorldModel",
+    "Trajectory",
+    "Transition",
+    "load_world_model",
+    "save_world_model",
+    "train_world_model",
 ]
