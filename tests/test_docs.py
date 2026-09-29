@@ -49,8 +49,13 @@ def test_the_final_report_shows_the_headline_figures() -> None:
         assert f"]({ '../outputs/grid/world_model/' + name })" in text, name
 
 
-def test_superseded_figures_are_archived_not_referenced() -> None:
-    """Anything under a `__old__` directory is explicitly not to be cited."""
+def test_no_document_displays_an_archived_figure() -> None:
+    """A document may *mention* the archive to say "do not cite these", but it must never
+    display one: the link is what a reader would follow."""
 
+    offenders = []
     for doc in DOCS:
-        assert "__old__" not in doc.read_text().split("## 8.1")[0], doc.name
+        for match in re.finditer(r"!\[[^\]]*\]\(([^)]+)\)", doc.read_text()):
+            if "__old__" in match.group(1):
+                offenders.append(f"{doc.name}: {match.group(1)}")
+    assert not offenders, offenders
