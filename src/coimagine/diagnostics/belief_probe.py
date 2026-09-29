@@ -355,17 +355,19 @@ def plan_with_belief(
     belief_override: Optional[np.ndarray] = None,
     dynamic_override: Optional[np.ndarray] = None,
     depth: int = 2,
+    beam: int = 1,
     progress_weight: float = PROGRESS_WEIGHT,
     fail_cost: float = FAIL_COST,
 ) -> Tuple[int, List[Dict[str, object]]]:
-    """Plan by imagining forward **and updating the parameter belief on the imagined feedback**.
+    """Two-level lookahead, delegating to :func:`plan_with_search`.
 
-    This is the structural difference from the earlier planner. Every branch of the first action
-    is followed by a belief update for each symbol the model expects to see, so a branch that
-    only pays off if the release succeeded is scored as the conditional plan it actually is --
-    rather than being flattened by a fixed belief.
-
-    Returns the chosen action and the per-branch record, for the figures.
+    This used to carry its own copy of the scoring, and that copy had four defects. The belief was
+    updated on the imagined feedback while the continuation still started from the state computed
+    under the prior. The failure cost was multiplied by ``0.0`` in a leftover expression, so it was
+    charged flat rather than by the probability of failure. The second action's cost was never
+    counted, making it free. And the failure cost was then charged a second time. Keeping one
+    scoring path removes the whole class of problem, and it is the only way the two planners can be
+    compared at all.
     """
 
     dynamic = (
@@ -379,71 +381,10 @@ def plan_with_belief(
         belief = model.parameter_belief(observation)
     else:
         belief = belief_from_history(model, observation, dynamic, history)
-    distance_table = _cell_distance_distribution(None, goal)
-
-    def expected_distance(state: np.ndarray) -> float:
-        return float(state[0, 1 : 1 + N_CELLS] @ distance_table)
-
-    def released_probability(state: np.ndarray) -> float:
-        return float(state[0, 0])
-
-    branches: List[Dict[str, object]] = []
-    for action in range(len(ACTION_IDS)):
-        first = model.step(dynamic, action, belief)
-        first_cost = float(
-            model.cost_head(
-                concat([
-                    Tensor(np.eye(N_ACTIONS)[[action]]),
-                    Tensor(first),
-                    Tensor(belief @ model._theta_eye),
-                ])
-            ).data[0, 0]
-        )
-        # branch on the outcome the model expects, and update the belief inside the imagination
-        symbol_probabilities = model.predict_outcome(first, action, belief)[0]
-        continuation_values: List[float] = []
-        continuation_actions: List[int] = []
-        for symbol in range(len(symbol_probabilities)):
-            probability = float(symbol_probabilities[symbol])
-            if probability < BRANCH_THRESHOLD:
-                continue
-            # `dynamic` is the state before this action; the update derives the per-hypothesis
-            # next states itself
-            updated = model.update_belief(belief, dynamic, action, symbol)
-            best_value, best_action = None, None
-            if depth <= 1:
-                best_value, best_action = expected_distance(first), -1
-            else:
-                for second in range(len(ACTION_IDS)):
-                    state2 = model.step(first, second, updated)
-                    distance = expected_distance(state2)
-                    value = progress_weight * distance
-                    if distance >= 0.5:
-                        value += fail_cost * (1.0 - released_probability(state2)) * 0.0 + fail_cost
-                    if best_value is None or value < best_value:
-                        best_value, best_action = value, second
-            continuation_values.append(probability * float(best_value))
-            continuation_actions.append(int(best_action))
-        continuation = float(np.sum(continuation_values)) if continuation_values else 0.0
-        distance = expected_distance(first)
-        terminal = 0.0 if distance < 0.5 else fail_cost
-        score = first_cost + continuation + progress_weight * distance * (1.0 if depth <= 1 else 0.0) + terminal
-        branches.append(
-            {
-                "action": ACTION_IDS[action],
-                "action_index": action,
-                "score": score,
-                "first_cost": first_cost,
-                "expected_distance": distance,
-                "released_probability": released_probability(first),
-                "symbol_probabilities": symbol_probabilities,
-                "continuation_actions": continuation_actions,
-                "state": first,
-            }
-        )
-    chosen = min(branches, key=lambda b: (b["score"], b["action"]))
-    return int(chosen["action_index"]), branches
-
+    return plan_with_search(
+        model, observation, goal, belief=belief, dynamic=dynamic,
+        depth=depth, beam=beam, progress_weight=progress_weight, fail_cost=fail_cost,
+    )
 
 @dataclass
 class PrepareProbe:
@@ -1054,8 +995,15 @@ def plan_with_search(
             if probability < symbol_threshold:
                 continue
             updated = model.update_belief(belief, dynamic, action, symbol)
+            # Re-derive the state **under the posterior**. `state` was computed under the prior
+            # belief, so without this the imagined feedback sharpens the parameters while the
+            # dynamic state still reflects the old mixture: imagining that a release succeeded
+            # would leave `released` at its prior value, and the continuation would still believe
+            # pushes fail. That suppresses exactly the preparation branches the planner is
+            # supposed to prefer.
+            state_after = np.atleast_2d(model.step(dynamic, action, updated))
             value = _beam_value(
-                model, state, updated, distance_table,
+                model, state_after, updated, distance_table,
                 steps=depth - 1, beam=beam,
                 progress_weight=progress_weight, fail_cost=fail_cost,
             )
