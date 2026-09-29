@@ -804,6 +804,35 @@ class ComparisonRow:
     mean_steps: float
 
 
+def label_solvable(episodes, *, horizon: int = 16, warmup_action: str = "probe:0:E"):
+    """Which scenes the full-information oracle can solve at all, given a generous horizon.
+
+    Needed because the success metric has a ceiling here: the oracle scores 0.417-0.425 and does
+    **not** improve when the horizon goes from 8 to 12 to 16, so about 58% of episodes are
+    physically unsolvable. Comparing planners on raw success therefore measures mostly how they
+    behave on unwinnable episodes.
+    """
+
+    from .rollout_probe import run_episode
+
+    flags = []
+    for situation in episodes:
+        scene = situation.scene
+        if scene.is_goal():
+            flags.append(False)
+            continue
+        successor, _ = execute(scene, _joint_for(scene, warmup_action))
+        if successor.is_goal():
+            flags.append(False)
+            continue
+        success, _cost, _steps = run_episode(
+            successor, "oracle_true_state", None, horizon=horizon,
+            rng=np.random.default_rng(0),
+        )
+        flags.append(bool(success))
+    return flags
+
+
 def run_belief_comparison(
     model: BeliefWorldModel,
     *,
@@ -813,6 +842,8 @@ def run_belief_comparison(
     depth: int = 4,
     beam: int = 3,
     warmup_action: str = "probe:0:E",
+    solvable_only: bool = False,
+    oracle_probe_horizon: int = 16,
 ) -> List[ComparisonRow]:
     """Every policy on the **same** scenes, from the **same** starting state.
 
@@ -826,6 +857,11 @@ def run_belief_comparison(
     situations = generate_situations(
         n_scenes=n_episodes, lead_in=0, seed=seed, physics_pool=PHYSICS_TABLE
     )
+    if solvable_only:
+        keep = label_solvable(
+            situations, horizon=oracle_probe_horizon, warmup_action=warmup_action
+        )
+        situations = [s for s, k in zip(situations, keep) if k]
     tallies: Dict[str, List[Tuple[int, float, int]]] = {}
     random = np.random.default_rng(seed)
     warm_index = ACTION_IDS.index(warmup_action)
