@@ -311,12 +311,15 @@ def _cell_distance_distribution(cells: np.ndarray, goal: frozenset) -> np.ndarra
     for index in range(N_CELLS):
         origin = (index % 6, index // 6)
         members = [(origin[0] + dx, origin[1] + dy) for dx in (0, 1) for dy in (0, 1)]
-        if all(cell in goal for cell in members):
-            out[index] = 0.0
-        else:
-            out[index] = float(
-                min(max(abs(c[0] - g[0]) + abs(c[1] - g[1]) for g in goal) for c in members)
-            )
+        # Worst cell's distance to its **nearest** goal cell: max over the object's cells of the
+        # min over goal cells. Both directions were inverted here -- it computed the *minimum*
+        # over cells of the distance to the *farthest* goal cell -- which inflated the heuristic
+        # roughly two-fold and, worse, made it depend on the object's y coordinate even though
+        # the goal spans every row. The table is the search's only guidance past the horizon, so
+        # that error propagates straight into every branch score.
+        out[index] = float(
+            max(min(abs(c[0] - g[0]) + abs(c[1] - g[1]) for g in goal) for c in members)
+        )
     return out
 
 
