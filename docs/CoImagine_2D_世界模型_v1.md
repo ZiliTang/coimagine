@@ -25,6 +25,12 @@
 跑通的意思是：给定一个真实决策点，模型对**每个候选动作**都想象出一个下一状态，据此打分，
 选出动作，交给模拟器执行，然后继续。上面的分支图就是这个过程的快照。
 
+![六个候选动作的想象](../outputs/grid/world_model/branches_showcase_t00.png)
+
+![想象 vs 现实](../outputs/grid/world_model/imagined_vs_real_t00.png)
+
+![两步想象树](../outputs/grid/world_model/rollout_tree_showcase.png)
+
 **但是：这条链路现在还不能用来做决策。** 下面的测量说明原因，而且原因很具体。
 
 ## 三、测量结果
@@ -506,6 +512,8 @@ b'(θ)   ∝ P(y | a, s_{t+1}, θ) · b(θ)              显式贝叶斯更新
 | 阻力 | acc 0.53 / mass 0.53 | 0.137 | 0.003 |
 | 是否被锁 | acc 0.62 / mass 0.58 | 0.267 | **0.000** |
 
+![信念探针](../outputs/grid/world_model/belief_probe.png)
+
 读法：
 - **自身牵引力一次接触动作就完全确定**（acc 1.00，且从不自信地搞错）。
 - **队友牵引力几乎不动**（从均匀只移动 0.126）——这是对的，它本来就不可观测。
@@ -513,6 +521,8 @@ b'(θ)   ∝ P(y | a, s_{t+1}, θ) · b(θ)              显式贝叶斯更新
 - **是否被锁有一点信息但很弱**（0.267），且**从不自信地搞错**（置信错误 0.000）。
 
 **"该知道的完全知道，不该知道的就保持不确定，而且从不自信地错"**——这正是附录三要求的那个行为。
+
+![准备探针](../outputs/grid/world_model/prepare_probe.png)
 
 ## 4. 实测：规划器会做准备，而且只在准备有意义时
 
@@ -715,3 +725,30 @@ cut = progress_weight × 期望距离 + fail_cost × P(物体不在目标)
 
 **在把这两条做完之前，不应该再加深搜索。** 这一轮的负面结果是可复现的、有解释的，
 而且它把问题从"决策规则"精确地推到了"模型保真度"上。
+
+
+---
+
+# 附录七：图在哪里
+
+| 图 | 路径 | 说明 |
+|---|---|---|
+| 六个候选动作的想象 | `outputs/grid/world_model/branches_showcase_t00.png` | 真实世界 + 每个动作想象出的下一状态 + 选中的分支 |
+| 想象 vs 现实 | `outputs/grid/world_model/imagined_vs_real_t00.png` | 差别就是模型误差 |
+| 两步想象树 | `outputs/grid/world_model/rollout_tree_showcase.png` | 每个首动作 + 模型找到的最好后续 |
+| 回合动画 | `outputs/grid/world_model/episode_showcase.gif` | 整条回合，先 release 再连推三下进目标区 |
+| 信念探针 | `outputs/grid/world_model/belief_probe.png` | 该知道的到 1.0、不该知道的停在 0.5、"错且自信"低于 0.008 |
+| 准备探针 | `outputs/grid/world_model/prepare_probe.png` | 能释放时释放、必然失败时一次都不试 |
+| 学到价值 vs 参照回放 | `outputs/grid/replays/learned_vs_reference_scene0.png` | 两条轨迹并排，红框标出分歧 |
+| 误差分解 | `outputs/grid/error_analysis_v2/error_by_situation.png` | 按接触机制、按离目标的距离 |
+
+生成命令：
+
+```python
+from coimagine.learning.belief_model import load_belief_model
+from coimagine.diagnostics.belief_viz import render_all
+render_all(load_belief_model("outputs/grid/world_model/belief.npz"))
+```
+
+**已废弃的图**在 `outputs/**/__old__/` 下，每个目录有一个 README 说明为什么被替换。
+`tests/test_docs.py` 会检查文档里引用的每一张图都存在，所以链接不会悄悄失效。

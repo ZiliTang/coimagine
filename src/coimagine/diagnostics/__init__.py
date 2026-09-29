@@ -86,6 +86,11 @@ from .belief_probe import (
     run_belief_probe,
     run_prepare_probe,
 )
+from .belief_viz import (
+    render_all as render_belief_figures,
+    render_belief_probe,
+    render_prepare_probe,
+)
 from .world_model_probe import (
     ActionSensitivity,
     ClosedLoopRow,
@@ -130,6 +135,11 @@ from .belief_probe import (
     run_belief_episode,
     run_belief_probe,
     run_prepare_probe,
+)
+from .belief_viz import (
+    render_all as render_belief_figures,
+    render_belief_probe,
+    render_prepare_probe,
 )
 from .world_model_probe import (
     ActionSensitivity,
@@ -214,6 +224,9 @@ __all__ = [
     "ComparisonRow",
     "PrepareProbe",
     "belief_from_history",
+    "render_belief_figures",
+    "render_belief_probe",
+    "render_prepare_probe",
     "compare_likelihoods",
     "fuse_hidden_state",
     "measure_multistep_sensitivity",

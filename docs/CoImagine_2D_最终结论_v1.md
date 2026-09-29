@@ -222,6 +222,12 @@ b'(θ)   ∝ P(反馈 | 动作, s_θ', θ) · b(θ)                ← 贝叶斯
 **换成"以机器人为中心"的观测能解决吗？实测不能：真值 1.43 对 1.43，完全一样。**
 因为关键的那四个动作根本不让机器人移动（机器人平均只在 1.24/6 个动作里移动）。
 
+![六个分支](../outputs/grid/world_model/branches_showcase_t00.png)
+
+*一次真实决策：最左是**真实世界**（规划器看不到），右边六格是模型对**每个候选动作**想象出的
+下一状态，标题里是它给出的分数和"箱子会动的概率"，红框是它选中的那个。六个格子里有四个
+画得一模一样——**这不是模型的缺陷，而是这个任务里那些动作本来就什么都不改变。***
+
 ## 3.5 真正的问题：最重要的动作，效果在观测里**完全看不见**
 
 > 对**被锁住**的箱子执行 `release`，成功时反馈是 `drove`、公共事件是 `stalled`，
@@ -234,6 +240,12 @@ b'(θ)   ∝ P(反馈 | 动作, s_θ', θ) · b(θ)                ← 贝叶斯
 "这一步把箱子解开了"，规划器当然学不会优先 `release`。
 **这也直接解释了第三代为什么必须那样拆**：要有显式的观测模型（让反馈能反过来更新信念）
 和显式的隐藏状态（让"解开"这件事被携带下去）。
+
+![想象 vs 现实](../outputs/grid/world_model/imagined_vs_real_t00.png)
+
+*左：机器人当前看到的世界。中：模型对**被选中的那个动作**想象出的下一状态。右：模拟器
+**实际**发生的事。中间和右边的每一处差别，就是模型的误差——可以看出它把箱子想象得比真实更"糊"、
+向旁边铺开了一格。*
 
 ## 3.6 通信：最有价值的一条规则
 
@@ -265,6 +277,12 @@ b'(θ)   ∝ P(反馈 | 动作, s_θ', θ) · b(θ)                ← 贝叶斯
 **这是信念更新的地基，所以直接拿它和模拟器对照，而不是看训练损失。**
 
 ## 3.9 factored 模型的信念更新：**该知道的完全知道，不该知道的就保持不确定**
+
+![信念探针](../outputs/grid/world_model/belief_probe.png)
+
+*左图：(a) 从均匀先验出发，每做一次接触动作之后，后验落在**真值**上的概率。绿色（自己抓地力）
+一步就跳到 1.0 并保持；另外三条正确地贴在 0.5（等于"没有信息"）附近。右图：(b) "错**且**自信"
+（p > 0.8）的比例，四条全部在 0.008 以下。*
 
 从**均匀先验**出发，只用学到的似然做序列更新（每个数都是实测）：
 
@@ -305,6 +323,12 @@ b'(θ)   ∝ P(反馈 | 动作, s_θ', θ) · b(θ)                ← 贝叶斯
 **分歧随深度增长，而且第 3 步两组参数仍有 73% 的情况选择不同的动作。**
 
 ## 3.11 规划器会做准备，而且**只在准备有意义的时候**
+
+![准备探针](../outputs/grid/world_model/prepare_probe.png)
+
+*蓝色是"把真实参数直接告诉规划器"，金色是"让它自己从反馈里推断"。**"释放必然失败"那一列
+两种情况下都是 0.000**（126 个场景一次都没试过）；"能释放"那一列两种情况完全一样（0.636）。
+差距全部落在"没被锁"那一列：浪费的释放从 0.062 涨到 0.186。*
 
 给它**真实参数**时，第一步选 `release` 的比例：
 
@@ -349,6 +373,11 @@ b'(θ)   ∝ P(反馈 | 动作, s_θ', θ) · b(θ)                ← 贝叶斯
 - **成功率上它和随机持平**（0.142），远低于精确参照的 0.392。
 - **但每次成功代价只有随机的 1/3.3**（11.87 对 39.20）。**它成功得少，成功的时候很省——
   是个保守的规划器：不确定就少花。**
+
+![回合动画](../outputs/grid/world_model/episode_showcase.gif)
+
+*一条真实回合的动画：左边是机器人看到的世界，右边是**驱动这次决策的想象**，标题是它选的动作
+和现实结果。这一条里它先 `release` 解开箱子，再连推三下进了目标区——动作链是连贯的。*
 
 ## 3.13 核心的负面结果：**搜索越深，效果越差**
 
@@ -493,10 +522,41 @@ python -m coimagine.cli gallery --noise-comparison  # 场景可视化
 | `diagnostics/rollout_probe.py` | 闭环与模式消融 |
 | `diagnostics/message_necessity.py` | 消息价值测台 |
 
-**主要产物：**
+## 8.1 图（全部在 `outputs/` 下）
 
-- `docs/CoImagine_2D_世界模型_v1.md` —— 世界模型这条线的完整技术记录（含六个附录）
-- `results.md` —— 按时间顺序的完整记录 + 开头的"当前结论"与"已撤回结论"
+**核心结果：**
+
+| 图 | 说明 |
+|---|---|
+| [`world_model/belief_probe.png`](../outputs/grid/world_model/belief_probe.png) | 信念学到什么（该知道的到 1.0，不该知道的停在 0.5），以及"错且自信"的比例 |
+| [`world_model/prepare_probe.png`](../outputs/grid/world_model/prepare_probe.png) | 规划器在"能释放"时释放、"必然失败"时一次都不试 |
+| [`world_model/branches_showcase_t00.png`](../outputs/grid/world_model/branches_showcase_t00.png) | 一次决策：真实世界 + 六个候选动作各自的想象 + 选中哪个 |
+| [`world_model/imagined_vs_real_t00.png`](../outputs/grid/world_model/imagined_vs_real_t00.png) | 想象 vs 现实，差别就是模型误差 |
+| [`world_model/rollout_tree_showcase.png`](../outputs/grid/world_model/rollout_tree_showcase.png) | 两步想象树：每个首动作 + 模型找到的最好后续 |
+| [`world_model/episode_showcase.gif`](../outputs/grid/world_model/episode_showcase.gif) | 整条回合的动画（先 `release` 再连推三下进目标区） |
+| [`error_analysis_v2/error_by_situation.png`](../outputs/grid/error_analysis_v2/error_by_situation.png) | 学到的价值 vs 同等信息参照：分歧按接触机制、按离目标的距离分解 |
+| [`replays/learned_vs_reference_scene0.png`](../outputs/grid/replays/learned_vs_reference_scene0.png) | 回放：学到价值（上行） vs 参照（下行），红框标出两者选择不同的位置 |
+
+**场景与感知：**
+
+| 图 | 说明 |
+|---|---|
+| [`grid/scenes/scene_pillar_occlusion.png`](../outputs/grid/scenes/scene_pillar_occlusion.png) | 柱子遮挡下的场景 |
+| [`grid/scenes/scene_corner_goal.png`](../outputs/grid/scenes/scene_corner_goal.png) | 目标区在角落 |
+| [`grid/scenes/scene_narrow_passage.png`](../outputs/grid/scenes/scene_narrow_passage.png) | 窄通道 |
+| [`grid/scenes/scene_open_transport.png`](../outputs/grid/scenes/scene_open_transport.png) | 开阔搬运 |
+| [`grid/scenes/noise_comparison_pillar_occlusion.png`](../outputs/grid/scenes/noise_comparison_pillar_occlusion.png) | 有/无雷达噪声的对比 |
+
+**微型 oracle 那一轮**（最早的有限状态诊断）：`outputs/micro/figures/` 下的
+`fig_communication_budget.png`、`fig_probe_cost_sweep.png`、`fig_feedback_strength_sweep.png`、
+`fig_c2_control.png`。
+
+**已废弃的图**在 `outputs/**/__old__/` 下，每个目录里有 README 说明为什么被替换，**不要引用**。
+
+## 8.2 其他产物
+
+- [`docs/CoImagine_2D_世界模型_v1.md`](CoImagine_2D_世界模型_v1.md) —— 世界模型这条线的完整技术记录（含六个附录）
+- [`results.md`](../results.md) —— 按时间顺序的完整记录 + 开头的"当前结论"与"已撤回结论"
+- [`next_steps.md`](../next_steps.md) —— 未完成项
 - `outputs/grid/world_model/belief.npz` —— factored 模型参数
-- `outputs/grid/world_model/branches_showcase_t00.png` —— 一次决策的全部六个分支
-- `outputs/grid/world_model/episode_showcase.gif` —— 整条回合的动画
+- `outputs/grid/world_model/belief_report.json` —— 上面那些数字的原始输出
