@@ -221,3 +221,64 @@ def test_theta_head_is_not_used_as_the_belief(trained) -> None:
     probe = run_belief_probe(trained, n_runs=120, horizon=2)
     assert probe.accuracy["own traction"][-1] > 0.85
     assert probe.confident_errors["own traction"] < 0.05
+
+
+def test_hidden_state_is_carried_not_re_read(trained) -> None:
+    """The bug that made the planner idle at 0.000 success.
+
+    A successful release leaves the observation byte-identical, so re-reading `released` from the
+    observation forgets that it happened. The hidden part must be carried by the transition while
+    the observable part comes from the current view.
+    """
+
+    from coimagine.diagnostics.belief_probe import fuse_hidden_state, run_belief_episode
+
+    observed = np.zeros((1, 41)); observed[0, 0] = 0.01            # observation says "not released"
+    observed[0, 1:37] = 1.0 / 36
+    carried = np.zeros((1, 41)); carried[0, 0] = 0.97              # transition says "released"
+    fused = fuse_hidden_state(observed, carried)
+    assert fused[0, 0] == pytest.approx(0.97)                      # hidden part from the transition
+    assert np.allclose(fused[0, 1:], observed[0, 1:])              # observable part from the view
+
+    # and an episode runs with the hidden state carried
+    scene = next(
+        s.scene
+        for s in generate_situations(n_scenes=40, lead_in=0, seed=55_000, physics_pool=TABLE)
+        if not s.scene.is_goal()
+    )
+    belief = np.full((1, N_PHYSICS), 1.0 / N_PHYSICS)
+    success, cost, steps = run_belief_episode(
+        trained, scene, belief, horizon=3, depth=1, warmup=(3, 2)
+    )
+    assert success in (0, 1)
+    assert steps <= 3 and cost >= 0.0
+
+
+@pytest.mark.slow
+def test_multistep_prediction_depends_on_the_parameters(trained) -> None:
+    """The planner needs the parameters to change what it expects several steps ahead, not only
+    one step. Two beliefs that disagree about the constraint mode and this robot's traction must
+    produce different imagined futures, and must disagree about the best next action."""
+
+    from coimagine.diagnostics.belief_probe import measure_multistep_sensitivity
+
+    result = measure_multistep_sensitivity(trained, n_scenes=120, steps=3)
+    assert result.cell_divergence[-1] > 0.1, result.cell_divergence
+    assert result.released_gap[-1] > 0.1, result.released_gap
+    # the disagreement must survive to the last step, i.e. it is not a one-step effect
+    assert result.best_action_agreement[-1] < 0.8, result.best_action_agreement
+
+
+@pytest.mark.slow
+def test_closed_loop_comparison_runs_every_policy_on_the_same_scenes(trained) -> None:
+    from coimagine.diagnostics.belief_probe import run_belief_comparison
+
+    rows = run_belief_comparison(trained, n_episodes=12, horizon=4, depth=1)
+    names = {row.policy for row in rows}
+    assert "belief model (factored)" in names
+    assert "random" in names
+    assert any("oracle" in n for n in names)
+    assert any("reference" in n for n in names)
+    for row in rows:
+        assert 0.0 <= row.success_rate <= 1.0
+        assert row.episodes > 0

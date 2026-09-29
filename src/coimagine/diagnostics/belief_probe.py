@@ -352,6 +352,7 @@ def plan_with_belief(
     *,
     history: Optional[Sequence[Tuple[int, int]]] = None,
     belief_override: Optional[np.ndarray] = None,
+    dynamic_override: Optional[np.ndarray] = None,
     depth: int = 2,
     progress_weight: float = PROGRESS_WEIGHT,
     fail_cost: float = FAIL_COST,
@@ -366,7 +367,11 @@ def plan_with_belief(
     Returns the chosen action and the per-branch record, for the figures.
     """
 
-    dynamic = model.dynamic_state(observation)
+    dynamic = (
+        np.atleast_2d(dynamic_override)
+        if dynamic_override is not None
+        else model.dynamic_state(observation)
+    )
     if belief_override is not None:
         belief = np.atleast_2d(belief_override)
     elif history is None:
@@ -578,3 +583,314 @@ def format_prepare_probe(probe: PrepareProbe) -> str:
             f"{probe.latched_unreleasable_n} | **{probe.latched_unreleasable_rate:.3f}** | - |",
         ]
     )
+
+
+# ---------------------------------------------------------------------------
+# Does the parameter belief change the *multi-step* prediction?
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class MultiStepSensitivity:
+    """How much the imagined future depends on the parameter belief.
+
+    The single-step check (``P(released | release)`` conditioned on the parameters) is necessary
+    but not sufficient: a planner needs the parameters to change what it expects several steps
+    ahead. This measures the imagined object position and released probability ``k`` steps out,
+    under two different beliefs, from the same observation.
+    """
+
+    steps: int
+    cell_divergence: List[float] = field(default_factory=list)
+    released_gap: List[float] = field(default_factory=list)
+    best_action_agreement: List[float] = field(default_factory=list)
+
+
+def measure_multistep_sensitivity(
+    model: BeliefWorldModel,
+    *,
+    n_scenes: int = 200,
+    steps: int = 3,
+    seed: int = 55_000,
+    sequence: Sequence[str] = ("release:0:E", "push:0:E", "push:0:E"),
+) -> MultiStepSensitivity:
+    """Imagine the same action sequence under the true parameters and under a wrong belief.
+
+    If the parameters only mattered for one step, the two imaginations would converge; if they
+    matter, the divergence should persist and grow with depth.
+    """
+
+    situations = generate_situations(
+        n_scenes=n_scenes, lead_in=0, seed=seed, physics_pool=PHYSICS_TABLE
+    )
+    actions = [ACTION_IDS.index(name) for name in sequence]
+    out = MultiStepSensitivity(steps=steps)
+    out.cell_divergence = [0.0] * steps
+    out.released_gap = [0.0] * steps
+    out.best_action_agreement = [0.0] * steps
+    counts = 0
+    noise = SensorNoise()
+    random = np.random.default_rng(seed)
+
+    for situation in situations:
+        scene = situation.scene
+        if scene.is_goal():
+            continue
+        observation = np.asarray(
+            observation_vector(
+                apply_noise(ray_cast(scene, 0, radius=5), noise, random),
+                scene.robot_pose(0), (), (),
+            )
+        )
+        dynamic = model.dynamic_state(observation)
+        # the true parameters, and a belief that is wrong about them on purpose
+        true_belief = np.zeros((1, N_PHYSICS))
+        true_belief[0, theta_index(scene.physics)] = 1.0
+        wrong = scene.physics
+        for candidate in PHYSICS_TABLE:  # first combination with different constraint + traction
+            if (candidate.constraint != wrong.constraint
+                    and candidate.traction[0] != wrong.traction[0]):
+                wrong = candidate
+                break
+        wrong_belief = np.zeros((1, N_PHYSICS))
+        wrong_belief[0, theta_index(wrong)] = 1.0
+
+        goals = frozenset(scene.static.target)
+        distance_table = _cell_distance_distribution(None, goals)
+        true_state, wrong_state = dynamic, dynamic
+        for depth in range(steps):
+            action = actions[min(depth, len(actions) - 1)]
+            true_state = model.step(true_state, action, true_belief)
+            wrong_state = model.step(wrong_state, action, wrong_belief)
+            out.cell_divergence[depth] += float(
+                0.5 * np.abs(true_state[0, 1 : 1 + N_CELLS] - wrong_state[0, 1 : 1 + N_CELLS]).sum()
+            )
+            out.released_gap[depth] += abs(float(true_state[0, 0] - wrong_state[0, 0]))
+            # do the two beliefs agree on which continuation is best?
+            def best(state, belief):
+                values = []
+                for second in range(len(ACTION_IDS)):
+                    nxt = model.step(state, second, belief)
+                    values.append(float(nxt[0, 1 : 1 + N_CELLS] @ distance_table))
+                return int(np.argmin(values))
+            out.best_action_agreement[depth] += float(
+                best(true_state, true_belief) == best(wrong_state, wrong_belief)
+            )
+        counts += 1
+
+    n = max(1, counts)
+    out.cell_divergence = [v / n for v in out.cell_divergence]
+    out.released_gap = [v / n for v in out.released_gap]
+    out.best_action_agreement = [v / n for v in out.best_action_agreement]
+    return out
+
+
+def format_multistep_sensitivity(result: MultiStepSensitivity) -> str:
+    lines = [
+        "The same action sequence imagined under the **true** parameters and under a belief that "
+        "is wrong about the constraint mode and this robot's traction. `cell divergence` is the "
+        "total variation between the two imagined object-cell distributions; `best continuation "
+        "agreement` is how often the two beliefs pick the same next action.",
+        "",
+        "| step | cell divergence | released gap | best continuation agreement |",
+        "|---|---|---|---|",
+    ]
+    for depth in range(result.steps):
+        lines.append(
+            f"| {depth + 1} | {result.cell_divergence[depth]:.3f} | "
+            f"{result.released_gap[depth]:.3f} | "
+            f"{result.best_action_agreement[depth]:.3f} |"
+        )
+    return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Closed-loop comparison in the task itself
+# ---------------------------------------------------------------------------
+
+
+def fuse_hidden_state(observed_dynamic: np.ndarray, carried_dynamic: np.ndarray) -> np.ndarray:
+    """Combine what the observation can see with what only the transition knows.
+
+    The object's cell and the robot positions are observable, so they are taken from the current
+    observation. ``released`` is **hidden**: a successful release leaves the observation
+    byte-identical, so re-reading it from the observation forgets that it happened, and a planner
+    that forgets keeps predicting that pushes fail and idles forever. It is carried forward by the
+    transition instead, exactly like the parameter belief.
+    """
+
+    fused = np.array(observed_dynamic, copy=True)
+    fused[:, 0] = carried_dynamic[:, 0]
+    return fused
+
+
+def run_belief_episode(
+    model: BeliefWorldModel,
+    scene,
+    belief: np.ndarray,
+    *,
+    horizon: int = 8,
+    radius: int = 5,
+    depth: int = 2,
+    warmup: Optional[Tuple[int, int]] = None,
+) -> Tuple[int, float, int]:
+    """One episode where the planner imagines with the model and the belief is carried along.
+
+    ``warmup`` is an ``(action, symbol)`` pair the robot already experienced before this episode
+    began; it seeds the belief. Without it the belief starts uniform, which is the honest
+    zero-information case.
+    """
+
+    goal = frozenset(scene.static.target)
+    history_a: List[str] = []
+    public_history: List[str] = []
+    carried: Optional[np.ndarray] = None  # the hidden part, propagated by the transition
+
+    def observe(current) -> np.ndarray:
+        observation = np.asarray(
+            observation_vector(
+                ray_cast(current, 0, radius=radius), current.robot_pose(0),
+                tuple(history_a), tuple(public_history),
+            )
+        )
+        observed = model.dynamic_state(observation)
+        return observed if carried is None else fuse_hidden_state(observed, carried)
+
+    if warmup is not None:
+        action, symbol = warmup
+        dynamic = observe(scene)
+        carried = model.step(dynamic, action, belief)
+        belief = model.update_belief(belief, carried, action, symbol)
+        history_a.append(FEEDBACK_SYMBOLS[symbol])
+
+    total = 0.0
+    steps = 0
+    for _ in range(horizon):
+        if scene.is_goal():
+            break
+        dynamic = observe(scene)
+        observation = np.asarray(
+            observation_vector(
+                ray_cast(scene, 0, radius=radius), scene.robot_pose(0),
+                tuple(history_a), tuple(public_history),
+            )
+        )
+        chosen, _branches = plan_with_belief(
+            model, observation, goal, belief_override=belief, depth=depth,
+            dynamic_override=dynamic,
+        )
+        successor, result = execute(scene, _joint_for(scene, ACTION_IDS[chosen]))
+        total += float(result.cost)
+        steps += 1
+        symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
+        carried = model.step(dynamic, chosen, belief)
+        belief = model.update_belief(belief, carried, chosen, symbol)
+        history_a.append(result.feedback[0])
+        public_history.append(result.y_public)
+        scene = successor
+    return int(scene.is_goal()), total, steps
+
+
+@dataclass
+class ComparisonRow:
+    policy: str
+    episodes: int
+    success_rate: float
+    mean_cost: float
+    cost_per_success: float
+    mean_steps: float
+
+
+def run_belief_comparison(
+    model: BeliefWorldModel,
+    *,
+    n_episodes: int = 60,
+    horizon: int = 8,
+    seed: int = 55_000,
+    depth: int = 2,
+    warmup_action: str = "probe:0:E",
+) -> List[ComparisonRow]:
+    """Every policy on the **same** scenes, from the **same** starting state.
+
+    All policies first perform one common warm-up action, so nobody gets a different initial
+    configuration and the learned planner has one real ``(action, symbol)`` pair to seed its
+    belief with. Measurement starts after the warm-up.
+    """
+
+    from .rollout_probe import run_episode
+
+    situations = generate_situations(
+        n_scenes=n_episodes, lead_in=0, seed=seed, physics_pool=PHYSICS_TABLE
+    )
+    tallies: Dict[str, List[Tuple[int, float, int]]] = {}
+    random = np.random.default_rng(seed)
+    warm_index = ACTION_IDS.index(warmup_action)
+
+    for situation in situations:
+        scene = situation.scene
+        if scene.is_goal():
+            continue
+        successor, result = execute(scene, _joint_for(scene, warmup_action))
+        if successor.is_goal():
+            continue
+        symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
+        belief = np.full((1, N_PHYSICS), 1.0 / N_PHYSICS)
+
+        tallies.setdefault("belief model (factored)", []).append(
+            run_belief_episode(
+                model, successor, belief, horizon=horizon, depth=depth,
+                warmup=(warm_index, symbol),
+            )
+        )
+        # the full-information ceiling and the equal-information exact reference, from the same
+        # state, via the closed loop already used elsewhere in the project
+        for name, policy in (
+            ("oracle (true state + true model)", "oracle_true_state"),
+            ("exact belief-space reference", "true_model_belief"),
+        ):
+            success, cost, steps = run_episode(
+                successor, policy, model, horizon=horizon,
+                rng=np.random.default_rng(0),
+            )
+            tallies.setdefault(name, []).append((success, cost, steps))
+        # a random-action baseline on the same scenes
+        current = successor
+        total, steps = 0.0, 0
+        for _ in range(horizon):
+            if current.is_goal():
+                break
+            action_id = ACTION_IDS[int(random.integers(len(ACTION_IDS)))]
+            current, outcome = execute(current, _joint_for(current, action_id))
+            total += float(outcome.cost)
+            steps += 1
+        tallies.setdefault("random", []).append((int(current.is_goal()), total, steps))
+
+    rows: List[ComparisonRow] = []
+    for name, records in tallies.items():
+        rate = float(np.mean([r[0] for r in records]))
+        mean_cost = float(np.mean([r[1] for r in records]))
+        rows.append(
+            ComparisonRow(
+                policy=name,
+                episodes=len(records),
+                success_rate=rate,
+                mean_cost=mean_cost,
+                cost_per_success=(mean_cost / rate if rate > 0 else float("inf")),
+                mean_steps=float(np.mean([r[2] for r in records])),
+            )
+        )
+    return rows
+
+
+def format_comparison(rows: Sequence[ComparisonRow]) -> str:
+    lines = [
+        "| planner | episodes | success | mean cost | cost per success | mean steps |",
+        "|---|---|---|---|---|---|",
+    ]
+    for row in rows:
+        per = "n/a" if row.cost_per_success == float("inf") else f"{row.cost_per_success:.2f}"
+        lines.append(
+            f"| {row.policy} | {row.episodes} | {row.success_rate:.3f} | "
+            f"{row.mean_cost:.3f} | {per} | {row.mean_steps:.2f} |"
+        )
+    return "\n".join(lines)
