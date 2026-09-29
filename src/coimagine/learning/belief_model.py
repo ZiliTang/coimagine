@@ -154,6 +154,128 @@ class BeliefWorldModel:
         states = states.reshape(count, N_PHYSICS, DYNAMIC_DIM)
         return np.einsum("nt,ntd->nd", belief, states)
 
+    def step_actions(
+        self, dynamic: np.ndarray, belief: np.ndarray
+    ) -> np.ndarray:
+        """Every action from one dynamic state, in a single batched forward pass.
+
+        A search evaluates thousands of (state, action) pairs per decision, so doing them one at
+        a time in NumPy is the difference between a usable planner and an unusable one. The batch
+        is laid out as (action, parameter setting).
+        """
+
+        dynamic = np.atleast_2d(dynamic)
+        belief = np.atleast_2d(belief)
+        action_block = np.concatenate(
+            [
+                np.repeat(np.eye(N_ACTIONS)[[action]], N_PHYSICS, axis=0)
+                for action in range(N_ACTIONS)
+            ],
+            axis=0,
+        )
+        dynamic_block = np.tile(
+            np.repeat(dynamic, N_PHYSICS, axis=0), (N_ACTIONS, 1)
+        )
+        theta_block = np.tile(self._theta_eye, (N_ACTIONS, 1))
+        logits = self.transition(
+            concat([Tensor(dynamic_block), Tensor(action_block), Tensor(theta_block)])
+        ).data.reshape(N_ACTIONS, N_PHYSICS, DYNAMIC_DIM)
+        states = _dynamic_from_logits(
+            logits.reshape(N_ACTIONS * N_PHYSICS, DYNAMIC_DIM)
+        ).reshape(N_ACTIONS, N_PHYSICS, DYNAMIC_DIM)
+        return np.einsum("nt,atd->ad", belief, states)
+
+    def cost_actions(
+        self, states: np.ndarray, belief: np.ndarray
+    ) -> np.ndarray:
+        """Predicted cost of each action, told the state that action leads to.
+
+        Row ``a`` pairs action ``a`` with ``states[a]``. The cost head is conditioned on the
+        parameters like everything else, so it is evaluated under **all 16 settings** and mixed by
+        the belief -- feeding the belief's expectation would be the same out-of-distribution
+        mistake that made the transition return a confident zero.
+        """
+
+        states = np.atleast_2d(states)
+        belief = np.atleast_2d(belief)
+        count = states.shape[0]
+        action_block = np.concatenate(
+            [
+                np.repeat(np.eye(N_ACTIONS)[[action]], N_PHYSICS, axis=0)
+                for action in range(count)
+            ],
+            axis=0,
+        )
+        state_block = np.repeat(states, N_PHYSICS, axis=0)
+        theta_block = np.tile(self._theta_eye, (count, 1))
+        predicted = self.cost_head(
+            concat([Tensor(action_block), Tensor(state_block), Tensor(theta_block)])
+        ).data[:, 0].reshape(count, N_PHYSICS)
+        return predicted @ belief[0]
+
+    def step_per_theta(self, dynamic: np.ndarray, action: int) -> np.ndarray:
+        """The next state under **each** parameter setting, one row per setting.
+
+        The transition is conditioned on the parameters, so each hypothesis predicts a different
+        next state. Evaluating a likelihood on a state computed under the belief *mixture* is out
+        of distribution -- the observation model is trained on states computed under one-hot
+        parameters -- and it was the reason the belief saturated at 0.87 after evidence that
+        should have ruled a hypothesis out entirely.
+        """
+
+        dynamic = np.atleast_2d(dynamic)
+        count = dynamic.shape[0]
+        action_vector = np.zeros((count * N_PHYSICS, N_ACTIONS))
+        action_vector[:, action] = 1.0
+        logits = self.transition(
+            concat(
+                [
+                    Tensor(np.repeat(dynamic, N_PHYSICS, axis=0)),
+                    Tensor(action_vector),
+                    Tensor(np.tile(self._theta_eye, (count, 1))),
+                ]
+            )
+        ).data
+        return _dynamic_from_logits(logits)
+
+    def update_belief(
+        self,
+        belief: np.ndarray,
+        prior_state: np.ndarray,
+        action: int,
+        symbol: int,
+    ) -> np.ndarray:
+        """The Bayes update, with each hypothesis predicting its own next state.
+
+        ``b'(θ) ∝ P(y | a, s_θ', θ) b(θ)`` where ``s_θ' = T(s, a, θ)``. Conditioning every
+        hypothesis on a single mixture state instead is the mistake described in
+        :meth:`step_per_theta`.
+        """
+
+        belief = np.atleast_2d(belief)
+        prior_state = np.atleast_2d(prior_state)
+        count = prior_state.shape[0]
+        next_states = self.step_per_theta(prior_state, action)   # (count*16, D)
+        action_vector = np.zeros((count * N_PHYSICS, N_ACTIONS))
+        action_vector[:, action] = 1.0
+        logits = self.observation_model(
+            concat(
+                [
+                    Tensor(action_vector),
+                    Tensor(next_states),
+                    Tensor(np.tile(self._theta_eye, (count, 1))),
+                ]
+            )
+        ).data.reshape(count, N_PHYSICS, N_OBSERVATION_SYMBOLS)
+        likelihood = _softmax_rows(
+            logits.reshape(count * N_PHYSICS, N_OBSERVATION_SYMBOLS)
+        ).reshape(count, N_PHYSICS, N_OBSERVATION_SYMBOLS)[:, :, symbol]
+        posterior = likelihood * belief
+        total = posterior.sum(axis=1, keepdims=True)
+        safe = np.where(total > 1e-12, total, 1.0)
+        posterior = posterior / safe
+        return np.where(total > 1e-12, posterior, belief)
+
     def observe(
         self, dynamic: np.ndarray, action: int, belief: np.ndarray
     ) -> np.ndarray:
@@ -178,29 +300,6 @@ class BeliefWorldModel:
             )
         ).data
         return _softmax_rows(logits).reshape(count, N_PHYSICS, N_OBSERVATION_SYMBOLS)
-
-    def update_belief(
-        self,
-        belief: np.ndarray,
-        dynamic: np.ndarray,
-        action: int,
-        symbol: int,
-    ) -> np.ndarray:
-        """The Bayes update ``b'(θ) ∝ P(y | a, s_{t+1}, θ) b(θ)``."""
-
-        belief = np.atleast_2d(belief)
-        likelihood = self.observe(dynamic, action, belief)[:, :, symbol]
-        posterior = likelihood * belief
-        total = posterior.sum(axis=1, keepdims=True)
-        # an impossible observation must not produce NaN
-        safe = np.where(total > 1e-12, total, 1.0)
-        posterior = posterior / safe
-        return np.where(total > 1e-12, posterior, belief)
-
-    def rollout_observation_model(self):
-        """Kept for clarity: the observation model consumes processed dynamic states."""
-
-        return self.observation_model
 
     def predict_outcome(
         self, dynamic: np.ndarray, action: int, belief: np.ndarray

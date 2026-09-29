@@ -138,8 +138,7 @@ def run_belief_probe(
             successor, result = execute(scene, _joint_for(scene, action_id))
             symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
             # the belief update uses the imagined next dynamic state, as it would when planning
-            next_dynamic = model.step(dynamic, action, belief)
-            belief = model.update_belief(belief, next_dynamic, action, symbol)
+            belief = model.update_belief(belief, dynamic, action, symbol)
 
             counts[step] += 1
             for view in views:
@@ -340,6 +339,8 @@ def belief_from_history(
     belief = np.full((1, N_PHYSICS), 1.0 / N_PHYSICS)
     state = dynamic
     for action, symbol in history:
+        # the state handed in is the one *before* the action; the update derives each
+        # hypothesis's own next state internally
         belief = model.update_belief(belief, state, action, symbol)
         state = model.step(state, action, belief)
     return belief
@@ -406,7 +407,9 @@ def plan_with_belief(
             probability = float(symbol_probabilities[symbol])
             if probability < BRANCH_THRESHOLD:
                 continue
-            updated = model.update_belief(belief, first, action, symbol)
+            # `dynamic` is the state before this action; the update derives the per-hypothesis
+            # next states itself
+            updated = model.update_belief(belief, dynamic, action, symbol)
             best_value, best_action = None, None
             if depth <= 1:
                 best_value, best_action = expected_distance(first), -1
@@ -518,7 +521,7 @@ def run_prepare_probe(
             action = ACTION_IDS.index("probe:0:E")
             successor, result = execute(scene, _joint_for(scene, "probe:0:E"))
             symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
-            belief = model.update_belief(belief, model.step(dynamic, action, belief), action, symbol)
+            belief = model.update_belief(belief, dynamic, action, symbol)
             scene = successor
             if scene.is_goal():
                 break
@@ -759,8 +762,8 @@ def run_belief_episode(
     if warmup is not None:
         action, symbol = warmup
         dynamic = observe(scene)
+        belief = model.update_belief(belief, dynamic, action, symbol)
         carried = model.step(dynamic, action, belief)
-        belief = model.update_belief(belief, carried, action, symbol)
         history_a.append(FEEDBACK_SYMBOLS[symbol])
 
     total = 0.0
@@ -783,8 +786,8 @@ def run_belief_episode(
         total += float(result.cost)
         steps += 1
         symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
+        belief = model.update_belief(belief, dynamic, chosen, symbol)
         carried = model.step(dynamic, chosen, belief)
-        belief = model.update_belief(belief, carried, chosen, symbol)
         history_a.append(result.feedback[0])
         public_history.append(result.y_public)
         scene = successor
@@ -807,7 +810,8 @@ def run_belief_comparison(
     n_episodes: int = 60,
     horizon: int = 8,
     seed: int = 55_000,
-    depth: int = 2,
+    depth: int = 4,
+    beam: int = 3,
     warmup_action: str = "probe:0:E",
 ) -> List[ComparisonRow]:
     """Every policy on the **same** scenes, from the **same** starting state.
@@ -836,9 +840,15 @@ def run_belief_comparison(
         symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
         belief = np.full((1, N_PHYSICS), 1.0 / N_PHYSICS)
 
-        tallies.setdefault("belief model (factored)", []).append(
+        tallies.setdefault("belief model + belief-space search", []).append(
+            run_search_episode(
+                model, successor, belief, horizon=horizon, depth=depth, beam=beam,
+                warmup=(warm_index, symbol),
+            )
+        )
+        tallies.setdefault("belief model, two-level lookahead", []).append(
             run_belief_episode(
-                model, successor, belief, horizon=horizon, depth=depth,
+                model, successor, belief, horizon=horizon, depth=2,
                 warmup=(warm_index, symbol),
             )
         )
@@ -894,3 +904,201 @@ def format_comparison(rows: Sequence[ComparisonRow]) -> str:
             f"{row.mean_cost:.3f} | {per} | {row.mean_steps:.2f} |"
         )
     return "\n".join(lines)
+
+
+# ---------------------------------------------------------------------------
+# Depth-limited belief-space rollout
+# ---------------------------------------------------------------------------
+
+
+def _cut_value(
+    state: np.ndarray, distance_table: np.ndarray, progress_weight: float, fail_cost: float
+) -> float:
+    """Value of an imagined state at the search horizon.
+
+    Progress is the expected distance of the object from the goal under the imagined cell
+    distribution, and the failure cost is charged once when the object is not home. Charging it
+    per branch instead would add the same constant everywhere and drown the progress term, which
+    is what made the earlier two-level planner prefer cheap neutral actions.
+    """
+
+    cells = state[0, 1 : 1 + N_CELLS]
+    distance = float(cells @ distance_table)
+    # The failure cost is charged in proportion to the probability that the object is **not**
+    # home, not flat. Charging it flat whenever the *expected* distance is above zero means a
+    # branch with a 79% chance of having finished still pays the full penalty, which makes every
+    # branch look equally bad and lets a free `wait` win. The exact reference weights it by the
+    # probability of failure, and this is the same quantity.
+    at_goal = float(cells[distance_table < 0.5].sum())
+    return progress_weight * distance + fail_cost * (1.0 - at_goal)
+
+
+def _beam_value(
+    model: BeliefWorldModel,
+    state: np.ndarray,
+    belief: np.ndarray,
+    distance_table: np.ndarray,
+    *,
+    steps: int,
+    beam: int,
+    progress_weight: float,
+    fail_cost: float,
+) -> float:
+    """Best value reachable in ``steps`` actions, keeping the ``beam`` best partial plans.
+
+    Every level accumulates the **cost of the actions taken** and only the surviving plans are
+    expanded, which is what makes a horizon of three or four affordable: a full tree would be
+    ``6**steps`` expansions per branch.
+    """
+
+    states = [np.atleast_2d(state)]
+    costs = [0.0]
+    for _ in range(steps):
+        candidates: List[np.ndarray] = []
+        candidate_costs: List[float] = []
+        for partial, spent in zip(states, costs):
+            next_states = model.step_actions(partial, belief)
+            next_costs = model.cost_actions(next_states, belief)
+            for action in range(len(ACTION_IDS)):
+                candidates.append(np.atleast_2d(next_states[action]))
+                candidate_costs.append(spent + float(next_costs[action]))
+        scored = [
+            (candidate_costs[i] + _cut_value(candidates[i], distance_table, progress_weight, fail_cost), i)
+            for i in range(len(candidates))
+        ]
+        scored.sort()
+        keep = [index for _value, index in scored[:beam]]
+        states = [candidates[i] for i in keep]
+        costs = [candidate_costs[i] for i in keep]
+    return min(
+        costs[i] + _cut_value(states[i], distance_table, progress_weight, fail_cost)
+        for i in range(len(states))
+    )
+
+
+def plan_with_search(
+    model: BeliefWorldModel,
+    observation: np.ndarray,
+    goal: frozenset,
+    *,
+    belief: Optional[np.ndarray] = None,
+    dynamic: Optional[np.ndarray] = None,
+    depth: int = 4,
+    beam: int = 3,
+    progress_weight: float = PROGRESS_WEIGHT,
+    fail_cost: float = FAIL_COST,
+    symbol_threshold: float = 0.05,
+) -> Tuple[int, List[Dict[str, object]]]:
+    """Plan by rolling the belief forward, branching on feedback at the **first** step only.
+
+    Branching on feedback at every depth is exponential; branching once and then continuing
+    open-loop under the updated belief is the standard approximation, and it is the step that
+    matters because the first action is the one being chosen. The exact `central_value` reference
+    branches all the way down, and the gap to it is reported rather than hidden.
+    """
+
+    belief = model.parameter_belief(observation) if belief is None else np.atleast_2d(belief)
+    dynamic = (
+        model.dynamic_state(observation) if dynamic is None else np.atleast_2d(dynamic)
+    )
+    distance_table = _cell_distance_distribution(None, goal)
+
+    first_states = model.step_actions(dynamic, belief)
+    first_costs = model.cost_actions(first_states, belief)
+
+    branches: List[Dict[str, object]] = []
+    for action in range(len(ACTION_IDS)):
+        state = np.atleast_2d(first_states[action])
+        cost = float(first_costs[action])
+        probabilities = model.predict_outcome(state, action, belief)[0]
+        expected = 0.0
+        total_probability = 0.0
+        for symbol in range(len(probabilities)):
+            probability = float(probabilities[symbol])
+            if probability < symbol_threshold:
+                continue
+            updated = model.update_belief(belief, dynamic, action, symbol)
+            value = _beam_value(
+                model, state, updated, distance_table,
+                steps=depth - 1, beam=beam,
+                progress_weight=progress_weight, fail_cost=fail_cost,
+            )
+            expected += probability * value
+            total_probability += probability
+        # account for the symbols skipped by the threshold instead of silently dropping them
+        if total_probability < 1.0:
+            expected += (1.0 - total_probability) * _cut_value(
+                state, distance_table, progress_weight, fail_cost
+            )
+        branches.append(
+            {
+                "action": ACTION_IDS[action],
+                "action_index": action,
+                "score": cost + expected,
+                "first_cost": cost,
+                "expected_distance": float(state[0, 1 : 1 + N_CELLS] @ distance_table),
+                "released_probability": float(state[0, 0]),
+                "symbol_probabilities": probabilities,
+                "continuation_actions": [],
+                "state": state[0],
+            }
+        )
+    chosen = min(branches, key=lambda b: (b["score"], b["action"]))
+    return int(chosen["action_index"]), branches
+
+
+def run_search_episode(
+    model: BeliefWorldModel,
+    scene,
+    belief: np.ndarray,
+    *,
+    horizon: int = 8,
+    radius: int = 5,
+    depth: int = 4,
+    beam: int = 3,
+    warmup: Optional[Tuple[int, int]] = None,
+) -> Tuple[int, float, int]:
+    """The closed-loop episode driven by :func:`plan_with_search`."""
+
+    goal = frozenset(scene.static.target)
+    history_a: List[str] = []
+    public_history: List[str] = []
+    carried: Optional[np.ndarray] = None
+
+    def observe(current):
+        observation = np.asarray(
+            observation_vector(
+                ray_cast(current, 0, radius=radius), current.robot_pose(0),
+                tuple(history_a), tuple(public_history),
+            )
+        )
+        observed = model.dynamic_state(observation)
+        return observation, (observed if carried is None else fuse_hidden_state(observed, carried))
+
+    if warmup is not None:
+        action, symbol = warmup
+        _obs, dynamic = observe(scene)
+        belief = model.update_belief(belief, dynamic, action, symbol)
+        carried = model.step(dynamic, action, belief)
+        history_a.append(FEEDBACK_SYMBOLS[symbol])
+
+    total = 0.0
+    steps = 0
+    for _ in range(horizon):
+        if scene.is_goal():
+            break
+        observation, dynamic = observe(scene)
+        chosen, _branches = plan_with_search(
+            model, observation, goal, belief=belief, dynamic=dynamic,
+            depth=depth, beam=beam,
+        )
+        successor, result = execute(scene, _joint_for(scene, ACTION_IDS[chosen]))
+        total += float(result.cost)
+        steps += 1
+        symbol = FEEDBACK_SYMBOLS.index(result.feedback[0])
+        belief = model.update_belief(belief, dynamic, chosen, symbol)
+        carried = model.step(dynamic, chosen, belief)
+        history_a.append(result.feedback[0])
+        public_history.append(result.y_public)
+        scene = successor
+    return int(scene.is_goal()), total, steps

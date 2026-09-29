@@ -275,7 +275,8 @@ def test_closed_loop_comparison_runs_every_policy_on_the_same_scenes(trained) ->
 
     rows = run_belief_comparison(trained, n_episodes=12, horizon=4, depth=1)
     names = {row.policy for row in rows}
-    assert "belief model (factored)" in names
+    assert "belief model + belief-space search" in names
+    assert "belief model, two-level lookahead" in names
     assert "random" in names
     assert any("oracle" in n for n in names)
     assert any("reference" in n for n in names)
