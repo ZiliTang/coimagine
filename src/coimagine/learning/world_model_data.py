@@ -88,6 +88,8 @@ def collect_trajectories(
                     object_cell=pose_to_index(scene.obj.origin),
                     next_physics=PHYSICS.index(successor.physics),
                     next_object_cell=pose_to_index(successor.obj.origin),
+                    released=int(scene.released),
+                    next_released=int(successor.released),
                 )
             )
             scene = successor

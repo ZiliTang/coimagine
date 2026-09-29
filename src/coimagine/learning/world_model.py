@@ -70,6 +70,11 @@ class Transition:
     object_cell: int
     next_physics: int = 0
     next_object_cell: int = 0
+    #: Whether the object has been released. This is the task's central **hidden** transition:
+    #: a successful release leaves the observation byte-identical and only flips this flag, so
+    #: without it as a target the model has no way to represent that release did anything.
+    next_released: int = 0
+    released: int = 0
 
 
 @dataclass
@@ -105,6 +110,7 @@ class LatentWorldModel:
         self.pose_head = MLP([self.latent_dim, self.hidden, N_CELLS], rng, name="pos")
         self.cost_head = MLP([self.latent_dim, self.hidden, 1], rng, name="cost")
         self.moved_head = MLP([self.latent_dim, self.hidden, 1], rng, name="moved")
+        self.released_head = MLP([self.latent_dim, self.hidden, 1], rng, name="released")
 
     # -- parameter access --------------------------------------------------
     def parameters(self):
@@ -112,6 +118,7 @@ class LatentWorldModel:
         for module in (
             self.encoder, self.transition, self.observation_head,
             self.physics_head, self.pose_head, self.cost_head, self.moved_head,
+            self.released_head,
         ):
             out.extend(module.parameters())
         return out
@@ -170,20 +177,13 @@ class LatentWorldModel:
             "pose_logits": self.pose_head(Tensor(latent)).data,
             "cost": self.cost_head(Tensor(latent)).data[:, 0],
             "moved_logit": self.moved_head(Tensor(latent)).data[:, 0],
+            "released_logit": self.released_head(Tensor(latent)).data[:, 0],
         }
 
     def predict_next(self, observation: np.ndarray, action: int) -> Dict[str, np.ndarray]:
         """One imagined step, with every head applied to the predicted latent."""
 
-        latent = self.step(self.encode(observation), action)
-        return {
-            "latent": latent,
-            "observation": self.observation_head(Tensor(latent)).data,
-            "physics_logits": self.physics_head(Tensor(latent)).data,
-            "pose_logits": self.pose_head(Tensor(latent)).data,
-            "cost": self.cost_head(Tensor(latent)).data[:, 0],
-            "moved_logit": self.moved_head(Tensor(latent)).data[:, 0],
-        }
+        return self._decode(self.step(self.encode(observation), action))
 
 
 @dataclass
@@ -200,12 +200,13 @@ class DirectWorldModel:
         self.pose_head = MLP([self.observation_dim, self.hidden, N_CELLS], rng, name="pos")
         self.cost_head = MLP([self.observation_dim, self.hidden, 1], rng, name="cost")
         self.moved_head = MLP([self.observation_dim, self.hidden, 1], rng, name="moved")
+        self.released_head = MLP([self.observation_dim, self.hidden, 1], rng, name="released")
 
     def parameters(self):
         out = []
         for module in (
             self.predictor, self.physics_head, self.pose_head,
-            self.cost_head, self.moved_head,
+            self.cost_head, self.moved_head, self.released_head,
         ):
             out.extend(module.parameters())
         return out
@@ -240,6 +241,7 @@ class DirectWorldModel:
             "pose_logits": self.pose_head(Tensor(predicted)).data,
             "cost": self.cost_head(Tensor(predicted)).data[:, 0],
             "moved_logit": self.moved_head(Tensor(predicted)).data[:, 0],
+            "released_logit": self.released_head(Tensor(predicted)).data[:, 0],
         }
 
     def imagine(self, observation: np.ndarray, actions: Sequence[int]) -> List[Dict[str, np.ndarray]]:
@@ -295,6 +297,7 @@ def _decoder_losses(
     # and produce a nonsense loss that dominates everything else.
     cost_target = np.asarray([[step.cost] for step in steps])
     moved_target = np.asarray([[float(step.moved)] for step in steps])
+    released_target = np.asarray([[float(step.next_released)] for step in steps])
 
     losses = [
         (
@@ -309,6 +312,7 @@ def _decoder_losses(
         ("pose", softmax_cross_entropy(model.pose_head(representation), pose_target, moved_weight), 1.0),
         ("cost", mse(model.cost_head(representation), cost_target), 1.0),
         ("moved", binary_cross_entropy(model.moved_head(representation), moved_target, POSITIVE_WEIGHT), 1.0),
+        ("released", binary_cross_entropy(model.released_head(representation), released_target, POSITIVE_WEIGHT), 1.0),
     ]
     total = None
     parts: Dict[str, float] = {}

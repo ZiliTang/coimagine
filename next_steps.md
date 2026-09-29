@@ -1911,3 +1911,46 @@ action-conditioned.
 do not* -- decision-focused model learning rather than state fitting. The diagnostic to watch is
 `measure_action_sensitivity`, and the metric to report is branch separability, not observation
 MSE.
+
+
+---
+
+## Correction and the real diagnosis of the world-model failure
+
+Two claims from the round above needed correcting, and the correction points somewhere more useful.
+
+**The model is far less action-blind than I said.** Running all six candidate actions through the
+*simulator* and counting distinct next world-planes gives **1.43**, not 6: in 85 of 117 sampled
+states (73%) all six actions produce an identical next state. The model imagines 1.14. So it
+under-discriminates by 0.3 branches, not 4.9, and "four of six panels are pixel-identical" is the
+**truth of the task**, not a model failure. It follows from three things at once: 91% of pushes
+fail, `release`/`probe`/`wait` change nothing visible, and the robot does not move for four of the
+six actions (it moves in only 1.24 of 6 per state).
+
+**An egocentric observation does not help.** Re-centring the scan on the robot and running the same
+control gives **1.43 against 1.43** -- exactly no change -- because the four actions that matter
+never move the robot. (It is still worth doing for other reasons: translation invariance, and
+because a real lidar in the 2D physics stage is natively sensor-frame. It is just not the fix.)
+
+**What the failure actually is.** A successful `release` on a latched object leaves the observation
+**byte-identical**; the only change is the hidden `released` flag. 24 of 60 scenes are latched, so
+the task's central preparation action is **zero-information in observation space**. Ground truth:
+
+| scene | `released` after `release` | feedback |
+|---|---|---|
+| latched, robot grips | **True** | `drove` |
+| latched, robot slips | False | `slipped` |
+| free | False | `slipped` / `strained` |
+
+The world model was never asked to predict that flag -- `next_physics` is constant within an
+episode, which an earlier test of mine even asserted -- so it **cannot represent that a release
+changed anything**, and a planner using it can never learn to prepare. This is the same structure
+round 31 found from the policy side: only a policy that can prepare solves latched episodes.
+
+**First attempt, implemented and partially working.** `next_released` is now a supervision target
+and a decoder head. The model learns an association but not the right one: `release` raises the
+`released` logit by **+1.71** on latched states and by **+1.29** on free ones, so it has learned
+"release is related to released" rather than "release changes released **when it succeeds**". It
+also started inventing a visible difference between `release` and `wait`, which the truth says does
+not exist. Direction right, execution not yet: the next step is to condition the prediction on
+whether the release will succeed, and to penalise spurious differences in the observation head.
