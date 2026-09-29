@@ -24,6 +24,10 @@ from .features import (
 )
 from .data import FeasibilitySample, generate_dataset, sample_to_arrays
 from .mlp import MultiHeadMLP, TrainHistory, train
+from .belief_model import (
+    BeliefWorldModel,
+    train_belief_model,
+)
 from .world_model import (
     DirectWorldModel,
     LatentWorldModel,
@@ -53,4 +57,6 @@ __all__ = [
     "load_world_model",
     "save_world_model",
     "train_world_model",
+    "BeliefWorldModel",
+    "train_belief_model",
 ]

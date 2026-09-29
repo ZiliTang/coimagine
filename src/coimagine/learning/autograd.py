@@ -243,6 +243,27 @@ def softmax_cross_entropy(
     return out
 
 
+def softmax(logits: Tensor, axis: int = 1) -> Tensor:
+    """Row-wise softmax, differentiable.
+
+    The factored world model carries an explicit belief as a probability vector, so it needs a
+    softmax that is part of the graph rather than a post-hoc numpy call.
+    """
+
+    shifted = logits.data - logits.data.max(axis=axis, keepdims=True)
+    exp = np.exp(shifted)
+    probabilities = exp / exp.sum(axis=axis, keepdims=True)
+    out = Tensor(probabilities, (logits,))
+
+    def _backward(grad: np.ndarray) -> None:
+        # dL/dz = p * (g - sum(g * p))
+        inner = (grad * probabilities).sum(axis=axis, keepdims=True)
+        logits.grad = logits.grad + probabilities * (grad - inner)
+
+    out._backward = _backward
+    return out
+
+
 def binary_cross_entropy(logits: Tensor, target: np.ndarray, positive_weight: float = 1.0) -> Tensor:
     """Binary cross entropy on a (n, 1) logit tensor."""
 

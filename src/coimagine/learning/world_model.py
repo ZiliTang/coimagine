@@ -75,6 +75,13 @@ class Transition:
     #: without it as a target the model has no way to represent that release did anything.
     next_released: int = 0
     released: int = 0
+    #: The robot's own private feedback symbol for this action. This is the evidence the belief
+    #: update consumes, and the observation model must predict it *given the action*.
+    feedback_symbol: str = "idle"
+    #: Both robots' positions, normalised. Public information, and part of the state that decides
+    #: whether an action does anything at all.
+    robot_poses: Tuple[float, ...] = (0.0, 0.0, 0.0, 0.0)
+    next_robot_poses: Tuple[float, ...] = (0.0, 0.0, 0.0, 0.0)
 
 
 @dataclass

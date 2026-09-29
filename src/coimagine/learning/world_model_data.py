@@ -90,6 +90,13 @@ def collect_trajectories(
                     next_object_cell=pose_to_index(successor.obj.origin),
                     released=int(scene.released),
                     next_released=int(successor.released),
+                    feedback_symbol=result.feedback[0],
+                    robot_poses=tuple(
+                        float(c) for robot in scene.robots for c in robot.pose
+                    ),
+                    next_robot_poses=tuple(
+                        float(c) for robot in successor.robots for c in robot.pose
+                    ),
                 )
             )
             scene = successor
