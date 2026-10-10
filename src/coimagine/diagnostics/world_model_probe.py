@@ -50,6 +50,10 @@ PROGRESS_WEIGHT = 3.0
 #: Charged when the object is not on the goal at the horizon, like the exact planner's cut.
 FAIL_COST = DEFAULT_FAIL_COST
 
+#: Reverse map from the fixed joint template to its candidate id, so the lead-in action
+#: sequence can be recovered for the exact adapter's history replay.
+_ACTION_BY_JOINT = {_joint_for(None, action): action for action in ACTION_IDS}
+
 
 @dataclass
 class StepPrediction:
@@ -171,12 +175,21 @@ def _goal_cells(scene: Scene) -> frozenset:
 
 
 def _worst_cell_distance(origin: Tuple[int, int], goal: frozenset) -> float:
-    """Steps needed for the worst cell of a 2x2 object at ``origin`` to reach the goal."""
+    """Steps needed for the worst cell of a 2x2 object at ``origin`` to reach the goal.
+
+    The formula is the exact planner's cut heuristic (``grid.planner._cut_value``) and
+    ``belief_probe._cell_distance_distribution``: the **maximum over the object's cells of
+    the minimum distance to a goal cell**.  An earlier version had both directions inverted
+    (minimum over cells of the distance to the *farthest* goal cell), which is not a
+    distance to the goal at all: it reads 6 for an object one push away (origin ``(3, y)``
+    with the goal on columns 4-5), varies with ``y`` even though the goal spans every row,
+    and was the only guidance the search had past its horizon.
+    """
 
     cells = [(origin[0] + dx, origin[1] + dy) for dx in (0, 1) for dy in (0, 1)]
     if all(cell in goal for cell in cells):
         return 0.0
-    return float(min(max(abs(c[0] - g[0]) + abs(c[1] - g[1]) for g in goal) for c in cells))
+    return float(max(min(abs(c[0] - g[0]) + abs(c[1] - g[1]) for g in goal) for c in cells))
 
 
 def pose_index_to_origin(index: int) -> Tuple[int, int]:
@@ -209,12 +222,26 @@ def plan_with_model(
 
     Returns the chosen action index and, for the visualiser, the score of every first action
     together with its imagined prediction. The simulator is not consulted anywhere here.
+
+    Scoring (corrected)
+    -------------------
+    One step is worth ``cost + progress_weight * distance`` at the cut plus the failure
+    charge.  The continuation is selected under **the same** value it is scored with.  An
+    earlier version selected the continuation under ``cost + w * distance`` and then added
+    ``w * distance`` a second time when scoring the first action, so the progress term at the
+    cut was counted twice and the continuation that minimised the *stated* objective was not
+    the one kept.  ``scoring_identity_checks`` reconstructs the score from these components
+    and pins the duplication; it is now zero.
     """
+
+    def step_value(step: Dict[str, np.ndarray]) -> float:
+        distance = _heuristic_from_pose_logits(step["pose_logits"][0], goal)
+        terminal = 0.0 if distance < 0.5 else fail_cost
+        return float(step["cost"][0]) + progress_weight * distance + terminal
 
     branches: List[Dict[str, object]] = []
     for action in range(len(ACTION_IDS)):
         first = model.predict_next(observation, action)
-        # cost of the first step, plus the best continuation from the imagined state
         best_continuation = None
         if depth <= 1:
             terminal = first
@@ -223,21 +250,16 @@ def plan_with_model(
                 # Continue from the imagined step, not from its decoded observation: for the
                 # latent model that keeps the rollout inside the latent space.
                 second = model.continue_from(first, continuation)
-                value = float(second["cost"][0]) + progress_weight * _heuristic_from_pose_logits(
-                    second["pose_logits"][0], goal
-                )
+                value = step_value(second)
                 if best_continuation is None or value < best_continuation[0]:
                     best_continuation = (value, continuation, second)
             terminal = best_continuation[2]
         expected_distance = _heuristic_from_pose_logits(terminal["pose_logits"][0], goal)
-        # A model that predicts the object has arrived is claiming success; otherwise charge the
-        # failure cost exactly as the exact planner's cut does.
         terminal_cost = 0.0 if expected_distance < 0.5 else fail_cost
-        score = (
-            float(first["cost"][0])
-            + (0.0 if best_continuation is None else best_continuation[0])
-            + progress_weight * expected_distance
-            + terminal_cost
+        continuation_cost = float(terminal["cost"][0]) if best_continuation is not None else 0.0
+        score = float(first["cost"][0]) + (
+            step_value(terminal) if best_continuation is not None
+            else progress_weight * expected_distance + terminal_cost
         )
         branches.append(
             {
@@ -245,6 +267,7 @@ def plan_with_model(
                 "action_index": action,
                 "score": score,
                 "first_cost": float(first["cost"][0]),
+                "continuation_cost": continuation_cost,
                 "expected_distance": expected_distance,
                 "imagined_observation": first["observation"][0],
                 "pose_logits": first["pose_logits"][0],
@@ -278,8 +301,19 @@ def run_closed_loop(
     seed: int = 90_000,
     lead_in: int = 2,
     depth: int = PLAN_DEPTH,
+    model_factory=None,
 ) -> ClosedLoopRow:
-    """Run episodes where the planner imagines with ``model`` and the simulator executes."""
+    """Run episodes where the planner imagines with ``model`` and the simulator executes.
+
+    ``model_factory`` optionally rebuilds the model **at every decision boundary** from the
+    deployment-legal context (observation, public robot poses, executed action sequence and
+    the two histories).  The exact tabular adapter needs this because its Bayes posterior
+    is a function of the history; the learned models ignore it.  The planner call, candidate
+    set, scoring rule, execution, termination and tie-break are unchanged either way, which
+    is what makes a learned-versus-exact comparison a comparison of the *model*.
+
+    The simulator scene is **not** put in the context.
+    """
 
     situations = generate_situations(
         n_scenes=n_episodes, lead_in=lead_in, seed=seed, physics_pool=enumerate_hidden_physics()
@@ -293,8 +327,15 @@ def run_closed_loop(
     for situation in situations:
         scene = situation.scene
         goal = _goal_cells(scene)
+        initial_robots = situation.initial_scene.robots
         history_a = list(situation.history_a)
         public_history = list(situation.public_history)
+        # The lead-in actions are part of the public record of what the team did, and the
+        # exact adapter needs them to replay the history under each hypothesis.  They are
+        # recovered from the recorded joints, not from the simulator.
+        actions: List[str] = [
+            _ACTION_BY_JOINT[skill] for skill in situation.skills
+        ]
         total = 0.0
         steps = 0
         for step in range(horizon):
@@ -305,7 +346,21 @@ def run_closed_loop(
                 observation_vector(scan, scene.robot_pose(0), tuple(history_a), tuple(public_history))
             )
             if policy == "learned_model":
-                action_index, _branches = plan_with_model(model, observation, goal, depth=depth)
+                active = model
+                if model_factory is not None:
+                    active = model_factory(
+                        {
+                            "observation": observation,
+                            "static": scene.static,
+                            "robots": scene.robots,
+                            "initial_robots": initial_robots,
+                            "actions": tuple(actions),
+                            "history_a": tuple(history_a),
+                            "public_history": tuple(public_history),
+                            "radius": radius,
+                        }
+                    )
+                action_index, _branches = plan_with_model(active, observation, goal, depth=depth)
                 action_id = ACTION_IDS[action_index]
             elif policy == "random":
                 action_id = ACTION_IDS[int(rng.integers(len(ACTION_IDS)))]
@@ -316,6 +371,7 @@ def run_closed_loop(
             successor, result = execute(scene, _joint_for(scene, action_id))
             total += float(result.cost)
             steps += 1
+            actions.append(action_id)
             history_a.append(result.feedback[0])
             public_history.append(result.y_public)
             scene = successor

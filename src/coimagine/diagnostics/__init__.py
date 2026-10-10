@@ -204,6 +204,14 @@ from .sweeps import (
     probe_cost_sweep,
     run_all as run_sweeps,
 )
+from .diagnosis import (
+    EpisodeRecord as DiagnosisEpisodeRecord,
+    MetricSummary as DiagnosisMetricSummary,
+    exact_reachability,
+    format_diagnosis,
+    run_diagnosis,
+    summarise as summarise_episodes,
+)
 
 __all__ = [
     "CALIBRATION_CANDIDATES",
@@ -339,4 +347,10 @@ __all__ = [
     "run_micro_diagnostics",
     "run_sweeps",
     "write_report",
+    "DiagnosisEpisodeRecord",
+    "DiagnosisMetricSummary",
+    "exact_reachability",
+    "format_diagnosis",
+    "run_diagnosis",
+    "summarise_episodes",
 ]

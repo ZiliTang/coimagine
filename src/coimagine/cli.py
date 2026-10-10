@@ -172,7 +172,41 @@ def build_parser() -> argparse.ArgumentParser:
     learn.add_argument("--seed", type=int, default=0, help="random seed")
     learn.add_argument("--print-table", action="store_true", help="print the probe tables")
     learn.set_defaults(func=_cmd_learn)
+
+    diagnose = sub.add_parser(
+        "diagnose",
+        help="round-20 diagnosis: unified metrics, exact-model swap, planner audit",
+    )
+    diagnose.add_argument(
+        "--output", default="outputs/grid/diagnosis", help="report directory"
+    )
+    diagnose.add_argument(
+        "--quick", action="store_true", help="small scene counts, for a smoke run"
+    )
+    diagnose.add_argument(
+        "--seeds", default="0,1,2,3,4", help="comma-separated training seeds"
+    )
+    diagnose.add_argument("--print-table", action="store_true", help="print the summary")
+    diagnose.set_defaults(func=_cmd_diagnose)
     return parser
+
+
+def _cmd_diagnose(args: argparse.Namespace) -> int:
+    from .diagnostics.diagnosis import format_diagnosis, run_diagnosis
+
+    result = run_diagnosis(
+        args.output,
+        quick=args.quick,
+        seeds=tuple(int(s) for s in args.seeds.split(",") if s.strip()),
+    )
+    print(f"git revision: {result['meta']['git_revision']}")
+    print(f"wall clock: {result['meta']['wall_clock_seconds']:.1f}s")
+    print(f"  json: {args.output}/diagnosis.json")
+    print(f"  md:   {args.output}/diagnosis.md")
+    if args.print_table:
+        print()
+        print(format_diagnosis(result))
+    return 0
 
 
 def _cmd_learn(args: argparse.Namespace) -> int:
