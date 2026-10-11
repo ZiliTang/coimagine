@@ -1093,12 +1093,16 @@ def run_module_replacement(
     beam: int = 1,
     seed: int = EVAL_SEED,
     checkpoint: str = "outputs/grid/world_model/belief.npz",
+    record_episodes: bool = False,
 ) -> List[Dict[str, object]]:
     """Exact/learned transition crossed with exact/learned observation.
 
     The four cells use the same planner, the same scenes and the same depth.  The two mixed
     cells are only meaningful because ``BeliefWorldModel`` and ``ExactFactoredModel`` share
     the state layout; that is checked by the run itself (a semantic mismatch raises).
+
+    ``record_episodes`` adds the per-episode records (scene id, success, cost, reachable),
+    which is what a paired trace needs; the aggregate rows are identical either way.
     """
 
     from ..learning.belief_model import load_belief_model
@@ -1126,14 +1130,18 @@ def run_module_replacement(
             rows.append({"condition": name, "status": f"could not run: {type(error).__name__}: {error}"})
             continue
         subset = [r for r in records if r.exact_reachable]
-        rows.append(
-            {
-                "condition": name,
-                "status": "ok",
-                "all": asdict(summarise(records, name)),
-                "exact_reachable": asdict(summarise(subset, name)),
-            }
-        )
+        row: Dict[str, object] = {
+            "condition": name,
+            "status": "ok",
+            "checkpoint": (
+                None if "learned" not in name else checkpoint
+            ),
+            "all": asdict(summarise(records, name)),
+            "exact_reachable": asdict(summarise(subset, name)),
+        }
+        if record_episodes:
+            row["episodes"] = [asdict(record) for record in records]
+        rows.append(row)
     return rows
 
 
@@ -1152,8 +1160,15 @@ def run_seed_variance(
     depths: Sequence[int] = (1, 2, 3),
     beam: int = 1,
     seed_eval: int = EVAL_SEED,
+    record_episodes: bool = False,
 ) -> Dict[str, object]:
-    """Train the factored model from scratch under five seeds and evaluate it on one fixed set."""
+    """Train the factored model from scratch under five seeds and evaluate it on one fixed set.
+
+    ``record_episodes`` additionally stores, per seed and depth, the per-episode
+    ``(scene_id, success, action_cost, steps)`` on the exact-reachable subset, so a paired
+    trace against the exact model and the random baseline is possible.  It does not change
+    training or the aggregate numbers.
+    """
 
     from ..learning.belief_model import BeliefWorldModel, train_belief_model
     from ..learning.world_model_data import collect_trajectories
@@ -1176,6 +1191,17 @@ def run_seed_variance(
                 "all": asdict(summarise(records, "all")),
                 "exact_reachable": asdict(summarise(subset, "reachable")),
             }
+            if record_episodes:
+                row["success"][str(depth)]["episodes"] = [
+                    {
+                        "scene_id": r.scene_id,
+                        "success": r.success,
+                        "action_cost": r.action_cost,
+                        "steps": r.steps,
+                        "reachable_steps": r.reachable_steps,
+                    }
+                    for r in subset
+                ]
             row.setdefault("eval_scenes", len(records))
             row.setdefault("eval_reachable", len(subset))
         out["per_seed"].append(row)
@@ -1197,6 +1223,17 @@ def run_seed_variance(
             "eval_scenes": len(records),
             "eval_reachable": len(subset),
         }
+        if record_episodes:
+            exact_baseline[str(depth)]["episodes"] = [
+                {
+                    "scene_id": r.scene_id,
+                    "success": r.success,
+                    "action_cost": r.action_cost,
+                    "steps": r.steps,
+                    "reachable_steps": r.reachable_steps,
+                }
+                for r in subset
+            ]
     out["exact_model_baseline"] = exact_baseline
 
     for depth in depths:
