@@ -212,3 +212,72 @@ def test_action_costs_are_read_per_action_not_always_action_zero():
     assert by_action["wait"]["first_cost"] == pytest.approx(0.0)
     assert by_action["push:0:E"]["first_cost"] == pytest.approx(1.0)
     assert by_action["probe:0:E"]["first_cost"] == pytest.approx(0.3)
+
+def test_scan_correction_keeps_every_compatible_placement_when_ambiguous():
+    """The scan is a constraint: an ambiguous scan must not be turned into one point."""
+
+    from coimagine.diagnostics.conditional_planner import correct_observables_scan
+    from coimagine.grid.sensing import OccupancyScan
+    from coimagine.grid.state import StaticMap
+
+    static = StaticMap(width=6, height=6, target=frozenset({(4, y) for y in range(6)} | {(5, y) for y in range(6)}))
+    # no object seen; one observed robot cell rules out the placements containing it
+    scan = OccupancyScan(0, (0, 0), 5, {(0, 0): "robot"})
+    # every row is concentrated on (0, 0), which the observed robot cell rules out, so the
+    # correction must fall back to the whole compatible set rather than invent a placement
+    rows = np.repeat(_vector(cell=0, released=0.0), N_PHYSICS, axis=0)
+    rows[:, 0] = np.array([index % 2 for index in range(N_PHYSICS)], dtype=float)
+    observation = np.zeros(188)
+    observation[180:182] = 0.0
+    corrected = correct_observables_scan(rows, observation, scan, static)
+    support = (corrected[0, 1:37] > 0).sum()
+    assert support > 1, "an ambiguous scan must keep several compatible placements"
+    assert abs(corrected[0, 1:37].sum() - 1.0) < 1e-9
+    # a row that is already compatible keeps its own belief: the scan is a constraint
+    rows2 = np.repeat(_vector(cell=16, released=0.0), N_PHYSICS, axis=0)
+    rows2[:, 0] = np.array([index % 2 for index in range(N_PHYSICS)], dtype=float)
+    corrected2 = correct_observables_scan(rows2, observation, scan, static)
+    assert int(np.argmax(corrected2[0, 1:37])) == 16
+    # the hidden released value stays with its own row in both cases
+    assert corrected[:, 0].tolist() == pytest.approx(rows[:, 0].tolist())
+    assert corrected2[:, 0].tolist() == pytest.approx(rows2[:, 0].tolist())
+
+
+def test_scan_correction_uses_the_unique_placement_when_the_object_is_seen():
+    from coimagine.diagnostics.conditional_planner import correct_observables_scan
+    from coimagine.grid.sensing import OccupancyScan
+    from coimagine.grid.state import StaticMap
+
+    static = StaticMap(width=6, height=6, target=frozenset())
+    observed = {(2, 2): "object", (3, 2): "object", (2, 3): "object", (3, 3): "object"}
+    scan = OccupancyScan(0, (1, 2), 5, observed)
+    rows = np.repeat(_vector(cell=16, released=0.0), N_PHYSICS, axis=0)
+    observation = np.zeros(188)
+    observation[180:182] = np.asarray([1.0, 2.0]) / 5.0
+    corrected = correct_observables_scan(rows, observation, scan, static)
+    assert int(np.argmax(corrected[0, 1:37])) == 2 + 6 * 2
+    assert corrected[0, 1 + 2 + 6 * 2] == pytest.approx(1.0)
+
+
+def test_true_geometry_correction_is_a_privileged_one_hot_and_keeps_released():
+    from coimagine.diagnostics.conditional_planner import correct_observables_true_geometry
+    from coimagine.grid.sensing import OccupancyScan
+
+    scan = OccupancyScan(0, (0, 0), 5, {(0, 0): "robot"})
+    rows = np.repeat(_vector(cell=16, released=0.0), N_PHYSICS, axis=0)
+    rows[:, 0] = np.array([(index + 1) % 2 for index in range(N_PHYSICS)], dtype=float)
+    observation = np.zeros(188)
+    corrected = correct_observables_true_geometry(rows, (3, 1), observation, scan)
+    assert int(np.argmax(corrected[0, 1:37])) == 3 + 6 * 1
+    assert corrected[0, 1 + 3 + 6 * 1] == pytest.approx(1.0)
+    assert corrected[:, 0].tolist() == pytest.approx(rows[:, 0].tolist())
+
+
+def test_conditional_episode_accepts_each_correction_rule():
+    model = _StubModel()
+    scene = probe_scene((1, 2), HiddenPhysics(resistance=1, constraint="free", traction=("grip", "grip")))
+    for correction in ("encoder", "scan", "true_geometry"):
+        record = run_conditional_episode(
+            model, scene, scene_id=0, horizon=2, depth=1, beam=1, correction=correction
+        )
+        assert record["steps"] == len(record["actions"])

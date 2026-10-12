@@ -51,7 +51,7 @@ import numpy as np
 
 from ..grid.dynamics import FEEDBACK_SYMBOLS, execute
 from ..grid.planner import PHYSICS
-from ..grid.state import ObjectState, Scene
+from ..grid.state import ObjectState, Scene, StaticMap
 from ..learning.belief_model import DYNAMIC_DIM, N_PHYSICS
 from ..learning.data import _joint_for
 from ..learning.features import ACTION_IDS
@@ -154,6 +154,63 @@ def condition(belief: np.ndarray, likelihood: np.ndarray) -> np.ndarray:
     if total <= _EPS:
         return belief.copy()
     return posterior / total
+
+
+def _teammate_from_scan(scan, own_cell):
+    for cell, kind in scan.observed.items():
+        if kind == "robot" and cell != own_cell:
+            return cell
+    return None
+
+
+def _apply_observable_correction(rows, candidates, observation, scan):
+    """Restrict every row's cell distribution to a compatible placement set.
+
+    ``candidates`` is the set of object origins the geometry permits.  Each row's own
+    distribution is masked to that set and renormalised, so an ambiguous scan keeps **all**
+    compatible placements instead of one being picked; a row that had put no mass on any of
+    them falls back to the compatible set uniformly.  ``released`` is never touched, own pose
+    comes from the observation vector where it is measured, and the teammate pose comes from
+    the scan when visible and is otherwise left per row rather than invented.
+    """
+
+    from ..learning.data import pose_to_index
+
+    corrected = rows.copy()
+    indices = [pose_to_index(tuple(origin)) for origin in candidates] if candidates else list(range(36))
+    mask = np.zeros(36)
+    mask[indices] = 1.0
+    cells = corrected[:, 1 : 1 + 36] * mask[None, :]
+    totals = cells.sum(axis=1, keepdims=True)
+    uniform = mask / max(mask.sum(), _EPS)
+    cells = np.where(totals > 1e-9, cells / np.maximum(totals, _EPS), uniform[None, :])
+    corrected[:, 1 : 1 + 36] = cells
+    vector = np.asarray(observation, dtype=float).ravel()
+    corrected[:, 37:39] = vector[180:182]
+    own_cell = (int(round(vector[180] * 5)), int(round(vector[181] * 5)))
+    teammate = _teammate_from_scan(scan, own_cell)
+    if teammate is not None:
+        corrected[:, 39:41] = np.asarray(teammate, dtype=float) / 5.0
+    return corrected
+
+
+def correct_observables_scan(rows, observation, scan, static) -> np.ndarray:
+    """Deployable geometric correction: the scan is a constraint, not a point estimate."""
+
+    from .exact_adapter import object_origins_from_scan
+
+    candidates, _seen = object_origins_from_scan(scan, static)
+    return _apply_observable_correction(rows, candidates, observation, scan)
+
+
+def correct_observables_true_geometry(rows, origin, observation, scan) -> np.ndarray:
+    """Privileged diagnostic upper bound: the object cell is taken from the simulator.
+
+    **Not** a deployable rule and **not** a performance result.  It answers one question: if
+    the post-execution geometric estimate were exact, how many failures come back?
+    """
+
+    return _apply_observable_correction(rows, [tuple(origin)], observation, scan)
 
 
 def correct_observables(rows: np.ndarray, observed: np.ndarray) -> np.ndarray:
@@ -287,29 +344,33 @@ def plan_with_conditional_states(
 # ---------------------------------------------------------------------------
 
 
+def observation_for(
+    scene: Scene,
+    history_a: Sequence[str] = (),
+    public_history: Sequence[str] = (),
+) -> np.ndarray:
+    """The 188-dim observation the shipped pipeline builds: own scan, own pose, histories."""
+
+    from ..grid.sensing import ray_cast
+    from ..learning.features import observation_vector
+
+    return np.asarray(
+        observation_vector(
+            ray_cast(scene, 0, radius=5), scene.robot_pose(0),
+            tuple(history_a), tuple(public_history),
+        )
+    )
+
+
 def encode_state(
     model,
     scene: Scene,
     history_a: Sequence[str] = (),
     public_history: Sequence[str] = (),
 ) -> np.ndarray:
-    """The encoder's dynamic vector for the current scan.
+    """The encoder's dynamic vector for the current scan."""
 
-    The histories matter: ``dyn_head`` sees the whole 188-dim observation, including the
-    feedback and public-event histograms, so passing empty histories would be a different
-    input from the shipped driver.
-    """
-
-    from ..grid.sensing import ray_cast
-    from ..learning.features import observation_vector
-
-    observation = np.asarray(
-        observation_vector(
-            ray_cast(scene, 0, radius=5), scene.robot_pose(0),
-            tuple(history_a), tuple(public_history),
-        )
-    )
-    return np.atleast_2d(model.dynamic_state(observation))
+    return np.atleast_2d(model.dynamic_state(observation_for(scene, history_a, public_history)))
 
 
 def initial_conditional_state(model, scene: Scene) -> ConditionalState:
@@ -411,8 +472,14 @@ def run_conditional_episode(
     beam: int = 1,
     warmup: Optional[Tuple[int, int]] = None,
     reachable: Optional[int] = None,
+    correction: str = "encoder",
 ) -> Dict[str, object]:
-    """The same loop with ``{b(theta), s^theta}`` carried through all four links."""
+    """The same loop with ``{b(theta), s^theta}`` carried through all four links.
+
+    ``correction`` selects only the post-execution geometric rule: ``encoder`` is the network
+    estimate (the behaviour measured so far), ``scan`` is the scan-as-constraint rule, and
+    ``true_geometry`` is a privileged diagnostic upper bound.
+    """
 
     goal = frozenset(scene.static.target)
     state = initial_conditional_state(model, scene)
@@ -440,13 +507,28 @@ def run_conditional_episode(
     for _ in range(horizon):
         if current.is_goal():
             break
-        # link 4: the new scan corrects only the observable part of every row
-        state = ConditionalState(
-            correct_observables(
-                state.rows, encode_state(model, current, history_a, public_history)
-            ),
-            state.belief,
-        )
+        # link 4: correct only the observable part of every row, by the chosen rule
+        observation = observation_for(current, history_a, public_history)
+        if correction == "encoder":
+            corrected = correct_observables(
+                state.rows, model.dynamic_state(observation)
+            )
+        elif correction == "scan":
+            from ..grid.sensing import ray_cast
+
+            corrected = correct_observables_scan(
+                state.rows, observation, ray_cast(current, 0, radius=5), current.static
+            )
+        elif correction == "true_geometry":
+            from ..grid.sensing import ray_cast
+
+            corrected = correct_observables_true_geometry(
+                state.rows, current.obj.origin, observation,
+                ray_cast(current, 0, radius=5),
+            )
+        else:
+            raise ValueError(f"unknown correction {correction!r}")
+        state = ConditionalState(corrected, state.belief)
         chosen, _branches = plan_with_conditional_states(
             model, goal, state, depth=depth, beam=beam
         )
@@ -878,4 +960,108 @@ def trace_boundaries(
         "physics": entry["physics"].label,
         "old": old_trace,
         "new": new_trace,
+    }
+
+
+def run_correction_comparison(
+    model,
+    *,
+    n_scenes: int = 100,
+    horizon: int = 8,
+    depths: Sequence[int] = (1, 2, 3),
+    beam: int = 1,
+    seed: int = 55_000,
+    warmup: str = "probe:0:E",
+) -> Dict[str, object]:
+    """Frozen network and planner; only the post-execution geometric rule changes.
+
+    Reports, per depth: the shipped baseline, the conditional planner with the encoder
+    estimate, with the scan-as-constraint rule, and with the privileged true geometry.  For
+    every shipped regression it lists whether each variant recovered it, so the claim that
+    the geometric correction explains the regressions can be checked case by case.
+    """
+
+    from .diagnosis import _measurement_starts, exact_reachability
+
+    starts, pre_solved, warm_solved = _measurement_starts(
+        n_scenes=n_scenes, seed=seed, warmup=warmup
+    )
+    prepared = [
+        {
+            "scene_id": entry["scene_id"],
+            "scene": entry["scene"],
+            "warmup": entry["warmup"],
+            "reachable": exact_reachability(entry["scene"], horizon=horizon),
+        }
+        for entry in starts
+    ]
+    variants = ("encoder", "scan", "true_geometry")
+    results: List[Dict[str, object]] = []
+    for depth in depths:
+        shipped = [
+            run_shipped_episode(
+                model, entry["scene"], scene_id=entry["scene_id"], horizon=horizon,
+                depth=depth, beam=beam, warmup=entry["warmup"], reachable=entry["reachable"],
+            )
+            for entry in prepared
+        ]
+        runs = {
+            variant: [
+                run_conditional_episode(
+                    model, entry["scene"], scene_id=entry["scene_id"], horizon=horizon,
+                    depth=depth, beam=beam, warmup=entry["warmup"],
+                    reachable=entry["reachable"], correction=variant,
+                )
+                for entry in prepared
+            ]
+            for variant in variants
+        }
+        shipped_by_id = {record["scene_id"]: record for record in shipped}
+        shipped_failure_ids = [
+            record["scene_id"] for record in shipped if record["success"] == 0
+        ]
+        row: Dict[str, object] = {
+            "depth": depth,
+            "beam": beam,
+            "shipped": summarise_records(shipped),
+            "variants": {},
+        }
+        for variant in variants:
+            records = runs[variant]
+            flips = compare_records(shipped, records)
+            by_id = {record["scene_id"]: record for record in records}
+            row["variants"][variant] = {
+                "summary": summarise_records(records),
+                "flips_vs_shipped": {
+                    "improved": len(flips["improved_failure_to_success"]),
+                    "regressed": len(flips["regressed_success_to_failure"]),
+                    "improved_scene_ids": [
+                        entry["scene_id"] for entry in flips["improved_failure_to_success"]
+                    ],
+                    "regressed_scene_ids": [
+                        entry["scene_id"] for entry in flips["regressed_success_to_failure"]
+                    ],
+                },
+                "shipped_successes_preserved": len(flips["regressed_success_to_failure"]) == 0,
+                "shipped_failures_recovered": sum(
+                    1 for scene_id in shipped_failure_ids if by_id[scene_id]["success"]
+                ),
+                "shipped_failures_total": len(shipped_failure_ids),
+                "per_shipped_failure": {
+                    str(scene_id): int(by_id[scene_id]["success"]) for scene_id in shipped_failure_ids
+                },
+            }
+        results.append(row)
+    return {
+        "n_scenes": n_scenes,
+        "horizon": horizon,
+        "beam": beam,
+        "seed": seed,
+        "warmup": warmup,
+        "excluded_already_solved": pre_solved,
+        "excluded_warmup_solved": warm_solved,
+        "n_measured": len(prepared),
+        "n_exact_reachable": sum(1 for entry in prepared if entry["reachable"] is not None),
+        "corrections": list(variants),
+        "depths": results,
     }
