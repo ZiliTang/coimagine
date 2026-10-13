@@ -227,10 +227,10 @@ index 0000000..f3a8acc
 +    raise SystemExit(main())
 diff --git a/experiments/observation_terminal_v1/baselines.py b/experiments/observation_terminal_v1/baselines.py
 new file mode 100644
-index 0000000..c26632d
+index 0000000..364492f
 --- /dev/null
 +++ b/experiments/observation_terminal_v1/baselines.py
-@@ -0,0 +1,220 @@
+@@ -0,0 +1,234 @@
 +"""The two low-cost baselines of task book section B2, in original physical units.
 +
 +P0 -- start-observation persistence. The terminal segment midpoint and normal copy the start
@@ -257,6 +257,19 @@ index 0000000..c26632d
 +
 +from experiments.observation_terminal_v1.dataset_terminal import VALIDITY_COLUMNS
 +from experiments.option_prediction_mechanism_v1.phase_b.dataset_b import EXIT_CLASSES
++
++
++def raw_block(data, group: str) -> Dict[str, np.ndarray]:
++    """The group's labels in **original units**.
++
++    ``_standardise`` replaces ``y`` with the standardised array and keeps the original in ``y_raw``.
++    Every baseline statistic must be built from ``y_raw``: a baseline that reads ``y`` produces a
++    standardised number and hands it to an evaluator that expects metres and seconds. That mistake
++    is what made P1 look like a 3.85 s duration error and a 0.63 m midpoint error.
++    """
++
++    block = data.targets[group]
++    return {"y": block.get("y_raw", block["y"]), "mask": block["mask"]}
 +
 +
 +def _column_median(values: np.ndarray, mask: np.ndarray) -> np.ndarray:
@@ -299,8 +312,9 @@ index 0000000..c26632d
 +
 +    index = np.where(data.split == split)[0]
 +    train = data.split == "train"
-+    mask = data.targets["terminal_observation_geometry"]["mask"]
-+    truth = data.targets["terminal_observation_geometry"]["y"]
++    block = raw_block(data, "terminal_observation_geometry")
++    mask = block["mask"]
++    truth = block["y"]
 +    fallback = _column_median(truth[train], mask[train])
 +    geometry = _fill_missing_columns(data.persistence["terminal_observation_geometry"][index],
 +                                     data.persistence["geometry_mask"][index], fallback)
@@ -335,8 +349,9 @@ index 0000000..c26632d
 +
 +    signatures = getattr(data, "command_signature")
 +    train = data.split == "train"
-+    truth = data.targets[group]["y"]
-+    mask = data.targets[group]["mask"]
++    block = raw_block(data, group)
++    truth = block["y"]
++    mask = block["mask"]
 +    stats: Dict[str, Dict[str, np.ndarray]] = {}
 +    grouped: Dict[str, List[int]] = defaultdict(list)
 +    for row in np.where(train)[0]:
@@ -379,16 +394,15 @@ index 0000000..c26632d
 +    index = np.where(data.split == split)[0]
 +    train = data.split == "train"
 +    signatures = getattr(data, "command_signature")
-+    global_geometry = _column_median(data.targets["terminal_observation_geometry"]["y"][train],
-+                                     data.targets["terminal_observation_geometry"]["mask"][train])
++    geometry_block = raw_block(data, "terminal_observation_geometry")
++    global_geometry = _column_median(geometry_block["y"][train], geometry_block["mask"][train])
 +    geometry_stats = _command_group_stats(data, "terminal_observation_geometry")
 +    pose_stats = _command_group_stats(data, "robot_pose_delta")
 +    velocity_stats = _command_group_stats(data, "robot_residual_velocity")
 +    duration_stats = _command_group_stats(data, "duration")
 +
 +    # global normal fallback for robots whose group statistic degenerates
-+    global_normal = _normal_statistic(data.targets["terminal_observation_geometry"]["y"][train],
-+                                      data.targets["terminal_observation_geometry"]["mask"][train])
++    global_normal = _normal_statistic(geometry_block["y"][train], geometry_block["mask"][train])
 +
 +    class_by_group: Dict[str, Counter] = defaultdict(Counter)
 +    grouped_validity: Dict[str, List[np.ndarray]] = defaultdict(list)
@@ -417,7 +431,7 @@ index 0000000..c26632d
 +            geometry[position] = global_geometry
 +            pose[position] = 0.0
 +            velocity[position] = 0.0
-+            duration[position] = float(np.median(data.targets["duration"]["y"][train]))
++            duration[position] = float(np.median(raw_block(data, "duration")["y"][train]))
 +            validity[position] = global_validity
 +            exit_class[position] = global_class
 +            continue
@@ -933,10 +947,10 @@ index 0000000..b1750f5
 +    raise SystemExit(main())
 diff --git a/experiments/observation_terminal_v1/evaluate_terminal.py b/experiments/observation_terminal_v1/evaluate_terminal.py
 new file mode 100644
-index 0000000..1a89bd0
+index 0000000..aebe1a3
 --- /dev/null
 +++ b/experiments/observation_terminal_v1/evaluate_terminal.py
-@@ -0,0 +1,274 @@
+@@ -0,0 +1,344 @@
 +"""Round-4 evaluation: the observable-terminal targets, in their own physical units.
 +
 +Everything here works in **original units** for continuous groups (the same convention
@@ -1013,7 +1027,14 @@ index 0000000..1a89bd0
 +
 +def _classification(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
 +                    num_classes: int, names: Sequence[str]) -> dict:
++    """Class indices (1-D) or per-class scores (2-D) are both accepted; scores go through argmax.
++
++    ``argmax`` is the same for logits and for probabilities, so no conversion is needed -- but the
++    two must never be mixed with the binary path, where a sigmoid would be applied.
++    """
++
 +    valid = mask > 0
++    accepted = CLASS_INDEX if prediction.ndim == 1 else CLASS_SCORES
 +    if prediction.ndim == 1:
 +        predicted = prediction[valid].astype(int)
 +    else:
@@ -1025,14 +1046,44 @@ index 0000000..1a89bd0
 +    support = {names[i]: int((actual == i).sum()) for i in range(num_classes)}
 +    recall = {names[i]: (float(confusion[i, i] / support[names[i]]) if support[names[i]] else None)
 +              for i in range(num_classes)}
-+    return {"confusion": confusion.tolist(), "class_names": list(names), "support": support,
++    return {"prediction_kind": accepted,
++            "confusion": confusion.tolist(), "class_names": list(names), "support": support,
 +            "recall": recall, "accuracy": float((predicted == actual).mean()) if valid.any()
 +            else None, "n": int(valid.sum())}
 +
 +
++#: the three prediction types the shared interface must keep apart
++CONTINUOUS_UNITS = "original physical units"
++BINARY_PROBABILITY = "probability in [0, 1]"
++BINARY_LOGIT = "logit (any real number)"
++CLASS_INDEX = "class index"
++CLASS_SCORES = "per-class scores (logits or probabilities)"
++
++
++def coerce_binary(prediction: np.ndarray, kind: str) -> np.ndarray:
++    """Turn a declared binary prediction into probabilities, refusing to guess the type.
++
++    A baseline emits 0/1 **probabilities**; the network emits **logits**. Applying a sigmoid to an
++    already-binary baseline maps both 0 and 1 above 0.5, so every sample is called positive and the
++    baseline comparison silently becomes meaningless. The declared kind is therefore required, and a
++    mismatch between the declared kind and the values is an error rather than a silent conversion.
++    """
++
++    values = np.asarray(prediction, dtype=float)
++    if kind == BINARY_PROBABILITY:
++        if values.size and (values.min() < -1e-9 or values.max() > 1.0 + 1e-9):
++            raise ValueError(
++                f"declared probabilities outside [0, 1]: min={values.min()} max={values.max()}; "
++                f"pass kind={BINARY_LOGIT!r} if these are logits")
++        return values
++    if kind == BINARY_LOGIT:
++        return 1.0 / (1.0 + np.exp(-values))
++    raise ValueError(f"unknown binary prediction kind {kind!r}")
++
++
 +def _binary(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
-+            columns: Sequence[str]) -> Dict[str, dict]:
-+    probabilities = 1.0 / (1.0 + np.exp(-prediction))
++            columns: Sequence[str], kind: str) -> Dict[str, dict]:
++    probabilities = coerce_binary(prediction, kind)
 +    out: Dict[str, dict] = {}
 +    for index, name in enumerate(columns):
 +        valid = mask[:, index] > 0
@@ -1044,7 +1095,9 @@ index 0000000..1a89bd0
 +        false_negative = int((~predicted & actual).sum())
 +        true_negative = int((~predicted & ~actual).sum())
 +        out[name] = {
++            "prediction_kind": kind,
 +            "n": int(valid.sum()), "positives": positives,
++            "predicted_positives": int(predicted.sum()),
 +            "recall": float(true_positive / positives) if positives else None,
 +            "precision": float(true_positive / max(1, true_positive + false_positive)),
 +            "accuracy": float((predicted == actual).mean()) if valid.any() else None,
@@ -1111,7 +1164,8 @@ index 0000000..1a89bd0
 +
 +def evaluate(data, observations: Sequence[dict], predictions: Dict[str, np.ndarray], split: str,
 +             label: str, *, permutation_seed: int | None = None,
-+             start_patch_valid: Sequence[bool] | None = None) -> dict:
++             start_patch_valid: Sequence[bool] | None = None,
++             binary_kind: str = BINARY_LOGIT) -> dict:
 +    """Score one model or baseline.
 +
 +    ``predictions`` are in **original units** for continuous groups, so every comparison here uses
@@ -1143,7 +1197,7 @@ index 0000000..1a89bd0
 +        "observation_validity": _binary(
 +            predictions["observation_validity"][index],
 +            data.targets["observation_validity"]["y"][index],
-+            data.targets["observation_validity"]["mask"][index], VALIDITY_COLUMNS),
++            data.targets["observation_validity"]["mask"][index], VALIDITY_COLUMNS, binary_kind),
 +        "exit_class": _classification(
 +            predictions["exit_class"][index], data.targets["exit_class"]["y"][index],
 +            data.targets["exit_class"]["mask"][index], len(EXIT_CLASSES), EXIT_CLASSES),
@@ -1193,30 +1247,60 @@ index 0000000..1a89bd0
 +            transition = np.asarray([
 +                f"{'visible' if start[i, robot_id] else 'invisible'}->"
 +                f"{'visible' if geometry_mask[i, base] > 0 else 'invisible'}" for i in index])
-+        visibility_by_robot[f"r{robot_id}"] = _grouped(robot_error, robot_both, transition)
++        visibility_by_robot[f"r{robot_id}"] = _grouped(robot_error, robot_both, transition,
++                                                       np.asarray(data.roots)[index])
 +    configuration = np.asarray([observations[i]["interaction_class"] for i in index])
++    index_roots = np.asarray(data.roots)[index]
 +    out["grouped_mid_2d"] = {
-+        "by_end": _grouped(midpoint_error, both, end),
++        "by_end": _grouped(midpoint_error, both, end, index_roots),
 +        "by_visibility_transition_r0": visibility_by_robot["r0"],
 +        "by_visibility_transition_r1": visibility_by_robot["r1"],
-+        "by_configuration": _grouped(midpoint_error, both, configuration),
++        "by_configuration": _grouped(midpoint_error, both, configuration, index_roots),
 +    }
-+    out["geometry_by_end"] = _grouped(midpoint_error, both, end)
++    out["geometry_by_end"] = _grouped(midpoint_error, both, end, index_roots)
++    # per-robot visibility denominators, so the report cannot mix sample and slot percentages
++    out["visibility_denominators"] = {}
++    for robot_id in (0, 1):
++        base = 4 * robot_id
++        robot_both = (geometry_mask[index][:, base] > 0) & (geometry_mask[index][:, base + 1] > 0)
++        start_valid = (np.asarray(start_patch_valid)[index][:, robot_id] > 0
++                       if start_patch_valid is not None else None)
++        out["visibility_denominators"][f"r{robot_id}"] = {
++            "terminal_visible_samples": int(robot_both.sum()),
++            "terminal_invisible_samples": int((~robot_both).sum()),
++            "start_invisible_terminal_visible_samples":
++                int((~start_valid & robot_both).sum()) if start_valid is not None else None,
++            "terminal_invisible_root_count":
++                int(len(set(index_roots[~robot_both].tolist()))),
++            "all_samples": int(len(index)),
++        }
 +    return out
 +
 +
-+def _grouped(error: np.ndarray, valid: np.ndarray, groups: np.ndarray) -> Dict[str, dict]:
++def _grouped(error: np.ndarray, valid: np.ndarray, groups: np.ndarray,
++             roots: Sequence[str] | None = None) -> Dict[str, dict]:
++    """Per-group error summary with the **sample count and the independent-root count**.
++
++    Both are reported because a group with few samples can also have very few distinct roots, and a
++    percentage quoted over samples must not be read as a percentage over independent starts.
++    """
++
 +    out: Dict[str, dict] = {}
++    root_array = None if roots is None else np.asarray(roots)
 +    for value in sorted(set(groups[valid].tolist())):
 +        selected = error[valid][groups[valid] == value]
-+        out[str(value)] = percentiles(selected.tolist())
++        entry = percentiles(selected.tolist())
++        entry["samples"] = int(selected.size)
++        entry["roots"] = (int(len(set(root_array[valid][groups[valid] == value].tolist())))
++                          if root_array is not None else None)
++        out[str(value)] = entry
 +    return out
 diff --git a/experiments/observation_terminal_v1/make_bundle.py b/experiments/observation_terminal_v1/make_bundle.py
 new file mode 100644
-index 0000000..f257966
+index 0000000..eb9e654
 --- /dev/null
 +++ b/experiments/observation_terminal_v1/make_bundle.py
-@@ -0,0 +1,170 @@
+@@ -0,0 +1,172 @@
 +"""Build the round-4 review bundle and verify that the manifest matches what is inside.
 +
 +    python experiments/observation_terminal_v1/make_bundle.py
@@ -1256,6 +1340,8 @@ index 0000000..f257966
 +    OUT / "terminal_report_check.md",
 +    OUT / "terminal_report_train.json",
 +    OUT / "terminal_report_train.md",
++    OUT / "terminal_report_reeval.json",
++    OUT / "terminal_report_reeval.md",
 +    OUT / "normalisation.json",
 +    OUT / "spot_checks.json",
 +    OUT / "test_root_dump.json",
@@ -1383,6 +1469,120 @@ index 0000000..f257966
 +    ok = not missing and not unexpected and duplicated == 0
 +    print("BUNDLE_OK" if ok else "BUNDLE_FAILED")
 +    return 0 if ok else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/observation_terminal_v1/reevaluate.py b/experiments/observation_terminal_v1/reevaluate.py
+new file mode 100644
+index 0000000..2e4f35a
+--- /dev/null
++++ b/experiments/observation_terminal_v1/reevaluate.py
+@@ -0,0 +1,108 @@
++"""Re-score the **frozen** checkpoints after the two evaluation fixes. Nothing is retrained.
++
++Fixes applied before this run:
++* every baseline statistic is computed from ``y_raw`` (original units). P1 previously read the
++  standardised labels and handed them to an evaluator expecting metres and seconds;
++* binary predictions declare their type. Baselines emit probabilities in [0, 1]; the network emits
++  logits. Applying a sigmoid to a 0/1 baseline put both 0 and 1 above 0.5, so every sample was
++  called positive and the visibility/contact comparison was meaningless.
++
++    python experiments/observation_terminal_v1/reevaluate.py
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++from pathlib import Path
++
++import numpy as np
++import torch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.observation_terminal_v1 import baselines as BL  # noqa: E402
++from experiments.observation_terminal_v1.evaluate_terminal import (  # noqa: E402
++    BINARY_LOGIT,
++    BINARY_PROBABILITY,
++    evaluate,
++)
++from experiments.observation_terminal_v1.train_terminal import (  # noqa: E402
++    load_all,
++    render,
++    start_patch_valid,
++)
++from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
++    MultiHeadMLP,
++    _standardise,
++    predict,
++    unstandardise_predictions,
++)
++
++OUT = ROOT / "outputs/observation_terminal_v1"
++SEEDS = (0, 1, 2)
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--out", default=str(OUT))
++    args = parser.parse_args()
++    out_dir = Path(args.out)
++    data, records, observations, meta = load_all()
++    starts = start_patch_valid(records)
++    _standardise(data)
++    payload = {"stage": "reevaluate_frozen_checkpoints",
++               "fixes": ["baselines use y_raw (original units)",
++                         "binary predictions declare probability vs logit",
++                         "groupings report sample and independent-root counts"],
++               "data": {"records": len(records), **meta,
++                        "train": int((data.split == "train").sum()),
++                        "val": int((data.split == "val").sum()),
++                        "test": int((data.split == "test").sum())},
++               "baselines": {}, "runs": {}}
++    for split in ("val", "test"):
++        for name, function in (("P0_persistence", BL.persistence_predictions),
++                               ("P1_command_grouped", BL.command_grouped_predictions)):
++            predictions, info = function(data, split)
++            entry = evaluate(data, observations, predictions, split, name, permutation_seed=0,
++                             start_patch_valid=starts, binary_kind=BINARY_PROBABILITY)
++            entry["baseline_info"] = {k: v for k, v in info.items()
++                                      if k != "common_subset_index"}
++            payload["baselines"][f"{name}|{split}"] = entry
++            geometry = entry["terminal_observation_geometry"]
++            print(f"{name}|{split}: mid2d p50 {geometry['r0_mid_2d_m']['p50']:.4f} m | "
++                  f"angle p50 {geometry['r0_normal_angle_deg']['p50']:.3f} deg | "
++                  f"duration p50 {entry['duration']['duration_s']['p50']:.4f} s", flush=True)
++    for seed in SEEDS:
++        path = out_dir / "checkpoints" / f"deployable_seed{seed}.pt"
++        saved = torch.load(path, map_location="cpu", weights_only=False)
++        model = MultiHeadMLP(saved["input_dim"], data.specs)
++        model.load_state_dict(saved["state_dict"])
++        model.eval()
++        model_input = np.hstack([data.x, np.zeros_like(data.x_priv)])
++        predictions = unstandardise_predictions(data, predict(model, model_input, data.specs))
++        key = f"deployable_seed{seed}"
++        payload["runs"][key] = {
++            "parameters": saved["parameters"], "input_dim": saved["input_dim"],
++            "best_epoch": saved.get("best_epoch"), "checkpoint": str(path),
++            "val": evaluate(data, observations, predictions, "val", key, permutation_seed=0,
++                            start_patch_valid=starts, binary_kind=BINARY_LOGIT),
++            "test": evaluate(data, observations, predictions, "test", key, permutation_seed=0,
++                             start_patch_valid=starts, binary_kind=BINARY_LOGIT),
++        }
++        geometry = payload["runs"][key]["test"]["terminal_observation_geometry"]
++        print(f"{key}|test: mid2d p50 {geometry['r0_mid_2d_m']['p50']:.4f} m | "
++              f"angle p50 {geometry['r0_normal_angle_deg']['p50']:.3f} deg", flush=True)
++    (out_dir / "terminal_report_reeval.json").write_text(
++        json.dumps(payload, indent=1, sort_keys=True, default=float))
++    (out_dir / "terminal_report_reeval.md").write_text(render(payload))
++    print(render(payload))
++    print("REEVALUATE_OK")
++    return 0
 +
 +
 +if __name__ == "__main__":
@@ -1566,10 +1766,10 @@ index 0000000..e7477ec
 +    return (vector[0] * cos - vector[1] * sin, vector[0] * sin + vector[1] * cos)
 diff --git a/experiments/observation_terminal_v1/train_terminal.py b/experiments/observation_terminal_v1/train_terminal.py
 new file mode 100644
-index 0000000..fc9c9a8
+index 0000000..f53d6d4
 --- /dev/null
 +++ b/experiments/observation_terminal_v1/train_terminal.py
-@@ -0,0 +1,255 @@
+@@ -0,0 +1,260 @@
 +"""Round-4 driver: 32-root pipeline check, three-seed training, baselines and evaluation.
 +
 +    python experiments/observation_terminal_v1/train_terminal.py --check
@@ -1601,7 +1801,11 @@ index 0000000..fc9c9a8
 +
 +from experiments.observation_terminal_v1 import baselines as BL  # noqa: E402
 +from experiments.observation_terminal_v1 import dataset_terminal as DT  # noqa: E402
-+from experiments.observation_terminal_v1.evaluate_terminal import evaluate  # noqa: E402
++from experiments.observation_terminal_v1.evaluate_terminal import (  # noqa: E402
++    BINARY_LOGIT,
++    BINARY_PROBABILITY,
++    evaluate,
++)
 +from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
 +    _standardise,
 +    predict,
@@ -1718,7 +1922,8 @@ index 0000000..fc9c9a8
 +                               ("P1_command_grouped", BL.command_grouped_predictions)):
 +            predictions, info = function(data, split)
 +            entry = evaluate(data, observation_list, predictions, split, name,
-+                             permutation_seed=0, start_patch_valid=starts)
++                             permutation_seed=0, start_patch_valid=starts,
++                             binary_kind=BINARY_PROBABILITY)
 +            entry["baseline_info"] = {k: v for k, v in info.items()
 +                                      if k != "common_subset_index"}
 +            payload["baselines"][f"{name}|{split}"] = entry
@@ -1765,9 +1970,9 @@ index 0000000..fc9c9a8
 +            "checkpoint": str(path),
 +            "curves": trained["curves"],
 +            "val": evaluate(data, observation_list, predictions, "val", key, permutation_seed=0,
-+                            start_patch_valid=starts),
++                            start_patch_valid=starts, binary_kind=BINARY_LOGIT),
 +            "test": evaluate(data, observation_list, predictions, "test", key, permutation_seed=0,
-+                             start_patch_valid=starts),
++                             start_patch_valid=starts, binary_kind=BINARY_LOGIT),
 +        }
 +        print(f"{key}: best_val {trained['best_val']:.4f} epoch {trained['best_epoch']} "
 +              f"params {trained['parameters']} ({payload['runs'][key]['train_seconds']:.1f}s)",
@@ -2263,10 +2468,10 @@ index 0b2c85b..030a7fa 100644
              delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},
 diff --git a/tests/test_observation_terminal_v1.py b/tests/test_observation_terminal_v1.py
 new file mode 100644
-index 0000000..5261e05
+index 0000000..9bfe1a0
 --- /dev/null
 +++ b/tests/test_observation_terminal_v1.py
-@@ -0,0 +1,262 @@
+@@ -0,0 +1,420 @@
 +"""Round 4 (observation_terminal_v1) tests: the eight checks the task book requires in B1.
 +
 +1. a known translation+rotation round-trips through the R_i0 frame change;
@@ -2529,3 +2734,161 @@ index 0000000..5261e05
 +        terminal = observation["terminal_robots"][0]
 +        assert start == pytest.approx(record["input"]["robot0"]["start_pose_world"])
 +        assert start != pytest.approx(terminal) or True
++
++
++# ---------------------------------------------------------------------------
++# the full chain: standardise -> baseline -> evaluate (the check the reviewer asked for)
++# ---------------------------------------------------------------------------
++
++
++def _two_row_dataset(raw_duration, raw_geometry, split=("train", "test")):
++    """Smallest dataset that can go through _standardise and then the real evaluator."""
++
++    from experiments.observation_terminal_v1.dataset_terminal import GROUPS  # noqa: F401
++    from experiments.option_prediction_mechanism_v1.phase_b.model import GroupSpec, SupervisedData
++
++    n = len(raw_duration)
++    specs = [GroupSpec("duration", "continuous", 1, 1.0),
++             GroupSpec("terminal_observation_geometry", "continuous", 8, 1.0),
++             GroupSpec("robot_pose_delta", "continuous", 6, 1.0),
++             GroupSpec("robot_residual_velocity", "continuous", 6, 1.0),
++             GroupSpec("observation_validity", "binary", 4, 1.0),
++             GroupSpec("exit_class", "multiclass", 0, 1.0, num_classes=2)]
++    duration = np.asarray(raw_duration, dtype=np.float32).reshape(n, 1)
++    geometry = np.asarray(raw_geometry, dtype=np.float32).reshape(n, 8)
++    targets = {
++        "duration": {"y": duration.copy(), "mask": np.ones((n, 1), dtype=np.float32)},
++        "terminal_observation_geometry": {"y": geometry.copy(),
++                                          "mask": np.ones((n, 8), dtype=np.float32)},
++        "robot_pose_delta": {"y": np.zeros((n, 6), dtype=np.float32),
++                             "mask": np.ones((n, 6), dtype=np.float32)},
++        "robot_residual_velocity": {"y": np.zeros((n, 6), dtype=np.float32),
++                                    "mask": np.ones((n, 6), dtype=np.float32)},
++        "observation_validity": {"y": np.zeros((n, 4), dtype=np.float32),
++                                 "mask": np.ones((n, 4), dtype=np.float32)},
++        "exit_class": {"y": np.zeros(n, dtype=np.int64), "mask": np.ones(n, dtype=np.float32)},
++    }
++    data = SupervisedData(
++        x=np.zeros((n, 2), dtype=np.float32), x_priv=np.zeros((n, 1), dtype=np.float32),
++        roots=[f"root{i}" for i in range(n)], split=np.array(split),
++        commands=["0"] * n, targets=targets, specs=specs, persistence={},
++        train_duration_median=0.0, train_exit_majority=0,
++        train_validity_majority=np.zeros(2, dtype=np.float32))
++    data.command_signature = ["cmd"] * n
++    return data
++
++
++def test_command_grouped_baseline_statistics_are_in_original_units():
++    """Hand-worked: train durations 3 s and 5 s must give a 4 s prediction, not a standardised 0."""
++
++    from experiments.observation_terminal_v1.baselines import command_grouped_predictions
++    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
++
++    # train 3 s and 5 s (median 4 s), one test row
++    data = _two_row_dataset([3.0, 5.0, 4.0], np.zeros((3, 8)),
++                            split=("train", "train", "test"))
++    _standardise(data)
++    assert data.targets["duration"]["y_raw"].ravel().tolist() == [3.0, 5.0, 4.0]
++    assert abs(float(data.targets["duration"]["y"][0, 0])) > 0.5, "standardisation must bite"
++    predictions, _info = command_grouped_predictions(data, "test")
++    assert float(predictions["duration"][2, 0]) == pytest.approx(4.0), (
++        "P1 must report the command-group median in seconds")
++    assert float(data.targets["duration"]["y"][2, 0]) == pytest.approx(0.0), (
++        "the standardised test duration is centred on the train median, so using it would be 4 s off")
++
++
++def test_persistence_fallback_median_is_in_original_units():
++    """P0's start-invisible fallback must also be a physical median, not a standardised one."""
++
++    from experiments.observation_terminal_v1.baselines import persistence_predictions
++    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
++
++    geometry = np.zeros((3, 8))
++    geometry[0, 0] = 2.0            # train, valid start patch
++    geometry[1, 0] = 4.0            # train, valid start patch
++    geometry[2, 0] = 9.9            # test row, start patch invisible -> fallback applies
++    data = _two_row_dataset([1.0, 1.0, 1.0], geometry, split=("train", "train", "test"))
++    data.persistence = {
++        "terminal_observation_geometry": np.zeros((3, 8), dtype=np.float32),
++        "geometry_mask": np.zeros((3, 8), dtype=np.float32),
++        "geometry_fallback": np.zeros((3, 2), dtype=np.float32),
++        "robot_pose_delta": np.zeros((3, 6), dtype=np.float32),
++        "robot_residual_velocity": np.zeros((3, 6), dtype=np.float32),
++        "observation_validity": np.zeros((3, 4), dtype=np.float32),
++    }
++    data.persistence["geometry_fallback"][2, 0] = 1.0
++    _standardise(data)
++    predictions, info = persistence_predictions(data, "test")
++    assert info["geometry_fallback_rows"] == 1
++    assert float(predictions["terminal_observation_geometry"][2, 0]) == pytest.approx(3.0), (
++        "the fallback must be the physical median of 2.0 and 4.0")
++
++
++def test_binary_predictions_must_declare_probability_or_logit():
++    """0/1 baselines fed through a sigmoid all become positive; the interface must refuse that."""
++
++    from experiments.observation_terminal_v1.evaluate_terminal import (
++        BINARY_LOGIT, BINARY_PROBABILITY, coerce_binary,
++    )
++
++    flags = np.array([[0.0, 1.0, 0.0, 1.0]])
++    as_probability = coerce_binary(flags, BINARY_PROBABILITY)
++    assert as_probability.tolist() == [[0.0, 1.0, 0.0, 1.0]]
++    assert (as_probability >= 0.5).tolist() == [[False, True, False, True]]
++    # the old path: a sigmoid puts BOTH 0 and 1 above the threshold
++    as_logit = coerce_binary(flags, BINARY_LOGIT)
++    assert (as_logit >= 0.5).all(), "this is exactly the bug being guarded against"
++    with pytest.raises(ValueError):
++        coerce_binary(np.array([[5.0, -3.0]]), BINARY_PROBABILITY)
++
++
++def test_full_chain_baseline_evaluation_is_not_degenerate():
++    """standardise -> P0/P1 -> evaluate, on the real test split, with the declared kinds."""
++
++    from experiments.observation_terminal_v1.baselines import (
++        command_grouped_predictions, persistence_predictions,
++    )
++    from experiments.observation_terminal_v1.evaluate_terminal import (
++        BINARY_LOGIT, BINARY_PROBABILITY, evaluate,
++    )
++    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
++
++    from experiments.observation_terminal_v1.train_terminal import load_all
++
++    data, records, observations, _meta = load_all()
++    _standardise(data)
++    starts = [[bool(r["input"][f"robot{i}"]["mask_patch_valid"]) for i in (0, 1)]
++              for r in records]
++    for function in (persistence_predictions, command_grouped_predictions):
++        predictions, _info = function(data, "test")
++        report = evaluate(data, observations, predictions, "test", function.__name__,
++                          start_patch_valid=starts, binary_kind=BINARY_PROBABILITY)
++        # the duration baseline must be in seconds, not a standardised number
++        assert report["duration"]["duration_s"]["p50"] < 2.0, (
++            "a standardised duration would show up as a ~4 s error against the raw truth")
++        test_index = np.where(data.split == "test")[0]
++        truth_validity = data.targets["observation_validity"]["y"]
++        for column, name in enumerate(["r0_patch_valid", "r0_contacting",
++                                       "r1_patch_valid", "r1_contacting"]):
++            block = report["observation_validity"][name]
++            assert block["prediction_kind"] == BINARY_PROBABILITY
++            assert block["positives"] == int(truth_validity[test_index, column].sum())
++            # the number of positives the evaluator saw must equal the number of 1s in the raw
++            # baseline output: under the sigmoid bug every 0 would also become a positive
++            raw_column = np.asarray(predictions["observation_validity"])[test_index, column]
++            assert block["predicted_positives"] == int((raw_column >= 0.5).sum()), (
++                f"{name}: the evaluator changed the baseline's own 0/1 decisions")
++            if (raw_column < 0.5).any():
++                assert block["predicted_positives"] < block["n"]
++    # and the network's logits must still be accepted: a large negative logit is a clear negative
++    model = dict(persistence_predictions(data, "test")[0])
++    model["observation_validity"] = np.full_like(model["observation_validity"], -8.0)
++    report = evaluate(data, observations, model, "test", "negative-logits",
++                      start_patch_valid=starts, binary_kind=BINARY_LOGIT)
++    assert report["observation_validity"]["r0_contacting"]["predicted_positives"] == 0
++    assert report["observation_validity"]["r0_contacting"]["recall"] == 0.0
++    model["observation_validity"] = np.full_like(model["observation_validity"], 8.0)
++    report = evaluate(data, observations, model, "test", "positive-logits",
++                      start_patch_valid=starts, binary_kind=BINARY_LOGIT)
++    positives = report["observation_validity"]["r0_contacting"]
++    assert positives["predicted_positives"] == positives["n"]
