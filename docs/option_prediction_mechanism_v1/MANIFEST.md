@@ -1,7 +1,7 @@
 # option_prediction_mechanism_v1 — review bundle manifest
 
-built 2026-10-13T15:41:54+00:00
-git commit 19b63ef84c1862274b8731018383c7e512e68371
+built 2026-10-13T15:45:22+00:00
+git commit 5359ed7e354b63066772d94032852f9ee777a658
 round diff base aedffae
 
 ## Included (present inside the zip)
@@ -79,8 +79,8 @@ round diff base aedffae
 | docs/option_prediction_mechanism_v1/samples/sample_train.jsonl | 47730 | 55e5ef07c1092ecc |
 | docs/option_prediction_mechanism_v1/samples/sample_val.jsonl | 49445 | e3d2a20293cf0a1a |
 | docs/option_prediction_mechanism_v1/samples/sample_test.jsonl | 49358 | 4c8f6401b31b9b69 |
-| docs/option_prediction_mechanism_v1/round3.patch | 366306 | e06df9eeb353809a |
-| docs/option_prediction_mechanism_v1/round3_diffstat.txt | 1962 | b20ae77ca474a9bf |
+| docs/option_prediction_mechanism_v1/round3.patch | 393246 | d24d72da210c7db6 |
+| docs/option_prediction_mechanism_v1/round3_diffstat.txt | 2094 | 98e87d9bd0c30805 |
 
 ## Not included (listed only: large per-period logs / checkpoints)
 
