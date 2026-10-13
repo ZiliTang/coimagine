@@ -1,7 +1,7 @@
 # option_prediction_mechanism_v1 — review bundle manifest
 
-built 2026-10-13T13:08:54+00:00
-git commit ea65d0cfce058b23542a7223b095e147a0356aa8
+built 2026-10-13T13:10:25+00:00
+git commit 937f67e79b345eb7ed1c76be4642558173f80795
 
 ## Included
 
@@ -13,12 +13,14 @@ git commit ea65d0cfce058b23542a7223b095e147a0356aa8
 | docs/option_prediction_mechanism_v1/CONTRACT.md | 10774 | afdc86062a1e0e57 |
 | docs/option_prediction_mechanism_v1/C_ambiguity.json | 74461 | a5f6c6ee7564843d |
 | docs/option_prediction_mechanism_v1/C_ambiguity.md | 27350 | 59000ccc2a26603f |
+| docs/option_prediction_mechanism_v1/C_ambiguous_pair.mp4 | 148355 | 467da90c0b78788a |
 | docs/option_prediction_mechanism_v1/ENVIRONMENT.md | 2676 | 9f8d38da312b4d80 |
-| docs/option_prediction_mechanism_v1/MANIFEST.md | 9693 | b2b687ac354bf3aa |
-| docs/option_prediction_mechanism_v1/REPRODUCE.md | 3581 | 59612c15568d675d |
+| docs/option_prediction_mechanism_v1/MANIFEST.md | 9771 | 9be7f47235514a70 |
+| docs/option_prediction_mechanism_v1/REPRODUCE.md | 4267 | fedbc648727609d0 |
 | docs/option_prediction_mechanism_v1/STATUS.md | 3229 | 7505d46a7d503b25 |
 | docs/option_prediction_mechanism_v1/report.md | 6713 | 15170387a6e88b6f |
 | experiments/option_prediction_mechanism_v1/make_animation_a.py | 9619 | 04245dfbc59ef877 |
+| experiments/option_prediction_mechanism_v1/make_animation_c.py | 9569 | c3a268920f673bc4 |
 | experiments/option_prediction_mechanism_v1/make_bundle.py | 5435 | 70e68d556b8b4b2c |
 | experiments/option_prediction_mechanism_v1/phase_a/analyse_a3.py | 11533 | e4bb02198d7491ab |
 | experiments/option_prediction_mechanism_v1/phase_a/run_a.py | 3700 | 7e6387ec90036f57 |

@@ -52,9 +52,12 @@ B 的两档合计约 100 s 采集 + 约 4 min 训练（6 个网络 × 3 种子 +
 ## C. 信息歧义机制实验
 
 ```bash
-$PY experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py --help
-# 具体入口与参数见 phase_c/README 或 C_ambiguity.md
+$PY experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py            # 64 对搜索
+$PY experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py --repeat-check
+$PY experiments/option_prediction_mechanism_v1/phase_c/belief_reference.py       # C4 参照
+$PY experiments/option_prediction_mechanism_v1/verify_c_positive.py              # 独立复核
 ```
+详细入口见 `experiments/option_prediction_mechanism_v1/phase_c/README.md` 与 `C_ambiguity.md`。
 
 ## 动画
 
@@ -62,6 +65,16 @@ $PY experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py --help
 $PY experiments/option_prediction_mechanism_v1/make_animation_a.py \
     --root "test/solo_central/007" --variant noise --old-tag w0_test --new-tag w020_test
 # -> docs/option_prediction_mechanism_v1/A_settle_fix_old_vs_new.mp4
+
+$PY experiments/option_prediction_mechanism_v1/make_animation_c.py --pair T1-12-symmetric
+# -> docs/option_prediction_mechanism_v1/C_ambiguous_pair.mp4
+```
+
+## 审查包
+
+```bash
+$PY experiments/option_prediction_mechanism_v1/make_bundle.py
+# -> option_prediction_mechanism_v1_review.zip（约 1.5 MB；大文件按 MANIFEST.md 列路径与哈希）
 ```
 
 ## 测试
