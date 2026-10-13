@@ -26,6 +26,19 @@ from experiments.observation_terminal_v1.dataset_terminal import VALIDITY_COLUMN
 from experiments.option_prediction_mechanism_v1.phase_b.dataset_b import EXIT_CLASSES
 
 
+def raw_block(data, group: str) -> Dict[str, np.ndarray]:
+    """The group's labels in **original units**.
+
+    ``_standardise`` replaces ``y`` with the standardised array and keeps the original in ``y_raw``.
+    Every baseline statistic must be built from ``y_raw``: a baseline that reads ``y`` produces a
+    standardised number and hands it to an evaluator that expects metres and seconds. That mistake
+    is what made P1 look like a 3.85 s duration error and a 0.63 m midpoint error.
+    """
+
+    block = data.targets[group]
+    return {"y": block.get("y_raw", block["y"]), "mask": block["mask"]}
+
+
 def _column_median(values: np.ndarray, mask: np.ndarray) -> np.ndarray:
     """Per-column median over the rows where the column is valid."""
 
@@ -66,8 +79,9 @@ def persistence_predictions(data, split: str) -> Tuple[Dict[str, np.ndarray], Di
 
     index = np.where(data.split == split)[0]
     train = data.split == "train"
-    mask = data.targets["terminal_observation_geometry"]["mask"]
-    truth = data.targets["terminal_observation_geometry"]["y"]
+    block = raw_block(data, "terminal_observation_geometry")
+    mask = block["mask"]
+    truth = block["y"]
     fallback = _column_median(truth[train], mask[train])
     geometry = _fill_missing_columns(data.persistence["terminal_observation_geometry"][index],
                                      data.persistence["geometry_mask"][index], fallback)
@@ -102,8 +116,9 @@ def _command_group_stats(data, group: str) -> Dict[str, Dict[str, np.ndarray]]:
 
     signatures = getattr(data, "command_signature")
     train = data.split == "train"
-    truth = data.targets[group]["y"]
-    mask = data.targets[group]["mask"]
+    block = raw_block(data, group)
+    truth = block["y"]
+    mask = block["mask"]
     stats: Dict[str, Dict[str, np.ndarray]] = {}
     grouped: Dict[str, List[int]] = defaultdict(list)
     for row in np.where(train)[0]:
@@ -146,16 +161,15 @@ def command_grouped_predictions(data, split: str) -> Tuple[Dict[str, np.ndarray]
     index = np.where(data.split == split)[0]
     train = data.split == "train"
     signatures = getattr(data, "command_signature")
-    global_geometry = _column_median(data.targets["terminal_observation_geometry"]["y"][train],
-                                     data.targets["terminal_observation_geometry"]["mask"][train])
+    geometry_block = raw_block(data, "terminal_observation_geometry")
+    global_geometry = _column_median(geometry_block["y"][train], geometry_block["mask"][train])
     geometry_stats = _command_group_stats(data, "terminal_observation_geometry")
     pose_stats = _command_group_stats(data, "robot_pose_delta")
     velocity_stats = _command_group_stats(data, "robot_residual_velocity")
     duration_stats = _command_group_stats(data, "duration")
 
     # global normal fallback for robots whose group statistic degenerates
-    global_normal = _normal_statistic(data.targets["terminal_observation_geometry"]["y"][train],
-                                      data.targets["terminal_observation_geometry"]["mask"][train])
+    global_normal = _normal_statistic(geometry_block["y"][train], geometry_block["mask"][train])
 
     class_by_group: Dict[str, Counter] = defaultdict(Counter)
     grouped_validity: Dict[str, List[np.ndarray]] = defaultdict(list)
@@ -184,7 +198,7 @@ def command_grouped_predictions(data, split: str) -> Tuple[Dict[str, np.ndarray]
             geometry[position] = global_geometry
             pose[position] = 0.0
             velocity[position] = 0.0
-            duration[position] = float(np.median(data.targets["duration"]["y"][train]))
+            duration[position] = float(np.median(raw_block(data, "duration")["y"][train]))
             validity[position] = global_validity
             exit_class[position] = global_class
             continue

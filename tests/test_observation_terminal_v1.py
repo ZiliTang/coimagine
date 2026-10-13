@@ -260,3 +260,161 @@ def test_splits_do_not_share_a_root_and_start_input_is_not_backfilled():
         terminal = observation["terminal_robots"][0]
         assert start == pytest.approx(record["input"]["robot0"]["start_pose_world"])
         assert start != pytest.approx(terminal) or True
+
+
+# ---------------------------------------------------------------------------
+# the full chain: standardise -> baseline -> evaluate (the check the reviewer asked for)
+# ---------------------------------------------------------------------------
+
+
+def _two_row_dataset(raw_duration, raw_geometry, split=("train", "test")):
+    """Smallest dataset that can go through _standardise and then the real evaluator."""
+
+    from experiments.observation_terminal_v1.dataset_terminal import GROUPS  # noqa: F401
+    from experiments.option_prediction_mechanism_v1.phase_b.model import GroupSpec, SupervisedData
+
+    n = len(raw_duration)
+    specs = [GroupSpec("duration", "continuous", 1, 1.0),
+             GroupSpec("terminal_observation_geometry", "continuous", 8, 1.0),
+             GroupSpec("robot_pose_delta", "continuous", 6, 1.0),
+             GroupSpec("robot_residual_velocity", "continuous", 6, 1.0),
+             GroupSpec("observation_validity", "binary", 4, 1.0),
+             GroupSpec("exit_class", "multiclass", 0, 1.0, num_classes=2)]
+    duration = np.asarray(raw_duration, dtype=np.float32).reshape(n, 1)
+    geometry = np.asarray(raw_geometry, dtype=np.float32).reshape(n, 8)
+    targets = {
+        "duration": {"y": duration.copy(), "mask": np.ones((n, 1), dtype=np.float32)},
+        "terminal_observation_geometry": {"y": geometry.copy(),
+                                          "mask": np.ones((n, 8), dtype=np.float32)},
+        "robot_pose_delta": {"y": np.zeros((n, 6), dtype=np.float32),
+                             "mask": np.ones((n, 6), dtype=np.float32)},
+        "robot_residual_velocity": {"y": np.zeros((n, 6), dtype=np.float32),
+                                    "mask": np.ones((n, 6), dtype=np.float32)},
+        "observation_validity": {"y": np.zeros((n, 4), dtype=np.float32),
+                                 "mask": np.ones((n, 4), dtype=np.float32)},
+        "exit_class": {"y": np.zeros(n, dtype=np.int64), "mask": np.ones(n, dtype=np.float32)},
+    }
+    data = SupervisedData(
+        x=np.zeros((n, 2), dtype=np.float32), x_priv=np.zeros((n, 1), dtype=np.float32),
+        roots=[f"root{i}" for i in range(n)], split=np.array(split),
+        commands=["0"] * n, targets=targets, specs=specs, persistence={},
+        train_duration_median=0.0, train_exit_majority=0,
+        train_validity_majority=np.zeros(2, dtype=np.float32))
+    data.command_signature = ["cmd"] * n
+    return data
+
+
+def test_command_grouped_baseline_statistics_are_in_original_units():
+    """Hand-worked: train durations 3 s and 5 s must give a 4 s prediction, not a standardised 0."""
+
+    from experiments.observation_terminal_v1.baselines import command_grouped_predictions
+    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
+
+    # train 3 s and 5 s (median 4 s), one test row
+    data = _two_row_dataset([3.0, 5.0, 4.0], np.zeros((3, 8)),
+                            split=("train", "train", "test"))
+    _standardise(data)
+    assert data.targets["duration"]["y_raw"].ravel().tolist() == [3.0, 5.0, 4.0]
+    assert abs(float(data.targets["duration"]["y"][0, 0])) > 0.5, "standardisation must bite"
+    predictions, _info = command_grouped_predictions(data, "test")
+    assert float(predictions["duration"][2, 0]) == pytest.approx(4.0), (
+        "P1 must report the command-group median in seconds")
+    assert float(data.targets["duration"]["y"][2, 0]) == pytest.approx(0.0), (
+        "the standardised test duration is centred on the train median, so using it would be 4 s off")
+
+
+def test_persistence_fallback_median_is_in_original_units():
+    """P0's start-invisible fallback must also be a physical median, not a standardised one."""
+
+    from experiments.observation_terminal_v1.baselines import persistence_predictions
+    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
+
+    geometry = np.zeros((3, 8))
+    geometry[0, 0] = 2.0            # train, valid start patch
+    geometry[1, 0] = 4.0            # train, valid start patch
+    geometry[2, 0] = 9.9            # test row, start patch invisible -> fallback applies
+    data = _two_row_dataset([1.0, 1.0, 1.0], geometry, split=("train", "train", "test"))
+    data.persistence = {
+        "terminal_observation_geometry": np.zeros((3, 8), dtype=np.float32),
+        "geometry_mask": np.zeros((3, 8), dtype=np.float32),
+        "geometry_fallback": np.zeros((3, 2), dtype=np.float32),
+        "robot_pose_delta": np.zeros((3, 6), dtype=np.float32),
+        "robot_residual_velocity": np.zeros((3, 6), dtype=np.float32),
+        "observation_validity": np.zeros((3, 4), dtype=np.float32),
+    }
+    data.persistence["geometry_fallback"][2, 0] = 1.0
+    _standardise(data)
+    predictions, info = persistence_predictions(data, "test")
+    assert info["geometry_fallback_rows"] == 1
+    assert float(predictions["terminal_observation_geometry"][2, 0]) == pytest.approx(3.0), (
+        "the fallback must be the physical median of 2.0 and 4.0")
+
+
+def test_binary_predictions_must_declare_probability_or_logit():
+    """0/1 baselines fed through a sigmoid all become positive; the interface must refuse that."""
+
+    from experiments.observation_terminal_v1.evaluate_terminal import (
+        BINARY_LOGIT, BINARY_PROBABILITY, coerce_binary,
+    )
+
+    flags = np.array([[0.0, 1.0, 0.0, 1.0]])
+    as_probability = coerce_binary(flags, BINARY_PROBABILITY)
+    assert as_probability.tolist() == [[0.0, 1.0, 0.0, 1.0]]
+    assert (as_probability >= 0.5).tolist() == [[False, True, False, True]]
+    # the old path: a sigmoid puts BOTH 0 and 1 above the threshold
+    as_logit = coerce_binary(flags, BINARY_LOGIT)
+    assert (as_logit >= 0.5).all(), "this is exactly the bug being guarded against"
+    with pytest.raises(ValueError):
+        coerce_binary(np.array([[5.0, -3.0]]), BINARY_PROBABILITY)
+
+
+def test_full_chain_baseline_evaluation_is_not_degenerate():
+    """standardise -> P0/P1 -> evaluate, on the real test split, with the declared kinds."""
+
+    from experiments.observation_terminal_v1.baselines import (
+        command_grouped_predictions, persistence_predictions,
+    )
+    from experiments.observation_terminal_v1.evaluate_terminal import (
+        BINARY_LOGIT, BINARY_PROBABILITY, evaluate,
+    )
+    from experiments.option_prediction_mechanism_v1.phase_b.model import _standardise
+
+    from experiments.observation_terminal_v1.train_terminal import load_all
+
+    data, records, observations, _meta = load_all()
+    _standardise(data)
+    starts = [[bool(r["input"][f"robot{i}"]["mask_patch_valid"]) for i in (0, 1)]
+              for r in records]
+    for function in (persistence_predictions, command_grouped_predictions):
+        predictions, _info = function(data, "test")
+        report = evaluate(data, observations, predictions, "test", function.__name__,
+                          start_patch_valid=starts, binary_kind=BINARY_PROBABILITY)
+        # the duration baseline must be in seconds, not a standardised number
+        assert report["duration"]["duration_s"]["p50"] < 2.0, (
+            "a standardised duration would show up as a ~4 s error against the raw truth")
+        test_index = np.where(data.split == "test")[0]
+        truth_validity = data.targets["observation_validity"]["y"]
+        for column, name in enumerate(["r0_patch_valid", "r0_contacting",
+                                       "r1_patch_valid", "r1_contacting"]):
+            block = report["observation_validity"][name]
+            assert block["prediction_kind"] == BINARY_PROBABILITY
+            assert block["positives"] == int(truth_validity[test_index, column].sum())
+            # the number of positives the evaluator saw must equal the number of 1s in the raw
+            # baseline output: under the sigmoid bug every 0 would also become a positive
+            raw_column = np.asarray(predictions["observation_validity"])[test_index, column]
+            assert block["predicted_positives"] == int((raw_column >= 0.5).sum()), (
+                f"{name}: the evaluator changed the baseline's own 0/1 decisions")
+            if (raw_column < 0.5).any():
+                assert block["predicted_positives"] < block["n"]
+    # and the network's logits must still be accepted: a large negative logit is a clear negative
+    model = dict(persistence_predictions(data, "test")[0])
+    model["observation_validity"] = np.full_like(model["observation_validity"], -8.0)
+    report = evaluate(data, observations, model, "test", "negative-logits",
+                      start_patch_valid=starts, binary_kind=BINARY_LOGIT)
+    assert report["observation_validity"]["r0_contacting"]["predicted_positives"] == 0
+    assert report["observation_validity"]["r0_contacting"]["recall"] == 0.0
+    model["observation_validity"] = np.full_like(model["observation_validity"], 8.0)
+    report = evaluate(data, observations, model, "test", "positive-logits",
+                      start_patch_valid=starts, binary_kind=BINARY_LOGIT)
+    positives = report["observation_validity"]["r0_contacting"]
+    assert positives["predicted_positives"] == positives["n"]

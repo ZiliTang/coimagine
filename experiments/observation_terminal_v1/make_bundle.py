@@ -37,6 +37,8 @@ SMALL_ARTIFACTS = [
     OUT / "terminal_report_check.md",
     OUT / "terminal_report_train.json",
     OUT / "terminal_report_train.md",
+    OUT / "terminal_report_reeval.json",
+    OUT / "terminal_report_reeval.md",
     OUT / "normalisation.json",
     OUT / "spot_checks.json",
     OUT / "test_root_dump.json",

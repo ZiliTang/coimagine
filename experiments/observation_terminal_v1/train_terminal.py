@@ -29,7 +29,11 @@ sys.path.insert(0, str(ROOT))
 
 from experiments.observation_terminal_v1 import baselines as BL  # noqa: E402
 from experiments.observation_terminal_v1 import dataset_terminal as DT  # noqa: E402
-from experiments.observation_terminal_v1.evaluate_terminal import evaluate  # noqa: E402
+from experiments.observation_terminal_v1.evaluate_terminal import (  # noqa: E402
+    BINARY_LOGIT,
+    BINARY_PROBABILITY,
+    evaluate,
+)
 from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
     _standardise,
     predict,
@@ -146,7 +150,8 @@ def main() -> int:
                                ("P1_command_grouped", BL.command_grouped_predictions)):
             predictions, info = function(data, split)
             entry = evaluate(data, observation_list, predictions, split, name,
-                             permutation_seed=0, start_patch_valid=starts)
+                             permutation_seed=0, start_patch_valid=starts,
+                             binary_kind=BINARY_PROBABILITY)
             entry["baseline_info"] = {k: v for k, v in info.items()
                                       if k != "common_subset_index"}
             payload["baselines"][f"{name}|{split}"] = entry
@@ -193,9 +198,9 @@ def main() -> int:
             "checkpoint": str(path),
             "curves": trained["curves"],
             "val": evaluate(data, observation_list, predictions, "val", key, permutation_seed=0,
-                            start_patch_valid=starts),
+                            start_patch_valid=starts, binary_kind=BINARY_LOGIT),
             "test": evaluate(data, observation_list, predictions, "test", key, permutation_seed=0,
-                             start_patch_valid=starts),
+                             start_patch_valid=starts, binary_kind=BINARY_LOGIT),
         }
         print(f"{key}: best_val {trained['best_val']:.4f} epoch {trained['best_epoch']} "
               f"params {trained['parameters']} ({payload['runs'][key]['train_seconds']:.1f}s)",

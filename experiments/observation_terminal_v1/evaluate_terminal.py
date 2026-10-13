@@ -74,7 +74,14 @@ def _continuous_errors(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarr
 
 def _classification(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
                     num_classes: int, names: Sequence[str]) -> dict:
+    """Class indices (1-D) or per-class scores (2-D) are both accepted; scores go through argmax.
+
+    ``argmax`` is the same for logits and for probabilities, so no conversion is needed -- but the
+    two must never be mixed with the binary path, where a sigmoid would be applied.
+    """
+
     valid = mask > 0
+    accepted = CLASS_INDEX if prediction.ndim == 1 else CLASS_SCORES
     if prediction.ndim == 1:
         predicted = prediction[valid].astype(int)
     else:
@@ -86,14 +93,44 @@ def _classification(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
     support = {names[i]: int((actual == i).sum()) for i in range(num_classes)}
     recall = {names[i]: (float(confusion[i, i] / support[names[i]]) if support[names[i]] else None)
               for i in range(num_classes)}
-    return {"confusion": confusion.tolist(), "class_names": list(names), "support": support,
+    return {"prediction_kind": accepted,
+            "confusion": confusion.tolist(), "class_names": list(names), "support": support,
             "recall": recall, "accuracy": float((predicted == actual).mean()) if valid.any()
             else None, "n": int(valid.sum())}
 
 
+#: the three prediction types the shared interface must keep apart
+CONTINUOUS_UNITS = "original physical units"
+BINARY_PROBABILITY = "probability in [0, 1]"
+BINARY_LOGIT = "logit (any real number)"
+CLASS_INDEX = "class index"
+CLASS_SCORES = "per-class scores (logits or probabilities)"
+
+
+def coerce_binary(prediction: np.ndarray, kind: str) -> np.ndarray:
+    """Turn a declared binary prediction into probabilities, refusing to guess the type.
+
+    A baseline emits 0/1 **probabilities**; the network emits **logits**. Applying a sigmoid to an
+    already-binary baseline maps both 0 and 1 above 0.5, so every sample is called positive and the
+    baseline comparison silently becomes meaningless. The declared kind is therefore required, and a
+    mismatch between the declared kind and the values is an error rather than a silent conversion.
+    """
+
+    values = np.asarray(prediction, dtype=float)
+    if kind == BINARY_PROBABILITY:
+        if values.size and (values.min() < -1e-9 or values.max() > 1.0 + 1e-9):
+            raise ValueError(
+                f"declared probabilities outside [0, 1]: min={values.min()} max={values.max()}; "
+                f"pass kind={BINARY_LOGIT!r} if these are logits")
+        return values
+    if kind == BINARY_LOGIT:
+        return 1.0 / (1.0 + np.exp(-values))
+    raise ValueError(f"unknown binary prediction kind {kind!r}")
+
+
 def _binary(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
-            columns: Sequence[str]) -> Dict[str, dict]:
-    probabilities = 1.0 / (1.0 + np.exp(-prediction))
+            columns: Sequence[str], kind: str) -> Dict[str, dict]:
+    probabilities = coerce_binary(prediction, kind)
     out: Dict[str, dict] = {}
     for index, name in enumerate(columns):
         valid = mask[:, index] > 0
@@ -105,7 +142,9 @@ def _binary(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
         false_negative = int((~predicted & actual).sum())
         true_negative = int((~predicted & ~actual).sum())
         out[name] = {
+            "prediction_kind": kind,
             "n": int(valid.sum()), "positives": positives,
+            "predicted_positives": int(predicted.sum()),
             "recall": float(true_positive / positives) if positives else None,
             "precision": float(true_positive / max(1, true_positive + false_positive)),
             "accuracy": float((predicted == actual).mean()) if valid.any() else None,
@@ -172,7 +211,8 @@ def action_sensitivity(roots: Sequence[str], truth: np.ndarray, predicted: np.nd
 
 def evaluate(data, observations: Sequence[dict], predictions: Dict[str, np.ndarray], split: str,
              label: str, *, permutation_seed: int | None = None,
-             start_patch_valid: Sequence[bool] | None = None) -> dict:
+             start_patch_valid: Sequence[bool] | None = None,
+             binary_kind: str = BINARY_LOGIT) -> dict:
     """Score one model or baseline.
 
     ``predictions`` are in **original units** for continuous groups, so every comparison here uses
@@ -204,7 +244,7 @@ def evaluate(data, observations: Sequence[dict], predictions: Dict[str, np.ndarr
         "observation_validity": _binary(
             predictions["observation_validity"][index],
             data.targets["observation_validity"]["y"][index],
-            data.targets["observation_validity"]["mask"][index], VALIDITY_COLUMNS),
+            data.targets["observation_validity"]["mask"][index], VALIDITY_COLUMNS, binary_kind),
         "exit_class": _classification(
             predictions["exit_class"][index], data.targets["exit_class"]["y"][index],
             data.targets["exit_class"]["mask"][index], len(EXIT_CLASSES), EXIT_CLASSES),
@@ -254,21 +294,51 @@ def evaluate(data, observations: Sequence[dict], predictions: Dict[str, np.ndarr
             transition = np.asarray([
                 f"{'visible' if start[i, robot_id] else 'invisible'}->"
                 f"{'visible' if geometry_mask[i, base] > 0 else 'invisible'}" for i in index])
-        visibility_by_robot[f"r{robot_id}"] = _grouped(robot_error, robot_both, transition)
+        visibility_by_robot[f"r{robot_id}"] = _grouped(robot_error, robot_both, transition,
+                                                       np.asarray(data.roots)[index])
     configuration = np.asarray([observations[i]["interaction_class"] for i in index])
+    index_roots = np.asarray(data.roots)[index]
     out["grouped_mid_2d"] = {
-        "by_end": _grouped(midpoint_error, both, end),
+        "by_end": _grouped(midpoint_error, both, end, index_roots),
         "by_visibility_transition_r0": visibility_by_robot["r0"],
         "by_visibility_transition_r1": visibility_by_robot["r1"],
-        "by_configuration": _grouped(midpoint_error, both, configuration),
+        "by_configuration": _grouped(midpoint_error, both, configuration, index_roots),
     }
-    out["geometry_by_end"] = _grouped(midpoint_error, both, end)
+    out["geometry_by_end"] = _grouped(midpoint_error, both, end, index_roots)
+    # per-robot visibility denominators, so the report cannot mix sample and slot percentages
+    out["visibility_denominators"] = {}
+    for robot_id in (0, 1):
+        base = 4 * robot_id
+        robot_both = (geometry_mask[index][:, base] > 0) & (geometry_mask[index][:, base + 1] > 0)
+        start_valid = (np.asarray(start_patch_valid)[index][:, robot_id] > 0
+                       if start_patch_valid is not None else None)
+        out["visibility_denominators"][f"r{robot_id}"] = {
+            "terminal_visible_samples": int(robot_both.sum()),
+            "terminal_invisible_samples": int((~robot_both).sum()),
+            "start_invisible_terminal_visible_samples":
+                int((~start_valid & robot_both).sum()) if start_valid is not None else None,
+            "terminal_invisible_root_count":
+                int(len(set(index_roots[~robot_both].tolist()))),
+            "all_samples": int(len(index)),
+        }
     return out
 
 
-def _grouped(error: np.ndarray, valid: np.ndarray, groups: np.ndarray) -> Dict[str, dict]:
+def _grouped(error: np.ndarray, valid: np.ndarray, groups: np.ndarray,
+             roots: Sequence[str] | None = None) -> Dict[str, dict]:
+    """Per-group error summary with the **sample count and the independent-root count**.
+
+    Both are reported because a group with few samples can also have very few distinct roots, and a
+    percentage quoted over samples must not be read as a percentage over independent starts.
+    """
+
     out: Dict[str, dict] = {}
+    root_array = None if roots is None else np.asarray(roots)
     for value in sorted(set(groups[valid].tolist())):
         selected = error[valid][groups[valid] == value]
-        out[str(value)] = percentiles(selected.tolist())
+        entry = percentiles(selected.tolist())
+        entry["samples"] = int(selected.size)
+        entry["roots"] = (int(len(set(root_array[valid][groups[valid] == value].tolist())))
+                          if root_array is not None else None)
+        out[str(value)] = entry
     return out
