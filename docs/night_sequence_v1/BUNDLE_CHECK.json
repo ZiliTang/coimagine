@@ -22,31 +22,38 @@
   ],
   "zip": "presentation_assets.zip"
  },
+ "extra_checkpoints": {
+  "bytes": 60992609,
+  "checkpoints": [
+   "d0_mlp_history_seed0",
+   "d0_mlp_history_seed1",
+   "d0_mlp_history_seed2",
+   "d0_transformer_history_seed0",
+   "d0_transformer_history_seed1",
+   "d0_transformer_history_seed2",
+   "d1_mlp_current_seed1",
+   "d1_mlp_current_seed2",
+   "d1_mlp_history_seed1",
+   "d1_mlp_history_seed2",
+   "d1_transformer_history_seed1",
+   "d1_transformer_history_seed2",
+   "d2_mlp_history_seed0",
+   "d2_transformer_history_seed0"
+  ],
+  "files": 14,
+  "zip": "night_sequence_v1_checkpoints_extra.zip"
+ },
  "review": {
   "bundle": "night_sequence_v1_review.zip",
-  "bytes": 78307010,
+  "bytes": 18058300,
   "checkpoints": [
-   "outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt",
-   "outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt",
-   "outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt",
-   "outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt",
-   "outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt",
-   "outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt",
    "outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt",
-   "outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt",
-   "outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt",
    "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt",
-   "outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt",
-   "outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt",
-   "outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt",
-   "outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt",
-   "outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt",
-   "outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt",
-   "outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt"
+   "outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt"
   ],
   "duplicates": 0,
-  "entries": 68,
-  "listed": 67,
+  "entries": 57,
+  "listed": 57,
   "missing": [],
   "sequences_included": [
    "outputs/night_sequence_v1/sequences/d0_00000.npz",

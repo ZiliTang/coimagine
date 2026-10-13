@@ -18,6 +18,8 @@ import zipfile
 from pathlib import Path
 from typing import Dict, List
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / "outputs/night_sequence_v1"
 DOCS = ROOT / "docs/night_sequence_v1"
@@ -47,6 +49,7 @@ def collect_review() -> List[Path]:
     files += [DATA / "runs" / f"{name}.pt" for name in REVIEW_CHECKPOINTS]
     files += [DATA / "runs" / f"{name}.curves.json" for name in REVIEW_CHECKPOINTS]
     files += sorted((DATA / "runs").glob("*.curves.json"))
+    files += [build_token_sample()]
     files += [DATA / "roots_night.json", DATA / "token_summary.json",
               DATA / "label_audit_ledger.json", DATA / "collection_d0.json",
               DATA / "collection_eval.json", DATA / "collection_d1.json",
@@ -95,6 +98,24 @@ def build_extra_zip() -> dict:
     return {"zip": str(EXTRA_ZIP.relative_to(ROOT)), "files": len(extras),
             "bytes": EXTRA_ZIP.stat().st_size,
             "checkpoints": [path.stem for path in extras]}
+
+
+def build_token_sample(count: int = 256) -> Path:
+    """A small token slice so a reviewer can build a window and predict straight from the ZIP.
+
+    The full token arrays are hundreds of megabytes; the sample keeps the loader and the checkpoint
+    usable end to end without shipping them.
+    """
+
+    directory = DATA / "tokens_sample"
+    directory.mkdir(parents=True, exist_ok=True)
+    target = directory / "tokens_d0.npz"
+    with np.load(DATA / "tokens/tokens_d0.npz", allow_pickle=True) as source:
+        payload = {key: source[key][:count] for key in
+                   ("tokens", "token_valid", "terminal", "steps", "exit_class", "T_exit",
+                    "record_id", "root_id", "command_index")}
+    np.savez_compressed(target, **payload)
+    return target
 
 
 def build_review() -> dict:

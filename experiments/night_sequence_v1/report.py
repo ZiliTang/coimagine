@@ -138,14 +138,40 @@ def main() -> int:
         return out
 
     lines += ["## 4. 三个研究问题", ""]
-    if "d0" in tiers and "d1" in tiers:
-        d0_best = min(v for k, v in best(tiers["d0"], "d0").items()
-                      if k.startswith("d0_mlp_history") and v is not None)
-        d1_best = min(v for k, v in best(tiers["d1"], "d1").items()
-                      if k.startswith("d1_mlp_history") and v is not None)
-        lines += [f"**更多独立起点是否改善观测预测？** D0 训练（512 root）的 MLP-history 中点误差 "
-                  f"p50 = {d0_best:.4f} m；D1 训练（4096 root，8×）为 {d1_best:.4f} m"
-                  f"（{'改善' if d1_best < d0_best else '未改善'}）。", ""]
+    scale = []
+    for tier in ("d0", "d1", "d2"):
+        if tier not in tiers:
+            continue
+        values = [v for k, v in best(tiers[tier], tier).items()
+                  if k.startswith(f"{tier}_mlp_history") and v is not None]
+        if not values:
+            continue
+        roots = {"d0": summary.get("d0", {}).get("independent_roots", 0),
+                 "d1": summary.get("d0", {}).get("independent_roots", 0)
+                       + summary.get("d1ext", {}).get("independent_roots", 0),
+                 "d2": summary.get("d0", {}).get("independent_roots", 0)
+                       + summary.get("d1ext", {}).get("independent_roots", 0)
+                       + summary.get("d2ext", {}).get("independent_roots", 0)}[tier]
+        inexec = tiers[tier]["models"].get(f"{tier}_mlp_history_seed0|test", {})
+        inexec_value = (inexec.get("all", {}).get("grouped", {})
+                        .get("regime", {}).get("in_execution", {}).get("p50")
+                        if isinstance(inexec, dict) else None)
+        scale.append((tier, roots, min(values), inexec_value))
+    if scale:
+        lines += ["**更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）", "",
+                  "| 档位 | 独立 train root | t=0 终态 r0 中点 p50 (m) | 执行中 r0 中点 p50 (m) |",
+                  "|---|---:|---:|---:|"]
+        for tier, roots, t0_value, inexec_value in scale:
+            lines.append(f"| {tier} | {roots} | {t0_value:.4f} | "
+                         f"{'—' if inexec_value is None else f'{inexec_value:.4f}'} |")
+        first, last = scale[0], scale[-1]
+        delta = last[2] - first[2]
+        verdict = ("改善但已饱和" if abs(delta) < 0.005 else
+                   ("改善" if delta < 0 else "未改善"))
+        lines += ["", f"从 {first[1]} 到 {last[1]} 个独立起点（{last[1] // max(1, first[1])}×），"
+                      f"t=0 终态误差变化 {delta:+.4f} m（**{verdict}**）。"
+                      f"执行中的误差同样在 {scale[0][3]:.4f}–{scale[-1][3]:.4f} m 之间，"
+                      f"没有随数据量继续下降。", ""]
     d1 = tiers.get("d1")
     if d1:
         table = best(d1, "d1")

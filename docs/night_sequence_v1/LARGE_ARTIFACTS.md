@@ -4297,3 +4297,17 @@
 | outputs/night_sequence_v1/tokens/tokens_d2ext.npz | 266460273 | 843487aca8b35fdce61d0256dc55b864554090699fc5196b5c6f98ab3a5ad2cc |
 | outputs/night_sequence_v1/tokens/tokens_test.npz | 10975095 | 3e8e51ba96e2a3db236b2ac2a517996838ea73b3056cfa1c5da1f21c6f755086 |
 | outputs/night_sequence_v1/tokens/tokens_val.npz | 5529144 | db853a9779a053bfd36e02373fe367eaf956b2a6d492e5d84c6c4e42028868e0 |
+| outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt | 6454225 | 2f4a1d2703d3ed332f933f7360d3bb5f0e41f0a46227231ea345ecada4f29014 |
+| outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt | 6454225 | ad3c9a97f0b28af1a9903c55574a266cb8ff9c7bf7100c786bed420299ccd904 |
+| outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt | 6454225 | 20da9546608fc99b841c264bcc9397a315f8ec532f3b0d389fcc2c423331770f |
+| outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt | 3642931 | 3fd978d0f9568be3c9546c5d43b28b73e0967c3f59326e1f86cec4d42ea19790 |
+| outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt | 3642931 | 25ca4a1d707073df90a9052abac032153747f7288fceb54d31a3f3cf96fa7d54 |
+| outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt | 3642931 | c433c5c9dc47e9c96619b858f315dbc80f06eb8a9996ad371460685d1c36acf4 |
+| outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt | 2767825 | 9d04740b0ffb7fbb3cd72a3cb53e03ac2edb5243502f2e5c709e5c79a25e279b |
+| outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt | 2767825 | 9c407556c44faf9eb17928a321b40a0cf89d4a94e4c09fca260af38c2e1ec657 |
+| outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt | 6454225 | d87bf266cda16e6d3a14c190fc588ebd6f00c127087fbb65a9bbe0200e19848b |
+| outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt | 6454225 | 9ba07e3702a098611e4cf5e16d783428854700d437b3a9b4c6cd28cb8505e709 |
+| outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt | 3642931 | f4ebe924d211619287c4a23f743270fb8bd2520c743ed242493c22a71f03d518 |
+| outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt | 3642931 | 8353cc066549f52ae12a7fd8ff70dca4053f3a1e8d571ed808d09468db3a2d61 |
+| outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt | 6454225 | ec9cffab27d745021b997b7ae7b7a7d6c6df624c9c089952fbc288aa389b6517 |
+| outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt | 3642931 | 1d74929aec4ae066ebb6b64a2657bf71fac0a306287cb5999d2c76a22f950253 |
