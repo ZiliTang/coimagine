@@ -6,8 +6,10 @@
  experiments/night_sequence_v1/dataset.py          |  252 ++++
  experiments/night_sequence_v1/evaluate.py         |  410 +++++++
  experiments/night_sequence_v1/make_bundle.py      |  229 ++++
+ experiments/night_sequence_v1/model_cards.py      |   74 ++
  experiments/night_sequence_v1/models.py           |  237 ++++
- experiments/night_sequence_v1/report.py           |  250 ++++
+ experiments/night_sequence_v1/predict.py          |  181 +++
+ experiments/night_sequence_v1/report.py           |  257 +++++
  experiments/night_sequence_v1/run_matrix.py       |   89 ++
  experiments/night_sequence_v1/sequence_metrics.py |   81 ++
  experiments/night_sequence_v1/sequences.py        |  377 ++++++
@@ -16,5 +18,5 @@
  experiments/night_sequence_v1/verify_from_zip.py  |  104 ++
  experiments/night_sequence_v1/windows.py          |  275 +++++
  src/coimagine/local_contact_option/option.py      |   12 +
- tests/test_night_sequence_v1.py                   |  386 +++++++
- 19 files changed, 4828 insertions(+)
+ tests/test_night_sequence_v1.py                   |  428 +++++++
+ 21 files changed, 5132 insertions(+)

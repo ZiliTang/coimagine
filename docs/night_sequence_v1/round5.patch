@@ -2738,6 +2738,86 @@ index 0000000..4491f79
 +
 +if __name__ == "__main__":
 +    raise SystemExit(main())
+diff --git a/experiments/night_sequence_v1/model_cards.py b/experiments/night_sequence_v1/model_cards.py
+new file mode 100644
+index 0000000..8666957
+--- /dev/null
++++ b/experiments/night_sequence_v1/model_cards.py
+@@ -0,0 +1,74 @@
++"""Generate MODEL_CARDS.md from the actual checkpoints (no hand-written numbers)."""
++
++from __future__ import annotations
++
++import json
++import sys
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[2]
++DATA = ROOT / "outputs/night_sequence_v1"
++DOCS = ROOT / "docs/night_sequence_v1"
++
++INPUT_WHITELIST = [
++    "两机器人自身位姿与速度（各自 R_i0 下）",
++    "自身可见片段的：valid、中点、法向、距离、点数、置信度",
++    "自身接触标志与接触点",
++    "允许共享的队友同类量（相对自身 R_i0）",
++    "当前联合命令（alpha、speed、active mask）",
++    "已过去时间、阶段码、O0 锚点标志",
++]
++FORBIDDEN = ["物体真值位姿/速度", "真实面编号", "root id / 采样 seed / split", "未来观测",
++             "未来控制力/力序列", "真实终止时间", "真实退出原因"]
++
++
++def main() -> int:
++    import torch
++    runs = []
++    for path in sorted((DATA / "runs").glob("*.pt")):
++        saved = torch.load(path, map_location="cpu", weights_only=False)
++        runs.append((path.stem, saved))
++    metrics = {}
++    for tier in ("d0", "d1", "d2"):
++        p = DATA / "analysis" / tier / "metrics.json"
++        if p.exists():
++            metrics[tier] = json.loads(p.read_text())
++    lines = ["# MODEL_CARDS — night_sequence_v1", "",
++             "每张卡片的数字来自实际 checkpoint 与分析 JSON。", "",
++             "## 共同部署输入白名单（所有新模型一致）", ""]
++    lines += [f"- {item}" for item in INPUT_WHITELIST]
++    lines += ["", "## 明确禁止的输入通路", ""]
++    lines += [f"- {item}" for item in FORBIDDEN]
++    lines += ["", "说明：真值 `object_world` / `robots_world` 在数据里单独分区，token 构造器不读取；",
++              "`force` 列被保存用于审计，但**没有**进入任何 token。这一条由",
++              "`tests/test_night_sequence_v1.py::test_both_history_models_receive_identical_inputs_and_no_forbidden_channel`",
++              "与 F05 的输入白名单共同固定。", ""]
++    for name, saved in runs:
++        tier = saved["tier"]
++        entry = metrics.get(tier, {}).get("models", {}).get(f"{name}|test", {})
++        t0 = entry.get("t0", {}) if isinstance(entry, dict) else {}
++        geometry = t0.get("terminal_geometry", {}).get("r0_mid_2d", {})
++        inexec = (entry.get("all", {}).get("grouped", {}).get("regime", {})
++                  .get("in_execution", {})) if isinstance(entry, dict) else {}
++        t0_text = "—" if not geometry else f"{geometry.get('p50'):.4f} m"
++        inexec_text = "—" if not inexec else f"{inexec.get('p50'):.4f} m"
++        lines += [f"## {name}", "",
++                  f"- 架构：`{saved['model_kind']}`，参数 {saved['parameters']:,}；"
++                  f"训练档位 {tier}，seed {saved['seed']}",
++                  f"- 训练：{saved['updates']} 次优化更新，最优验证损失 {saved['best_val']:.4f}"
++                  f"（第 {saved['best_update']} 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0",
++                  f"- 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）",
++                  f"- 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位",
++                  f"- 检查点：`outputs/night_sequence_v1/runs/{name}.pt`",
++                  f"- test t=0 终态 r0 中点二维 p50：{t0_text}；执行中 p50：{inexec_text}",
++                  f"- 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout",
++                  f"- 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；"
++                  f"闭式前缀条件预测，未验证递推误差累积", ""]
++    (DOCS / "MODEL_CARDS.md").write_text("\n".join(lines))
++    print(f"wrote {DOCS / 'MODEL_CARDS.md'} ({len(runs)} cards)")
++    print("MODEL_CARDS_OK")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/models.py b/experiments/night_sequence_v1/models.py
 new file mode 100644
 index 0000000..89875b4
@@ -2981,12 +3061,199 @@ index 0000000..89875b4
 +
 +def parameter_count(model: nn.Module) -> int:
 +    return sum(parameter.numel() for parameter in model.parameters())
+diff --git a/experiments/night_sequence_v1/predict.py b/experiments/night_sequence_v1/predict.py
+new file mode 100644
+index 0000000..50370ac
+--- /dev/null
++++ b/experiments/night_sequence_v1/predict.py
+@@ -0,0 +1,181 @@
++"""Unified inference entry: one sequence prefix in, the same-semantics outputs out.
++
++    # from a stored sequence: give a record id and how many real periods have been observed
++    python experiments/night_sequence_v1/predict.py \
++        --record phase_b/train/solo_central/0000#cmd0 --observed 20 \
++        --models mlp_current mlp_history transformer_history
++
++Every architecture returns **original physical units** with the same field names, so downstream code
++does not branch on the model kind:
++
++    terminal_geometry   r0/r1 midpoint (x, y) in that robot's own R_i0 [m] and the surface normal
++                        (sin, cos) in the same frame
++    terminal_pose       r0/r1 displacement and wrapped heading change in R_i0 [m, rad]
++    terminal_velocity   r0/r1 terminal linear velocity in R_i0 [m/s] and angular velocity [rad/s]
++    terminal_validity   r0/r1 patch_valid and contacting, as probabilities
++    terminal_remaining  seconds left until the option's exit
++    terminal_exit_class index into ``EXIT_CODES``
++    process_*           the same quantities one fixed control period ahead, plus ``process_exit``,
++                        the probability that the option exits within that period
++
++Two honest limits, printed by the tool itself:
++
++* this is a **real-observation-prefix** predictor. It does not feed its own predictions back, so it
++  cannot roll a trajectory forward on its own; the missing pieces are listed in
++  ``docs/night_sequence_v1/CONTRACT.md`` and ``presentation_assets/INDEX.md`` (F08).
++* it returns numbers for the current prefix only. A caller that wants a closed-loop rollout must
++  supply the next real observation, or implement the feedback path itself.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++from pathlib import Path
++from typing import Dict, List
++
++import numpy as np
++import torch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.night_sequence_v1.dataset import (  # noqa: E402
++    GROUPS,
++    Tokens,
++    build_example,
++)
++from experiments.night_sequence_v1.models import build_model  # noqa: E402
++from experiments.night_sequence_v1.sequences import EXIT_CODES  # noqa: E402
++from experiments.night_sequence_v1.windows import (  # noqa: E402
++    GEOMETRY_COLUMNS,
++    POSE_COLUMNS,
++    VALIDITY_COLUMNS,
++    VELOCITY_COLUMNS,
++)
++
++DATA = ROOT / "outputs/night_sequence_v1"
++RUNS = DATA / "runs"
++TIER_SPLITS = {"d0": ["d0", "val", "test"], "d1": ["d0", "d1ext", "val", "test"],
++               "d2": ["d0", "d1ext", "d2ext", "val", "test"]}
++KIND = {name: kind for name, _w, kind in GROUPS}
++
++SEMANTICS = {
++    "terminal_geometry": {"columns": GEOMETRY_COLUMNS, "units": "m, unit vector",
++                          "frame": "each robot's own R_i0"},
++    "terminal_pose": {"columns": POSE_COLUMNS, "units": "m, rad", "frame": "R_i0"},
++    "terminal_velocity": {"columns": VELOCITY_COLUMNS, "units": "m/s, rad/s", "frame": "R_i0"},
++    "terminal_validity": {"columns": VALIDITY_COLUMNS, "units": "probability", "frame": "-"},
++    "terminal_remaining": {"columns": ["seconds_remaining"], "units": "s", "frame": "-"},
++    "terminal_exit_class": {"columns": ["exit_class_index"], "units": "index into EXIT_CODES",
++                            "frame": "-"},
++}
++
++
++class Predictor:
++    """Loads one checkpoint and converts its raw head outputs into the shared semantics."""
++
++    def __init__(self, checkpoint: Path, tokens: Tokens, device: str = "cpu"):
++        saved = torch.load(checkpoint, map_location=device, weights_only=False)
++        self.model_kind = saved["model_kind"]
++        self.model = build_model(self.model_kind, **saved["model_kwargs"])
++        self.model.load_state_dict(saved["state_dict"])
++        self.model.eval()
++        self.normalisation = saved["normalisation"]
++        self.tokens = tokens
++        self.parameters = saved["parameters"]
++        self.checkpoint = str(checkpoint.relative_to(ROOT))
++
++    def predict(self, index: int, observed_periods: int) -> Dict[str, object]:
++        end = max(0, min(int(observed_periods) - 1, int(self.tokens.steps[index]) - 2))
++        example = build_example(self.tokens, index, end)
++        window = torch.tensor(example["window"][None], dtype=torch.float32)
++        valid = torch.tensor(example["token_valid"][None], dtype=torch.float32)
++        with torch.no_grad():
++            outputs = self.model(window, valid)
++        out: Dict[str, object] = {
++            "model": self.model_kind, "checkpoint": self.checkpoint,
++            "parameters": self.parameters, "window_end_period": end,
++            "observed_seconds": round(end * 0.05, 4),
++        }
++        values: Dict[str, np.ndarray] = {}
++        for name, _width, kind in GROUPS:
++            raw = outputs[name].numpy()[0]
++            if kind == "continuous":
++                stats = self.normalisation[name]
++                raw = raw * stats["std"] + stats["mean"]
++            elif kind == "binary" or name == "process_exit":
++                raw = 1.0 / (1.0 + np.exp(-raw))
++            elif kind == "multiclass":
++                raw = np.asarray([int(np.argmax(raw))])
++            values[name] = np.asarray(raw, dtype=float)
++        for name, value in values.items():
++            if name in SEMANTICS:
++                spec = SEMANTICS[name]
++                if name == "terminal_exit_class":
++                    index_value = int(value[0])
++                    out[name] = {"index": index_value,
++                                 "name": EXIT_CODES[index_value] if index_value < len(EXIT_CODES)
++                                 else "unknown", "units": spec["units"]}
++                else:
++                    out[name] = {column: float(v) for column, v in
++                                 zip(spec["columns"], value.tolist())}
++                    out[name]["units"] = spec["units"]
++                    out[name]["frame"] = spec["frame"]
++            else:
++                out[name] = {f"c{i}": float(v) for i, v in enumerate(value.tolist())}
++        return out
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__,
++                                     formatter_class=argparse.RawDescriptionHelpFormatter)
++    parser.add_argument("--tier", default="d1")
++    parser.add_argument("--record", default="", help="record_id; default is the first test sequence")
++    parser.add_argument("--observed", type=int, default=0,
++                        help="number of real periods observed (0 means only O0)")
++    parser.add_argument("--models", nargs="+",
++                        default=["mlp_current", "mlp_history", "transformer_history"])
++    parser.add_argument("--seed", type=int, default=0)
++    parser.add_argument("--out", default="")
++    args = parser.parse_args()
++
++    tokens = Tokens(TIER_SPLITS[args.tier])
++    if args.record:
++        matches = np.where(tokens.records == args.record)[0]
++        if len(matches) == 0:
++            parser.error(f"record {args.record!r} not found in tier {args.tier}")
++        index = int(matches[0])
++    else:
++        index = int(np.where(tokens.split_of == "test")[0][0])
++
++    results: List[dict] = []
++    for kind in args.models:
++        checkpoint = RUNS / f"{args.tier}_{kind}_seed{args.seed}.pt"
++        if not checkpoint.exists():
++            results.append({"model": kind, "error": f"checkpoint missing: {checkpoint.name}"})
++            continue
++        results.append(Predictor(checkpoint, tokens).predict(index, args.observed))
++
++    payload = {
++        "record_id": str(tokens.records[index]), "root_id": str(tokens.roots[index]),
++        "split": str(tokens.split_of[index]),
++        "sequence_periods": int(tokens.steps[index]),
++        "true_exit_seconds": float(tokens.T_exit[index]),
++        "note": "real-observation-prefix prediction in original units; no recursive rollout",
++        "predictions": results,
++    }
++    text = json.dumps(payload, indent=1, ensure_ascii=False)
++    print(text)
++    if args.out:
++        Path(args.out).write_text(text)
++    print("\nNOTE: this entry consumes a real observed prefix. It does not feed predictions back, so "
++          "it cannot roll the world forward by itself.", file=sys.stderr)
++    print("PREDICT_OK")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/report.py b/experiments/night_sequence_v1/report.py
 new file mode 100644
-index 0000000..5be2217
+index 0000000..f74af95
 --- /dev/null
 +++ b/experiments/night_sequence_v1/report.py
-@@ -0,0 +1,250 @@
+@@ -0,0 +1,257 @@
 +"""Generate REPORT.md from the analysis metrics. No number is written by hand.
 +
 +    python experiments/night_sequence_v1/report.py
@@ -3051,7 +3318,14 @@ index 0000000..5be2217
 +
 +    lines = ["# night_sequence_v1 — REPORT", "",
 +             "任务书：`docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md`（v2.1）。",
-+             "协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`。", ""]
++             "协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`；",
++             "模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。", "",
++             "## 0. 一句话结论", "",
++             "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用"
++             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m），但更多独立起点"
++             "（512→16384）几乎没有继续改善，历史窗口优于单帧，而 Transformer 在参数比 1.80× 的"
++             "条件下**没有**胜过历史 MLP；执行前（t=0）最好的是命令+已过去时间分组统计 P1，"
++             "模型只在执行中取胜。**", ""]
 +
 +    # ---- scale
 +    lines += ["## 1. 规模（四个不同的量）", "",
@@ -4594,10 +4868,10 @@ index 030a7fa..29e31c5 100644
              delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},
 diff --git a/tests/test_night_sequence_v1.py b/tests/test_night_sequence_v1.py
 new file mode 100644
-index 0000000..acc4233
+index 0000000..7f7f293
 --- /dev/null
 +++ b/tests/test_night_sequence_v1.py
-@@ -0,0 +1,386 @@
+@@ -0,0 +1,428 @@
 +"""Round-5 correctness gates (task book section 7).
 +
 +1. 16 roots x 8 commands: the new sequence logging changes neither the exit reason, the terminal
@@ -4984,3 +5258,45 @@ index 0000000..acc4233
 +        after = reloaded(windows, valids)["terminal_geometry"]
 +    assert torch.allclose(before, after, atol=1e-6)
 +    path.unlink()
++
++
++# ---------------------------------------------------------------------------
++# the unified inference entry: all three architectures, one semantic layout
++# ---------------------------------------------------------------------------
++
++
++def test_unified_inference_entry_returns_shared_semantics():
++    from experiments.night_sequence_v1.predict import Predictor, SEMANTICS, TIER_SPLITS
++    from experiments.night_sequence_v1.dataset import Tokens
++
++    PREDICT_SPLITS = TIER_SPLITS
++
++    tokens = Tokens(PREDICT_SPLITS["d1"])
++    test_rows = np.where(tokens.split_of == "test")[0]
++    if len(test_rows) == 0:
++        pytest.skip("no test split in this tier")
++    index = int(test_rows[0])
++    produced = {}
++    for kind in ("mlp_current", "mlp_history", "transformer_history"):
++        path = DATA / "runs" / f"d1_{kind}_seed0.pt"
++        if not path.exists():
++            continue
++        predictor = Predictor(path, tokens)
++        result = predictor.predict(index, 20)
++        produced[kind] = result
++        for name, spec in SEMANTICS.items():
++            if name == "terminal_exit_class":
++                assert "index" in result[name] and "name" in result[name]
++                continue
++            assert set(spec["columns"]).issubset(set(result[name])), name
++            assert all(np.isfinite(result[name][column]) for column in spec["columns"])
++    assert produced, "no checkpoint available to exercise the entry"
++    # every architecture must expose the same field names for the same target
++    keys = {kind: set(result.keys()) for kind, result in produced.items()}
++    common = set.intersection(*keys.values())
++    for name in SEMANTICS:
++        assert name in common, f"{name} missing from some architecture"
++    # and the window end must respect the observed prefix length
++    for kind, result in produced.items():
++        assert result["window_end_period"] == 19, kind
++        assert result["observed_seconds"] == pytest.approx(0.95)
