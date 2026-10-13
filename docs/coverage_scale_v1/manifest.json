@@ -1,0 +1,629 @@
+{
+ "config": {
+  "candidates": {
+   "contact_samples_per_face": 2,
+   "faces_per_robot": 4,
+   "force_levels": [
+    1.0
+   ],
+   "max_candidates": 128,
+   "staging_standoff": 0.35
+  },
+  "config_hash": "765ede7cf67318f1",
+  "control": {
+   "hold_kd": 16.0,
+   "hold_semantics": "damped_brake",
+   "hold_speed_tolerance": 0.03,
+   "move_kd": 22.0,
+   "move_kp": 55.0,
+   "move_position_tolerance": 0.02,
+   "move_speed_tolerance": 0.05,
+   "push_k_distance": 90.0,
+   "push_k_velocity": 12.0,
+   "push_lateral_kd": 14.0,
+   "push_lateral_kp": 60.0,
+   "push_speed": 0.26
+  },
+  "mpc": {
+   "beam": 3,
+   "depths": [
+    1,
+    3
+   ],
+   "horizon_windows": 12
+  },
+  "physics": {
+   "angular_damping": 0.6,
+   "angular_tolerance": 0.08,
+   "control_dt": 0.05,
+   "elasticity": 0.05,
+   "friction": 0.6,
+   "goal_margin": 0.02,
+   "linear_damping": 8.0,
+   "max_force": 15.0,
+   "object_height": 0.25,
+   "object_mass": 3.0,
+   "object_width": 1.0,
+   "out_of_bounds_margin": 0.5,
+   "penetration_limit": 0.05,
+   "physics_dt": 0.008333333333333333,
+   "robot_mass": 4.0,
+   "robot_radius": 0.18,
+   "success_hold_time": 0.5,
+   "velocity_tolerance": 0.03,
+   "window_steps": 40
+  },
+  "seeds": [
+   0,
+   1,
+   2
+  ]
+ },
+ "contract": "docs/coverage_scale_v1/CONTRACT.md",
+ "datasets": {
+  "narrow": {
+   "actual_windows": 16019,
+   "contiguous_shards": 48,
+   "duplicate_transitions_removed": 2788,
+   "independent_roots": 626,
+   "reached_target": true,
+   "shards_available": 48,
+   "shards_used": 40,
+   "target_windows": 16017
+  },
+  "test": {
+   "actual_windows": 3497,
+   "contiguous_shards": 8,
+   "duplicate_transitions_removed": 263,
+   "independent_roots": 128,
+   "reached_target": false,
+   "shards_available": 8,
+   "shards_used": 8,
+   "target_windows": 1000000000
+  },
+  "train": {
+   "actual_windows": 128006,
+   "contiguous_shards": 291,
+   "duplicate_transitions_removed": 9527,
+   "independent_roots": 4591,
+   "reached_target": true,
+   "shards_available": 291,
+   "shards_used": 287,
+   "target_windows": 128000
+  },
+  "val": {
+   "actual_windows": 3584,
+   "contiguous_shards": 8,
+   "duplicate_transitions_removed": 268,
+   "independent_roots": 128,
+   "reached_target": false,
+   "shards_available": 8,
+   "shards_used": 8,
+   "target_windows": 1000000000
+  }
+ },
+ "errata": "docs/coverage_scale_v1/errata.md",
+ "eval_schedule_128000": [
+  0,
+  100,
+  3000,
+  6000,
+  9000,
+  12000,
+  15000,
+  18000,
+  21000,
+  24000,
+  27000,
+  30000,
+  33000,
+  36000,
+  39000,
+  42000,
+  45000,
+  48000,
+  51000,
+  54000,
+  57000,
+  60000
+ ],
+ "git_dirty": [
+  "M README.md",
+  " M pyproject.toml",
+  "?? CoImagine_protocol_fix_v1_review.zip",
+  "?? CoImagine_review_bundle_v1.zip",
+  "?? STATUS.md",
+  "?? continuous_closeout_review.zip",
+  "?? coverage_scale_v1_review.zip",
+  "?? data_upgrade_v1_review.zip",
+  "?? deterministic_grid_review.zip",
+  "?? \"docs/CoImagine_Agent_\\350\\257\\212\\346\\226\\255\\344\\273\\273\\345\\212\\241\\344\\271\\246.md\"",
+  "?? \"docs/CoImagine_Agent_\\350\\277\\201\\347\\247\\273\\344\\273\\273\\345\\212\\241\\344\\271\\246_v1.md\"",
+  "?? \"docs/CoImagine_\\344\\273\\243\\347\\240\\201\\345\\256\\241\\346\\237\\245\\346\\235\\220\\346\\226\\231\\344\\272\\244\\346\\216\\245\\350\\246\\201\\346\\261\\202_v1.md\"",
+  "?? docs/closeout_v1/",
+  "?? docs/coverage_scale_v1/",
+  "?? docs/data_upgrade_v1/",
+  "?? docs/deterministic_grid_v1/",
+  "?? docs/fit_capacity_v1/",
+  "?? docs/fit_repair_v1/",
+  "?? docs/forecast_baseline_v1/",
+  "?? docs/migration_v1/",
+  "?? docs/protocol_fix_v1/",
+  "?? docs/tasks/",
+  "?? experiments/",
+  "?? fit_capacity_v1_review.zip",
+  "?? fit_repair_v1_review.zip",
+  "?? forecast_baseline_review.zip",
+  "?? src/coimagine/continuous2d/",
+  "?? src/coimagine/continuous2d_learning/",
+  "?? src/coimagine/coverage_scale/",
+  "?? src/coimagine/data_upgrade/",
+  "?? src/coimagine/deterministic_grid/",
+  "?? src/coimagine/diagnostics/grid_audit_v2.py",
+  "?? src/coimagine/diagnostics/grid_selection_audit.py",
+  "?? src/coimagine/fit_capacity/",
+  "?? tests/test_continuous2d.py",
+  "?? tests/test_coverage_scale.py",
+  "?? tests/test_data_upgrade.py",
+  "?? tests/test_deterministic_grid.py",
+  "?? tests/test_fit_capacity.py",
+  "?? tests/test_fit_repair.py",
+  "?? tests/test_forecast_baseline.py",
+  "?? tests/test_grid_audit_v2.py",
+  "?? tests/test_grid_selection_audit.py",
+  "?? tests/test_protocol_fix.py"
+ ],
+ "git_head": "627d5b861bc55152cef40489d7351ec8777dd53b",
+ "narrow_runs": [
+  {
+   "parameter_hash": "92bbecebfc34b43ec6fe5d40c4904151",
+   "seed": 0,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 256,
+   "windows": 16019
+  },
+  {
+   "parameter_hash": "5615869d7cd5b94b10aeb9698927c936",
+   "seed": 1,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 256,
+   "windows": 16019
+  },
+  {
+   "parameter_hash": "ffa7d3e1b18aa02c216ac06a1eeba6e6",
+   "seed": 2,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 256,
+   "windows": 16019
+  },
+  {
+   "parameter_hash": "f5daee2666af7bded9ca55c816fd6ccf",
+   "seed": 0,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 512,
+   "windows": 16019
+  },
+  {
+   "parameter_hash": "6038c2c91c44288a2486ca50bf8c42f9",
+   "seed": 1,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 512,
+   "windows": 16019
+  },
+  {
+   "parameter_hash": "e45c6cec0eb598b4963a3344dbeedee5",
+   "seed": 2,
+   "tier": "16017",
+   "updates": 7560,
+   "width": 512,
+   "windows": 16019
+  }
+ ],
+ "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+ "python": "3.11.4",
+ "run_id": "coverage-scale-20261013",
+ "runs": [
+  {
+   "file_sha256": "dc8115c5f67054e449ac0f58fa07609d55a599f61ffc82e993fec952a0bbfd43",
+   "parameter_hash": "6b7939bb7205a8458ab883217000b911",
+   "sample_order_hash": "f78ff0e7040ca8e9c2d730a00a5351a82d66eacd7fc489736d6a96cba1a45d8d",
+   "seed": 0,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 26.296868324279785,
+   "width": 256,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "fed26fb2cb546af4f38f511bb107d7365cff2fc49f3c10481a0f23ab3a9090fe",
+   "parameter_hash": "23b435511096415c5b850ca7926b59c8",
+   "sample_order_hash": "931569039ecdd715284563ca3e5c262976a2b402b69a8ff8a8e89395f79b1b77",
+   "seed": 1,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 26.761442184448242,
+   "width": 256,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "2688de85445ce11f54b793e0aa318c4ad7bd464b57f2f8697cdf0f2871245d00",
+   "parameter_hash": "84c12026a1b80daf1998313cb43b9dbd",
+   "sample_order_hash": "17a265759b8ce29d22f6c20632af3aa3287ef44b84c17f0b7f5da2035b078b4e",
+   "seed": 2,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 26.83399796485901,
+   "width": 256,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "0f06b98fe8ffb9bf1f4a8076ae4d74f59583437ce1eddc94c1fc0b8c73a98796",
+   "parameter_hash": "4ad2f606ebb0d2d3c123bfeffc1d72f7",
+   "sample_order_hash": "f78ff0e7040ca8e9c2d730a00a5351a82d66eacd7fc489736d6a96cba1a45d8d",
+   "seed": 0,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 43.52620029449463,
+   "width": 512,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "2bba1a167dc570d88e496d50ad904d81639a65921ba37434c5b5e0136f66f25e",
+   "parameter_hash": "56a37d8d07b2ab7bd3e7c2fa00a8677b",
+   "sample_order_hash": "931569039ecdd715284563ca3e5c262976a2b402b69a8ff8a8e89395f79b1b77",
+   "seed": 1,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 43.459816455841064,
+   "width": 512,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "6941064bd82b605033a89fb21478239de114f773628c03cd7cc26a55c77b03d6",
+   "parameter_hash": "168011216036590dc605aeee44f75ecd",
+   "sample_order_hash": "17a265759b8ce29d22f6c20632af3aa3287ef44b84c17f0b7f5da2035b078b4e",
+   "seed": 2,
+   "tier": "8000",
+   "updates": 6000,
+   "wall_clock": 43.65538692474365,
+   "width": 512,
+   "windows": 8023
+  },
+  {
+   "file_sha256": "6c1720200c2560345e231de64cf16c28d03f80daa75e41acaa45e6d91e427fbb",
+   "parameter_hash": "871ab1679930f11d377f72d88bf2232c",
+   "sample_order_hash": "45bad8e61dece24901e8ae2b96ebca46ac9b50bb028d12c0b2ddff7757e87492",
+   "seed": 0,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 33.311182737350464,
+   "width": 256,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "c172cbdb7085a17298864bf2f830c881d61d4ad5a877b1aaa7c2705c2bc2f7c0",
+   "parameter_hash": "c1abddd5c7ebe20bf666f5e30ddb8eee",
+   "sample_order_hash": "9a68b16777fbbe5b4ef243a0c7249cf7f55e5229754ab8f7df65c85f77f197ed",
+   "seed": 1,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 34.024638414382935,
+   "width": 256,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "3bbef5ea4f1b5d092195c8956f3ad38cdc20a914c35f3c335a26b1670d2b8cba",
+   "parameter_hash": "685d32b6261df4c495a26cb5912258de",
+   "sample_order_hash": "8bc8a1c6f8f31bc156fa4441d54b720da3b4d063e4460698196ae35c34c72ea4",
+   "seed": 2,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 33.64926600456238,
+   "width": 256,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "548c242a6c70166b6b6a0b4c6724d7b4ed4cc3e1a8cc7ac075dfe03fa9db00d6",
+   "parameter_hash": "2254ff4ca2d24cd9df924cf589313569",
+   "sample_order_hash": "45bad8e61dece24901e8ae2b96ebca46ac9b50bb028d12c0b2ddff7757e87492",
+   "seed": 0,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 55.342665910720825,
+   "width": 512,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "d912579d6e7bd37d219dbb681acc84f5fe1a71eeaba872e719c2877d70ec7d38",
+   "parameter_hash": "e82fdcadbae0bb07b60527f33a1040e3",
+   "sample_order_hash": "9a68b16777fbbe5b4ef243a0c7249cf7f55e5229754ab8f7df65c85f77f197ed",
+   "seed": 1,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 54.82643270492554,
+   "width": 512,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "03a00a52cb1cc9a7ea39f52f2f8b7cd7f863ea8805d37908e2c744003b33aeef",
+   "parameter_hash": "d8cd43b01d2c49ea145365c92d4c1b3a",
+   "sample_order_hash": "8bc8a1c6f8f31bc156fa4441d54b720da3b4d063e4460698196ae35c34c72ea4",
+   "seed": 2,
+   "tier": "16000",
+   "updates": 7560,
+   "wall_clock": 54.284647941589355,
+   "width": 512,
+   "windows": 16017
+  },
+  {
+   "file_sha256": "f25b94de3a52e068734ae08ea2f82c182dc1b7247dcce5e85ad5eb8ef030ab7e",
+   "parameter_hash": "d0b80aa70a0f3ddf82664c19ea19b544",
+   "sample_order_hash": "e4c94d5a7f6b8f36fd097b5d7fc08f0cb19071c4353d439f685d198901fa65cb",
+   "seed": 0,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 54.7180016040802,
+   "width": 256,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "061c2808a9082c07aca3734017e68e6703d0bb20e7eb6e7e9531da5e8f709cae",
+   "parameter_hash": "6cd0d2e7463fc5f4438bee68b4767976",
+   "sample_order_hash": "8faacc0ca8dcc25508f3ab4f95afffe65781a3b978136a20933b7776e616a677",
+   "seed": 1,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 54.823344230651855,
+   "width": 256,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "cde11f9fc9f9fa04ffe23cdc908da7f5dbd9bf3ce6863421be316865ee922232",
+   "parameter_hash": "cbcf98274ad96dabdfb15087ac68da67",
+   "sample_order_hash": "c3a41df0d952035430792c3b794422b193da73bdd2680825976be0aa14bccd4c",
+   "seed": 2,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 54.04262018203735,
+   "width": 256,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "6fd64025852ccf01795912a83d2520895ff2a9e26e8201d3f397072ac5ef1234",
+   "parameter_hash": "4e22493f40894b392d7cdff0a50446f6",
+   "sample_order_hash": "e4c94d5a7f6b8f36fd097b5d7fc08f0cb19071c4353d439f685d198901fa65cb",
+   "seed": 0,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 95.78647065162659,
+   "width": 512,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "569ee3809b53b03bb3de98eeb63670e9d3dd748f6d8f7fd3b64116faea4c4ec1",
+   "parameter_hash": "d442ec63bc51b7cd14d1a45d70564311",
+   "sample_order_hash": "8faacc0ca8dcc25508f3ab4f95afffe65781a3b978136a20933b7776e616a677",
+   "seed": 1,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 93.40847158432007,
+   "width": 512,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "454a34ace283defd5377bea9bd8924749f9a65ae55818bf6be21eb79b0bc6d3b",
+   "parameter_hash": "ea3bc01e68f051d2763dfde7e62edc72",
+   "sample_order_hash": "c3a41df0d952035430792c3b794422b193da73bdd2680825976be0aa14bccd4c",
+   "seed": 2,
+   "tier": "32000",
+   "updates": 15060,
+   "wall_clock": 94.21176290512085,
+   "width": 512,
+   "windows": 32002
+  },
+  {
+   "file_sha256": "c5105b239f9a13d65972e7ea18687485df9ea050cd19bd2994391f51a9d1db12",
+   "parameter_hash": "5f3335823e6f916ca1c58780249834fd",
+   "sample_order_hash": "e10b7b3e48c8b610a09160bc4bbcdb462331fe93e392ba05a3c4b7ad057c5cfc",
+   "seed": 0,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 115.89186644554138,
+   "width": 256,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "6b376961a9f9bb9c738757b4b7c5f828671bc1778bd0f1dd00ba918ae32120b9",
+   "parameter_hash": "3f3ff809f37fbfeb4922222444095b3a",
+   "sample_order_hash": "ae44c3314d33f2d51857f7c17577a5391dc8577df23725df25f4771de1e89fc4",
+   "seed": 1,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 114.62421441078186,
+   "width": 256,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "f51dc555ece5b8fa04feaf526afb2bb5df308c03cbe544e3c95878f44c3c652a",
+   "parameter_hash": "52650b186023170f11fba03a7b779bf3",
+   "sample_order_hash": "c6fb5ccb13ff0b116b5f0751d5462ceaf45151c01098337e267167440cfcae41",
+   "seed": 2,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 116.48557543754578,
+   "width": 256,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "06cd455df9f97354f750645ea3880cb35df8e625387f78dfd148303fd5dd0917",
+   "parameter_hash": "0241c157c1f25082d41f74582c5161f5",
+   "sample_order_hash": "e10b7b3e48c8b610a09160bc4bbcdb462331fe93e392ba05a3c4b7ad057c5cfc",
+   "seed": 0,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 182.93905639648438,
+   "width": 512,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "271cb0541285f803edcbc7f9ddf645233cdfee31f585cb765f3018d9943eda47",
+   "parameter_hash": "0748adb2c55ea0e25b0f67f9ba2fbde3",
+   "sample_order_hash": "ae44c3314d33f2d51857f7c17577a5391dc8577df23725df25f4771de1e89fc4",
+   "seed": 1,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 177.2837209701538,
+   "width": 512,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "c42d49eb24259551f72889cb2c34bfb16e6a3d9de0c94a7a79f65bd4daba6388",
+   "parameter_hash": "3ebea0f75d59db6cd7ab551b0b733641",
+   "sample_order_hash": "c6fb5ccb13ff0b116b5f0751d5462ceaf45151c01098337e267167440cfcae41",
+   "seed": 2,
+   "tier": "64000",
+   "updates": 30060,
+   "wall_clock": 181.41862678527832,
+   "width": 512,
+   "windows": 64007
+  },
+  {
+   "file_sha256": "d142af87f4d7e40c83666fea5252f67742e8382be61cc7d4a6c465a5ca0d35de",
+   "parameter_hash": "bb1e155af15a5b79784149e8a50cccfa",
+   "sample_order_hash": "9720c3935189d84baba2dded47c8ca26ad8530cc07214af2f9e2946a1fc1ab57",
+   "seed": 0,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 167.9963517189026,
+   "width": 256,
+   "windows": 128006
+  },
+  {
+   "file_sha256": "06162cfc7e129d0bc1acf83d3a3f9cf023cc3deaa1937cc04b3993db10080749",
+   "parameter_hash": "ca386303e9f930396393db6be688c31d",
+   "sample_order_hash": "e847f93268ccadeffb6aadd2e1c03c1e34ce118198091a35d31a3b3466bf19b0",
+   "seed": 1,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 170.42317032814026,
+   "width": 256,
+   "windows": 128006
+  },
+  {
+   "file_sha256": "f3de5e2a75921512d67208eac28f2de2fa93cf14cdcb5d2d034fd88d520e8ca2",
+   "parameter_hash": "378e2360384663b9880f03da5def8386",
+   "sample_order_hash": "3cc0314c043dee47f292721ce9096476d114eceeddaae1ab99fb7c2b4f5a7c11",
+   "seed": 2,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 169.6448073387146,
+   "width": 256,
+   "windows": 128006
+  },
+  {
+   "file_sha256": "8720e9484efb0752e5415a6d4d9fc0faba18dd5ec06da6912aa03d5580118ee2",
+   "parameter_hash": "f0e19216ae8dd2543f148942e5426066",
+   "sample_order_hash": "9720c3935189d84baba2dded47c8ca26ad8530cc07214af2f9e2946a1fc1ab57",
+   "seed": 0,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 364.0542287826538,
+   "width": 512,
+   "windows": 128006
+  },
+  {
+   "file_sha256": "8f6519cca072f133ed52a2ae5f20e254785bd9d4022c0e730cf7aebba69c9afa",
+   "parameter_hash": "48adb8946f7717c7ddcea6d64406d312",
+   "sample_order_hash": "e847f93268ccadeffb6aadd2e1c03c1e34ce118198091a35d31a3b3466bf19b0",
+   "seed": 1,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 368.105535030365,
+   "width": 512,
+   "windows": 128006
+  },
+  {
+   "file_sha256": "037e1d195083638482860773c155a5d92d34ba94bd1031d6345812e655e04941",
+   "parameter_hash": "ad9a70c1d91446b6c7dc067a8e54537c",
+   "sample_order_hash": "3cc0314c043dee47f292721ce9096476d114eceeddaae1ab99fb7c2b4f5a7c11",
+   "seed": 2,
+   "tier": "128000",
+   "updates": 60000,
+   "wall_clock": 379.05821657180786,
+   "width": 512,
+   "windows": 128006
+  }
+ ],
+ "sampler_ranges": {
+  "S0_goal_center": [
+   2.35,
+   1.1
+  ],
+  "S0_goal_half": [
+   0.65,
+   0.6
+  ],
+  "S0_goal_jitter": 0.15,
+  "S1_gap_center": [
+   0.8,
+   1.2
+  ],
+  "S1_gap_width": [
+   0.6,
+   0.85
+  ],
+  "S1_goal_center_x": 2.25,
+  "S1_goal_half": [
+   0.55,
+   0.55
+  ],
+  "S1_goal_jitter": 0.1,
+  "S1_wall_x": [
+   1.4,
+   1.8
+  ],
+  "mode_slots": [
+   "broad",
+   "wall",
+   "broad",
+   "goal"
+  ],
+  "split_seed_base": {
+   "dev": 400000000,
+   "test": 300000000,
+   "train": 100000000,
+   "val": 200000000
+  },
+  "wall_clearance": [
+   0.01,
+   0.2
+  ]
+ },
+ "scene_registry": {
+  "test": {
+   "bytes": 126035,
+   "sha256": "7b2d8e7e3d3f7dca818c161b4c35d99346af0871bb8ff58a0d355e7ea6d72e40"
+  },
+  "train": {
+   "bytes": 5200313,
+   "sha256": "ca6e1d5ab48b306b361c52a60cfff8817d62e88e54219b6d42e3a49e09690d72"
+  },
+  "val": {
+   "bytes": 125923,
+   "sha256": "f784da0ba6a5b2061b077e243e2bc8164ecb39ed4e2c81423046be7c15b31c94"
+  }
+ },
+ "task_book": "docs/tasks/20261013_0225_CoImagine_\u8fc7\u591c\u6570\u636e\u8986\u76d6\u4e0e\u6a21\u578b\u89c4\u6a21\u8054\u5408\u6269\u5c55\u4efb\u52a1\u4e66.md",
+ "update_budget": {
+  "128000": 60000,
+  "16000": 7500,
+  "32000": 15000,
+  "64000": 30000,
+  "8000": 6000
+ }
+}

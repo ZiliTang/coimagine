@@ -1,0 +1,331 @@
+{
+  "chain_tolerances": {
+    "angle_rad": 0.1,
+    "position_m": 0.05
+  },
+  "checkpoint_rules": {
+    "primary": "0.5 * mean original val loss + 0.5 * mean new-branch val loss",
+    "secondary": "mean original val loss only (uniform across groups; the primary rule degenerates for groups without branch training data)"
+  },
+  "checkpoints": {
+    "models/Old_Branch_seed0.pt": "476f5215d41eaa7b7dad6deea9339125e6fb420c5bc1671de62575f944168daf",
+    "models/Old_Branch_seed1.pt": "6b3cbe7b73ee9ccb7cc76576e0ba66fdacc424e1b9d06ea6161d838a55da0440",
+    "models/Old_Branch_seed2.pt": "49778e6c39585b2a5c7808110901c16eb067a4383899dfea8288e2f3f3ace049",
+    "models/Old_Random_seed0.pt": "aeb245f52ec4f12bb53bf73dc8cb0f33184a8fba9224a6981d9e88d807cde987",
+    "models/Old_Random_seed1.pt": "4c226136687f59de335c9e58628ff6148848b223e91fabd3d46be78cb6b0298c",
+    "models/Old_Random_seed2.pt": "73dc2a87af12b8796cc4371554c646ac5d583c6083061767c86fbef1a67ed318",
+    "models/Old_seed0.pt": "5f6681c9c712cb82ede621e0b5a1d62f8d2ecc268c4965d7a1765fd6be145786",
+    "models/Old_seed1.pt": "068772dd293453e4b35cbfd2340113981d6f496e8fc0556c0e2afd73575eece5",
+    "models/Old_seed2.pt": "44ee09fde140e51fa80b8d7342a579a8ec18ee464fddbc9e240d2a5c8459bfb4",
+    "models_originalval/Old_Branch_seed0.pt": "e6776f05cc2dca719afda736103d93e8fd6f91c4a8be68b4580d7bc247c5957c",
+    "models_originalval/Old_Branch_seed1.pt": "00a149af184cb4ed8a8cbc52d082a049097eb37e14cf66413ecaef335fd608af",
+    "models_originalval/Old_Branch_seed2.pt": "3cdf387671aafd5ae99fb7deb3857b98df73202df5a4f5b91f8ab2525e5664ba",
+    "models_originalval/Old_Random_seed0.pt": "b0bfa9556ae906fc36ec4afd1273b1034cf4b6bf77202f9730ef89024dc6f164",
+    "models_originalval/Old_Random_seed1.pt": "d5caf6cc68b3cea80e73cdbff45b7f4c66abc89a0be3df615bd4e274cae9ddd9",
+    "models_originalval/Old_Random_seed2.pt": "3095dd751b5c6045687130c3c35beab959575411fad48c356814eb8b862a7095",
+    "models_originalval/Old_seed0.pt": "ca2a93448f1b2c88410bba26e1511b8b1fbe339af714fd275451c887c86643c6",
+    "models_originalval/Old_seed1.pt": "a945d4595b6fc95817700eda1851bbf052015f28badbbdc4bacbf36643d7c109",
+    "models_originalval/Old_seed2.pt": "da48cad6a1d0b6ea4d951465b94c0d0d6b5cc381bd98c60224a97d2b1b9ddd48"
+  },
+  "continuous2d_config": {
+    "candidates": {
+      "contact_samples_per_face": 2,
+      "faces_per_robot": 4,
+      "force_levels": [
+        1.0
+      ],
+      "max_candidates": 128,
+      "staging_standoff": 0.35
+    },
+    "config_hash": "765ede7cf67318f1",
+    "control": {
+      "hold_kd": 16.0,
+      "hold_semantics": "damped_brake",
+      "hold_speed_tolerance": 0.03,
+      "move_kd": 22.0,
+      "move_kp": 55.0,
+      "move_position_tolerance": 0.02,
+      "move_speed_tolerance": 0.05,
+      "push_k_distance": 90.0,
+      "push_k_velocity": 12.0,
+      "push_lateral_kd": 14.0,
+      "push_lateral_kp": 60.0,
+      "push_speed": 0.26
+    },
+    "mpc": {
+      "beam": 3,
+      "depths": [
+        1,
+        3
+      ],
+      "horizon_windows": 12
+    },
+    "physics": {
+      "angular_damping": 0.6,
+      "angular_tolerance": 0.08,
+      "control_dt": 0.05,
+      "elasticity": 0.05,
+      "friction": 0.6,
+      "goal_margin": 0.02,
+      "linear_damping": 8.0,
+      "max_force": 15.0,
+      "object_height": 0.25,
+      "object_mass": 3.0,
+      "object_width": 1.0,
+      "out_of_bounds_margin": 0.5,
+      "penetration_limit": 0.05,
+      "physics_dt": 0.008333333333333333,
+      "robot_mass": 4.0,
+      "robot_radius": 0.18,
+      "success_hold_time": 0.5,
+      "velocity_tolerance": 0.03,
+      "window_steps": 40
+    },
+    "seeds": [
+      0,
+      1,
+      2
+    ]
+  },
+  "contract": "docs/data_upgrade_v1/CONTRACT.md",
+  "dependency_versions": {
+    "numpy": "2.4.6",
+    "pymunk": "6.9.0",
+    "torch": "2.14.1+cpu"
+  },
+  "git_branch": "main",
+  "git_head": "627d5b861bc55152cef40489d7351ec8777dd53b",
+  "git_status": [
+    "M README.md",
+    " M pyproject.toml",
+    "?? CoImagine_protocol_fix_v1_review.zip",
+    "?? CoImagine_review_bundle_v1.zip",
+    "?? STATUS.md",
+    "?? continuous_closeout_review.zip",
+    "?? deterministic_grid_review.zip",
+    "?? \"docs/CoImagine_Agent_\\350\\257\\212\\346\\226\\255\\344\\273\\273\\345\\212\\241\\344\\271\\246.md\"",
+    "?? \"docs/CoImagine_Agent_\\350\\277\\201\\347\\247\\273\\344\\273\\273\\345\\212\\241\\344\\271\\246_v1.md\"",
+    "?? \"docs/CoImagine_\\344\\273\\243\\347\\240\\201\\345\\256\\241\\346\\237\\245\\346\\235\\220\\346\\226\\231\\344\\272\\244\\346\\216\\245\\350\\246\\201\\346\\261\\202_v1.md\"",
+    "?? docs/closeout_v1/",
+    "?? docs/data_upgrade_v1/",
+    "?? docs/deterministic_grid_v1/",
+    "?? docs/forecast_baseline_v1/",
+    "?? docs/migration_v1/",
+    "?? docs/protocol_fix_v1/",
+    "?? docs/tasks/",
+    "?? experiments/",
+    "?? forecast_baseline_review.zip",
+    "?? src/coimagine/continuous2d/",
+    "?? src/coimagine/continuous2d_learning/",
+    "?? src/coimagine/data_upgrade/",
+    "?? src/coimagine/deterministic_grid/",
+    "?? src/coimagine/diagnostics/grid_audit_v2.py",
+    "?? src/coimagine/diagnostics/grid_selection_audit.py",
+    "?? tests/test_continuous2d.py",
+    "?? tests/test_data_upgrade.py",
+    "?? tests/test_deterministic_grid.py",
+    "?? tests/test_forecast_baseline.py",
+    "?? tests/test_grid_audit_v2.py",
+    "?? tests/test_grid_selection_audit.py",
+    "?? tests/test_protocol_fix.py"
+  ],
+  "grid_run_file_sha256": {
+    "decomposition.json": "3e81de88e76bee2ffc2747be3ba4d276a7dea2d2afbb0212fd740b73d54e91db",
+    "hash_check.json": "f71030691a653aa194473d221abe84ce75403ffcfc326f7ef4e6c1508c09bb7f",
+    "metrics_table_v2.md": "e711aeb34e50cbd749ee6c7488db48b39c942573cf3d21b8f5b36913cecf06ff",
+    "summary.json": "625212720c1447b3cfe5aaa6eea17f420c998e092b2deccc52451cd76ea8be87"
+  },
+  "large_files_not_in_bundle": {
+    "branch_data/anchors.jsonl": "c5fa9a8713a160624d55c25d9ffe34240ed9caed5d779954a910e72a87b0b974",
+    "branch_data/branch_train_matched.jsonl": "39a1903f1f2ad7bafe98c97cfe7d8fac50a463bc5cd1857257bab7a781f1d5f6",
+    "branch_data/branch_windows.jsonl": "dc6595376b8731970dbf36ff4bb9da1e58550b77c6463c16dd3e7ae3a6abc525",
+    "branch_data/guide_windows.jsonl": "246d8b4bc98d7fdda65cc167662d9debaee82b0d05e3bd6ff41c7a4bbb08b62b",
+    "branch_data/random_add_windows.jsonl": "a22d88e164ba7cb1e46f6e1379893e2a2a347008189e678d0f2d8a753a0de1cd",
+    "branch_data/random_train_matched.jsonl": "7c4a3825863d811635111033d66d1bd88f48678cf2861d49fc983b966322c603",
+    "closed_loop_groups_combined/episodes.jsonl": "a53002c971be8351fcc9294215d6ab4143c4ee6231800cc93b1390cdb9cc2424",
+    "closed_loop_groups_combined/windows.jsonl": "1c2e302c98855b08770babaa5638b308a25554bb2940e4e4fe0298ea12c5c84b",
+    "closed_loop_groups_origval/episodes.jsonl": "e626a9d82d5939e11c8c93a0b5a82855fc5080579dd08a7d75532b91de2ecea1",
+    "closed_loop_groups_origval/windows.jsonl": "380c44261b3c5d50de9630c4f53db18eb902175e07ab7c535a8a9934290ce44e",
+    "fixed_candidates/rows_combined.jsonl": "18aa8dbcf5bc845de538d5f9ca91983c7df96a50eae26a4ee53b6897e33c94f4",
+    "fixed_candidates/rows_origval.jsonl": "b91df13bdf8f0841b6c6a16030859ac1ae2e6b0890b8390dd36ce4d28b8e5055"
+  },
+  "model_config": {
+    "batch_size": 128,
+    "hidden": 256,
+    "layers": 2,
+    "lr": 0.001,
+    "max_epochs": 100,
+    "patience": 12
+  },
+  "normalisation": {
+    "angular_velocity_scale": 2.0,
+    "duration_scale": 2.0,
+    "hold_scale": 0.55,
+    "velocity_scale": 2.0
+  },
+  "python": "3.11.4",
+  "run_file_sha256": {
+    "branch_data/collection_summary.json": "65fe1c4869126327d78abbe5a17642d6ed842adeff81a9599c5ab48d506d533c",
+    "branch_data/guides.json": "80fa4076a9ae1071b9b3cc40ee073c15973ddf0fbc0b3cf2a97d7f7c6e4d17cf",
+    "cases/cases_origval.json": "533c4cd018d57ef6c4547c6f395e56d1ca0c91e115a8d4983db238cf30a2853f",
+    "closed_loop/aggregate.json": "1e1e46290e8cdc03613b4f5af7a397a0310f68be9a8ec524d6dfb6b9d910f246",
+    "closed_loop/summary.json": "1f5ac6400341b1e75b84ca4a8c82bc344948b10826c18e15379b4956e692b098",
+    "closed_loop_groups_combined/aggregate.json": "1adc1baba803ba16fd37e3622eca7c7d689091513d2a87bcd696c4025e763497",
+    "closed_loop_groups_combined/summary.json": "5d9ec2efb3254371e4c747b2e384fc390bbb2f2239ad175c9e5cd3edcf1d4bda",
+    "closed_loop_groups_origval/aggregate.json": "881e6807a7e4b6ffbd0d281b8a58f90d6e61a4b0afab01430c0aa604b163417d",
+    "closed_loop_groups_origval/summary.json": "bdecadca36a6f5de3cb4a5c19693ec42e92826bdb534a4bca2247e6e6a9764bf",
+    "coverage/coverage.json": "01f2c617ef1ca42a221fdac5c1388f4637f73bc5722fd4994e02d89375e0ca17",
+    "coverage/coverage_table.md": "65c825a94b1e6248c9f70fb2a53d3acb44ce0d8d2b10b314ff5f921bacdf9509",
+    "fit_check/fit_check.json": "89875aee38fcef7b8e1332df0498ed1736b17898b3eebb37860c302beadcb0a3",
+    "fixed_candidates/aggregate_combined.json": "70bb13cec7e06d6e1cf82479cc20d58738032e91abd7bfcdb6e649c15e9f5d39",
+    "fixed_candidates/aggregate_origval.json": "1ade2fd21f8a3fad5516d028ae147918cfbdf59ad1ced2189c5d94d5af663481",
+    "fixed_candidates/metrics_table_combined.md": "0a5c30e04e2b092272ddd976a34a146ef69d66a67b47b990a8107f8c711368c4",
+    "fixed_candidates/metrics_table_origval.md": "abcb64f16d012eb53b9f35b7a1e385328ee4aa0cecbaf26fc3dbbd720a97ec62",
+    "fixed_candidates/reference_verification.json": "314a064539992a2279277a6f172b5926e6d5c0049310b9832ff19e60758b0ba6",
+    "geometry/convention_probe.json": "c0738e3ab22adf81d67c272d4f3ad225bddf2fe8eff4fc3d28965c2de78993f8",
+    "geometry/engine_agreement.json": "dfda83cd52581889bab9b57d960ab675b46a068200c7061f51be815e0e8cf277",
+    "geometry/predicted_state_check.json": "37375605c2386929c0b4100d6f5519df8e3ce3b98e8b06df1e05fc2652f392c5",
+    "geometry/summary.json": "316235db3d16e59b96ea229d5e9000b7751a4e6fac19cd7a450cfc0d34d95a60",
+    "geometry/true_state_check.json": "13d97d2195a36879c70bc9c400161e3627186361eda48ae4395ef4e5c4a0905c",
+    "group_eval/group_eval_combined.json": "d99f3b22e548be32fb60b73c31ebaca593f8ebc7cb2cb5fc4381346f2c85b2ba",
+    "group_eval/group_eval_origval.json": "711a892a7095c75db9d0e7648fb2ea8c330dbc53c6af9f7ea9175c6e9894f390",
+    "old_models/old_model_metrics.json": "00f9d8cc59fdc257773b40f6c25df463d360eea9a51b9070a49c616ce19402a5",
+    "selfcheck.json": "0759b4f4c209d1a765ecac503c77717e23e3517157bc471d6fcc0317a1b69a72",
+    "training_groups.json": "311cf19ae6bd8d7579c38e5f930adf6df3c2bfae0dc78fd762dd27721dcbd7b9",
+    "training_groups_originalval.json": "32a863c5ff13173b95828bb15efc27834b6a7fc57d6bccc6475d82f43561dc4b"
+  },
+  "run_id": "data-upgrade-20261012",
+  "scenes": [
+    {
+      "content_hash": "4058a1cf11a5c882",
+      "legal": true,
+      "min_clearance": 0.005000999999999978,
+      "name": "S0_dev",
+      "scene_version": "closeout_v2"
+    },
+    {
+      "content_hash": "4792857374214579",
+      "legal": true,
+      "min_clearance": 0.040000000000000036,
+      "name": "S0_v1",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "2be3b8e0745a8e3b",
+      "legal": true,
+      "min_clearance": 0.005000999999999867,
+      "name": "S0_v2",
+      "scene_version": "closeout_v2"
+    },
+    {
+      "content_hash": "f778951905807134",
+      "legal": true,
+      "min_clearance": 0.020000000000000018,
+      "name": "S0_v3",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "414e1b41b8d09118",
+      "legal": true,
+      "min_clearance": 0.005000999999999978,
+      "name": "S0_v4",
+      "scene_version": "closeout_v2"
+    },
+    {
+      "content_hash": "933d99c781080f39",
+      "legal": true,
+      "min_clearance": 0.030000000000000054,
+      "name": "S1_dev",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "55f444b382a8869b",
+      "legal": true,
+      "min_clearance": 0.010000000000000037,
+      "name": "S1_v1",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "71b6beb5c2943f15",
+      "legal": true,
+      "min_clearance": 0.04999999999999999,
+      "name": "S1_v2",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "88fd300fe0b0de95",
+      "legal": true,
+      "min_clearance": 0.020000000000000046,
+      "name": "S1_v3",
+      "scene_version": "v1"
+    },
+    {
+      "content_hash": "4f270ce15ec1c610",
+      "legal": true,
+      "min_clearance": 0.04000000000000006,
+      "name": "S1_v4",
+      "scene_version": "v1"
+    }
+  ],
+  "score": {
+    "failure_penalty": 20.0,
+    "success_reward": 10.0,
+    "time_divisor": 24.0,
+    "version": "forecast-scalar-v1"
+  },
+  "source_sha256": {
+    "docs/data_upgrade_v1/A1_A2_grid_fixes.md": "4c7a40a335eebe0ffc40c404102a8cc37d8e2bb9c0ebb05c99ae767f3d9d65ce",
+    "docs/data_upgrade_v1/A_grid_audit_v2.md": "63ca034d35877b1757d3b322d64e22ce0bacd9d0d246f6aa81199ddc5dff6c18",
+    "docs/data_upgrade_v1/CONTRACT.md": "e12950d5fdf62c59a212e7915dbcc71418c4e7ee16324dd4ecaaba8a939cead9",
+    "docs/data_upgrade_v1/STATUS.md": "35e5de35328500823c013cf53b3b3e39159d6226c41200355f86d893b4345ac6",
+    "docs/data_upgrade_v1/errata.md": "78dda6fc6fef283a04a518003b581d48d401e8287d5959a6d1dbafa2e19374c9",
+    "docs/data_upgrade_v1/report.md": "58d1d3803efb678ca6a1b4a59607987b09738fc4cef2373a78b7087dd9c5ce36",
+    "experiments/data_upgrade/run_branch_collection.py": "4fc3296040bfff34d4b0bf83c055b830fa55a01ecbc39a322346392b5c5ec13f",
+    "experiments/data_upgrade/run_cases.py": "de2543271752b9d8cb43c3dd32050a593dc74c5f41e6c6cecb33d1617a138a4b",
+    "experiments/data_upgrade/run_coverage.py": "7ed0f480fd3664ea32fed8e6ae99fec286af4f4bedf418190cad17d2654cf333",
+    "experiments/data_upgrade/run_fit_check.py": "9ff341453e498d9de1853fc39388ecae678af7ad8ddf38def4d71076013c3466",
+    "experiments/data_upgrade/run_fixed_candidates.py": "e4c180d2925507cecdb0a0506278abcc25932c80a408289e43f899fa4775579a",
+    "experiments/data_upgrade/run_geometry_audit.py": "9e364ed1523f017c0caf4489939e21ed2dfd26e6e6b12c3a371f51b689ce3b7c",
+    "experiments/data_upgrade/run_group_closed_loop.py": "7deeec26377092e9cfe9571e4e42bef38fcdea8c47054cff4a45ce388968c1cd",
+    "experiments/data_upgrade/run_group_eval.py": "436e94f9685e83af833522d6a8c70fe44ab3c5855568d70c7fa2617aa455abc6",
+    "experiments/data_upgrade/run_old_model_audit.py": "d503640582f747dfc8e0850c607753be56f9269d9c5e04418c239f87cb6bf969",
+    "experiments/data_upgrade/run_selfcheck.py": "8dcc69fdcc7502d0a77d0396af70e63443e8436fa318750ddba12b87e1a29d8f",
+    "experiments/data_upgrade/run_training_groups.py": "5dce25980ee58cb2f4fb7becbb16feda51e606c1487c603c2bee5f4871aa732e",
+    "experiments/deterministic_grid/run_audit_v2.py": "5391d9577b6fc29b734b3d9d8554696d59b57aa205b941ad75829db75c570a2f",
+    "src/coimagine/continuous2d_learning/closed_loop.py": "8edbe31d25a0d869e886ebb5093d45644354faa0ea7cd93f7190d74c255d858b",
+    "src/coimagine/continuous2d_learning/contract.py": "f35ad40be7fa778472e4b33b12953214f209b1f6a6d16b03474d25b6ad130223",
+    "src/coimagine/continuous2d_learning/diagnostic.py": "bd906202af387d619c5219705b9348bedc0c43529553f656acd523d987eae716",
+    "src/coimagine/continuous2d_learning/model.py": "3b72f660b9244a10c41c049ec1816a33926f07688362ea533d92b91db6448848",
+    "src/coimagine/continuous2d_learning/rollout.py": "713dc9376d54736509d6d2dcdd52c10719030a8fb9997a8570f499133deb7b23",
+    "src/coimagine/data_upgrade/__init__.py": "b18598b309a4c736c4d8a90603d4f1938b0d06a38fe82c23d3b5f1649e33dfe2",
+    "src/coimagine/data_upgrade/branch_data.py": "32a6e800a70a0475397c5366a34072758025ca6b05fcb278079dda349dc041be",
+    "src/coimagine/data_upgrade/coverage.py": "baacfea8f15b884adcb6f4ec6b79ca87c9a05402e4bf00517b62519a3d65747a",
+    "src/coimagine/data_upgrade/fit_check.py": "a18405adb84cca23e62e3ef4b32d4ed8d5ad719ac60bcd3981a0ede1d06ae193",
+    "src/coimagine/data_upgrade/fixed_candidates.py": "f4caa0054a5bfb62ce029b0b2b4925be1b8af2b048dc13f4f3de949874c1b35a",
+    "src/coimagine/data_upgrade/geometry_audit.py": "579763f3e5d83e27daffaf5f577dc4cc08dc6bd69feee2caac76a230d6a4d9a4",
+    "src/coimagine/data_upgrade/group_eval.py": "8489197035cab80188c1e7a7a63b409aea8fe576b8a894f9aba3327e8217b58a",
+    "src/coimagine/data_upgrade/metrics.py": "08ef8a3f2376393ea242cb35f4348e27331c25c07e28817cd05b1bfc5ef6830f",
+    "src/coimagine/data_upgrade/training.py": "9bad1ee6284690073910584e2385e54a33cbb4fad5583bece9e179be5d3cf176",
+    "src/coimagine/deterministic_grid/audit.py": "f70ccb302597026e7cc1cf7a0c1b7ba629f19ded3e85177660f09f579818eae2",
+    "tests/test_data_upgrade.py": "a635936e75930cc2903c46bbd689a1e73a5de21be2dc39fe86816ad0178b2121",
+    "tests/test_grid_audit_v2.py": "51b807e8f4058d14675521f8d6ab2bfc3b87ff524c03318136e506e4c3d3647a"
+  },
+  "split_scenes": {
+    "test": [
+      "S0_v4",
+      "S1_v4"
+    ],
+    "train": [
+      "S0_dev",
+      "S0_v1",
+      "S0_v2",
+      "S1_dev",
+      "S1_v1",
+      "S1_v2"
+    ],
+    "val": [
+      "S0_v3",
+      "S1_v3"
+    ]
+  }
+}

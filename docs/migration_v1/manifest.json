@@ -1,0 +1,153 @@
+{
+  "generated_by": "experiments/grid_selection_audit/write_manifest.py",
+  "git": {
+    "head": "627d5b861bc55152cef40489d7351ec8777dd53b",
+    "branch": "main",
+    "dirty_files": [
+      "M README.md",
+      "?? STATUS.md",
+      "?? \"docs/CoImagine_Agent_\\350\\257\\212\\346\\226\\255\\344\\273\\273\\345\\212\\241\\344\\271\\246.md\"",
+      "?? \"docs/CoImagine_Agent_\\350\\277\\201\\347\\247\\273\\344\\273\\273\\345\\212\\241\\344\\271\\246_v1.md\"",
+      "?? docs/migration_v1/",
+      "?? experiments/",
+      "?? src/coimagine/continuous2d/",
+      "?? src/coimagine/diagnostics/grid_selection_audit.py",
+      "?? tests/test_continuous2d.py",
+      "?? tests/test_grid_selection_audit.py"
+    ],
+    "note": "HEAD is read live; no historical commit is assumed."
+  },
+  "checkpoints": {
+    "outputs/grid/world_model/belief.npz": {
+      "sha256": "5d041eafc1d7170e87ee4cde181f4d84f50a364af0271c1e4ce66ab62dabc1df",
+      "size": 525194,
+      "role": "primary frozen checkpoint for the legacy-grid selection audit"
+    },
+    "outputs/grid/world_model/belief_band.npz": {
+      "sha256": "7b7942550d13879f9d95602b8fdff85a831962b006fa7c42bfcfb877ec2fc390",
+      "size": 525194,
+      "role": "available legacy checkpoint (read-only)"
+    },
+    "outputs/grid/world_model/belief_big.npz": {
+      "sha256": "f1b181c06f7dfa5c36194a14f463b450e5dbc7cfe8bf9439aa1472aa800162f2",
+      "size": 525194,
+      "role": "available legacy checkpoint (read-only)"
+    },
+    "outputs/grid/world_model/belief_exploration.npz": {
+      "sha256": "ebbf43d54216b43fbd1802ef5901651d82162129c79efe00a69a7e6dd7925f07",
+      "size": 525194,
+      "role": "available legacy checkpoint (read-only)"
+    },
+    "outputs/grid/world_model/direct.npz": {
+      "sha256": "404183e52aa8c78967e4b9e1b29eb2666b07d463dbfcaaaa5f0ba72dd4129055",
+      "size": 999358,
+      "role": "available legacy checkpoint (read-only)"
+    },
+    "outputs/grid/world_model/latent.npz": {
+      "sha256": "5c35f1f979b1e27a95eadea42a77616a2691010b572f49f681b402d6bc371fa0",
+      "size": 547494,
+      "role": "available legacy checkpoint (read-only)"
+    },
+    "outputs/grid/world_model/latent_released.npz": {
+      "sha256": "fc0d93b6ad0fb668ccbe831cf593b333228a3c48bd406c60a4cd0f82f0aba9ed",
+      "size": 574670,
+      "role": "available legacy checkpoint (read-only)"
+    }
+  },
+  "versions": {
+    "python": "3.11.4",
+    "platform": "Linux-6.18.40.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+    "numpy": "2.4.6",
+    "matplotlib": "3.11.1",
+    "PyYAML": "6.0.3",
+    "pymunk": "6.9.0"
+  },
+  "legacy_grid": {
+    "scene_library": "coimagine.grid.scenes (open_transport, pillar_occlusion, narrow_passage, corner_goal; mechanism scenes A0-A3)",
+    "action_order": [
+      "push:0:E",
+      "push:1:E",
+      "co_push:E",
+      "probe:0:E",
+      "release:0:E",
+      "wait"
+    ],
+    "step_cost": {
+      "push/release": 1.0,
+      "probe": 0.3,
+      "hold/wait": 0.0
+    },
+    "observation_dim": 188,
+    "dynamic_dim": 41,
+    "physics_types": 16,
+    "success": "the 2x2 object's cells are a subset of the goal region (absorbing)",
+    "scalar_return": "J = 10*1[in goal] - cumulative_cost - 0.5*terminal_manhattan_distance"
+  },
+  "continuous2d_defaults": {
+    "physics": {
+      "physics_dt": 0.008333333333333333,
+      "control_dt": 0.05,
+      "robot_radius": 0.18,
+      "robot_mass": 4.0,
+      "object_width": 1.0,
+      "object_height": 0.25,
+      "object_mass": 3.0,
+      "max_force": 15.0,
+      "linear_damping": 8.0,
+      "angular_damping": 0.6,
+      "friction": 0.6,
+      "elasticity": 0.05,
+      "velocity_tolerance": 0.03,
+      "angular_tolerance": 0.08,
+      "success_hold_time": 0.5,
+      "goal_margin": 0.02,
+      "window_steps": 40,
+      "out_of_bounds_margin": 0.5,
+      "penetration_limit": 0.05
+    },
+    "control": {
+      "move_kp": 55.0,
+      "move_kd": 22.0,
+      "move_position_tolerance": 0.02,
+      "move_speed_tolerance": 0.05,
+      "push_speed": 0.26,
+      "push_k_distance": 90.0,
+      "push_k_velocity": 12.0,
+      "push_lateral_kp": 60.0,
+      "push_lateral_kd": 14.0,
+      "hold_kd": 16.0,
+      "hold_speed_tolerance": 0.03,
+      "hold_semantics": "damped_brake"
+    },
+    "candidates": {
+      "contact_samples_per_face": 2,
+      "faces_per_robot": 4,
+      "force_levels": [
+        1.0
+      ],
+      "staging_standoff": 0.35,
+      "max_candidates": 128
+    },
+    "mpc": {
+      "depths": [
+        1,
+        3
+      ],
+      "beam": 3,
+      "horizon_windows": 12
+    },
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "config_hash": "765ede7cf67318f1"
+  },
+  "commands": {
+    "tests": "source .venv/bin/activate && pytest",
+    "phase_A_check": "python experiments/grid_selection_audit/phase_a_check.py",
+    "phase_B_audit": "python experiments/grid_selection_audit/run_audit.py",
+    "phase_C_physics": "python experiments/continuous2d/run_physics_acceptance.py",
+    "phase_D_baseline": "python experiments/continuous2d/run_baseline.py"
+  }
+}
