@@ -1,5 +1,16 @@
 {
  "font": "Noto Sans SC",
+ "scripts": [
+  "presentation_assets/scripts/assets.py",
+  "presentation_assets/scripts/dataset.py",
+  "presentation_assets/scripts/windows.py",
+  "presentation_assets/scripts/sequences.py",
+  "presentation_assets/scripts/models.py",
+  "presentation_assets/scripts/sequence_metrics.py",
+  "presentation_assets/scripts/evaluate.py",
+  "presentation_assets/scripts/regenerate_assets.sh",
+  "presentation_assets/scripts/README.md"
+ ],
  "figures": {
   "F01": {
    "png": "presentation_assets/figures/F01_motivation_and_mainline.png",

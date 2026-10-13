@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `86560aae9ec3af40f731af8513d0e8c0b1eb48e6`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -8,7 +8,8 @@ git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; pat
 |---|---:|---|
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 6f27a14fbce18b02e27e841709ac0b533afb9de98ba0071ac6557378a122f2de |
-| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | 13478ed349f12308a77d61265a2d74cc5415b7b26b36a4162d7c5bf5a26c4dc8 |
+| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | a5dd3d262c24a9d9bcc99c32c6cf77862bef48c48c938b5b197e6e59fabfad08 |
+| docs/night_sequence_v1/MANIFEST.md | 8594 | 635b46e28b07c41d22f2312a404418ef6a2603ad48ff884d2c987fd79dcde786 |
 | docs/night_sequence_v1/MODEL_CARDS.md | 14872 | 8c978e8cccccca6223a6906317cc8750e987e543d14b14697523b397fd52f4ec |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
 | docs/night_sequence_v1/REPORT.md | 11566 | 5aae604f5ecdda8a23a0987c733377251f0035f6633edcc515761445ce7f0c41 |
@@ -19,7 +20,7 @@ git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; pat
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 10906 | 8132513e237c97cd657269d4b1a548703a198973bca8672771bebab4220ded4f |
-| experiments/night_sequence_v1/assets.py | 66383 | 098f68860c093bea2c2f36daa914aa1a838505f2c1a30efcfc6df9232f4dee2a |
+| experiments/night_sequence_v1/assets.py | 68529 | 9c2268268f07250c68d66fb17c8431e7a6ea2125610d01cab00f54764c205ab4 |
 | experiments/night_sequence_v1/collect.py | 9938 | 5ec09658a336a677690995b8078ceb61de806e7169aa2a843f4e174279fd9401 |
 | experiments/night_sequence_v1/data_index.py | 5543 | 590c6669cb34849952efc4afdc506b1045ff090838785152fddadd2861e1370d |
 | experiments/night_sequence_v1/dataset.py | 12105 | 836961959a753d9ff09a7b715e0238bd826ba9af0b2c97ae2293f3a2c65768d1 |
@@ -42,7 +43,7 @@ git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; pat
 | outputs/night_sequence_v1/collection_d1.json | 142566 | 81750af8e35bea30e50f73f0b1312a79c47f746821c451e4c79228b80561f386 |
 | outputs/night_sequence_v1/collection_eval.json | 30119 | 7d10005fcaa624a0b5918a18a1419561bc1749bb7eda3bdd8c509092e690babd |
 | outputs/night_sequence_v1/roots_night.json | 77660896 | 296fc573911b61dd26fb85011a3df7a3703f382d5faba026cdc0725150a64b00 |
-| outputs/night_sequence_v1/run_ledger.jsonl | 5983 | b0af226f92846743ef8f06ca8a4f81068a08eb1f61081d54b93dbdfcb582d92f |
+| outputs/night_sequence_v1/run_ledger.jsonl | 6332 | 2673e8a4b2bff0d6ed18cc70fd25d3fc5c243c10d0a748cb9b2b18cf78d7d45d |
 | outputs/night_sequence_v1/runs/d0_mlp_history_seed1.curves.json | 10286 | 157ca6751100a762266f143069b59f9309dfa5f5f44d880a8bbc43104387ade0 |
 | outputs/night_sequence_v1/runs/d0_mlp_history_seed2.curves.json | 10296 | 58775f2e71190d6e086ea3a4c4a5e11b531dc6a8b937e52ff79bdc42cce45e09 |
 | outputs/night_sequence_v1/runs/d0_transformer_history_seed1.curves.json | 10200 | 86eaa25c8f0f5e475f16799dc39a9d3fbae63eaed8238eed5a964a32b017e811 |
@@ -58,7 +59,7 @@ git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; pat
 | outputs/night_sequence_v1/runs/d1_transformer_history_seed1.curves.json | 10202 | 0eb31f669a54c5690f432ae59a284cab728860462be1af3c02dcd7eacabb7efb |
 | outputs/night_sequence_v1/runs/d1_transformer_history_seed2.curves.json | 10198 | bfefc5ef626567032f0c21f8d80dbe24911bde6f56d153f4f2b2a17efafe9768 |
 | outputs/night_sequence_v1/runs/d2_mlp_history_seed0.curves.json | 10278 | 8c3c0fa8c19a82cb235da18a74ef0726cef2884b8a5ddc2e39b12dc3048c48e3 |
-| outputs/night_sequence_v1/runs/d2_transformer_history_seed0.curves.json | 10199 | fcb3c32d67b112f24d5fb004fa18c0b6a92315c2d12b13be5305db6d6496c693 |
+| outputs/night_sequence_v1/runs/d2_transformer_history_seed0.curves.json | 10197 | 7434bdd34236df29395a67a156e17c3c3b2aaa45c9af72e38c3f5e8000f91ce2 |
 | outputs/night_sequence_v1/sequences/d0_00000.npz | 260721 | a06fad6065ff6bcf290c9888c7933eb5b6f69fa1679655b500ac46091298812b |
 | outputs/night_sequence_v1/sequences/test_00000.npz | 246151 | 87459d2cb135854f6167fd35f35dfa32be3480177fc24609a5ce93dd64270741 |
 | outputs/night_sequence_v1/sequences/val_00000.npz | 247944 | 0d4d50387167af187f6098194138351a5607e20e2494ee1f0d2b0fafd9b228f5 |
@@ -72,6 +73,6 @@ git commit `416a4c4c951892c8fbcf26461680e31b9d371346`; round base `d7731ca`; pat
 
 | group | files | bytes | rollup sha256 | regeneration |
 |---|---:|---:|---|---|
-| outputs/night_sequence_v1/runs | 14 | 66118586 | 28416efbfe260097fac239b93b9911833d978028737b8e7debc5f766a342ef49 | `python experiments/night_sequence_v1/collect.py --stage ...` then `windows.py` |
+| outputs/night_sequence_v1/runs | 14 | 66118586 | fa536ed704768b4ecbae4f184ef1d2215faf7fc4050d08df0683e5cd6803ffc3 | `python experiments/night_sequence_v1/collect.py --stage ...` then `windows.py` |
 | outputs/night_sequence_v1/sequences | 4288 | 1423924282 | ea5a445d1ccfc1d066203dadd8888fe0dcaaba6c0edaa521301fd82bc71c6601 | `python experiments/night_sequence_v1/collect.py --stage ...` then `windows.py` |
 | outputs/night_sequence_v1/tokens | 5 | 371729123 | ebd543f55da8c08cec80fd2e58faf63c3a7b98195a79bd09696a46ef308e7626 | `python experiments/night_sequence_v1/collect.py --stage ...` then `windows.py` |

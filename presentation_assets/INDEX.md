@@ -78,7 +78,9 @@
 ## 可复现命令
 
 ```bash
-python experiments/night_sequence_v1/assets.py
+bash presentation_assets/scripts/regenerate_assets.sh
 ```
+
+素材包自带渲染脚本副本（`scripts/`），因此解压后即可重建，不依赖工作区其余部分。
 
 该命令只读取已保存的序列、token 数组、检查点与分析 JSON，不重训、不重新采集、不运行新的物理仿真。

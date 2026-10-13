@@ -1,0 +1,410 @@
+"""Round-5 baselines and evaluation.
+
+Baselines (task book 6.1), both fitted on train only and both expressed in **original units**:
+
+* ``P0`` hold: the fixed-dt head repeats the current visible geometry and own state; the terminal head
+  repeats the current state, takes the remaining time from the train median of the same preset
+  elapsed-time bin and the exit class from that bin's train majority. A start/current invisible
+  segment falls back to train statistics and is reported as a fallback rate.
+* ``P1`` grouped statistics: groups are (public joint command signature, elapsed-time bin of 0.25 s).
+  Continuous quantities use the group median, the surface normal the mean unit vector, binary and
+  class targets the group frequency. Groups with fewer than 20 samples fall back in the order
+  command+time -> command -> global, and the lookup table is saved for inspection.
+
+P1 frequencies are probabilities; the MLP/Transformer binary heads are logits. The evaluator is told
+which it is and never applies a sigmoid to a probability.
+
+Evaluation is split exactly as the task book demands: the **pre-execution** regime (t = 0, only O0 and
+the candidate command) and the **in-execution** regime (a real observed prefix), the latter grouped by
+preset elapsed-time bins. Sample counts and independent-root counts are reported everywhere.
+"""
+
+from __future__ import annotations
+
+import itertools
+import json
+import math
+import sys
+from pathlib import Path
+from typing import Dict, List, Optional, Sequence, Tuple
+
+import numpy as np
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(ROOT))
+
+from experiments.night_sequence_v1.dataset import (  # noqa: E402
+    GROUPS,
+    Tokens,
+    build_example,
+)
+from experiments.night_sequence_v1.sequence_metrics import (  # noqa: E402
+    action_sensitivity,
+    percentiles,
+    spearman,
+)
+
+DATA = ROOT / "outputs/night_sequence_v1"
+ELAPSED_BIN = 0.25
+MIN_GROUP = 20
+KIND = {name: k for name, _w, k in GROUPS}
+WIDTH = {name: width for name, width, _k in GROUPS}
+ELAPSED_BINS = [round(i * ELAPSED_BIN, 3) for i in range(21)]
+
+
+# ---------------------------------------------------------------------------
+# evaluation sets (fixed once, reused by every model)
+# ---------------------------------------------------------------------------
+
+
+def fast_targets(tokens: Tokens, index: np.ndarray, end: np.ndarray) -> Dict[str, np.ndarray]:
+    """The two heads' targets for a batch of (sequence, instant) pairs, straight from the tokens.
+
+    Same definitions as ``dataset.build_example`` but vectorised: building each example through the
+    window path would make the grouped baseline statistics millions of Python-level calls.
+    """
+
+    split_of = tokens.split_of[index]
+    local = index - np.asarray([tokens.offsets[s] for s in split_of])
+    nxt = np.stack([tokens.token_arrays[s][l, e + 1]
+                    for s, l, e in zip(split_of, local, end)]).astype(np.float32)
+    terminal = tokens.terminal_arrays[split_of[0]][:0]  # placeholder, replaced below
+    terminal = np.stack([tokens.terminal_arrays[s][l] for s, l in zip(split_of, local)]).astype(np.float32)
+    remaining = tokens.T_exit[index] - end * 0.05
+    steps = tokens.steps[index]
+    return {
+        "process_geometry": np.concatenate([nxt[:, 7:11], nxt[:, 25:29]], axis=1),
+        "process_pose": np.concatenate([nxt[:, 0:3], nxt[:, 18:21]], axis=1),
+        "process_velocity": np.concatenate([nxt[:, 3:6], nxt[:, 21:24]], axis=1),
+        "process_validity": np.stack([nxt[:, 6], nxt[:, 14], nxt[:, 24], nxt[:, 32]], axis=1),
+        "process_exit": (end + 1 == steps - 1).astype(np.float32)[:, None],
+        "terminal_geometry": np.concatenate([terminal[:, 7:11], terminal[:, 25:29]], axis=1),
+        "terminal_pose": np.concatenate([terminal[:, 0:3], terminal[:, 18:21]], axis=1),
+        "terminal_velocity": np.concatenate([terminal[:, 3:6], terminal[:, 21:24]], axis=1),
+        "terminal_validity": np.stack([terminal[:, 6], terminal[:, 14], terminal[:, 24],
+                                       terminal[:, 32]], axis=1),
+        "terminal_remaining": remaining[:, None].astype(np.float32),
+        "terminal_exit_class": tokens.exit_class[index].astype(np.int64),
+    }
+
+
+def command_signature(shard_command: Dict[str, float]) -> str:
+    return "a0={}|a1={}|v0={}|v1={}|m={}".format(
+        shard_command.get("alpha0"), shard_command.get("alpha1"),
+        shard_command.get("speed0"), shard_command.get("speed1"),
+        shard_command.get("active"))
+
+
+def build_eval_set(tokens: Tokens, split: str, *, in_execution: int = 8192,
+                   seed: int = 0) -> Dict[str, np.ndarray]:
+    rows = np.where(tokens.split_of == split)[0]
+    zero_rows = rows[np.array([True] * len(rows))]
+    indices = np.concatenate([zero_rows, np.zeros(len(zero_rows), dtype=np.int64)])
+    ends = np.concatenate([np.zeros(len(zero_rows), dtype=np.int64),
+                           np.zeros(len(zero_rows), dtype=np.int64)])
+    # stratified in-execution sample over elapsed-time bins
+    generator = np.random.default_rng(seed)
+    buckets: Dict[int, List[Tuple[int, int]]] = {}
+    for index in rows:
+        steps = int(tokens.steps[index])
+        for end in range(1, max(2, steps - 1)):
+            elapsed = end * 0.05
+            bucket = int(elapsed / ELAPSED_BIN)
+            buckets.setdefault(bucket, []).append((int(index), end))
+    chosen: List[Tuple[int, int]] = []
+    per_bucket = max(1, in_execution // max(1, len(buckets)))
+    for bucket in sorted(buckets):
+        pool = buckets[bucket]
+        take = min(per_bucket, len(pool))
+        picks = generator.choice(len(pool), size=take, replace=False)
+        chosen.extend(pool[p] for p in picks)
+    in_exec = np.asarray(chosen, dtype=np.int64)
+    return {"zero_index": zero_rows, "zero_end": np.zeros(len(zero_rows), dtype=np.int64),
+            "exec_index": in_exec[:, 0], "exec_end": in_exec[:, 1],
+            "split": np.array([split])}
+
+
+# ---------------------------------------------------------------------------
+# baselines
+# ---------------------------------------------------------------------------
+
+
+def target_vector(tokens: Tokens, index: int, end: int) -> Dict[str, np.ndarray]:
+    example = build_example(tokens, index, end)
+    return example["targets"], example["masks"], example
+
+
+def _current_tokens(tokens: Tokens, index: np.ndarray, end: np.ndarray) -> np.ndarray:
+    split_of = tokens.split_of[index]
+    local = index - np.asarray([tokens.offsets[s] for s in split_of])
+    return np.stack([tokens.token_arrays[s][l, e]
+                     for s, l, e in zip(split_of, local, end)]).astype(np.float32)
+
+
+def hold_predictions_batch(tokens: Tokens, index: np.ndarray, end: np.ndarray,
+                           remaining_table: Dict[int, float],
+                           exit_table: Dict[int, int]) -> Dict[str, np.ndarray]:
+    """P0 for a whole batch: hold the current visible geometry and own state."""
+
+    current = _current_tokens(tokens, index, end)
+    geometry = np.concatenate([current[:, 7:11], current[:, 25:29]], axis=1)
+    pose = np.concatenate([current[:, 0:3], current[:, 18:21]], axis=1)
+    velocity = np.concatenate([current[:, 3:6], current[:, 21:24]], axis=1)
+    validity = np.stack([current[:, 6], current[:, 14], current[:, 24], current[:, 32]], axis=1)
+    bins = (end * 0.05 / ELAPSED_BIN).astype(np.int64)
+    remaining = np.asarray([remaining_table.get(int(b), 0.0) for b in bins], dtype=np.float32)
+    exit_class = np.asarray([exit_table.get(int(b), 0) for b in bins], dtype=np.int64)
+    return {
+        "process_geometry": geometry, "process_pose": pose, "process_velocity": velocity,
+        "process_validity": validity, "process_exit": np.zeros((len(index), 1), dtype=np.float32),
+        "terminal_geometry": geometry, "terminal_pose": pose, "terminal_velocity": velocity,
+        "terminal_validity": validity, "terminal_remaining": remaining[:, None],
+        "terminal_exit_class": exit_class,
+    }
+
+
+def grouped_predictions_batch(statistics, tokens: Tokens, index: np.ndarray,
+                              end: np.ndarray) -> Dict[str, np.ndarray]:
+    """P1 for a whole batch, using the saved lookup tables."""
+
+    signature = GroupedStatistics._signatures(tokens, index)
+    bins = (end * 0.05 / ELAPSED_BIN).astype(np.int64)
+    rows: Dict[str, List[np.ndarray]] = {name: [] for name, _w, _k in GROUPS}
+    for position in range(len(index)):
+        key_time = f"{signature[position]}@{int(bins[position])}"
+        table = None
+        for level, key in (("command_time", key_time), ("command", signature[position]),
+                           ("global", "all")):
+            candidate = statistics.tables[level].get(key)
+            if candidate is not None and (level == "global"
+                                          or statistics.counts[level].get(key, 0) >= MIN_GROUP):
+                table = candidate
+                break
+        for name, _w, kind in GROUPS:
+            value = table[name]
+            rows[name].append(np.atleast_1d(value).astype(np.int64 if kind == "multiclass"
+                                                          else np.float32))
+    return {name: np.stack(values) for name, values in rows.items()}
+
+
+def _hold_predictions(tokens: Tokens, index: int, end: int) -> Dict[str, np.ndarray]:
+    example = build_example(tokens, index, end)
+    split = tokens.split_of[index]
+    local = index - tokens.offsets[split]
+    block = tokens.token_arrays[split][local].astype(np.float32)
+    terminal = tokens.terminal_arrays[split][local].astype(np.float32)
+    current = block[end]
+    out = {
+        "process_geometry": np.concatenate([current[7:11], current[25:29]]),
+        "process_pose": np.concatenate([current[0:3], current[18:21]]),
+        "process_velocity": np.concatenate([current[3:6], current[21:24]]),
+        "process_validity": np.array([current[6], current[14], current[24], current[32]]),
+        "process_exit": np.zeros(1, dtype=np.float32),
+        "terminal_geometry": np.concatenate([current[7:11], current[25:29]]),
+        "terminal_pose": np.concatenate([current[0:3], current[18:21]]),
+        "terminal_velocity": np.concatenate([current[3:6], current[21:24]]),
+        "terminal_validity": np.array([current[6], current[14], current[24], current[32]]),
+        "terminal_remaining": np.zeros(1, dtype=np.float32),
+        "terminal_exit_class": np.zeros(1, dtype=np.int64),
+    }
+    return out
+
+
+class GroupedStatistics:
+    """P1: train statistics per (command signature, elapsed bin) with hierarchical fallback.
+
+    Fitted on a bounded, uniformly sampled set of (sequence, instant) train pairs -- never on the
+    test split, never grouped by the true exit instant, and always in **original units**.
+    """
+
+    MIN_GROUP = MIN_GROUP
+
+    def __init__(self, tokens: Tokens, train_splits: Sequence[str], sample: int = 240000,
+                 seed: int = 1):
+        rows = np.where(np.isin(tokens.split_of, list(train_splits)))[0]
+        generator = np.random.default_rng(seed)
+        # sample instants directly: uniform over sequences then uniform over that sequence's instants
+        count = min(sample, len(rows) * 8)
+        chosen_rows = rows[generator.integers(0, len(rows), size=count)]
+        steps = tokens.steps[chosen_rows]
+        ends = (generator.random(count) * np.maximum(1, steps - 1)).astype(np.int64)
+        ends = np.minimum(ends, np.maximum(0, steps - 2))
+        targets = fast_targets(tokens, chosen_rows, ends)
+        signature = self._signatures(tokens, chosen_rows)
+        bins = (ends * 0.05 / ELAPSED_BIN).astype(np.int64)
+        levels = {
+            "command_time": np.asarray([f"{s}@{b}" for s, b in zip(signature, bins)]),
+            "command": signature,
+            "global": np.asarray(["all"] * count),
+        }
+        self.tables: Dict[str, Dict[str, Dict[str, np.ndarray]]] = {}
+        self.counts: Dict[str, Dict[str, int]] = {}
+        for level, keys in levels.items():
+            table: Dict[str, Dict[str, np.ndarray]] = {}
+            counts: Dict[str, int] = {}
+            order = np.argsort(keys, kind="mergesort")
+            sorted_keys = keys[order]
+            boundaries = np.flatnonzero(np.r_[True, sorted_keys[1:] != sorted_keys[:-1], True])
+            for start_index, stop_index in zip(boundaries[:-1], boundaries[1:]):
+                key = str(sorted_keys[start_index])
+                selection = order[start_index:stop_index]
+                counts[key] = int(len(selection))
+                table[key] = self._summarise({name: value[selection]
+                                              for name, value in targets.items()})
+            self.tables[level] = table
+            self.counts[level] = counts
+
+    @staticmethod
+    def _signatures(tokens: Tokens, index: np.ndarray) -> np.ndarray:
+        split_of = tokens.split_of[index]
+        local = index - np.asarray([tokens.offsets[s] for s in split_of])
+        command = np.stack([tokens.token_arrays[s][l, 0, 51:57]
+                            for s, l in zip(split_of, local)]).astype(np.float32)
+        return np.asarray([f"{round(float(c[0]), 6)}|{round(float(c[1]), 6)}|"
+                           f"{round(float(c[2]), 6)}|{round(float(c[3]), 6)}|{int(c[4] > 0.5)}"
+                           for c in command])
+
+    def _summarise(self, targets: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+        out: Dict[str, np.ndarray] = {}
+        for name, width, kind in GROUPS:
+            stacked = np.asarray(targets[name], dtype=np.float64)
+            if kind == "continuous":
+                summary = np.median(stacked, axis=0)
+            elif kind == "binary":
+                summary = (stacked.mean(axis=0) >= 0.5).astype(np.float32)
+            else:
+                values, counts = np.unique(stacked.astype(np.int64), return_counts=True)
+                summary = np.asarray([values[np.argmax(counts)]])
+            out[name] = np.asarray(summary, dtype=np.float64)
+        for name in ("process_geometry", "terminal_geometry"):
+            for sin_index, cos_index in ((2, 3), (6, 7)):
+                vector = np.array([out[name][sin_index], out[name][cos_index]])
+                norm = float(np.hypot(*vector))
+                out[name][sin_index] = vector[0] / norm if norm > 1e-6 else 0.0
+                out[name][cos_index] = vector[1] / norm if norm > 1e-6 else 1.0
+        return out
+
+    def predict(self, tokens: Tokens, index: int, end: int) -> Dict[str, np.ndarray]:
+        signature = str(self._signatures(tokens, np.asarray([index]))[0])
+        key_time = f"{signature}@{int(end * 0.05 / ELAPSED_BIN)}"
+        for level, key in (("command_time", key_time), ("command", signature), ("global", "all")):
+            table = self.tables[level].get(key)
+            if table is not None and (level == "global"
+                                      or self.counts[level].get(key, 0) >= self.MIN_GROUP):
+                return {name: np.array(value, copy=True) for name, value in table.items()}
+        return {name: np.array(value, copy=True)
+                for name, value in self.tables["global"]["all"].items()}
+
+
+def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.ndarray],
+                         predictions: Dict[str, np.ndarray], *, binary_kind: str,
+                         groups: Dict[str, np.ndarray]) -> Dict[str, object]:
+    """Continuous errors in original units, binary/class recall, grouped by the given keys."""
+
+    report: Dict[str, object] = {}
+    geometry = {}
+    for robot_id in (0, 1):
+        base = 4 * robot_id
+        value = masks["terminal_geometry"][:, base] > 0
+        dx = np.abs(predictions["terminal_geometry"][:, base]
+                    - targets["terminal_geometry"][:, base])
+        dy = np.abs(predictions["terminal_geometry"][:, base + 1]
+                    - targets["terminal_geometry"][:, base + 1])
+        geometry[f"r{robot_id}_mid_2d"] = percentiles(np.hypot(dx, dy)[value].tolist())
+        angle_pred = np.arctan2(predictions["terminal_geometry"][:, base + 3],
+                                predictions["terminal_geometry"][:, base + 2])
+        angle_true = np.arctan2(targets["terminal_geometry"][:, base + 3],
+                                targets["terminal_geometry"][:, base + 2])
+        difference = np.abs((angle_pred - angle_true + np.pi) % (2 * np.pi) - np.pi)
+        geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
+            np.degrees(difference)[value].tolist())
+    report["terminal_geometry"] = geometry
+    # the fixed-dt process head gets the same geometry treatment as the terminal head
+    process_geometry = {}
+    for robot_id in (0, 1):
+        base = 4 * robot_id
+        value = masks["process_geometry"][:, base] > 0
+        dx = np.abs(predictions["process_geometry"][:, base]
+                    - targets["process_geometry"][:, base])
+        dy = np.abs(predictions["process_geometry"][:, base + 1]
+                    - targets["process_geometry"][:, base + 1])
+        process_geometry[f"r{robot_id}_mid_2d"] = percentiles(np.hypot(dx, dy)[value].tolist())
+        angle_pred = np.arctan2(predictions["process_geometry"][:, base + 3],
+                                predictions["process_geometry"][:, base + 2])
+        angle_true = np.arctan2(targets["process_geometry"][:, base + 3],
+                                targets["process_geometry"][:, base + 2])
+        difference = np.abs((angle_pred - angle_true + np.pi) % (2 * np.pi) - np.pi)
+        process_geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
+            np.degrees(difference)[value].tolist())
+    report["process_geometry"] = process_geometry
+    for name in ("terminal_pose", "terminal_velocity", "terminal_remaining",
+                 "process_pose", "process_velocity"):
+        value = masks[name] > 0
+        report[name] = percentiles(np.abs(predictions[name][value]
+                                          - targets[name][value]).ravel().tolist())
+    for name in ("terminal_validity", "process_validity"):
+        per_column = {}
+        probability = predictions[name] if binary_kind == "probability" else \
+            1.0 / (1.0 + np.exp(-predictions[name]))
+        for column, label in enumerate(["r0_patch_valid", "r0_contacting",
+                                        "r1_patch_valid", "r1_contacting"]):
+            value = masks[name][:, column] > 0
+            predicted = probability[value, column] >= 0.5
+            actual = targets[name][value, column] >= 0.5
+            positives = int(actual.sum())
+            per_column[label] = {
+                "n": int(value.sum()), "positives": positives,
+                "predicted_positives": int(predicted.sum()),
+                "recall": float((predicted & actual).sum() / positives) if positives else None,
+                "accuracy": float((predicted == actual).mean()) if value.any() else None}
+        report[name] = per_column
+    for name in ("terminal_exit_class", "process_exit"):
+        if name == "process_exit":
+            probability = predictions[name][:, 0] if binary_kind == "probability" else \
+                1.0 / (1.0 + np.exp(-predictions[name][:, 0]))
+            actual = targets[name][:, 0] >= 0.5
+            predicted = probability >= 0.5
+            report[name] = {"n": int(len(actual)), "positives": int(actual.sum()),
+                            "predicted_positives": int(predicted.sum()),
+                            "recall": float((predicted & actual).sum() / actual.sum())
+                            if actual.sum() else None}
+            continue
+        predicted = (predictions[name].astype(int).reshape(-1) if predictions[name].ndim == 1
+                     else np.argmax(predictions[name], axis=1).reshape(-1))
+        actual = targets[name].astype(int).reshape(-1)
+        classes = sorted(set(actual.tolist()) | set(predicted.tolist()))
+        report[name] = {"support": {int(c): int((actual == c).sum()) for c in classes},
+                        "recall": {int(c): (float(((predicted == c) & (actual == c)).sum()
+                                                  / max(1, (actual == c).sum())))
+                                   for c in classes},
+                        "accuracy": float((predicted == actual).mean())}
+    # grouped continuous error by elapsed bin / stage / configuration
+    grouped = {}
+    for key, values in groups.items():
+        per_group = {}
+        for group_value in sorted(set(values.tolist())):
+            selected = values == group_value
+            value = selected & (masks["terminal_geometry"][:, 0] > 0)
+            dx = np.abs(predictions["terminal_geometry"][:, 0]
+                        - targets["terminal_geometry"][:, 0])
+            dy = np.abs(predictions["terminal_geometry"][:, 1]
+                        - targets["terminal_geometry"][:, 1])
+            entry = percentiles(np.hypot(dx, dy)[value].tolist())
+            entry["samples"] = int(value.sum())
+            per_group[str(group_value)] = entry
+        grouped[key] = per_group
+    report["grouped"] = grouped
+    return report
+
+
+def save_predictions(path: Path, tokens: Tokens, index: np.ndarray, end: np.ndarray,
+                     targets, masks, predictions, extra: Dict[str, np.ndarray]) -> None:
+    payload = {"index": index, "end": end, "root_id": tokens.roots[index],
+               "record_id": tokens.records[index]}
+    for name in targets:
+        payload[f"target_{name}"] = targets[name]
+        payload[f"mask_{name}"] = masks[name]
+        payload[f"pred_{name}"] = predictions[name]
+    payload.update(extra)
+    np.savez_compressed(path, **payload)
