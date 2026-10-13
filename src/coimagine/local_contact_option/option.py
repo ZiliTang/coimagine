@@ -138,6 +138,9 @@ class ExecutionResult:
     #: sensing the *same* pipeline produced for that period; nothing is stepped or re-sensed after
     #: the loop exits, so this is the observation at T rather than at the last logged period.
     terminal_observations: Optional[Dict[int, object]] = None
+    #: round-5: every period's observation set in execution order (``record_trajectory=True``).
+    #: Index 0 is the observation taken **before** the first control force -- the true O0.
+    trajectory: Optional[List[Dict[int, object]]] = None
     #: settle-evidence coverage at the moment of the verdict, and its lag behind the present
     settle_evidence_span: Optional[float] = None
     settle_evidence_lag: Optional[float] = None
@@ -261,6 +264,7 @@ class OptionExecutor:
         joint_specs: Dict[int, object],
         active_robots: Sequence[int],
         noise_rng=None,
+        record_trajectory: bool = False,
     ) -> ExecutionResult:
         if self.arm == "O":
             return self._run_old_window(env, root_id, variant, joint_specs, active_robots)
@@ -274,6 +278,7 @@ class OptionExecutor:
         return self._run_staged(
             env, root_id, variant, joint_specs, active_robots,
             force_source=force_source, protocol=protocol, noise_rng=noise_rng,
+            record_trajectory=record_trajectory,
         )
 
     # -- arm O: the old window, byte for byte -------------------------------
@@ -342,6 +347,7 @@ class OptionExecutor:
     def _run_staged(
         self, env, root_id, variant, joint_specs, active_robots,
         *, force_source: str, protocol: str, noise_rng=None,
+        record_trajectory: bool = False,
     ) -> ExecutionResult:
         config = self.config
         physics = env.config.physics
@@ -381,6 +387,9 @@ class OptionExecutor:
         #: the option's **exit instant T** -- the moment the recorded terminal state was captured.
         #: It is a plain reference to a dict that is rebuilt each period and never mutated later.
         terminal_observations: Dict[int, LocalContactObservation] = {}
+        #: round-5: the full per-period observation set, in order, when the caller asks for it.
+        #: Each entry is the (never-mutated) dict that period's controller actually consumed.
+        trajectory: List[Dict[int, LocalContactObservation]] = []
         exit_reason = Exit.WALL_CLOCK_END.value
         aborted_by: Optional[str] = None
         delay_queues = {
@@ -447,6 +456,8 @@ class OptionExecutor:
 
             # the exit instant's observation set (see the declaration above)
             terminal_observations = observations
+            if record_trajectory:
+                trajectory.append(observations)
 
             # ---- per-robot bookkeeping ------------------------------------
             for robot_id in (0, 1):
@@ -762,6 +773,7 @@ class OptionExecutor:
             settled_after_abort=settled_after_abort,
             effective_push_seconds=effective,
             terminal_observations=dict(terminal_observations) if terminal_observations else None,
+            trajectory=trajectory if record_trajectory else None,
             settle_evidence_span=settle_span if locally_settled else None,
             settle_evidence_lag=settle_lag if locally_settled else None,
             delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},

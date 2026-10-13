@@ -1,0 +1,58 @@
+{
+ "assets": {
+  "bytes": 3357433,
+  "figures": [
+   "presentation_assets/figures/F01_motivation_and_mainline.png",
+   "presentation_assets/figures/F02_environment_and_scenes.png",
+   "presentation_assets/figures/F03_option_execution.png",
+   "presentation_assets/figures/F04_data_coverage.png",
+   "presentation_assets/figures/F05_models_and_task.png",
+   "presentation_assets/figures/F06_learning_curves.png",
+   "presentation_assets/figures/F07_prediction_performance.png",
+   "presentation_assets/figures/F08_closed_loop_implications.png",
+   "presentation_assets/overview.png"
+  ],
+  "files": 31,
+  "index_present": true,
+  "progress_facts": true,
+  "uncompressed": 3980875,
+  "videos": [
+   "presentation_assets/videos/execution_failure.mp4",
+   "presentation_assets/videos/execution_success.mp4"
+  ],
+  "zip": "presentation_assets.zip"
+ },
+ "review": {
+  "bundle": "night_sequence_v1_review.zip",
+  "bytes": 78307010,
+  "checkpoints": [
+   "outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt",
+   "outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt",
+   "outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt",
+   "outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt",
+   "outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt",
+   "outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt",
+   "outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt",
+   "outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt",
+   "outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt",
+   "outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt",
+   "outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt",
+   "outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt"
+  ],
+  "duplicates": 0,
+  "entries": 68,
+  "listed": 67,
+  "missing": [],
+  "sequences_included": [
+   "outputs/night_sequence_v1/sequences/d0_00000.npz",
+   "outputs/night_sequence_v1/sequences/test_00000.npz",
+   "outputs/night_sequence_v1/sequences/val_00000.npz"
+  ],
+  "unexpected": []
+ }
+}
