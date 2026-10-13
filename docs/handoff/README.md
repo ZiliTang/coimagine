@@ -1,6 +1,6 @@
 # 换机接续指引
 
-仓库已经推到 GitHub，`main` = `314b458`（本文件所在提交）。另一台 PC 按下面三步接上。
+仓库已经推到 GitHub。以 `origin/main` 为准（`git log --oneline -1` 看当前头），另一台 PC 按下面三步接上。
 
 ## 1. 另一台 PC 拉取
 
@@ -61,7 +61,9 @@ python -m pytest -m "not slow"       # 期望 416 passed
 
 - 提交历史：82 个提交随本次推送上线，`main` 快进到 `314b458`，没有 force push。
 - 测试：`416 passed`。
-- 本会话新增 5 个提交（`d4d4a3f`、`912ad89`、`3448206`、`c94c35e`、`314b458`），把此前**从未提交**的
-  若干整模块（`continuous2d`、`coverage_scale`、`local_contact_option` 等）及其实验、测试、报告一并入库。
+- 本会话新增了四个分组提交（连续环境 / 早期实验轮次 / 接触控制线 / 仓库整理）外加两条小提交
+  （申报 `video` extra、交接文档），把此前**从未提交**的若干整模块（`continuous2d`、
+  `coverage_scale`、`data_upgrade`、`deterministic_grid`、`fit_capacity`、`local_contact_option` 等）
+  及其实验、测试、报告一并入库。
 - 下一步任务书见 `docs/tasks/20261013_1900_CoImagine_判稳可靠性与可观测转移任务书.md`；
   本会话的压缩上下文见 `docs/handoff/session_context.md`。
