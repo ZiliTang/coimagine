@@ -48,7 +48,6 @@ SMALL_ARTIFACTS = [
     RUN / "phase_b_tier2/ledger.json", RUN / "phase_b_tier2/verification.json",
     RUN / "phase_b_tier2/train_report_2.md", RUN / "phase_b_tier2/train_report_2.json",
     ROOT / "outputs/option_prediction_mechanism_v1/phase_c/phase_c_table.md",
-    ROOT / "outputs/option_prediction_mechanism_v1/phase_c/phase_c_belief_reference.json",
     ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json",
 ]
 #: source changed by this round (the A fix lives here)
@@ -76,6 +75,7 @@ LIST_ONLY = [
     RUN / "phase_b_tier2/executions_test.jsonl", RUN / "phase_b_tier2/roots.json",
     RUN / "phase_b_tier2/commands.json",
     ROOT / "outputs/option_prediction_mechanism_v1/phase_c/phase_c_records.json",
+    ROOT / "outputs/option_prediction_mechanism_v1/phase_c/phase_c_belief_reference.json",
 ]
 
 
@@ -124,12 +124,13 @@ def collect() -> Tuple[List[Path], List[Path]]:
 
     # the round's source patch, so the review can diff rather than trust
     patch = DOCS / "round3.patch"
-    diff = subprocess.run(["git", "diff", f"{ROUND_START}..HEAD"], cwd=ROOT,
+    code_paths = ["src", "experiments", "tests"]
+    diff = subprocess.run(["git", "diff", f"{ROUND_START}..HEAD", "--", *code_paths], cwd=ROOT,
                           capture_output=True, text=True, check=False).stdout
     patch.write_text(diff)
     copied.append(patch)
-    stat = subprocess.run(["git", "diff", "--stat", f"{ROUND_START}..HEAD"], cwd=ROOT,
-                          capture_output=True, text=True, check=False).stdout
+    stat = subprocess.run(["git", "diff", "--stat", f"{ROUND_START}..HEAD", "--", *code_paths],
+                          cwd=ROOT, capture_output=True, text=True, check=False).stdout
     (DOCS / "round3_diffstat.txt").write_text(stat)
     copied.append(DOCS / "round3_diffstat.txt")
 
