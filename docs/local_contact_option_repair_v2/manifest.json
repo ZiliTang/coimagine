@@ -1,0 +1,560 @@
+{
+ "animation_verification": {
+  "cases": 8,
+  "checked_files": 48,
+  "fps": 20,
+  "ok": true,
+  "preview_gifs": 8,
+  "problems": [],
+  "quad_videos": 8,
+  "real_time": "1x (50 ms log sampling, 20 fps export)",
+  "single_videos": 32
+ },
+ "animations": {
+  "cases": [
+   {
+    "case": "1_solo_central",
+    "root_id": "test/solo_central/000",
+    "selection_rule": "first legal solo_central root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/solo_central/000",
+      "test/solo_central/001",
+      "test/solo_central/002",
+      "test/solo_central/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "2_solo_offset",
+    "root_id": "test/solo_offset/000",
+    "selection_rule": "first legal solo_offset root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/solo_offset/000",
+      "test/solo_offset/001",
+      "test/solo_offset/002",
+      "test/solo_offset/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "3_dual_same_side",
+    "root_id": "test/dual_same_side/000",
+    "selection_rule": "first legal dual_same_side root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/dual_same_side/000",
+      "test/dual_same_side/001",
+      "test/dual_same_side/002",
+      "test/dual_same_side/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "4_dual_rotate",
+    "root_id": "test/dual_rotate/000",
+    "selection_rule": "first legal dual_rotate root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/dual_rotate/000",
+      "test/dual_rotate/001",
+      "test/dual_rotate/002",
+      "test/dual_rotate/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "5_incompatible",
+    "root_id": "test/incompatible/000",
+    "selection_rule": "first legal incompatible root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/incompatible/000",
+      "test/incompatible/001",
+      "test/incompatible/002",
+      "test/incompatible/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "6_constrained",
+    "root_id": "test/constrained/000",
+    "selection_rule": "first legal constrained root by root_id, baseline variant",
+    "selection_values": {
+     "candidates": [
+      "test/constrained/000",
+      "test/constrained/001",
+      "test/constrained/002",
+      "test/constrained/003"
+     ]
+    },
+    "variant": "baseline"
+   },
+   {
+    "case": "7_delay_stress",
+    "root_id": "test/incompatible/011",
+    "selection_rule": "largest N delay-vs-baseline terminal position deviation (result-driven selection; not a substitute for the overall table)",
+    "selection_values": {
+     "deviation_m": 0.13578539596779013,
+     "ranking": [
+      {
+       "deviation_m": 0.13578539596779013,
+       "root_id": "test/incompatible/011"
+      },
+      {
+       "deviation_m": 0.12170064633788294,
+       "root_id": "test/dual_same_side/017"
+      },
+      {
+       "deviation_m": 0.04318575819789524,
+       "root_id": "test/incompatible/015"
+      },
+      {
+       "deviation_m": 0.03599476105598785,
+       "root_id": "test/dual_same_side/009"
+      },
+      {
+       "deviation_m": 0.030579515007340508,
+       "root_id": "test/dual_same_side/001"
+      }
+     ]
+    },
+    "variant": "delay"
+   },
+   {
+    "case": "8_failure_divergence",
+    "root_id": "test/dual_rotate/002",
+    "selection_rule": "N aborted while P completed (result-driven selection; not a substitute for the overall table)",
+    "selection_values": {
+     "interaction_class": "dual_rotate"
+    },
+    "variant": "baseline"
+   }
+  ],
+  "fps": 20,
+  "frame_hold_frames": 20,
+  "preview_gifs": 8,
+  "quad_videos": 8,
+  "real_time": "1x (50 ms log sampling, 20 fps export)",
+  "single_videos": 32
+ },
+ "continuation_summary": {
+  "N": {
+   "chains_attempting_3_skills": 8,
+   "chains_normal_completed": 7,
+   "chains_with_3_push_completed": 7,
+   "entry_qualified_roots": 12,
+   "false_stable_then_continued_cases": 0,
+   "mean_cumulative_seconds": 10.325,
+   "mean_skills_attempted": 2.3333333333333335,
+   "normal_completion_ratio": 0.5833333333333334,
+   "roots": 12,
+   "settled_terminal_ratio": 0.5833333333333334,
+   "terminal_speed_median": 0.0019871607327594677,
+   "transitions_attempted": 16,
+   "usable_initial_state_ratio": 1.0
+  },
+  "P": {
+   "chains_attempting_3_skills": 7,
+   "chains_normal_completed": 7,
+   "chains_with_3_push_completed": 7,
+   "entry_qualified_roots": 12,
+   "false_stable_then_continued_cases": 0,
+   "mean_cumulative_seconds": 9.108333333333333,
+   "mean_skills_attempted": 2.1666666666666665,
+   "normal_completion_ratio": 0.5833333333333334,
+   "roots": 12,
+   "settled_terminal_ratio": 0.5833333333333334,
+   "terminal_speed_median": 4.791606523343489e-06,
+   "transitions_attempted": 14,
+   "usable_initial_state_ratio": 1.0
+  }
+ },
+ "execution_file_sha256": {
+  "executions_dev.jsonl": "ba8d5cedf0809b9937989ec2443894dba29f4e2a0c412b97f770ac9c0082a09a",
+  "executions_test.jsonl": "235fc8e1a2045ee8af8572d949d9705de5e40f7e145b25315f26a3ecc9a49064"
+ },
+ "executions": {
+  "dev": 768,
+  "test": 3840
+ },
+ "ffmpeg": "imageio-ffmpeg 0.6.0 bundled binary (no ffmpeg on PATH)",
+ "frozen_kv": 20.0,
+ "gates": {
+  "G1_information_and_safety": {
+   "checked_by": "tests/test_local_contact_option.py + tests/test_local_contact_option_repair.py"
+  },
+  "G2_effective_push_ratio": {
+   "arm": "N",
+   "pass": true,
+   "primary_denominator": [
+    "solo_central",
+    "dual_same_side"
+   ],
+   "primary_roots": 40,
+   "secondary_denominator": [
+    "solo_central",
+    "solo_offset",
+    "dual_same_side",
+    "dual_rotate"
+   ],
+   "secondary_pass": true,
+   "secondary_roots": 80,
+   "secondary_value": 0.9375,
+   "threshold": 0.9,
+   "value": 0.925
+  },
+  "G3_false_stable_and_coverage": {
+   "arm": "N",
+   "coverage_all_executions": 0.6510416666666666,
+   "coverage_denominator": 960,
+   "coverage_primary_pushable": 0.596875,
+   "denominator": 625,
+   "false_stable_ratio": 0.0,
+   "observed_settled": 625,
+   "pass": true,
+   "settled_after_abort": 0,
+   "threshold": 0.05
+  },
+  "G4_displacement_not_much_smaller": {
+   "N_median": 0.22481553303579188,
+   "P_median": 0.42284351907119533,
+   "by_commanded_speed": {
+    "0.08": {
+     "N_median": 0.09416891880167604,
+     "N_n": 17,
+     "P_median": 0.4228813520565423,
+     "P_n": 17,
+     "ratio": 0.22268401844563948
+    },
+    "0.16": {
+     "N_median": 0.18242895320986685,
+     "N_n": 4,
+     "P_median": 0.4476418624827822,
+     "P_n": 4,
+     "ratio": 0.40753327268823897
+    },
+    "0.26": {
+     "N_median": 0.28431014764484186,
+     "N_n": 19,
+     "P_median": 0.4228056860858484,
+     "P_n": 19,
+     "ratio": 0.6724369066009066
+    }
+   },
+   "displacement_per_active_second": {
+    "N": {
+     "mean": 0.10903525319543658,
+     "median": 0.11863052672698435,
+     "n": 40,
+     "p90": 0.16483539562693839,
+     "p95": 0.17305969134868907
+    },
+    "P": {
+     "mean": 0.29662023070292953,
+     "median": 0.23436948544996927,
+     "n": 40,
+     "p90": 0.3969318319750961,
+     "p95": 0.4379966985427471
+    }
+   },
+   "note": "the old four-class 92.5% figure is NOT moved onto the new denominator; both are reported with their own root counts",
+   "pass": false,
+   "primary_denominator": [
+    "solo_central",
+    "dual_same_side"
+   ],
+   "ratio": 0.5316754848924126,
+   "secondary_N_median": 0.18716228024894477,
+   "secondary_P_median": 0.41935864965258074,
+   "secondary_ratio": 0.4463059970361886,
+   "stage_motion": {
+    "F": {
+     "approach": {
+      "mean": 0.012645499610717847,
+      "median": 0.0006284649208862188,
+      "n": 40,
+      "p90": 0.04325096962439048,
+      "p95": 0.055904449809768574
+     },
+     "push": {
+      "mean": 0.02402124726121103,
+      "median": 0.0077499697837951805,
+      "n": 10,
+      "p90": 0.06782241494158012,
+      "p95": 0.07859822286132505
+     }
+    },
+    "N": {
+     "approach": {
+      "mean": 0.0005303980433435822,
+      "median": 0.0005540227155129496,
+      "n": 40,
+      "p90": 0.000737977501094691,
+      "p95": 0.00078052146242935
+     },
+     "brake": {
+      "mean": 0.01974208827382534,
+      "median": 0.023467049033907516,
+      "n": 40,
+      "p90": 0.031634768689844314,
+      "p95": 0.03507154693212971
+     },
+     "push": {
+      "mean": 0.16053880036525028,
+      "median": 0.17189548314100722,
+      "n": 40,
+      "p90": 0.2354859225546623,
+      "p95": 0.26096927364696315
+     },
+     "ready": {
+      "mean": 0.007307268344824591,
+      "median": 0.0005207896874961371,
+      "n": 40,
+      "p90": 0.021713860703808693,
+      "p95": 0.022208168386187107
+     },
+     "settle": {
+      "mean": 0.015464421602536624,
+      "median": 0.015174789687783786,
+      "n": 40,
+      "p90": 0.023634502654456633,
+      "p95": 0.024073464626681394
+     }
+    },
+    "O": {
+     "old_window": {
+      "mean": 0.10585368677005409,
+      "median": 0.10527753264624343,
+      "n": 40,
+      "p90": 0.16133964050531643,
+      "p95": 0.17701560814050343
+     }
+    },
+    "P": {
+     "approach": {
+      "mean": 0.014610035820955505,
+      "median": 0.0035813770688248,
+      "n": 40,
+      "p90": 0.055863054087955416,
+      "p95": 0.056161773674628775
+     },
+     "brake": {
+      "mean": 0.05913183894548844,
+      "median": 0.048000436517156436,
+      "n": 40,
+      "p90": 0.08871096509415807,
+      "p95": 0.09613791224041948
+     },
+     "push": {
+      "mean": 0.37293468712812683,
+      "median": 0.3429491654180171,
+      "n": 40,
+      "p90": 0.5178039661819013,
+      "p95": 0.5409535835386162
+     },
+     "ready": {
+      "mean": 0.05004687629636494,
+      "median": 0.004424999906113846,
+      "n": 40,
+      "p90": 0.1678196720801649,
+      "p95": 0.16837784276799217
+     },
+     "settle": {
+      "mean": 0.017520875821351877,
+      "median": 0.01856447823336321,
+      "n": 40,
+      "p90": 0.024728991245146003,
+      "p95": 0.02472983236986151
+     }
+    }
+   },
+   "threshold": 0.8
+  },
+  "G5_perturbation_final_state": {
+   "angle": {
+    "N": {
+     "high": 0.026491140319331627,
+     "low": 0.016026821083095544,
+     "n_roots": 120,
+     "n_values": 120,
+     "p90": 0.021531480313241078
+    },
+    "P": {
+     "high": 0.029971007960258384,
+     "low": 0.010511696570457918,
+     "n_roots": 120,
+     "n_values": 120,
+     "p90": 0.019193943175370178
+    },
+    "absolute_change_rad": 0.0023375371378708994,
+    "near_zero_note": "the relative angle gate is numerically sensitive when the P90 is close to zero; the absolute difference is reported next to it and no new tolerance was invented",
+    "pass": false,
+    "relative_change": 0.12178514422562456,
+    "threshold": 0.1,
+    "units": "rad (wrap); degrees reported in the tables"
+   },
+   "pass": false,
+   "position": {
+    "N": {
+     "high": 0.006533543401586219,
+     "low": 0.004681021225304411,
+     "n_roots": 120,
+     "n_values": 120,
+     "p90": 0.005471963855362976
+    },
+    "P": {
+     "high": 0.025021879980092712,
+     "low": 0.008489846223857237,
+     "n_roots": 120,
+     "n_values": 120,
+     "p90": 0.013743790193409286
+    },
+    "improvement": 0.6018591830667637,
+    "pass": true,
+    "threshold": 0.2
+   }
+  },
+  "note": "engineering gates, not theoretical sufficient conditions"
+ },
+ "git_head": "627d5b861bc55152cef40489d7351ec8777dd53b",
+ "platform": "Linux-6.18.54.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+ "python": "3.11.4",
+ "root_file_sha256": {
+  "roots_dev.json": "ca4df64d511bc19c099560cf7a80fabfa414f6b256ef023cf1bb893b8e4058ee",
+  "roots_test.json": "a435a26286471f584d712c2f7606f1912065e01986088842d919d72009ecc25d"
+ },
+ "root_files_match_v1": {
+  "dev_kv_selection.json": true,
+  "roots_dev.json": true,
+  "roots_test.json": true
+ },
+ "roots": {
+  "alpha_choices_deg": [
+   -15.0,
+   0.0,
+   15.0
+  ],
+  "classes": [
+   "solo_central",
+   "solo_offset",
+   "dual_same_side",
+   "dual_rotate",
+   "incompatible",
+   "constrained"
+  ],
+  "dev_per_class": {
+   "constrained": 4,
+   "dual_rotate": 4,
+   "dual_same_side": 4,
+   "incompatible": 4,
+   "solo_central": 4,
+   "solo_offset": 4
+  },
+  "dev_roots": 24,
+  "executions_planned": 3840,
+  "gap_choices": [
+   0.02,
+   0.06,
+   0.12,
+   0.18
+  ],
+  "root_salt": "local-contact-option-v1",
+  "speed_choices": [
+   0.08,
+   0.16,
+   0.26
+  ],
+  "test_per_class": {
+   "constrained": 20,
+   "dual_rotate": 20,
+   "dual_same_side": 20,
+   "incompatible": 20,
+   "solo_central": 20,
+   "solo_offset": 20
+  },
+  "test_roots": 120,
+  "variants": [
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "baseline",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.0,
+    "velocity": 0.0
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "pos_2mm",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.002,
+    "velocity": 0.0
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "pos_10mm",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.01,
+    "velocity": 0.0
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "vel_0.02",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.0,
+    "velocity": 0.02
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "vel_0.05",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.0,
+    "velocity": 0.05
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "noise",
+    "noise_sigma": 0.002,
+    "observation_delay": 0.0,
+    "position_delta": 0.0,
+    "velocity": 0.0
+   },
+   {
+    "friction_scale": 1.0,
+    "mass_scale": 1.0,
+    "name": "delay",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.1,
+    "position_delta": 0.0,
+    "velocity": 0.0
+   },
+   {
+    "friction_scale": 0.9,
+    "mass_scale": 1.1,
+    "name": "param",
+    "noise_sigma": 0.0,
+    "observation_delay": 0.0,
+    "position_delta": 0.0,
+    "velocity": 0.0
+   }
+  ]
+ },
+ "run_id": "local-contact-option-repair-v2",
+ "task_book": "docs/tasks/20261013_1438_CoImagine_\u5c40\u90e8\u63a7\u5236\u534f\u8bae\u4fee\u590d\u4e0e\u52a8\u753b\u5bf9\u7167\u4efb\u52a1\u4e66.md"
+}
