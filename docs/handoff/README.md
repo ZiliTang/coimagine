@@ -66,4 +66,5 @@ python -m pytest -m "not slow"       # 期望 416 passed
   `coverage_scale`、`data_upgrade`、`deterministic_grid`、`fit_capacity`、`local_contact_option` 等）
   及其实验、测试、报告一并入库。
 - 下一步任务书见 `docs/tasks/20261013_1900_CoImagine_判稳可靠性与可观测转移任务书.md`；
-  本会话的压缩上下文见 `docs/handoff/session_context.md`。
+  本会话的压缩上下文见 `docs/handoff/session_context.md`；
+  给任务书编写方的跨轮汇总报告见 `docs/handoff/session_report.md`。
