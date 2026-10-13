@@ -1,0 +1,21 @@
+{
+ "bundle": "/home/tzl/repo/coimagine/observation_terminal_v1_review.zip",
+ "bytes": 1700842,
+ "checkpoints_included": [
+  "outputs/observation_terminal_v1/checkpoints/deployable_seed0.pt",
+  "outputs/observation_terminal_v1/checkpoints/deployable_seed1.pt",
+  "outputs/observation_terminal_v1/checkpoints/deployable_seed2.pt"
+ ],
+ "duplicated_names": 0,
+ "entries_in_zip": 54,
+ "included_in_manifest": 54,
+ "listed_only": [
+  "terminal_observations_train.jsonl",
+  "terminal_observations_val.jsonl",
+  "executions_train.jsonl",
+  "executions_val.jsonl",
+  "executions_test.jsonl"
+ ],
+ "missing_from_zip": [],
+ "unexpected_in_zip": []
+}

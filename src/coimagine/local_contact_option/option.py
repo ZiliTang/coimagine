@@ -134,6 +134,10 @@ class ExecutionResult:
     settled_observed: bool = False
     settled_after_abort: bool = False
     effective_push_seconds: float = 0.0
+    #: round-4: the whitelist observation each robot had at the option's exit instant T. It is the
+    #: sensing the *same* pipeline produced for that period; nothing is stepped or re-sensed after
+    #: the loop exits, so this is the observation at T rather than at the last logged period.
+    terminal_observations: Optional[Dict[int, object]] = None
     #: settle-evidence coverage at the moment of the verdict, and its lag behind the present
     settle_evidence_span: Optional[float] = None
     settle_evidence_lag: Optional[float] = None
@@ -372,6 +376,11 @@ class OptionExecutor:
         stage_seconds: Dict[str, float] = {value.value: 0.0 for value in Stage}
         rows: List[Dict[str, object]] = []
         step = 0
+        #: Round-4: the observation set of the period the loop is currently in. The stage machine
+        #: can break inside that same iteration, so after the loop this holds the observations at
+        #: the option's **exit instant T** -- the moment the recorded terminal state was captured.
+        #: It is a plain reference to a dict that is rebuilt each period and never mutated later.
+        terminal_observations: Dict[int, LocalContactObservation] = {}
         exit_reason = Exit.WALL_CLOCK_END.value
         aborted_by: Optional[str] = None
         delay_queues = {
@@ -435,6 +444,9 @@ class OptionExecutor:
                     aborted_by = f"environment:{env.termination}"
                     break
                 continue
+
+            # the exit instant's observation set (see the declaration above)
+            terminal_observations = observations
 
             # ---- per-robot bookkeeping ------------------------------------
             for robot_id in (0, 1):
@@ -749,6 +761,7 @@ class OptionExecutor:
             settled_observed=settled_observed,
             settled_after_abort=settled_after_abort,
             effective_push_seconds=effective,
+            terminal_observations=dict(terminal_observations) if terminal_observations else None,
             settle_evidence_span=settle_span if locally_settled else None,
             settle_evidence_lag=settle_lag if locally_settled else None,
             delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},

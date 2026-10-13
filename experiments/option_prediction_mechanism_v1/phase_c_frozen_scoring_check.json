@@ -1,0 +1,31 @@
+{
+ "cases": {
+  "shift_0.5": {
+   "any_positive_progress_A": false,
+   "any_positive_progress_B": false,
+   "argmax_A": "couple_pos",
+   "argmax_B": "couple_pos",
+   "entry_points_agree": true,
+   "full_ranking_spearman_between_worlds": 0.9285714285714287,
+   "mutual_regret": 0.0,
+   "near_optimal_disjoint": false,
+   "positive": false,
+   "ranking_differs": true,
+   "same_argmax": true
+  },
+  "shift_0.75": {
+   "any_positive_progress_A": false,
+   "any_positive_progress_B": false,
+   "argmax_A": "couple_pos",
+   "argmax_B": "couple_pos",
+   "entry_points_agree": true,
+   "full_ranking_spearman_between_worlds": 0.9285714285714287,
+   "mutual_regret": 0.0,
+   "near_optimal_disjoint": false,
+   "positive": false,
+   "ranking_differs": true,
+   "same_argmax": true
+  }
+ },
+ "delta": 0.02
+}

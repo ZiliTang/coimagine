@@ -20,67 +20,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
-from typing import Dict, List
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from contract_score import analyse  # noqa: E402
 SOURCE = ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json"
-
-
-def progress_contract(start: float, end: float) -> float:
-    """CONTRACT 3.3 verbatim: clamp at 1, never at 0."""
-
-    return min(1.0, (start - end) / max(start, 1e-6))
-
-
-def progress_clamped(start: float, end: float) -> float:
-    """What the first run actually used: an extra lower clamp that was not in the contract."""
-
-    return min(1.0, max(0.0, (start - end) / max(start, 1e-6)))
-
-
-def score(completion: float, progress: float, duration: float, action_cost: float) -> float:
-    return completion + 0.5 * progress - 0.05 * duration - 0.10 * action_cost
-
-
-def analyse(runs: Dict[str, List[dict]], delta: float, clamp: bool) -> dict:
-    progress = progress_clamped if clamp else progress_contract
-    names = [run["command"] for run in runs["A"]]
-    q = {"A": {}, "B": {}}
-    task = {"A": {}, "B": {}}
-    for world in ("A", "B"):
-        for run in runs[world]:
-            value = progress(run["start_distance"], run["end_distance"])
-            completion = 1.0 if run["success"] else 0.0
-            q[world][run["command"]] = score(completion, value, run["duration"],
-                                             run["action_cost"])
-            task[world][run["command"]] = completion + 0.5 * value
-    best = {world: max(q[world].values()) for world in ("A", "B")}
-    near = {world: sorted(name for name in names if best[world] - q[world][name] <= delta + 1e-12)
-            for world in ("A", "B")}
-    argmax = {world: max(names, key=lambda name: q[world][name]) for world in ("A", "B")}
-    regret = max(best["A"] - q["A"][argmax["B"]], best["B"] - q["B"][argmax["A"]])
-    all_knowing = 0.5 * (best["A"] + best["B"])
-    common = max(0.5 * (q["A"][name] + q["B"][name]) for name in names)
-    return {
-        "q_A": q["A"], "q_B": q["B"],
-        "task_outcome_A": task["A"], "task_outcome_B": task["B"],
-        "near_optimal_A": near["A"], "near_optimal_B": near["B"],
-        "near_optimal_disjoint": not (set(near["A"]) & set(near["B"])),
-        "argmax_A": argmax["A"], "argmax_B": argmax["B"],
-        "mutual_regret": regret, "delta": delta,
-        "all_knowing_50_50": all_knowing, "common_action_50_50": common,
-        "information_gap_50_50": all_knowing - common,
-        "positive": bool(not (set(near["A"]) & set(near["B"])) and regret > delta),
-        "any_positive_progress_A": any(value > 0 for value in task["A"].values()),
-        "any_positive_progress_B": any(value > 0 for value in task["B"].values()),
-        "best_task_outcome_A": max(task["A"].values()),
-        "best_task_outcome_B": max(task["B"].values()),
-        "worst_task_outcome_A": min(task["A"].values()),
-        "worst_task_outcome_B": min(task["B"].values()),
-        "needs_different_actions": bool(
-            not (set(near["A"]) & set(near["B"])) and regret > delta),
-    }
 
 
 def main() -> int:
@@ -93,8 +40,8 @@ def main() -> int:
     result = {"note": "recomputed from the saved distances/durations/costs; no re-simulation",
               "delta": delta, "candidates": {}}
     for name, entry in payload["candidates"].items():
-        contract = analyse(entry["runs"], delta, clamp=False)
-        clamped = analyse(entry["runs"], delta, clamp=True)
+        contract = analyse(entry["runs"], delta, clamp_progress=False)
+        clamped = analyse(entry["runs"], delta, clamp_progress=True)
         result["candidates"][name] = {
             "contract_score": contract,
             "previously_reported_clamped_score": clamped,

@@ -49,6 +49,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import numpy as np  # noqa: E402
 
@@ -64,6 +65,8 @@ from coimagine.local_contact_option.contract import (  # noqa: E402
 from coimagine.local_contact_option.option import OptionExecutor, build_observation  # noqa: E402
 from coimagine.local_contact_option.sensing import LocalContactObservation  # noqa: E402
 from coimagine.local_contact_option.skill import LocalSurfacePush  # noqa: E402
+
+from contract_score import payoff, progress_contract, task_outcome  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # frozen scene family
@@ -247,16 +250,18 @@ def run_command(world: str, centre: float, shift: float, command) -> dict:
     impulse = sum(math.hypot(force[0], force[1]) * physics.physics.control_dt
                   for row in result.rows for force in (row.get("force") or []))
     completion = 1.0 if env.task_success() else 0.0
-    progress = min(1.0, max(0.0, (start_distance - end_distance) / max(start_distance, 1e-6)))
+    # CONTRACT 3.3 via the single shared implementation: progress is clamped only from above
+    progress = progress_contract(start_distance, end_distance)
     action_cost = impulse / (physics.physics.max_force * max(duration, 1e-9))
-    q = completion + 0.5 * progress - 0.05 * duration - 0.10 * action_cost
+    q = payoff(completion, progress, duration, action_cost)
     return {
         "command": name, "world": world,
         "alpha_deg": [math.degrees(alpha0), math.degrees(alpha1)],
         "speed": [speed0, speed1],
         "success": bool(env.task_success()),
         "start_distance": start_distance, "end_distance": end_distance,
-        "progress": progress, "duration": duration, "action_cost": action_cost,
+        "progress": progress, "task_outcome": task_outcome(completion, progress),
+        "duration": duration, "action_cost": action_cost,
         "q": q, "exit_reason": result.exit_reason,
         "primary_exit_reason": result.primary_exit_reason,
         "locally_settled": result.locally_settled,
@@ -364,22 +369,11 @@ def main() -> int:
         names = [command[0] for command in COMMANDS]
         q_a = {name: runs["A"][index]["q"] for index, name in enumerate(names)}
         q_b = {name: runs["B"][index]["q"] for index, name in enumerate(names)}
-        best_a, best_b = max(q_a.values()), max(q_b.values())
-        near_a = sorted(name for name in names if best_a - q_a[name] <= DELTA + 1e-12)
-        near_b = sorted(name for name in names if best_b - q_b[name] <= DELTA + 1e-12)
-        argmax_a = max(names, key=lambda name: q_a[name])
-        argmax_b = max(names, key=lambda name: q_b[name])
-        mutual_regret = max(best_a - q_a[argmax_b], best_b - q_b[argmax_a])
-        all_knowing = 0.5 * (best_a + best_b)
-        common = max(0.5 * (q_a[name] + q_b[name]) for name in names)
-        entry["analysis"] = {
-            "q_A": q_a, "q_B": q_b, "near_optimal_A": near_a, "near_optimal_B": near_b,
-            "near_optimal_disjoint": not (set(near_a) & set(near_b)),
-            "argmax_A": argmax_a, "argmax_B": argmax_b,
-            "mutual_regret": mutual_regret, "all_knowing_50_50": all_knowing,
-            "common_action_50_50": common, "information_gap_50_50": all_knowing - common,
-            "positive": bool(not (set(near_a) & set(near_b)) and mutual_regret > DELTA),
-        }
+        from contract_score import analyse as analyse_contract
+        analysis = analyse_contract(runs, DELTA)
+        entry["analysis"] = analysis
+        argmax_a, argmax_b = analysis["argmax_A"], analysis["argmax_B"]
+        mutual_regret = analysis["mutual_regret"]
         payload["candidates"][f"shift_{shift}"] = entry
         print(f"shift {shift}: obs identical={entry['observation_identity']['identical']} "
               f"first-period identical={entry['first_period_identity']['identical']} "
