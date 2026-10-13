@@ -215,8 +215,56 @@ def execution_metrics(
                     saturations += 1
 
     # local settle verdict against the ground-truth final state
-    settled_observed = result.exit_reason == "settled_observed"
+    settled_observed = bool(getattr(result, "settled_observed",
+                                    result.exit_reason == "settled_observed"))
     settled_true = final_speed < option.settle_linear and final_omega < option.settle_angular
+
+    # round-3 truth-audit labels. They are *evaluator* labels: they use ground truth to say
+    # whether the quiet claim was true at the exit instant and over the whole hold window that
+    # the criterion was asked to cover. They never feed a deployment input.
+    def _row_bodies_quiet(row: Dict[str, object]) -> bool:
+        truth = row.get("true") or {}
+        object_state = truth.get("object") or [0.0] * 6
+        if (math.hypot(object_state[3], object_state[4]) >= option.settle_linear
+                or abs(object_state[5]) >= option.settle_angular):
+            return False
+        for state in truth.get("robots") or []:
+            if (math.hypot(state[3], state[4]) >= option.settle_linear
+                    or abs(state[5]) >= option.settle_angular):
+                return False
+        return True
+
+    exit_truth_low_speed = bool(
+        final_speed < option.settle_linear and final_omega < option.settle_angular
+        and max([math.hypot(float(row[3]), float(row[4])) for row in final_robots] or [0.0])
+        < option.settle_linear
+        and max([abs(float(row[5])) for row in final_robots] or [0.0]) < option.settle_angular)
+    settle_rows = [row for row in rows if str(row.get("stage")) == "settle"]
+    hold_periods = max(1, int(round(option.settle_hold / physics.control_dt)))
+    # The truth audit has to cover what the criterion was actually asked to certify: the hold
+    # window, extended by the evidence span and its lag behind the present when a windowed
+    # estimator is in use. With the pre-round-3 estimator both extra terms are zero and this is
+    # exactly the 0.30 s hold window.
+    evidence_seconds = float(getattr(result, "settle_evidence_span", 0.0) or 0.0) + \
+        float(getattr(result, "settle_evidence_lag", 0.0) or 0.0)
+    audit_periods = max(hold_periods, int(math.ceil(evidence_seconds / physics.control_dt)) + 1)
+    window_rows = settle_rows[-audit_periods:]
+    window_truth_low_speed = bool(window_rows) and all(_row_bodies_quiet(row)
+                                                       for row in window_rows)
+    # Two different audit questions, deliberately kept apart (task book section 6, question 1):
+    #   * did the *estimator* get it right -- was the true local surface normal speed, including
+    #     the rotation term omega x r, below the deployed surface threshold over the window?
+    #   * was the *whole body* at rest -- the object's global speed and its angular rate?
+    # The second can fail while the first holds: a rotation about the contact region barely moves
+    # the observed normal, which is the local sensor's declared blind spot. Conflating them would
+    # let an observability limit masquerade as a bad estimator.
+    surface_truth_values = [
+        value for row in window_rows
+        for value in (_true_surface_normal_speed(row, robot_id) for robot_id in (0, 1))
+        if value is not None]
+    evidence_truth_surface_low = bool(surface_truth_values) and all(
+        value < option.settle_surface for value in surface_truth_values)
+    evidence_truth_surface_max = max(surface_truth_values) if surface_truth_values else None
 
     trajectory = [
         (row["time"], tuple(row["true"]["object"][:2]), row["true"]["object"][2])
@@ -300,6 +348,15 @@ def execution_metrics(
         "settled_observed": settled_observed,
         "settled_true": settled_true,
         "false_stable": bool(settled_observed and not settled_true),
+        # round-3 separated bookkeeping and truth-audit labels
+        "primary_exit_reason": getattr(result, "primary_exit_reason", ""),
+        "locally_settled": bool(getattr(result, "locally_settled", settled_observed)),
+        "exit_truth_low_speed": exit_truth_low_speed,
+        "window_truth_low_speed": window_truth_low_speed,
+        "evidence_truth_surface_low": evidence_truth_surface_low,
+        "evidence_truth_surface_max": evidence_truth_surface_max,
+        "settle_evidence_span": getattr(result, "settle_evidence_span", None),
+        "settle_evidence_lag": getattr(result, "settle_evidence_lag", None),
         "relative_object": list(relative_object),
         "relative_robots": [list(row) for row in robot_relative],
         "robot_travel": robot_travel,
@@ -319,6 +376,38 @@ def execution_metrics(
         "delay_stats": getattr(result, "delay_stats", None),
         "twist": twist,
     }
+
+
+def _true_surface_normal_speed(row: Dict[str, object], robot_id: int) -> Optional[float]:
+    """Patch-level truth for the observed surface normal speed, including the rotation term.
+
+    The estimator's statistic is a *median over the matched patch points*, so a single sample
+    (the contact point alone) is not a fair reference: an off-centre contact on a rotating object
+    moves differently from the rest of the patch. This evaluates the surface-point velocity
+    ``v_object + omega x r`` at the fitted segment's two endpoints and its midpoint and returns
+    their median, which tracks the estimator's own aggregation. ``r`` is the lever arm from the
+    object centre, so a rotation contributes correctly and cannot cancel.
+    """
+
+    observed = (row.get("observed") or {}).get(str(robot_id)) or {}
+    normal = observed.get("patch_normal")
+    own = observed.get("own")
+    if normal is None or own is None:
+        return None
+    segment = observed.get("segment_world")
+    if not segment:
+        return None
+    p0, p1 = segment[0], segment[1]
+    mid = (0.5 * (p0[0] + p1[0]), 0.5 * (p0[1] + p1[1]))
+    obj = (row.get("true") or {}).get("object") or [0.0] * 6
+    speeds = []
+    for point in (p0, p1, mid):
+        rx, ry = point[0] - obj[0], point[1] - obj[1]
+        vx = obj[3] - obj[5] * ry
+        vy = obj[4] + obj[5] * rx
+        speeds.append(abs(vx * normal[0] + vy * normal[1]))
+    speeds.sort()
+    return speeds[len(speeds) // 2]
 
 
 def _reached_effective_push(rows: Sequence[Dict[str, object]]) -> bool:

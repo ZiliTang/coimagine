@@ -74,9 +74,18 @@ SETTLE_WINDOW = 0.0
 #: The window must actually span this much sample time before it is allowed to decide. Guards
 #: against a verdict from two frames that are effectively simultaneous.
 SETTLE_WINDOW_MIN_BASELINE = 0.10
+#: Round-3 frozen candidate set. Exactly two window lengths are evaluated; no other value may be
+#: searched (see docs/option_prediction_mechanism_v1/CONTRACT.md section 1.3).
+SETTLE_WINDOW_CANDIDATES: Tuple[float, ...] = (0.20, 0.30)
+#: Largest allowed gap between two *distinct* accepted samples. A larger gap means the evidence
+#: does not continuously cover the window, so the estimator reports "unavailable" instead of
+#: stretching a stale sample across the hole.
+SURFACE_MAX_SAMPLE_GAP = 0.15
 #: Active brake: extra bounded inward force along the observed local normal during BRAKE/SETTLE,
 #: so the robot keeps holding the object instead of leaving it to glide. Local observation only.
-BRAKE_HOLD_FORCE = 0.0     # N, 0 disables (the v1 brake)
+#: Round 3 forbids adopting active braking; the field exists only so the round-2 exploration stays
+#: reproducible and is never enabled by a round-3 run.
+BRAKE_HOLD_FORCE = 0.0
 
 # ---------------------------------------------------------------------------
 # surface-position-feedback push (arm X). Not a gain search: these are the single fixed
@@ -176,6 +185,7 @@ class OptionConfig:
     #: round-2 settle reliability (see the constants above)
     settle_window: float = SETTLE_WINDOW
     settle_window_min_baseline: float = SETTLE_WINDOW_MIN_BASELINE
+    settle_max_sample_gap: float = SURFACE_MAX_SAMPLE_GAP
     brake_hold_force: float = BRAKE_HOLD_FORCE
     ready_contact_hold: float = READY_CONTACT_HOLD
     ready_both_hold: float = READY_BOTH_HOLD

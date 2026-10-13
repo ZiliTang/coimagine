@@ -25,6 +25,7 @@ from .contract import (
     SURFACE_FRESHNESS,
     SURFACE_MATCH_MIN_POINTS,
     SURFACE_MATCH_TOLERANCE,
+    SURFACE_MAX_SAMPLE_GAP,
 )
 from .sensing import LocalContactObservation, LocalPatch
 
@@ -464,66 +465,130 @@ def _matched_speeds(current: Sequence[Vec], reference: Sequence[Vec], normal: Ve
 def update_windowed_surface_estimate(
     state: LocalControlState, patch: Optional[LocalPatch], pose: Tuple[float, float, float],
     sample_time: Optional[float], now: float, *, window: float, min_baseline: float,
+    max_sample_gap: float = SURFACE_MAX_SAMPLE_GAP,
     tolerance: float = SURFACE_MATCH_TOLERANCE, freshness: float = SURFACE_FRESHNESS,
     consistency: float = SURFACE_CONSISTENCY,
 ) -> Tuple[Optional[float], Optional[float], Optional[float], int, Optional[str]]:
-    """Surface speed estimated over a **window** of local scans instead of one control period.
+    """Backwards-compatible wrapper around :func:`update_settle_evidence`."""
 
-    Why this exists. The quiet decision compares a surface-speed estimate against a fixed
-    threshold, and the deployed estimator divides a matched normal displacement by the gap
-    between two *consecutive* scans (0.05 s). Any per-ray range noise ``sigma`` therefore enters
-    the estimate as ``sigma * sqrt(2) / 0.05`` m/s -- with the pressure-test ``sigma = 0.002`` m
-    that is 0.057 m/s, against a 0.02 m/s threshold. The statistic is the median of the absolute
-    per-match speeds, which rejects mis-associations but keeps the full noise *scale*: the median
-    of ``|N(0, s)|`` is ``0.67 s``, not ``s / sqrt(n)``. On genuinely static states under that
-    noise the estimator reads about 0.033 m/s, so no threshold below the noise can ever be met.
+    evidence = update_settle_evidence(
+        state, patch, pose, sample_time, now, window=window, min_baseline=min_baseline,
+        max_sample_gap=max_sample_gap, tolerance=tolerance, freshness=freshness,
+        consistency=consistency)
+    return (evidence.speed, evidence.signed, evidence.rms, evidence.matches, evidence.reason)
 
-    The fix is to widen the baseline rather than move the threshold: matching the current scan
-    against the oldest scan still inside ``window`` seconds divides the *same* per-ray noise by a
-    baseline that is 6x longer, so the per-match noise speed drops to ~0.009 m/s. Real motion is
-    still visible -- a surface moving at the threshold covers ``threshold * window`` metres, well
-    above the noise -- and the statistic itself (median of absolute matched speeds) is unchanged,
-    so a symmetric +- motion cannot cancel.
 
-    Repeated sample timestamps (the 100 ms observation-delay pressure test delivers the same
-    frame on two consecutive control periods) do not reset the verdict: the frame is not stored
-    twice, and the window is simply re-evaluated from the distinct scans already in the buffer.
+@dataclass
+class SettleEvidence:
+    """One settle period's evidence, with everything the bookkeeping has to know.
 
-    Returns the same tuple shape as :func:`update_surface_estimate`. ``None`` for the speed means
-    "cannot decide", which the caller treats as *not* settled -- a missing observation may never
-    be evidence of stillness.
+    ``speed`` is the primary statistic; ``reason`` non-None means "cannot decide this period".
+    ``new_sample`` distinguishes a genuinely new frame from a repeated delivery of a frame that is
+    already in the buffer: that flag drives the hold rule (a repeat freezes the hold instead of
+    accruing or clearing it). ``span`` and ``lag`` are reported so the write-up can state *which
+    sample period* the verdict covers and how far behind the present it is.
+    """
+
+    speed: Optional[float] = None
+    signed: Optional[float] = None
+    rms: Optional[float] = None
+    spread: Optional[float] = None
+    matches: int = 0
+    reason: Optional[str] = None
+    new_sample: bool = False
+    span: float = 0.0
+    lag: float = 0.0
+    window: float = 0.0
+
+
+def update_settle_evidence(
+    state: LocalControlState, patch: Optional[LocalPatch], pose: Tuple[float, float, float],
+    sample_time: Optional[float], now: float, *, window: float, min_baseline: float,
+    max_sample_gap: float = SURFACE_MAX_SAMPLE_GAP,
+    tolerance: float = SURFACE_MATCH_TOLERANCE, freshness: float = SURFACE_FRESHNESS,
+    consistency: float = SURFACE_CONSISTENCY,
+) -> SettleEvidence:
+    """Surface speed over a **window** of local scans, with timestamp-correct evidence handling.
+
+    Why the baseline, not the threshold. The quiet decision compares a surface-speed estimate
+    against a fixed threshold, and the deployed estimator divides a matched normal displacement by
+    the gap between two *consecutive* scans (0.05 s). Any per-ray range noise ``sigma`` therefore
+    enters as ``sigma * sqrt(2) / 0.05`` m/s -- with the pressure-test ``sigma = 0.002`` m that is
+    0.057 m/s against a 0.02 m/s threshold. Matching the current scan against the oldest scan still
+    inside ``window`` seconds divides the same per-ray noise by a baseline up to 6x longer, so the
+    per-match noise speed drops to ~0.009 m/s. Real motion is still visible: a surface moving at
+    the threshold covers ``threshold * window`` metres, well above the noise.
+
+    Temporal first, spatial second. Each matched point contributes a **signed** normal speed over
+    the window (a temporal estimate); only then are the points aggregated spatially. The primary
+    statistic is ``median_i |v_i|``: taking the median of the *signed* speeds would let a rotation
+    cancel to zero (half the points move one way, half the other), so the aggregation keeps the
+    magnitude of each signed estimate instead. Noise is suppressed by the longer baseline, **not**
+    by averaging absolute values -- that would leave the ``|N(0, s)|`` floor of ``0.67 s`` in place.
+
+    Timestamp discipline (round-3 task book section A2):
+
+    * ``sample_time`` is the sensor's sampling time; ``now`` is the *current control period*.
+      ``now`` is never taken from the frame itself, otherwise a delayed frame would look fresh.
+    * one frame is one piece of evidence: a repeated ``sample_time`` is not stored twice and
+      ``new_sample`` is False, so the caller neither accrues nor clears stillness for it;
+    * a gap larger than ``max_sample_gap`` between distinct samples, a stale newest sample
+      (``now - sample_time > freshness``), a missing patch or too few matches are all reported as
+      ``reason`` and must be treated as unavailable;
+    * the returned ``span``/``lag`` state which sample period the evidence covers and how far it
+      lags the present, so a stale-but-quiet history can never be presented as a present guarantee.
     """
 
     if patch is None:
-        return None, None, None, 0, "no_patch"
+        return SettleEvidence(reason="no_patch", lag=float("inf"), window=window)
     if sample_time is None:
-        return None, None, None, 0, "no_sample_time"
-    if now - sample_time > freshness:
-        return None, None, None, 0, "stale_frame"
+        return SettleEvidence(reason="no_sample_time", lag=float("inf"), window=window)
 
     history = state.surface_history
+    new_sample = False
+    lag = now - sample_time
+    if lag < -1e-9:
+        return SettleEvidence(reason="sample_from_the_future", lag=lag, window=window)
+    if lag > freshness:
+        return SettleEvidence(reason="stale_frame", lag=lag, window=window,
+                              new_sample=False)
+
     if not history or sample_time > history[-1].sample_time + 1e-12:
+        gap = sample_time - history[-1].sample_time if history else 0.0
+        if history and gap > max_sample_gap + 1e-9:
+            # the evidence stream is discontinuous: do not stretch the old sample across the hole
+            history.clear()
+            return SettleEvidence(reason="sample_gap_too_large", lag=lag, window=window,
+                                  new_sample=False)
         history.append(SurfaceSample(sample_time, world_points(patch, pose),
                                      (patch.normal_world[0], patch.normal_world[1])))
+        new_sample = True
     newest = history[-1]
     # drop entries that fell out of the window (measured on sample time, not wall clock)
     while len(history) > 1 and newest.sample_time - history[0].sample_time > window + 1e-12:
         history.pop(0)
+    span = newest.sample_time - history[0].sample_time
     if len(history) < 2:
-        return None, None, None, 0, "insufficient_history"
-    oldest = history[0]
-    baseline = newest.sample_time - oldest.sample_time
-    if baseline < min_baseline:
-        return None, None, None, 0, "baseline_too_short"
+        return SettleEvidence(reason="insufficient_history", new_sample=new_sample, span=span,
+                              lag=lag, window=window)
+    if span < min_baseline:
+        return SettleEvidence(reason="baseline_too_short", new_sample=new_sample, span=span,
+                              lag=lag, window=window)
 
-    speeds = _matched_speeds(newest.points, oldest.points, newest.normal, baseline, tolerance)
+    oldest = history[0]
+    speeds = _matched_speeds(newest.points, oldest.points, newest.normal, span, tolerance)
     matches = len(speeds)
     if matches < SURFACE_MATCH_MIN_POINTS:
-        return None, None, None, matches, "insufficient_matches"
+        return SettleEvidence(reason="insufficient_matches", matches=matches,
+                              new_sample=new_sample, span=span, lag=lag, window=window)
     absolute = sorted(abs(value) for value in speeds)
     median_abs = absolute[len(absolute) // 2] if len(absolute) % 2 else (
         0.5 * (absolute[len(absolute) // 2 - 1] + absolute[len(absolute) // 2]))
     rms = math.sqrt(sum(value * value for value in speeds) / matches)
     signed = sum(speeds) / matches
+    ordered = sorted(speeds)
+    spread = ordered[int(0.75 * (matches - 1))] - ordered[int(0.25 * (matches - 1))]
     state.surface_consistency = consistency - abs(rms - median_abs)
-    return median_abs, signed, rms, matches, None
+    return SettleEvidence(speed=median_abs, signed=signed, rms=rms, spread=spread,
+                          matches=matches, reason=None, new_sample=new_sample, span=span,
+                          lag=lag, window=window)

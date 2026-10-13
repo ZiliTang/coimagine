@@ -42,8 +42,8 @@ from .control import (
     brake_force_with_hold,
     clip_norm,
     local_push_force,
+    update_settle_evidence,
     update_surface_estimate,
-    update_windowed_surface_estimate,
     wrap_angle,
 )
 from .delay import DelayFrame, FixedDelayQueue
@@ -85,6 +85,10 @@ class RobotRuntime:
     patch_confidence: Optional[float] = None
     patch_points: int = 0
     surface_speed: Optional[float] = None
+    #: round-3 settle evidence bookkeeping (see control.SettleEvidence)
+    settle_evidence_span: float = 0.0
+    settle_evidence_lag: float = 0.0
+    settle_new_sample: bool = False
     normal_jump: bool = False
     ready_started: Optional[float] = None
     brake_initialised: bool = False
@@ -120,9 +124,19 @@ class ExecutionResult:
     terminal_robots: Optional[Tuple[Tuple[float, ...], ...]] = None
     #: the three outcomes are kept apart instead of being folded into one "success" label
     push_completed: bool = False
+    #: round-3 bookkeeping. ``primary_exit_reason`` is the FIRST abort cause (empty when the run
+    #: ended naturally); ``locally_settled`` is whether the on-board quiet criterion ever fired,
+    #: regardless of how the run ended. The two derived flags are then consistent by construction:
+    #: ``settled_observed = locally_settled and not primary_exit_reason`` and
+    #: ``settled_after_abort = locally_settled and bool(primary_exit_reason)``.
+    primary_exit_reason: str = ""
+    locally_settled: bool = False
     settled_observed: bool = False
     settled_after_abort: bool = False
     effective_push_seconds: float = 0.0
+    #: settle-evidence coverage at the moment of the verdict, and its lag behind the present
+    settle_evidence_span: Optional[float] = None
+    settle_evidence_lag: Optional[float] = None
     delay_stats: Optional[Dict[str, object]] = None
     push_intervals: Optional[Dict[str, object]] = None
 
@@ -132,8 +146,12 @@ class ExecutionResult:
             "exit_reason": self.exit_reason, "wall_clock_steps": self.wall_clock_steps,
             "stage_seconds": self.stage_seconds, "flags": self.flags,
             "aborted_by": self.aborted_by, "push_completed": self.push_completed,
+            "primary_exit_reason": self.primary_exit_reason,
+            "locally_settled": self.locally_settled,
             "settled_observed": self.settled_observed,
             "settled_after_abort": self.settled_after_abort,
+            "settle_evidence_span": self.settle_evidence_span,
+            "settle_evidence_lag": self.settle_evidence_lag,
             "effective_push_seconds": self.effective_push_seconds,
             "delay_stats": self.delay_stats,
             "push_intervals": self.push_intervals,
@@ -349,6 +367,7 @@ class OptionExecutor:
 
         stage = Stage.APPROACH
         abort_exit: Optional[str] = None
+        locally_settled = False
         both_ready_hold = 0.0
         stage_seconds: Dict[str, float] = {value.value: 0.0 for value in Stage}
         rows: List[Dict[str, object]] = []
@@ -575,19 +594,31 @@ class OptionExecutor:
                     own_speed = math.hypot(observation.own.vx, observation.own.vy)
                     omega = abs(observation.own.omega)
                     if config.settle_window > 0.0:
-                        speed, signed, rms, matches, reason = update_windowed_surface_estimate(
+                        evidence = update_settle_evidence(
                             runtime.control, observation.patch,
                             (observation.own.x, observation.own.y, observation.own.angle),
-                            observation.sample_time, observation.time,
+                            observation.sample_time, now,
                             window=config.settle_window,
                             min_baseline=config.settle_window_min_baseline,
+                            max_sample_gap=config.settle_max_sample_gap,
                         )
+                        speed = evidence.speed
+                        signed = evidence.signed
+                        rms = evidence.rms
+                        matches = evidence.matches
+                        reason = evidence.reason
+                        runtime.settle_evidence_span = evidence.span
+                        runtime.settle_evidence_lag = evidence.lag
+                        runtime.settle_new_sample = evidence.new_sample
                     else:
                         speed, signed, rms, matches, reason = update_surface_estimate(
                             runtime.control, observation.patch,
                             (observation.own.x, observation.own.y, observation.own.angle),
-                            observation.sample_time, observation.time,
+                            observation.sample_time, now,
                         )
+                        runtime.settle_evidence_span = 0.0
+                        runtime.settle_evidence_lag = 0.0
+                        runtime.settle_new_sample = True
                     runtime.surface_speed = speed
                     runtime.control.surface_speed = speed
                     runtime.control.surface_speed_signed = signed
@@ -595,16 +626,26 @@ class OptionExecutor:
                     runtime.control.surface_matches = matches
                     runtime.control.surface_unavailable_reason = reason
                     if speed is None:
+                        # a genuinely missing/stale/unmatchable observation is not evidence of
+                        # stillness under any reading, so it clears the hold
                         unobserved = True
                         runtime.note(f"settle_unobserved:{reason}")
                         runtime.settle_hold = 0.0
                         continue
-                    if (own_speed < config.settle_linear and omega < config.settle_angular
-                            and speed < config.settle_surface):
-                        runtime.settle_hold += dt
-                    else:
+                    quiet = (own_speed < config.settle_linear and omega < config.settle_angular
+                             and speed < config.settle_surface)
+                    if not quiet:
                         runtime.settle_hold = 0.0
+                    elif not runtime.settle_new_sample:
+                        # a repeated frame is one piece of evidence: it neither accrues stillness
+                        # time (that would double-count the same observation) nor clears what has
+                        # already been accumulated
+                        runtime.note("settle_repeated_frame_frozen")
+                        continue
+                    else:
+                        runtime.settle_hold += dt
                 if all(runtimes[robot_id].settle_hold >= SETTLE_HOLD for robot_id in active_robots):
+                    locally_settled = True
                     exit_reason = abort_exit or Exit.SETTLED_OBSERVED.value
                     if abort_exit:
                         for robot_id in active_robots:
@@ -685,16 +726,31 @@ class OptionExecutor:
             (runtimes[robot_id].active_contact for robot_id in active_robots), default=0.0
         )
         push_completed = bool(effective >= PUSH_TARGET_ACTIVE - 1e-9)
-        settled = exit_reason == Exit.SETTLED_OBSERVED.value
+        # round-3 bookkeeping. ``primary_exit_reason`` is the FIRST abort cause and is what the run
+        # is recorded under; ``locally_settled`` records whether the quiet criterion fired at all.
+        # Keeping both makes the two derived flags reachable and consistent by construction, so
+        # "stalled and then genuinely came to rest" can never masquerade as a normal completion.
+        primary_exit_reason = abort_exit or ""
+        settled_observed = bool(locally_settled and not primary_exit_reason)
+        settled_after_abort = bool(locally_settled and primary_exit_reason)
+        settle_span = max((runtimes[robot_id].settle_evidence_span for robot_id in active_robots),
+                          default=0.0)
+        settle_lag = max((runtimes[robot_id].settle_evidence_lag for robot_id in active_robots),
+                         default=0.0)
         return ExecutionResult(
             arm=self.arm, root_id=root_id, variant=variant, exit_reason=exit_reason,
             wall_clock_steps=step, rows=rows, stage_seconds=stage_seconds,
             flags=sorted({flag for runtime in runtimes.values() for flag in runtime.flags}),
             aborted_by=aborted_by,
             terminal_object=terminal_object, terminal_robots=terminal_robots,
-            push_completed=push_completed, settled_observed=settled,
-            settled_after_abort=bool(settled and abort_exit),
+            push_completed=push_completed,
+            primary_exit_reason=primary_exit_reason,
+            locally_settled=locally_settled,
+            settled_observed=settled_observed,
+            settled_after_abort=settled_after_abort,
             effective_push_seconds=effective,
+            settle_evidence_span=settle_span if locally_settled else None,
+            settle_evidence_lag=settle_lag if locally_settled else None,
             delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},
             push_intervals={
                 str(robot_id): {
@@ -854,6 +910,11 @@ class OptionExecutor:
                     "surface_speed": runtimes[robot_id].surface_speed,
                     "surface_speed_signed": runtimes[robot_id].control.surface_speed_signed,
                     "surface_speed_rms": runtimes[robot_id].control.surface_speed_rms,
+                    # round-3 evidence provenance: which sample span backs the current verdict,
+                    # and how far that evidence lags the present control period
+                    "settle_evidence_span": runtimes[robot_id].settle_evidence_span,
+                    "settle_evidence_lag": runtimes[robot_id].settle_evidence_lag,
+                    "settle_new_sample": runtimes[robot_id].settle_new_sample,
                     "surface_unavailable_reason":
                         runtimes[robot_id].control.surface_unavailable_reason,
                     "stage": runtimes[robot_id].stage.value,
