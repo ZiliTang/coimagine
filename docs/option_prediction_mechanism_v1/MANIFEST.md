@@ -1,7 +1,7 @@
 # option_prediction_mechanism_v1 — review bundle manifest
 
-built 2026-10-13T14:32:55+00:00
-git commit fecfd8950365429e0825f4a2eda7b19b2571ba65
+built 2026-10-13T15:41:54+00:00
+git commit 19b63ef84c1862274b8731018383c7e512e68371
 round diff base aedffae
 
 ## Included (present inside the zip)
@@ -10,36 +10,39 @@ round diff base aedffae
 |---|---:|---|
 | docs/option_prediction_mechanism_v1/A_settle_fix.md | 8144 | 8010d526a23fdb86 |
 | docs/option_prediction_mechanism_v1/A_settle_fix_old_vs_new.mp4 | 816346 | 450867b65a6418fd |
-| docs/option_prediction_mechanism_v1/B_prediction.md | 9074 | 0e081f10f24293d0 |
+| docs/option_prediction_mechanism_v1/B_prediction.md | 13896 | caf45113922ef214 |
 | docs/option_prediction_mechanism_v1/CONTRACT.md | 11923 | f0ca64b83018118c |
+| docs/option_prediction_mechanism_v1/CORRECTIONS.md | 5941 | c1762661bb7afd72 |
 | docs/option_prediction_mechanism_v1/C_ambiguity.json | 74461 | a5f6c6ee7564843d |
 | docs/option_prediction_mechanism_v1/C_ambiguity.md | 27910 | 0e9b5a0f65bcfd97 |
 | docs/option_prediction_mechanism_v1/C_ambiguous_pair.mp4 | 148355 | 467da90c0b78788a |
-| docs/option_prediction_mechanism_v1/C_frozen_negative.md | 5900 | 91f82490f1675c97 |
+| docs/option_prediction_mechanism_v1/C_frozen_negative.md | 6232 | 2f7dd64e8c457fce |
 | docs/option_prediction_mechanism_v1/ENVIRONMENT.md | 2676 | 9f8d38da312b4d80 |
 | docs/option_prediction_mechanism_v1/REPRODUCE.md | 4965 | 2be66bc39382905b |
 | docs/option_prediction_mechanism_v1/REVIEW_GUIDE.md | 3102 | 0117cfa3125aafc7 |
 | docs/option_prediction_mechanism_v1/STATUS.md | 3867 | d33200dd49512647 |
 | docs/option_prediction_mechanism_v1/errata_review.md | 4750 | f009be077cd4c866 |
-| docs/option_prediction_mechanism_v1/report.md | 7622 | 54c1a9676b15e1c8 |
+| docs/option_prediction_mechanism_v1/report.md | 9997 | 7ddd485ef1281643 |
 | experiments/option_prediction_mechanism_v1/make_animation_a.py | 9619 | 04245dfbc59ef877 |
 | experiments/option_prediction_mechanism_v1/make_animation_c.py | 9569 | c3a268920f673bc4 |
-| experiments/option_prediction_mechanism_v1/make_bundle.py | 10481 | abcee8ea79085822 |
+| experiments/option_prediction_mechanism_v1/make_bundle.py | 10965 | d50a6a744f3ea73f |
 | experiments/option_prediction_mechanism_v1/phase_a/analyse_a3.py | 11533 | e4bb02198d7491ab |
 | experiments/option_prediction_mechanism_v1/phase_a/run_a.py | 3700 | 7e6387ec90036f57 |
-| experiments/option_prediction_mechanism_v1/phase_b/action_sensitivity.py | 7602 | 3c8e6c03f0ef688a |
+| experiments/option_prediction_mechanism_v1/phase_b/action_sensitivity.py | 9365 | 8e217131f2ac24d9 |
+| experiments/option_prediction_mechanism_v1/phase_b/audit_targets.py | 6873 | 03f7072f9e168376 |
 | experiments/option_prediction_mechanism_v1/phase_b/collect_b.py | 35409 | c29a4439c35ebc5b |
 | experiments/option_prediction_mechanism_v1/phase_b/dataset_b.py | 12007 | 59b862f08e8e8595 |
 | experiments/option_prediction_mechanism_v1/phase_b/evaluate_b.py | 7697 | 8cc454063d6859d3 |
-| experiments/option_prediction_mechanism_v1/phase_b/model.py | 10737 | f3fc8e8ec60c3a4c |
+| experiments/option_prediction_mechanism_v1/phase_b/model.py | 11712 | 85ea689c3f0b0512 |
 | experiments/option_prediction_mechanism_v1/phase_b/roots_b.py | 16452 | 32708a7417b966d7 |
-| experiments/option_prediction_mechanism_v1/phase_b/train_b.py | 17935 | e93e60cd1256927f |
+| experiments/option_prediction_mechanism_v1/phase_b/train_b.py | 18843 | aa2312a8c0efc97a |
 | experiments/option_prediction_mechanism_v1/phase_b/verify_b.py | 14008 | b969f2c03e7a12a2 |
 | experiments/option_prediction_mechanism_v1/phase_c/actions.py | 7701 | 0d81227a1da50f11 |
 | experiments/option_prediction_mechanism_v1/phase_c/belief_reference.py | 11867 | ab81e61241710c90 |
 | experiments/option_prediction_mechanism_v1/phase_c/mechanism_scene.py | 7246 | fd6d4f66a24404f0 |
 | experiments/option_prediction_mechanism_v1/phase_c/perception.py | 23437 | 638db4f7cb440017 |
 | experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py | 32753 | 51dfbdf13bdccad4 |
+| experiments/option_prediction_mechanism_v1/phase_c_frozen/recompute_frozen_c.py | 6365 | 13c200078b329f3a |
 | experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py | 19908 | 00cd5ca71e5368b0 |
 | experiments/option_prediction_mechanism_v1/verify_c_positive.py | 6375 | f3cd316cca65fc1f |
 | experiments/option_prediction_mechanism_v1/phase_b/FIELDS.md | 20103 | 7edba19a4b360c3e |
@@ -49,7 +52,7 @@ round diff base aedffae
 | src/coimagine/local_contact_option/option.py | 52957 | 4d606b6995da9031 |
 | src/coimagine/local_contact_option/metrics.py | 21245 | a9816274e4c8781e |
 | tests/test_option_prediction_mechanism_a.py | 11477 | 143ffdc3b24650b8 |
-| tests/test_option_prediction_mechanism_b.py | 5886 | e155688e49d794e0 |
+| tests/test_option_prediction_mechanism_b.py | 14317 | 3d79f87b8333bb5b |
 | tests/test_option_prediction_mechanism_c.py | 6687 | c2c569d2b41d4fe8 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/a3_dev.json | 12764 | 1efa92b712746958 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/a3_dev.md | 2659 | 31df2c53cc23baaf |
@@ -60,21 +63,24 @@ round diff base aedffae
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/ledger.json | 5474 | 92948208f6066567 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/verification.json | 4848 | edc4ca3aaef08006 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/spot_check.json | 4466 | f07b37fa3f753a84 |
-| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/train_report_1.md | 11924 | b3e4ef1060e1054d |
-| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/train_report_1.json | 611393 | f5ce997e6b3da62a |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/train_report_1.md | 11922 | f45794b9a1fb98cb |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/train_report_1.json | 611234 | f221e2ee95ca0b19 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/README.md | 2646 | d1dbf9b1f50f628a |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/ledger.json | 5371 | f80e9016b94100d9 |
-| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/train_report_2.md | 11922 | 69ff786b9f16349d |
-| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/train_report_2.json | 612227 | b114c5b18cb6ebf6 |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/train_report_2.md | 11920 | 43f07270ef1998bd |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/train_report_2.json | 612065 | 0998edab0c95cf5a |
 | outputs/option_prediction_mechanism_v1/phase_c/phase_c_table.md | 42110 | 72c5be729b941fc8 |
 | outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json | 64238 | f6e99edd5d955f2b |
+| outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_recomputed.json | 9098 | d3f7c97c028d951a |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/target_audit.json | 2464 | 4059a021dc2a5304 |
+| outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/action_sensitivity.json | 61216 | 8566225cc40bab2f |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/logs/w020_test/test_solo_central_000__baseline.jsonl | 198883 | 3128e7aefad2fce6 |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/logs/w0_test/test_solo_central_000__baseline.jsonl | 196100 | c773c80309ee603b |
 | docs/option_prediction_mechanism_v1/samples/sample_train.jsonl | 47730 | 55e5ef07c1092ecc |
 | docs/option_prediction_mechanism_v1/samples/sample_val.jsonl | 49445 | e3d2a20293cf0a1a |
 | docs/option_prediction_mechanism_v1/samples/sample_test.jsonl | 49358 | 4c8f6401b31b9b69 |
-| docs/option_prediction_mechanism_v1/round3.patch | 366218 | e0592b758354e3ee |
-| docs/option_prediction_mechanism_v1/round3_diffstat.txt | 1962 | af5700313d679ea1 |
+| docs/option_prediction_mechanism_v1/round3.patch | 366306 | e06df9eeb353809a |
+| docs/option_prediction_mechanism_v1/round3_diffstat.txt | 1962 | b20ae77ca474a9bf |
 
 ## Not included (listed only: large per-period logs / checkpoints)
 

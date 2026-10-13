@@ -50,12 +50,43 @@ COLUMNS = ["r0_signed_distance_m", "r0_tangential_offset_m", "r0_normal_sin", "r
            "r1_signed_distance_m", "r1_tangential_offset_m", "r1_normal_sin", "r1_normal_cos"]
 
 
+def average_ranks(values: Sequence[float]) -> np.ndarray:
+    """Ranks with **average ranks for ties** (1-based), as Spearman requires.
+
+    ``np.argsort(np.argsort(x))`` gives *ordinal* ranks, which break ties by array order and
+    therefore manufacture correlation out of ties. With average ranks a tied block contributes no
+    ordering information, which is the honest behaviour.
+    """
+
+    array = np.asarray(values, dtype=float)
+    order = np.argsort(array, kind="mergesort")
+    sorted_values = array[order]
+    ranks = np.empty(len(array), dtype=float)
+    index = 0
+    while index < len(array):
+        end = index
+        while end + 1 < len(array) and sorted_values[end + 1] == sorted_values[index]:
+            end += 1
+        ranks[order[index:end + 1]] = 0.5 * (index + end) + 1.0
+        index = end + 1
+    return ranks
+
+
 def spearman(a: Sequence[float], b: Sequence[float]) -> float:
+    """Spearman rank correlation with average-rank ties; ``nan`` when it is undefined.
+
+    Undefined means fewer than three points, or one of the two sequences is constant (all ranks
+    equal), in which case there is no ordering to correlate and no value is invented.
+
+    This number is a **rank correlation**, not a "ranking accuracy": rho = 0.5 does not mean half
+    the action comparisons are right.
+    """
+
     if len(a) < 3:
         return float("nan")
-    ranks_a = np.argsort(np.argsort(np.asarray(a, dtype=float)))
-    ranks_b = np.argsort(np.argsort(np.asarray(b, dtype=float)))
-    if np.std(ranks_a) < 1e-9 or np.std(ranks_b) < 1e-9:
+    ranks_a = average_ranks(a)
+    ranks_b = average_ranks(b)
+    if np.std(ranks_a) < 1e-12 or np.std(ranks_b) < 1e-12:
         return float("nan")
     return float(np.corrcoef(ranks_a, ranks_b)[0, 1])
 
@@ -66,6 +97,8 @@ def per_root_metrics(roots: Sequence[str], truth: np.ndarray, predicted: np.ndar
 
     diff_errors: Dict[str, List[float]] = {name: [] for name in COLUMNS}
     rank_correlations: Dict[str, List[float]] = {name: [] for name in COLUMNS}
+    attempted: Dict[str, int] = {name: 0 for name in COLUMNS}
+    constant_true: Dict[str, int] = {name: 0 for name in COLUMNS}
     roots = np.asarray(roots)
     for root in sorted(set(roots.tolist())):
         index = np.where(roots == root)[0]
@@ -87,9 +120,12 @@ def per_root_metrics(roots: Sequence[str], truth: np.ndarray, predicted: np.ndar
                                        - (true_values[i] - true_values[j])))
             if differences:
                 diff_errors[name].append(float(np.median(differences)))
+            attempted[name] += 1
             correlation = spearman(true_values, predicted_values)
             if math.isfinite(correlation):
                 rank_correlations[name].append(correlation)
+            elif float(np.std(true_values)) < 1e-12:
+                constant_true[name] += 1
     return {
         "action_difference_error": {name: _percentiles(values)
                                     for name, values in diff_errors.items()},
@@ -97,7 +133,11 @@ def per_root_metrics(roots: Sequence[str], truth: np.ndarray, predicted: np.ndar
             name: {"mean": float(np.mean(values)) if values else None,
                    "median": float(np.median(values)) if values else None,
                    "fraction_positive": float(np.mean(np.asarray(values) > 0)) if values else None,
-                   "roots": len(values)}
+                   # undefined roots are reported, never silently replaced by 0
+                   "roots_defined": len(values),
+                   "roots_attempted": attempted[name],
+                   "roots_undefined_constant_truth": constant_true[name],
+                   "roots_undefined_other": attempted[name] - len(values) - constant_true[name]}
             for name, values in rank_correlations.items()},
     }
 

@@ -47,6 +47,7 @@ from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: 
     predict,
     persistence_predictions,
     train_one_seed,
+    unstandardise_predictions,
 )
 
 SEEDS = (0, 1, 2)
@@ -69,9 +70,10 @@ def _angle_error(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray, ro
     return abs(math.degrees((predicted - actual + math.pi) % (2 * math.pi) - math.pi))
 
 
-def _raw(data: SupervisedData, group: str, values: np.ndarray) -> np.ndarray:
-    block = data.targets[group]
-    return values * block["std"] + block["mean"]
+#: The evaluation interface is in **original physical units** for every group. Network outputs are
+#: standardised and must be converted with ``unstandardise_predictions`` exactly once before they
+#: reach :func:`evaluate`; the persistence baseline already produces original units and must not be
+#: converted again (that double conversion was the round-3 unit bug).
 
 
 def _subset(data: SupervisedData, records, train_roots: int):
@@ -105,11 +107,22 @@ def _meta(records: Sequence[Dict[str, object]]):
 
 def evaluate(data: SupervisedData, records, predictions: Dict[str, np.ndarray], split: str,
              label: str) -> Dict[str, object]:
+    """Score predictions that are already in the targets' **original physical units**.
+
+    Convention (pinned by ``tests/test_option_prediction_mechanism_b.py``):
+    * a network's output is standardised and MUST be passed through
+      :func:`unstandardise_predictions` exactly once before reaching here;
+    * :func:`persistence_predictions` already returns original units and MUST NOT be converted
+      again -- doing so was the round-3 bug, which scaled the baseline by ``std`` and shifted it by
+      ``mean`` a second time and made every persistence error look far worse (or better) than it is;
+    * discrete groups (class indices, binary logits) are passed through unchanged.
+    """
+
     index = np.where(data.split == split)[0]
     meta = _meta(records)
     out: Dict[str, object] = {"label": label, "split": split, "n": int(len(index)),
                               "n_roots": len({data.roots[i] for i in index})}
-    geometry_raw = _raw(data, "terminal_geometry", predictions["terminal_geometry"])
+    geometry_raw = predictions["terminal_geometry"]
     truth_geometry = data.targets["terminal_geometry"]["y_raw"]
     geometry_mask = data.targets["terminal_geometry"]["mask"]
     out["terminal_geometry"] = continuous_errors(
@@ -121,11 +134,11 @@ def evaluate(data: SupervisedData, records, predictions: Dict[str, np.ndarray], 
             4 * robot_id + 2, 4 * robot_id + 3)
     for group, columns in (("robot_pose_delta", POSE_COLUMNS),
                            ("robot_residual_velocity", VELOCITY_COLUMNS)):
-        raw = _raw(data, group, predictions[group])
+        raw = predictions[group]
         out[group] = continuous_errors(
             raw[index], data.targets[group]["y_raw"][index],
             data.targets[group]["mask"][index], None, columns)
-    duration_raw = _raw(data, "duration", predictions["duration"])
+    duration_raw = predictions["duration"]
     out["duration"] = continuous_errors(
         duration_raw[index], data.targets["duration"]["y_raw"][index],
         data.targets["duration"]["mask"][index], None, ["duration_s"])
@@ -211,7 +224,8 @@ def main() -> int:
             x = trained["x"]
             index_test = np.where(data.split == "test")[0]
             index_val = np.where(data.split == "val")[0]
-            predictions = predict(trained["model"], x, data.specs)
+            predictions = unstandardise_predictions(
+                data, predict(trained["model"], x, data.specs))
             key = f"{arm}_seed{seed}"
             checkpoint_dir = out_dir / "checkpoints"
             checkpoint_dir.mkdir(parents=True, exist_ok=True)

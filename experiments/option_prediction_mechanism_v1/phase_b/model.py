@@ -226,6 +226,27 @@ def predict(model: nn.Module, x: np.ndarray, specs: Sequence[GroupSpec], batch: 
     return {name: np.concatenate(parts, axis=0) for name, parts in outputs.items()}
 
 
+def unstandardise_predictions(data: SupervisedData,
+                              predictions: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+    """Convert a model's **standardised** outputs into the targets' original physical units.
+
+    The evaluation interface is defined in original units for every continuous group, so anything
+    coming out of the network must pass through here exactly once. Baselines that already produce
+    original units (``persistence_predictions``) must **not** be passed through it -- doing so was
+    the round-3 unit bug, where the persistence baseline was scaled by ``std`` and offset by
+    ``mean`` a second time.
+    """
+
+    out: Dict[str, np.ndarray] = {}
+    for spec in data.specs:
+        if spec.kind == "continuous":
+            block = data.targets[spec.name]
+            out[spec.name] = predictions[spec.name] * block["std"] + block["mean"]
+        else:
+            out[spec.name] = predictions[spec.name]
+    return out
+
+
 def persistence_predictions(data: SupervisedData, split: str) -> Dict[str, np.ndarray]:
     """The contract's simple baseline, in the *original* target units.
 

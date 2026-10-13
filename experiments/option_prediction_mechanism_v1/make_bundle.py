@@ -49,6 +49,10 @@ SMALL_ARTIFACTS = [
     RUN / "phase_b_tier2/train_report_2.md", RUN / "phase_b_tier2/train_report_2.json",
     ROOT / "outputs/option_prediction_mechanism_v1/phase_c/phase_c_table.md",
     ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json",
+    ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_recomputed.json",
+    RUN / "phase_b/target_audit.json",
+    RUN / "phase_b_tier2/action_sensitivity.json",
+    DOCS / "CORRECTIONS.md",
 ]
 #: source changed by this round (the A fix lives here)
 SRC_FILES = [
@@ -134,7 +138,16 @@ def collect() -> Tuple[List[Path], List[Path]]:
     (DOCS / "round3_diffstat.txt").write_text(stat)
     copied.append(DOCS / "round3_diffstat.txt")
 
-    copied = [path for path in copied if path.is_file()]
+    # a file can be reached both by a glob and by an explicit entry; never ship it twice
+    seen: set = set()
+    unique: List[Path] = []
+    for path in copied:
+        key = path.resolve()
+        if key in seen or not path.is_file():
+            continue
+        seen.add(key)
+        unique.append(path)
+    copied = unique
     listed: List[Path] = [path for path in copied if path.stat().st_size > SMALL_LIMIT]
     copied = [path for path in copied if path.stat().st_size <= SMALL_LIMIT]
     for path in LIST_ONLY + [RUN / "phase_b/checkpoints", RUN / "phase_b_tier2/checkpoints"]:
