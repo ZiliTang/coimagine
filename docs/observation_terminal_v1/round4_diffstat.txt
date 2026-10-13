@@ -1,0 +1,17 @@
+ experiments/observation_terminal_v1/__init__.py    |   0
+ .../observation_terminal_v1/audit_labels.py        | 218 ++++++++++++++++
+ experiments/observation_terminal_v1/baselines.py   | 220 +++++++++++++++++
+ .../observation_terminal_v1/dataset_terminal.py    | 265 ++++++++++++++++++++
+ .../observation_terminal_v1/deliverables.py        | 203 +++++++++++++++
+ .../observation_terminal_v1/evaluate_terminal.py   | 274 +++++++++++++++++++++
+ experiments/observation_terminal_v1/make_bundle.py | 170 +++++++++++++
+ experiments/observation_terminal_v1/replay.py      | 171 +++++++++++++
+ .../observation_terminal_v1/train_terminal.py      | 255 +++++++++++++++++++
+ .../phase_c_frozen/contract_score.py               | 103 ++++++++
+ .../phase_c_frozen/recompute_frozen_c.py           |  65 +----
+ .../phase_c_frozen/run_frozen_c.py                 |  32 +--
+ .../phase_c_frozen/verify_scoring.py               |  80 ++++++
+ .../phase_c_frozen_scoring_check.json              |  31 +++
+ src/coimagine/local_contact_option/option.py       |  13 +
+ tests/test_observation_terminal_v1.py              | 262 ++++++++++++++++++++
+ 16 files changed, 2284 insertions(+), 78 deletions(-)

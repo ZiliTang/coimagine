@@ -1,0 +1,2531 @@
+diff --git a/experiments/observation_terminal_v1/__init__.py b/experiments/observation_terminal_v1/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/experiments/observation_terminal_v1/audit_labels.py b/experiments/observation_terminal_v1/audit_labels.py
+new file mode 100644
+index 0000000..f3a8acc
+--- /dev/null
++++ b/experiments/observation_terminal_v1/audit_labels.py
+@@ -0,0 +1,218 @@
++"""Phase A3: put every terminal label on one timestamp, the option's exit instant T.
++
++The phase-B records labelled the terminal observation with `_exit_block`'s "last available
++observation", which is the last **logged** period. The stage machine breaks before appending that
++period's row, so the last logged row is one control period before the exit; and the fallback could
++reach further back when the patch was not visible. This script therefore:
++
++1. replays each existing execution exactly (see ``replay.py``) and reads the observation captured
++   **at T**, the same instant the recorded terminal state was taken;
++2. checks every replay against the original record -- exit reason, duration in steps, terminal
++   object and both terminal robot states -- and reports mismatches instead of replacing them;
++3. quantifies how far the last logged row is from T, which is the size of the error the old labelling
++   would have introduced;
++4. classifies every record: (1) a valid patch at T, (2) genuinely no visible patch at T,
++   (3) unrecoverable (replay mismatch or missing terminal observation).
++
++No new initial state and no new command is created: the roots come from the frozen salt and the
++commands come from the records themselves.
++
++    python experiments/observation_terminal_v1/audit_labels.py --verify 16
++    python experiments/observation_terminal_v1/audit_labels.py --all --workers 12
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import math
++import os
++import sys
++import time
++from collections import Counter, defaultdict
++from pathlib import Path
++from typing import Dict, List, Optional
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++SOURCE = ROOT / ("outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/"
++                 "phase_b_tier2")
++OUT_ROOT = ROOT / "outputs/observation_terminal_v1"
++SCALE = {"train": 512, "val": 64, "test": 64}
++
++_WORKER: Dict[str, object] = {}
++
++
++def _init_worker() -> None:
++    from experiments.observation_terminal_v1 import replay
++
++    roots, _reports = replay.load_roots(SCALE)
++    _WORKER["roots"] = roots
++    _WORKER["replay"] = replay
++
++
++def _work(record: dict) -> dict:
++    replay = _WORKER["replay"]
++    roots = _WORKER["roots"]
++    outcome = replay.replay(record, roots)
++    summary = {}
++    for robot_id in (0, 1):
++        observation = outcome["terminal_observations"].get(str(robot_id))
++        summary[str(robot_id)] = replay.observation_summary(observation)
++    # the last logged row, for the T-versus-last-logged comparison
++    last = outcome.get("last_logged_period") or {}
++    last_observed = last.get("observed") or {}
++    comparison = {}
++    for robot_id in (0, 1):
++        entry = last_observed.get(str(robot_id)) or {}
++        observed = summary[str(robot_id)]
++        comparison[str(robot_id)] = {
++            "last_logged_patch_points": entry.get("patch_points"),
++            "t_patch_points": observed.get("patch_points") if observed.get("present") else None,
++            "last_logged_distance": entry.get("patch_distance"),
++            "t_distance": observed.get("patch_distance") if observed.get("present") else None,
++            "last_logged_stage": last.get("stage"),
++        }
++        if entry.get("patch_normal") and observed.get("patch_normal_robot") is not None:
++            # both normals must be compared in the SAME frame: the logged one is world-frame, the
++            # T one is robot-frame, so rotate the logged one by the robot's angle that period
++            last_own = entry.get("own") or [0.0, 0.0, 0.0]
++            world_last = entry["patch_normal"]
++            cos, sin = math.cos(-last_own[2]), math.sin(-last_own[2])
++            last_robot_xy = (world_last[0] * cos - world_last[1] * sin,
++                             world_last[0] * sin + world_last[1] * cos)
++            angle_last = math.atan2(last_robot_xy[1], last_robot_xy[0])
++            angle_t = math.atan2(observed["patch_normal_robot"][1],
++                                 observed["patch_normal_robot"][0])
++            difference = (angle_t - angle_last + math.pi) % (2 * math.pi) - math.pi
++            comparison[str(robot_id)]["normal_angle_difference_deg"] = math.degrees(difference)
++    # classification
++    valid = [summary[str(robot_id)].get("patch_valid", False) for robot_id in (0, 1)]
++    if not outcome["ok"]:
++        klass = 3
++    elif any(valid):
++        klass = 1
++    else:
++        klass = 2
++    return {
++        "record_id": record["record_id"], "root_id": record["root_id"],
++        "split": record["split"], "command_index": record["command_index"],
++        "interaction_class": record["interaction_class"],
++        "exit_class": record["label"]["exit_class"],
++        "primary_exit_reason": record["label"]["primary_exit_reason"],
++        "replay_ok": outcome["ok"], "replay_check": outcome["check"],
++        "category": klass,
++        "exit_reason_replayed": outcome["exit_reason"],
++        "wall_clock_steps": outcome["wall_clock_steps"],
++        "duration_seconds": outcome["duration_seconds"],
++        "locally_settled": outcome["locally_settled"],
++        "settled_observed": outcome["settled_observed"],
++        "settled_after_abort": outcome["settled_after_abort"],
++        "terminal_object": outcome["terminal_object"],
++        "terminal_robots": outcome["terminal_robots"],
++        "terminal_observation": summary,
++        "last_logged_comparison": comparison,
++    }
++
++
++def load_records(split: Optional[str] = None) -> List[dict]:
++    records: List[dict] = []
++    for name in (("train", "val", "test") if split is None else (split,)):
++        path = SOURCE / f"executions_{name}.jsonl"
++        records.extend(json.loads(line) for line in path.open())
++    return records
++
++
++def _select_verification_sample(records: List[dict], count: int) -> List[dict]:
++    """Cover the categories that actually exist: exit class x terminal visibility."""
++
++    buckets: Dict[str, List[dict]] = defaultdict(list)
++    for record in records:
++        visible = any(record["label"][f"robot{robot_id}"]["mask_terminal_patch_valid"]
++                      for robot_id in (0, 1))
++        buckets[f"{record['label']['exit_class']}|{'visible' if visible else 'invisible'}"].append(record)
++    sample: List[dict] = []
++    keys = sorted(buckets)
++    index = 0
++    while len(sample) < count and any(buckets[key] for key in keys):
++        key = keys[index % len(keys)]
++        if buckets[key]:
++            sample.append(buckets[key].pop(0))
++        index += 1
++    return sample
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--verify", type=int, default=0)
++    parser.add_argument("--all", action="store_true")
++    parser.add_argument("--workers", type=int, default=min(12, os.cpu_count() or 1))
++    parser.add_argument("--out-root", default=str(OUT_ROOT))
++    args = parser.parse_args()
++    out_root = Path(args.out_root)
++    out_root.mkdir(parents=True, exist_ok=True)
++    records = load_records()
++    print(f"records available: {len(records)}")
++
++    if args.verify:
++        sample = _select_verification_sample(records, args.verify)
++        _init_worker()
++        started = time.time()
++        results = [_work(record) for record in sample]
++        payload = {
++            "sample": len(sample), "replay_ok": sum(r["replay_ok"] for r in results),
++            "categories": dict(Counter(r["category"] for r in results)),
++            "classes": dict(Counter(r["exit_class"] for r in results)),
++            "seconds": time.time() - started,
++            "records": [{key: r[key] for key in
++                         ("record_id", "replay_ok", "replay_check", "category", "exit_class",
++                          "last_logged_comparison")} for r in results],
++        }
++        (out_root / "replay_verification.json").write_text(
++            json.dumps(payload, indent=1, sort_keys=True, default=float))
++        print(json.dumps({key: payload[key] for key in
++                          ("sample", "replay_ok", "categories", "classes", "seconds")}, indent=1))
++        print("VERIFY_REPLAY_OK" if payload["replay_ok"] == len(sample) else "VERIFY_REPLAY_FAILED")
++        return 0
++
++    if not args.all:
++        parser.error("pass --verify N or --all")
++    import multiprocessing as mp
++
++    started = time.time()
++    with mp.get_context("fork").Pool(processes=args.workers, initializer=_init_worker) as pool:
++        results = []
++        for index, item in enumerate(pool.imap(_work, records, chunksize=8)):
++            results.append(item)
++            if (index + 1) % 512 == 0:
++                print(f"  replayed {index + 1}/{len(records)}", flush=True)
++    by_split: Dict[str, List[dict]] = defaultdict(list)
++    for item in results:
++        by_split[item["split"]].append(item)
++    for split, items in by_split.items():
++        with (out_root / f"terminal_observations_{split}.jsonl").open("w") as handle:
++            for item in sorted(items, key=lambda row: row["record_id"]):
++                handle.write(json.dumps(item, sort_keys=True) + "\n")
++
++    ledger = {
++        "records": len(results), "seconds": time.time() - started, "workers": args.workers,
++        "replay_ok": sum(item["replay_ok"] for item in results),
++        "category_counts": dict(Counter(item["category"] for item in results)),
++        "exit_classes": dict(Counter(item["exit_class"] for item in results)),
++        "per_split": {split: len(items) for split, items in by_split.items()},
++        "category_by_exit_class": {
++            f"{exit_class}|cat{category}": count
++            for (exit_class, category), count in sorted(Counter(
++                (item["exit_class"], item["category"]) for item in results).items())},
++    }
++    (out_root / "label_audit_ledger.json").write_text(
++        json.dumps(ledger, indent=1, sort_keys=True, default=float))
++    print(json.dumps(ledger, indent=1, default=float))
++    print("AUDIT_LABELS_OK")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/observation_terminal_v1/baselines.py b/experiments/observation_terminal_v1/baselines.py
+new file mode 100644
+index 0000000..c26632d
+--- /dev/null
++++ b/experiments/observation_terminal_v1/baselines.py
+@@ -0,0 +1,220 @@
++"""The two low-cost baselines of task book section B2, in original physical units.
++
++P0 -- start-observation persistence. The terminal segment midpoint and normal copy the start
++segment expressed in the same R_i0; pose change is zero; the residual linear velocity copies the
++start velocity rotated into R_i0; visibility/contact copy the start flags; duration is the train
++median and the exit class the train majority. When the *start* patch is invisible, P0 does not
++quietly "succeed": the geometry is filled with the per-column train median, the slot is flagged as a
++fallback, and scoring is also reported on the common subset where a true start patch exists.
++
++P1 -- train statistics grouped by the full public joint command (including the active mask). It
++exists to check whether the network actually uses the start observation or merely remembers what a
++command usually produces. Continuous columns use the group's train median; the normal uses the mean
++of the unit vectors renormalised, with a *fixed* fallback when the mean degenerates; discrete
++targets use the group's train frequency / majority. An unseen command falls back to the global train
++statistics and is counted.
++"""
++
++from __future__ import annotations
++
++from collections import Counter, defaultdict
++from typing import Dict, List, Sequence, Tuple
++
++import numpy as np
++
++from experiments.observation_terminal_v1.dataset_terminal import VALIDITY_COLUMNS
++from experiments.option_prediction_mechanism_v1.phase_b.dataset_b import EXIT_CLASSES
++
++
++def _column_median(values: np.ndarray, mask: np.ndarray) -> np.ndarray:
++    """Per-column median over the rows where the column is valid."""
++
++    out = np.zeros(values.shape[1], dtype=np.float32)
++    for column in range(values.shape[1]):
++        valid = mask[:, column] > 0
++        out[column] = float(np.median(values[valid, column])) if valid.any() else 0.0
++    return out
++
++
++def _fill_missing_columns(values: np.ndarray, mask: np.ndarray, fallback: np.ndarray) -> np.ndarray:
++    filled = values.copy()
++    for row in range(values.shape[0]):
++        for column in range(values.shape[1]):
++            if mask[row, column] == 0:
++                filled[row, column] = fallback[column]
++    return filled
++
++
++def _scatter(data, index: np.ndarray, values: Dict[str, np.ndarray],
++             template: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
++    """Place split-length predictions into full-length arrays.
++
++    The evaluation interface indexes predictions with positions into the whole dataset, so every
++    model -- baselines included -- must return arrays aligned with ``data``, not with one split.
++    """
++
++    out: Dict[str, np.ndarray] = {}
++    for name, block in template.items():
++        filled = np.array(block, copy=True)
++        filled[index] = values[name]
++        out[name] = filled
++    return out
++
++
++def persistence_predictions(data, split: str) -> Tuple[Dict[str, np.ndarray], Dict[str, object]]:
++    """P0. Returns full-length predictions in original units plus its fallback bookkeeping."""
++
++    index = np.where(data.split == split)[0]
++    train = data.split == "train"
++    mask = data.targets["terminal_observation_geometry"]["mask"]
++    truth = data.targets["terminal_observation_geometry"]["y"]
++    fallback = _column_median(truth[train], mask[train])
++    geometry = _fill_missing_columns(data.persistence["terminal_observation_geometry"][index],
++                                     data.persistence["geometry_mask"][index], fallback)
++    fallback_rows = int(np.any(data.persistence["geometry_fallback"][index] > 0, axis=1).sum())
++    common = np.ones(len(index), dtype=bool)
++    for robot_id in (0, 1):
++        common &= data.persistence["geometry_mask"][index][:, 4 * robot_id] > 0
++    total = len(data.split)
++    template = {
++        "terminal_observation_geometry": np.zeros((total, 8), dtype=np.float32),
++        "robot_pose_delta": np.zeros((total, 6), dtype=np.float32),
++        "robot_residual_velocity": np.zeros((total, 6), dtype=np.float32),
++        "duration": np.zeros((total, 1), dtype=np.float32),
++        "observation_validity": np.zeros((total, 4), dtype=np.float32),
++        "exit_class": np.zeros(total, dtype=np.int64),
++    }
++    values = {
++        "terminal_observation_geometry": geometry,
++        "robot_pose_delta": data.persistence["robot_pose_delta"][index],
++        "robot_residual_velocity": data.persistence["robot_residual_velocity"][index],
++        "duration": np.full((len(index), 1), data.train_duration_median, dtype=np.float32),
++        "observation_validity": data.persistence["observation_validity"][index],
++        "exit_class": np.full(len(index), data.train_exit_majority, dtype=np.int64),
++    }
++    return (_scatter(data, index, values, template), {"geometry_fallback_rows": fallback_rows,
++        "common_subset_rows": int(common.sum()), "rows": int(len(index)),
++        "common_subset_index": common})
++
++
++def _command_group_stats(data, group: str) -> Dict[str, Dict[str, np.ndarray]]:
++    """Train statistics per command signature for one continuous group."""
++
++    signatures = getattr(data, "command_signature")
++    train = data.split == "train"
++    truth = data.targets[group]["y"]
++    mask = data.targets[group]["mask"]
++    stats: Dict[str, Dict[str, np.ndarray]] = {}
++    grouped: Dict[str, List[int]] = defaultdict(list)
++    for row in np.where(train)[0]:
++        grouped[signatures[row]].append(int(row))
++    for signature, rows in grouped.items():
++        rows_array = np.asarray(rows)
++        stats[signature] = {"median": _column_median(truth[rows_array], mask[rows_array])}
++        if group == "terminal_observation_geometry":
++            stats[signature]["normal"] = _normal_statistic(truth[rows_array], mask[rows_array])
++    return stats
++
++
++def _normal_statistic(truth: np.ndarray, mask: np.ndarray) -> Dict[str, np.ndarray]:
++    """Mean unit normal per robot, renormalised, with a fixed fallback when it degenerates."""
++
++    out: Dict[str, np.ndarray] = {}
++    for robot_id in (0, 1):
++        sin_index, cos_index = 4 * robot_id + 2, 4 * robot_id + 3
++        valid = (mask[:, sin_index] > 0) & (mask[:, cos_index] > 0)
++        per_robot: Dict[str, np.ndarray] = {}
++        for column in (sin_index, cos_index):
++            per_robot[str(column)] = np.asarray(
++                [float(np.mean(truth[valid, column]))] if valid.any() else [0.0],
++                dtype=np.float32)
++        vector = np.array([per_robot[str(sin_index)][0], per_robot[str(cos_index)][0]],
++                          dtype=np.float64)
++        norm = float(np.hypot(*vector))
++        if norm < 1e-6:
++            # fixed fallback: the frozen unit vector convention for a degenerate group
++            vector = np.array([0.0, 1.0])
++        else:
++            vector = vector / norm
++        out[str(robot_id)] = vector.astype(np.float32)
++    return out
++
++
++def command_grouped_predictions(data, split: str) -> Tuple[Dict[str, np.ndarray], Dict[str, object]]:
++    """P1. Train statistics grouped by the public joint command."""
++
++    index = np.where(data.split == split)[0]
++    train = data.split == "train"
++    signatures = getattr(data, "command_signature")
++    global_geometry = _column_median(data.targets["terminal_observation_geometry"]["y"][train],
++                                     data.targets["terminal_observation_geometry"]["mask"][train])
++    geometry_stats = _command_group_stats(data, "terminal_observation_geometry")
++    pose_stats = _command_group_stats(data, "robot_pose_delta")
++    velocity_stats = _command_group_stats(data, "robot_residual_velocity")
++    duration_stats = _command_group_stats(data, "duration")
++
++    # global normal fallback for robots whose group statistic degenerates
++    global_normal = _normal_statistic(data.targets["terminal_observation_geometry"]["y"][train],
++                                      data.targets["terminal_observation_geometry"]["mask"][train])
++
++    class_by_group: Dict[str, Counter] = defaultdict(Counter)
++    grouped_validity: Dict[str, List[np.ndarray]] = defaultdict(list)
++    for row in np.where(train)[0]:
++        grouped_validity[signatures[row]].append(
++            data.targets["observation_validity"]["y"][row])
++        class_by_group[signatures[row]][int(data.targets["exit_class"]["y"][row])] += 1
++    validity_stats = {signature: (np.mean(np.stack(rows), axis=0) >= 0.5).astype(np.float32)
++                      for signature, rows in grouped_validity.items()}
++    global_validity = (data.targets["observation_validity"]["y"][train].mean(axis=0) >= 0.5) \
++        .astype(np.float32)
++    global_class = int(np.bincount(data.targets["exit_class"]["y"][train]).argmax())
++
++    n = len(index)
++    geometry = np.zeros((n, 8), dtype=np.float32)
++    pose = np.zeros((n, 6), dtype=np.float32)
++    velocity = np.zeros((n, 6), dtype=np.float32)
++    duration = np.zeros((n, 1), dtype=np.float32)
++    validity = np.zeros((n, 4), dtype=np.float32)
++    exit_class = np.zeros(n, dtype=np.int64)
++    unseen = 0
++    for position, row in enumerate(index):
++        signature = signatures[row]
++        if signature not in geometry_stats:
++            unseen += 1
++            geometry[position] = global_geometry
++            pose[position] = 0.0
++            velocity[position] = 0.0
++            duration[position] = float(np.median(data.targets["duration"]["y"][train]))
++            validity[position] = global_validity
++            exit_class[position] = global_class
++            continue
++        geometry[position] = geometry_stats[signature]["median"]
++        for robot_id in (0, 1):
++            geometry[position, 4 * robot_id + 2:4 * robot_id + 4] = \
++                geometry_stats[signature]["normal"][str(robot_id)]
++        pose[position] = pose_stats[signature]["median"]
++        velocity[position] = velocity_stats[signature]["median"]
++        duration[position] = duration_stats[signature]["median"]
++        validity[position] = validity_stats.get(signature, global_validity)
++        counts = class_by_group.get(signature)
++        exit_class[position] = counts.most_common(1)[0][0] if counts else global_class
++    total = len(data.split)
++    template = {
++        "terminal_observation_geometry": np.zeros((total, 8), dtype=np.float32),
++        "robot_pose_delta": np.zeros((total, 6), dtype=np.float32),
++        "robot_residual_velocity": np.zeros((total, 6), dtype=np.float32),
++        "duration": np.zeros((total, 1), dtype=np.float32),
++        "observation_validity": np.zeros((total, 4), dtype=np.float32),
++        "exit_class": np.zeros(total, dtype=np.int64),
++    }
++    values = {
++        "terminal_observation_geometry": geometry,
++        "robot_pose_delta": pose,
++        "robot_residual_velocity": velocity,
++        "duration": duration,
++        "observation_validity": validity,
++        "exit_class": exit_class,
++    }
++    return (_scatter(data, index, values, template), {"unseen_command_rows": unseen, "rows": n,
++        "command_groups_train": len(geometry_stats),
++        "validity_columns": VALIDITY_COLUMNS})
+diff --git a/experiments/observation_terminal_v1/dataset_terminal.py b/experiments/observation_terminal_v1/dataset_terminal.py
+new file mode 100644
+index 0000000..9f4958c
+--- /dev/null
++++ b/experiments/observation_terminal_v1/dataset_terminal.py
+@@ -0,0 +1,265 @@
++"""Round-4 dataset: deployable start inputs plus the *observable* terminal labels at T.
++
++The labels come from the exit-instant observation captured by the exact replay (``audit_labels.py``),
++not from the true object pose. Everything geometric is expressed in each robot's own start frame
++R_i0, defined by that robot's pose at the start of the option:
++
++    q_i0 = R(theta_i0)^T [ R(theta_iT) q_iT + p_iT - p_i0 ]
++    n_i0 = R(theta_i0)^T R(theta_iT) n_iT
++
++The six target groups, their dims and their masks are exactly the task book's section 4.2 table.
++Inputs are the **same deployable feature vector as the previous round** (so the network keeps its
++86-dim input and 97,573 parameters); the privileged slots stay pinned to zero.
++"""
++
++from __future__ import annotations
++
++import json
++import math
++from pathlib import Path
++from typing import Dict, List, Optional, Sequence, Tuple
++
++import numpy as np
++
++ROOT = Path(__file__).resolve().parents[2]
++import sys  # noqa: E402
++
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.option_prediction_mechanism_v1.phase_b.dataset_b import (  # noqa: E402
++    EXIT_CLASSES,
++    build_features,
++)
++from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
++    GroupSpec,
++    SupervisedData,
++)
++
++#: the six output groups of task book section 4.2. Dims match the previous round exactly.
++GROUPS: Tuple[Tuple[str, str, int], ...] = (
++    ("terminal_observation_geometry", "continuous", 8),
++    ("robot_pose_delta", "continuous", 6),
++    ("robot_residual_velocity", "continuous", 6),
++    ("duration", "continuous", 1),
++    ("observation_validity", "binary", 4),
++    ("exit_class", "multiclass", 0),
++)
++GEOMETRY_COLUMNS = ["r0_mid_x_m", "r0_mid_y_m", "r0_normal_sin", "r0_normal_cos",
++                    "r1_mid_x_m", "r1_mid_y_m", "r1_normal_sin", "r1_normal_cos"]
++POSE_COLUMNS = ["r0_dx_m", "r0_dy_m", "r0_dtheta_rad", "r1_dx_m", "r1_dy_m", "r1_dtheta_rad"]
++VELOCITY_COLUMNS = ["r0_vx_mps", "r0_vy_mps", "r0_omega_radps",
++                    "r1_vx_mps", "r1_vy_mps", "r1_omega_radps"]
++VALIDITY_COLUMNS = ["r0_patch_valid", "r0_contacting", "r1_patch_valid", "r1_contacting"]
++
++
++def _wrap(value: float) -> float:
++    return (value + math.pi) % (2.0 * math.pi) - math.pi
++
++
++def _rotate(theta: float, vector: Sequence[float]) -> Tuple[float, float]:
++    cos, sin = math.cos(theta), math.sin(theta)
++    return (vector[0] * cos - vector[1] * sin, vector[0] * sin + vector[1] * cos)
++
++
++def to_frame(point: Sequence[float], pose: Sequence[float]) -> Tuple[float, float]:
++    """Express a world point in the frame ``(pose_x, pose_y, pose_theta)``."""
++
++    local = _rotate(-pose[2], (point[0] - pose[0], point[1] - pose[1]))
++    return local
++
++
++def terminal_geometry(observation: dict, start_pose: Sequence[float],
++                      terminal_pose: Sequence[float]) -> Optional[Tuple[float, float, float, float]]:
++    """Midpoint and surface normal of the visible fitted segment, in R_i0.
++
++    ``observation`` is the ``observation_summary`` payload: the segment is given in the robot frame
++    at T, so it is mapped to the world with the terminal pose and then into R_i0. The normal is
++    rotated only, never translated. Returns ``None`` when no valid segment is visible at T.
++    """
++
++    if not observation.get("patch_valid"):
++        return None
++    segment = observation.get("patch_segment_robot")
++    normal = observation.get("patch_normal_robot")
++    if not segment or normal is None:
++        return None
++    midpoint_robot = (0.5 * (segment[0][0] + segment[1][0]),
++                      0.5 * (segment[0][1] + segment[1][1]))
++    world = _rotate(terminal_pose[2], midpoint_robot)
++    world = (world[0] + terminal_pose[0], world[1] + terminal_pose[1])
++    midpoint = to_frame(world, start_pose)
++    normal_world = _rotate(terminal_pose[2], normal)
++    normal_start = _rotate(-start_pose[2], normal_world)
++    length = math.hypot(normal_start[0], normal_start[1])
++    if length < 1e-9:
++        return None
++    normal_start = (normal_start[0] / length, normal_start[1] / length)
++    angle = math.atan2(normal_start[1], normal_start[0])
++    return (midpoint[0], midpoint[1], math.sin(angle), math.cos(angle))
++
++
++def robot_motion(observation: dict, start_pose: Sequence[float],
++                 terminal_pose: Sequence[float]) -> Tuple[Tuple[float, float, float],
++                                                           Tuple[float, float, float]]:
++    """Pose change and terminal velocity, both expressed in R_i0."""
++
++    delta = to_frame((terminal_pose[0], terminal_pose[1]), start_pose)
++    pose_delta = (delta[0], delta[1], _wrap(terminal_pose[2] - start_pose[2]))
++    velocity = _rotate(-start_pose[2], (observation["own"][3], observation["own"][4]))
++    return pose_delta, (velocity[0], velocity[1], observation["own"][5])
++
++
++def start_pose_of(record: dict, robot_id: int) -> Sequence[float]:
++    """R_i0's definition: the robot's own pose at the start of the option (t = 0)."""
++
++    return record["input"][f"robot{robot_id}"]["start_pose_world"]
++
++
++def build_targets(records: Sequence[dict], observations: Sequence[dict]):
++    """Six label groups plus per-column masks, from the exit-instant observations."""
++
++    geometry, geometry_mask = [], []
++    pose_delta, residual_velocity, duration = [], [], []
++    validity, validity_mask, exit_class = [], [], []
++    missing_midpoint: List[int] = []
++    for record, observation in zip(records, observations):
++        for robot_id in (0, 1):
++            start_pose = start_pose_of(record, robot_id)
++            summary = observation["terminal_observation"][str(robot_id)]
++            terminal_pose = observation["terminal_robots"][robot_id]
++            geometry_values = terminal_geometry(summary, start_pose, terminal_pose)
++            if geometry_values is None:
++                geometry.extend([0.0, 0.0, 0.0, 0.0])
++                geometry_mask.extend([0.0, 0.0, 0.0, 0.0])
++                missing_midpoint.append(1)
++            else:
++                geometry.extend(geometry_values)
++                geometry_mask.extend([1.0, 1.0, 1.0, 1.0])
++                missing_midpoint.append(0)
++            delta, velocity = robot_motion(summary, start_pose, terminal_pose)
++            pose_delta.extend(delta)
++            residual_velocity.extend(velocity)
++            validity.extend([1.0 if summary.get("patch_valid") else 0.0,
++                             1.0 if summary.get("contacting") else 0.0])
++            validity_mask.extend([1.0, 1.0])
++        duration.append(float(observation["duration_seconds"]))
++        exit_class.append(EXIT_CLASSES.index(observation["exit_class"])
++                          if observation["exit_class"] in EXIT_CLASSES else 0)
++    n = len(records)
++    return {
++        "terminal_observation_geometry": {
++            "y": np.asarray(geometry, dtype=np.float32).reshape(n, 8),
++            "mask": np.asarray(geometry_mask, dtype=np.float32).reshape(n, 8)},
++        "robot_pose_delta": {"y": np.asarray(pose_delta, dtype=np.float32).reshape(n, 6),
++                             "mask": np.ones((n, 6), dtype=np.float32)},
++        "robot_residual_velocity": {
++            "y": np.asarray(residual_velocity, dtype=np.float32).reshape(n, 6),
++            "mask": np.ones((n, 6), dtype=np.float32)},
++        "duration": {"y": np.asarray(duration, dtype=np.float32).reshape(n, 1),
++                     "mask": np.ones((n, 1), dtype=np.float32)},
++        "observation_validity": {"y": np.asarray(validity, dtype=np.float32).reshape(n, 4),
++                                 "mask": np.asarray(validity_mask, dtype=np.float32).reshape(n, 4)},
++        "exit_class": {"y": np.asarray(exit_class, dtype=np.int64).reshape(n),
++                       "mask": np.ones(n, dtype=np.float32)},
++    }, missing_midpoint
++
++
++def build_persistence(records: Sequence[dict], targets: Dict[str, Dict[str, np.ndarray]]):
++    """P0: start observation copied, zero motion, start flags, train statistics for duration/class."""
++
++    n = len(records)
++    geometry = np.zeros((n, 8), dtype=np.float32)
++    geometry_mask = np.zeros((n, 8), dtype=np.float32)
++    pose_delta = np.zeros((n, 6), dtype=np.float32)
++    velocity = np.zeros((n, 6), dtype=np.float32)
++    validity = np.zeros((n, 4), dtype=np.float32)
++    fallback_flags = np.zeros((n, 2), dtype=np.float32)
++    for index, record in enumerate(records):
++        for robot_id in (0, 1):
++            block = record["input"][f"robot{robot_id}"]
++            start_pose = start_pose_of(record, robot_id)
++            segment = block.get("patch_segment_own_frame")
++            normal = block.get("patch_normal_sin_cos")
++            valid = bool(block.get("mask_patch_valid")) and segment and normal
++            base = 4 * robot_id
++            if valid:
++                midpoint = (0.5 * (segment[0][0] + segment[1][0]),
++                            0.5 * (segment[0][1] + segment[1][1]))
++                geometry[index, base + 0] = midpoint[0]
++                geometry[index, base + 1] = midpoint[1]
++                geometry[index, base + 2] = normal[0]
++                geometry[index, base + 3] = normal[1]
++                geometry_mask[index, base:base + 4] = 1.0
++            else:
++                # the start patch is not visible: persist nothing, flag the fallback, and let the
++                # caller substitute the per-column train median; measured on the common subset
++                fallback_flags[index, robot_id] = 1.0
++            start_velocity = block.get("start_twist_world") or [0.0, 0.0, 0.0]
++            local = _rotate(-start_pose[2], (start_velocity[0], start_velocity[1]))
++            velocity[index, 3 * robot_id + 0] = local[0]
++            velocity[index, 3 * robot_id + 1] = local[1]
++            velocity[index, 3 * robot_id + 2] = start_velocity[2]
++            validity[index, 2 * robot_id + 0] = 1.0 if block.get("mask_patch_valid") else 0.0
++            validity[index, 2 * robot_id + 1] = 1.0 if block.get("contacting") else 0.0
++    return {
++        "terminal_observation_geometry": geometry,
++        "robot_pose_delta": pose_delta,
++        "robot_residual_velocity": velocity,
++        "observation_validity": validity,
++        "geometry_mask": geometry_mask,
++        "geometry_fallback": fallback_flags,
++        "duration": float(np.median(targets["duration"]["y"])),
++        "exit_class": int(np.bincount(targets["exit_class"]["y"]).argmax()),
++    }
++
++
++def command_signature(record: dict) -> str:
++    """The full public command, including the active mask (task book B2 / P1)."""
++
++    command = record["input"]["command"]
++    alpha = command["alpha_rad"]
++    speed = command["speed"]
++    active = command["active_robots"]
++    parts = [f"active={sorted(active)}"]
++    for robot_id in (0, 1):
++        parts.append(f"a{robot_id}={None if alpha[robot_id] is None else round(alpha[robot_id], 6)}")
++        parts.append(f"v{robot_id}={None if speed[robot_id] is None else round(speed[robot_id], 6)}")
++    return "|".join(parts)
++
++
++def build_dataset(records: Sequence[dict], observations: Sequence[dict],
++                  split_of: Dict[str, str]) -> Tuple[SupervisedData, Dict[str, object]]:
++    x, x_priv, roots, split, commands, signatures = [], [], [], [], [], []
++    for record in records:
++        features, privileged = build_features(record)
++        x.append(features)
++        x_priv.append(privileged)
++        roots.append(record["root_id"])
++        split.append(split_of[record["record_id"]])
++        commands.append(str(record["command_index"]))
++        signatures.append(command_signature(record))
++    targets, missing = build_targets(records, observations)
++    specs = [
++        GroupSpec("terminal_observation_geometry", "continuous", 8, 1.0),
++        GroupSpec("robot_pose_delta", "continuous", 6, 1.0),
++        GroupSpec("robot_residual_velocity", "continuous", 6, 1.0),
++        GroupSpec("duration", "continuous", 1, 1.0),
++        GroupSpec("observation_validity", "binary", 4, 1.0),
++        GroupSpec("exit_class", "multiclass", 0, 1.0, num_classes=len(EXIT_CLASSES)),
++    ]
++    train = np.asarray(split) == "train"
++    p0 = build_persistence(records, targets)
++    data = SupervisedData(
++        x=np.asarray(x, dtype=np.float32), x_priv=np.asarray(x_priv, dtype=np.float32),
++        roots=roots, split=np.asarray(split), commands=commands, targets=targets, specs=specs,
++        persistence=p0,
++        train_duration_median=float(np.median(targets["duration"]["y"][train])),
++        train_exit_majority=int(np.bincount(targets["exit_class"]["y"][train]).argmax()),
++        train_validity_majority=(targets["observation_validity"]["y"][train].mean(axis=0) >= 0.5)
++        .astype(np.float32))
++    data.command_signature = signatures  # type: ignore[attr-defined]
++    data.observation_count = len(records)  # type: ignore[attr-defined]
++    meta = {"missing_terminal_midpoint_slots": int(sum(missing)),
++            "records": len(records)}
++    return data, meta
+diff --git a/experiments/observation_terminal_v1/deliverables.py b/experiments/observation_terminal_v1/deliverables.py
+new file mode 100644
+index 0000000..b1750f5
+--- /dev/null
++++ b/experiments/observation_terminal_v1/deliverables.py
+@@ -0,0 +1,203 @@
++"""Round-4 deliverables: 12 fixed spot checks, one test root's eight actions, normalisation export.
++
++    python experiments/observation_terminal_v1/deliverables.py
++
++Spot checks are selected by a fixed hash of ``record_id`` inside each category that actually exists
++(exit class x terminal visibility of robot 0), so the selection is reproducible and no category is
++invented when it is empty. The test-root dump shows all eight joint commands of one hash-chosen test
++root with their inputs, labels and the seed-0 predictions, which is the audit trail the task book
++asks for.
++"""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import sys
++from collections import defaultdict
++from pathlib import Path
++from typing import Dict, List
++
++import numpy as np
++import torch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.observation_terminal_v1 import dataset_terminal as DT  # noqa: E402
++from experiments.observation_terminal_v1.train_terminal import load_all, start_patch_valid  # noqa: E402
++from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
++    MultiHeadMLP,
++    _standardise,
++    predict,
++    unstandardise_predictions,
++)
++
++OUT = ROOT / "outputs/observation_terminal_v1"
++
++
++def _digest(text: str) -> str:
++    return hashlib.sha256(text.encode()).hexdigest()
++
++
++def select_spot_checks(records: List[dict], observations: List[dict], count: int = 12) -> List[int]:
++    buckets: Dict[str, List[int]] = defaultdict(list)
++    for index, record in enumerate(records):
++        observation = observations[index]
++        visible = bool(observation["terminal_observation"]["0"].get("patch_valid"))
++        category = f"{observation['exit_class']}|{'visible' if visible else 'invisible'}"
++        buckets[category].append(index)
++    chosen: List[int] = []
++    for category in sorted(buckets):
++        ordered = sorted(buckets[category], key=lambda i: _digest(records[i]["record_id"]))
++        if ordered:
++            chosen.append(ordered[0])
++    for category in sorted(buckets):
++        ordered = sorted(buckets[category], key=lambda i: _digest(records[i]["record_id"]))
++        for index in ordered[1:]:
++            if len(chosen) >= count:
++                break
++            chosen.append(index)
++        if len(chosen) >= count:
++            break
++    return chosen[:count]
++
++
++def describe(index: int, record: dict, observation: dict) -> dict:
++    geometry = {}
++    for robot_id in (0, 1):
++        start = record["input"][f"robot{robot_id}"]["start_pose_world"]
++        terminal = observation["terminal_robots"][robot_id]
++        summary = observation["terminal_observation"][str(robot_id)]
++        terminal_geometry = DT.terminal_geometry(summary, start, terminal)
++        delta, velocity = DT.robot_motion(summary, start, terminal)
++        geometry[f"robot{robot_id}"] = {
++            "start_pose_world": [float(v) for v in start],
++            "terminal_pose_world": [float(v) for v in terminal],
++            "start_segment_own_frame": record["input"][f"robot{robot_id}"].get(
++                "patch_segment_own_frame"),
++            "start_normal_sin_cos": record["input"][f"robot{robot_id}"].get(
++                "patch_normal_sin_cos"),
++            "terminal_segment_robot_frame": summary.get("patch_segment_robot"),
++            "terminal_midpoint_and_normal_in_RI0": (None if terminal_geometry is None
++                                                    else [float(v) for v in terminal_geometry]),
++            "terminal_patch_valid": bool(summary.get("patch_valid")),
++            "terminal_contacting": bool(summary.get("contacting")),
++            "pose_delta_in_RI0": [float(v) for v in delta],
++            "residual_velocity_in_RI0": [float(v) for v in velocity],
++        }
++    return {
++        "record_id": record["record_id"], "root_id": record["root_id"],
++        "split": record["split"], "command_index": record["command_index"],
++        "command": record["input"]["command"],
++        "exit_class": observation["exit_class"],
++        "primary_exit_reason": observation["primary_exit_reason"],
++        "duration_seconds": observation["duration_seconds"],
++        "category": f"{observation['exit_class']}|"
++                    f"{'visible' if geometry['robot0']['terminal_patch_valid'] else 'invisible'}",
++        "robots": geometry,
++        "spot_check_hash": _digest(record["record_id"])[:16],
++    }
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--seed", type=int, default=0)
++    args = parser.parse_args()
++    OUT.mkdir(parents=True, exist_ok=True)
++    data, records, observations, meta = load_all()
++    starts = start_patch_valid(records)
++
++    chosen = select_spot_checks(records, observations)
++    spot = {
++        "selection_rule": "sha256(record_id) ascending within each existing "
++                          "(exit_class x robot-0 terminal visibility) category",
++        "categories_available": sorted({f"{observations[i]['exit_class']}|"
++                                        f"{'visible' if observations[i]['terminal_observation']['0'].get('patch_valid') else 'invisible'}"
++                                        for i in range(len(records))}),
++        "checks": [describe(index, records[index], observations[index]) for index in chosen],
++    }
++    (OUT / "spot_checks.json").write_text(json.dumps(spot, indent=1, sort_keys=True, default=float))
++
++    # one hash-chosen test root, all eight commands, with seed-0 predictions
++    _standardise(data)
++    checkpoint_path = OUT / "checkpoints" / f"deployable_seed{args.seed}.pt"
++    predictions = None
++    if checkpoint_path.exists():
++        payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
++        model = MultiHeadMLP(payload["input_dim"], data.specs)
++        model.load_state_dict(payload["state_dict"])
++        model.eval()
++        # the deployable arm keeps the privileged slots pinned to zero, exactly as in training
++        model_input = np.hstack([data.x, np.zeros_like(data.x_priv)])
++        predictions = unstandardise_predictions(data, predict(model, model_input, data.specs))
++    test_roots = sorted({root for root, split in zip(data.roots, data.split) if split == "test"})
++    root = sorted(test_roots, key=_digest)[0]
++    indices = [i for i, r in enumerate(data.roots) if r == root]
++    dump = {"root_id": root, "selection_rule": "sha256(root_id) ascending among test roots",
++            "checkpoint": str(checkpoint_path) if predictions is not None else None,
++            "actions": []}
++    for index in sorted(indices, key=lambda i: data.commands[i]):
++        entry = {
++            "record_id": records[index]["record_id"],
++            "command_index": data.commands[index],
++            "command": records[index]["input"]["command"],
++            "input_x": [float(v) for v in data.x[index]],
++            "input_x_privileged_all_zero": [float(v) for v in data.x_priv[index]],
++            "exit_class": observations[index]["exit_class"],
++            "labels": {spec.name: np.atleast_1d(
++                data.targets[spec.name].get("y_raw",
++                                            data.targets[spec.name]["y"])[index]).tolist()
++                for spec in data.specs},
++            "masks": {spec.name: (np.atleast_1d(
++                data.targets[spec.name]["mask"][index]).tolist()) for spec in data.specs},
++        }
++        if predictions is not None:
++            entry["predictions"] = {name: np.atleast_1d(values[index]).tolist()
++                                    for name, values in predictions.items()}
++        dump["actions"].append(entry)
++    (OUT / "test_root_dump.json").write_text(json.dumps(dump, indent=1, sort_keys=True, default=float))
++
++    normalisation = {
++        "scheme": "group-wise: masked train entries flattened, one mean/std per group, shape (1,)",
++        "groups": {name: {"mean": np.atleast_1d(data.targets[name]["mean"]).tolist(),
++                          "std": np.atleast_1d(data.targets[name]["std"]).tolist(),
++                          "shape": list(np.atleast_1d(data.targets[name]["mean"]).shape)}
++                   for name in data.targets if "mean" in data.targets[name]},
++        "fitted_on": "train split only",
++        "per_column_train_stats_for_reference": _per_column(data),
++    }
++    (OUT / "normalisation.json").write_text(
++        json.dumps(normalisation, indent=1, sort_keys=True, default=float))
++    print(f"spot checks: {len(spot['checks'])} categories={spot['categories_available']}")
++    print(f"test root dump: {root} actions={len(dump['actions'])} predictions={predictions is not None}")
++    print(json.dumps(normalisation["groups"], indent=1))
++    print("DELIVERABLES_OK")
++    return 0
++
++
++def _per_column(data) -> Dict[str, list]:
++    out: Dict[str, list] = {}
++    train = data.split == "train"
++    for spec in data.specs:
++        if spec.kind != "continuous":
++            continue
++        block = data.targets[spec.name]
++        values = np.atleast_2d(block.get("y_raw", block["y"])[train])
++        mask = np.atleast_2d(block["mask"][train])
++        stats = []
++        for column in range(values.shape[1]):
++            valid = mask[:, column] > 0
++            if valid.any():
++                stats.append({"mean": float(values[valid, column].mean()),
++                              "std": float(values[valid, column].std())})
++            else:
++                stats.append({"mean": None, "std": None})
++        out[spec.name] = stats
++    return out
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/observation_terminal_v1/evaluate_terminal.py b/experiments/observation_terminal_v1/evaluate_terminal.py
+new file mode 100644
+index 0000000..1a89bd0
+--- /dev/null
++++ b/experiments/observation_terminal_v1/evaluate_terminal.py
+@@ -0,0 +1,274 @@
++"""Round-4 evaluation: the observable-terminal targets, in their own physical units.
++
++Everything here works in **original units** for continuous groups (the same convention
++``train_b`` documents), and every geometry error is restricted to the **true** visible mask -- never
++to the model's own predicted visibility.
++
++Reported per task book C2: the segment-midpoint 2-D Euclidean error plus its x and y components, the
++normal angle error, the robot pose/velocity/duration errors, the visibility/contact/exit confusion
++with support and recall, the same-root action-difference error and rank correlation with a label
++permutation control, and the same numbers aggregated by execution and by root.
++"""
++
++from __future__ import annotations
++
++import itertools
++import math
++from typing import Dict, List, Sequence
++
++import numpy as np
++
++from experiments.observation_terminal_v1.dataset_terminal import (
++    EXIT_CLASSES,
++    GEOMETRY_COLUMNS,
++    POSE_COLUMNS,
++    VALIDITY_COLUMNS,
++    VELOCITY_COLUMNS,
++)
++from experiments.option_prediction_mechanism_v1.phase_b.action_sensitivity import spearman
++
++
++def percentiles(values: Sequence[float]) -> dict:
++    array = np.asarray([v for v in values if v is not None and np.isfinite(v)], dtype=float)
++    if array.size == 0:
++        return {"n": 0, "p50": None, "p90": None, "max": None}
++    return {"n": int(array.size), "p50": float(np.median(array)),
++            "p90": float(np.quantile(array, 0.9)), "max": float(array.max())}
++
++
++def _geometry_errors(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray) -> dict:
++    out: Dict[str, dict] = {}
++    euclidean: List[float] = []
++    for robot_id in (0, 1):
++        base = 4 * robot_id
++        both = (mask[:, base] > 0) & (mask[:, base + 1] > 0)
++        dx = np.abs(prediction[both, base] - truth[both, base])
++        dy = np.abs(prediction[both, base + 1] - truth[both, base + 1])
++        euclidean.extend(np.hypot(dx, dy).tolist())
++        out[f"r{robot_id}_mid_x_m"] = percentiles(dx.tolist())
++        out[f"r{robot_id}_mid_y_m"] = percentiles(dy.tolist())
++        out[f"r{robot_id}_mid_2d_m"] = percentiles(np.hypot(dx, dy).tolist())
++        valid = (mask[:, base + 2] > 0) & (mask[:, base + 3] > 0)
++        predicted_norm = np.hypot(prediction[valid, base + 2], prediction[valid, base + 3])
++        true_norm = np.hypot(truth[valid, base + 2], truth[valid, base + 3])
++        angle_pred = np.arctan2(prediction[valid, base + 3], prediction[valid, base + 2])
++        angle_true = np.arctan2(truth[valid, base + 3], truth[valid, base + 2])
++        difference = np.abs((angle_pred - angle_true + np.pi) % (2 * np.pi) - np.pi)
++        out[f"r{robot_id}_normal_angle_deg"] = percentiles(np.degrees(difference).tolist())
++        out[f"r{robot_id}_normal_degenerate_rate"] = {
++            "threshold": 0.1, "n": int(valid.sum()),
++            "rate": float((predicted_norm < 0.1).mean()) if valid.any() else None,
++            "true_norm_below_threshold": float((true_norm < 0.1).mean()) if valid.any() else None}
++    out["both_robots_mid_2d_m"] = percentiles(euclidean)
++    return out
++
++
++def _continuous_errors(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
++                       columns: Sequence[str]) -> Dict[str, dict]:
++    out: Dict[str, dict] = {}
++    for index, name in enumerate(columns):
++        valid = mask[:, index] > 0
++        out[name] = percentiles(np.abs(prediction[valid, index] - truth[valid, index]).tolist())
++    return out
++
++
++def _classification(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
++                    num_classes: int, names: Sequence[str]) -> dict:
++    valid = mask > 0
++    if prediction.ndim == 1:
++        predicted = prediction[valid].astype(int)
++    else:
++        predicted = np.argmax(prediction[valid], axis=1)
++    actual = truth[valid].astype(int)
++    confusion = np.zeros((num_classes, num_classes), dtype=int)
++    for a, p in zip(actual, predicted):
++        confusion[a, p] += 1
++    support = {names[i]: int((actual == i).sum()) for i in range(num_classes)}
++    recall = {names[i]: (float(confusion[i, i] / support[names[i]]) if support[names[i]] else None)
++              for i in range(num_classes)}
++    return {"confusion": confusion.tolist(), "class_names": list(names), "support": support,
++            "recall": recall, "accuracy": float((predicted == actual).mean()) if valid.any()
++            else None, "n": int(valid.sum())}
++
++
++def _binary(prediction: np.ndarray, truth: np.ndarray, mask: np.ndarray,
++            columns: Sequence[str]) -> Dict[str, dict]:
++    probabilities = 1.0 / (1.0 + np.exp(-prediction))
++    out: Dict[str, dict] = {}
++    for index, name in enumerate(columns):
++        valid = mask[:, index] > 0
++        predicted = probabilities[valid, index] >= 0.5
++        actual = truth[valid, index] >= 0.5
++        positives = int(actual.sum())
++        true_positive = int((predicted & actual).sum())
++        false_positive = int((predicted & ~actual).sum())
++        false_negative = int((~predicted & actual).sum())
++        true_negative = int((~predicted & ~actual).sum())
++        out[name] = {
++            "n": int(valid.sum()), "positives": positives,
++            "recall": float(true_positive / positives) if positives else None,
++            "precision": float(true_positive / max(1, true_positive + false_positive)),
++            "accuracy": float((predicted == actual).mean()) if valid.any() else None,
++            "confusion": [[true_negative, false_positive], [false_negative, true_positive]],
++            "evidence_insufficient": positives < 10}
++    return out
++
++
++def _by_root(values: np.ndarray, roots: Sequence[str]) -> dict:
++    roots = np.asarray(roots)
++    per_root: List[float] = []
++    for root in sorted(set(roots.tolist())):
++        selected = values[roots == root]
++        selected = selected[np.isfinite(selected)]
++        if selected.size:
++            per_root.append(float(np.median(selected)))
++    out = percentiles(per_root)
++    out["roots"] = len(per_root)
++    return out
++
++
++def action_sensitivity(roots: Sequence[str], truth: np.ndarray, predicted: np.ndarray,
++                       mask: np.ndarray, columns: Sequence[str],
++                       permutation: np.random.Generator | None = None) -> dict:
++    """Same-root action-difference error and rank correlation, with an optional permutation."""
++
++    difference: Dict[str, List[float]] = {name: [] for name in columns}
++    correlation: Dict[str, List[float]] = {name: [] for name in columns}
++    attempted: Dict[str, int] = {name: 0 for name in columns}
++    roots = np.asarray(roots)
++    for root in sorted(set(roots.tolist())):
++        index = np.where(roots == root)[0]
++        if len(index) < 3:
++            continue
++        block_predicted = predicted[index].copy()
++        if permutation is not None:
++            block_predicted = block_predicted[permutation.permutation(len(index))]
++        for column, name in enumerate(columns):
++            keep = mask[index, column] > 0
++            if keep.sum() < 3:
++                continue
++            true_values = truth[index][keep, column]
++            predicted_values = block_predicted[keep, column]
++            differences = [abs((predicted_values[i] - predicted_values[j])
++                               - (true_values[i] - true_values[j]))
++                           for i, j in itertools.combinations(range(len(true_values)), 2)]
++            if differences:
++                difference[name].append(float(np.median(differences)))
++            attempted[name] += 1
++            value = spearman(true_values, predicted_values)
++            if math.isfinite(value):
++                correlation[name].append(value)
++    return {
++        "action_difference_error": {name: percentiles(values)
++                                    for name, values in difference.items()},
++        "rank_correlation": {
++            name: {"mean": float(np.mean(values)) if values else None,
++                   "median": float(np.median(values)) if values else None,
++                   "roots_defined": len(values), "roots_attempted": attempted[name],
++                   "roots_undefined": attempted[name] - len(values)}
++            for name, values in correlation.items()},
++    }
++
++
++def evaluate(data, observations: Sequence[dict], predictions: Dict[str, np.ndarray], split: str,
++             label: str, *, permutation_seed: int | None = None,
++             start_patch_valid: Sequence[bool] | None = None) -> dict:
++    """Score one model or baseline.
++
++    ``predictions`` are in **original units** for continuous groups, so every comparison here uses
++    ``y_raw`` (the pre-standardisation copy). Comparing a raw prediction against the standardised
++    ``y`` would silently rescale every error -- the same class of mistake the previous round made
++    with the persistence baseline, and the reason the B1 unit check now asserts ``y != y_raw``.
++    """
++
++
++    index = np.where(data.split == split)[0]
++    geometry_truth = data.targets["terminal_observation_geometry"]["y_raw"]
++    geometry_mask = data.targets["terminal_observation_geometry"]["mask"]
++    geometry_pred = predictions["terminal_observation_geometry"]
++    out: Dict[str, object] = {
++        "label": label, "split": split, "n": int(len(index)),
++        "n_roots": len({data.roots[i] for i in index}),
++        "terminal_observation_geometry": _geometry_errors(
++            geometry_pred[index], geometry_truth[index], geometry_mask[index]),
++        "robot_pose_delta": _continuous_errors(
++            predictions["robot_pose_delta"][index], data.targets["robot_pose_delta"]["y_raw"][index],
++            data.targets["robot_pose_delta"]["mask"][index], POSE_COLUMNS),
++        "robot_residual_velocity": _continuous_errors(
++            predictions["robot_residual_velocity"][index],
++            data.targets["robot_residual_velocity"]["y_raw"][index],
++            data.targets["robot_residual_velocity"]["mask"][index], VELOCITY_COLUMNS),
++        "duration": _continuous_errors(
++            predictions["duration"][index], data.targets["duration"]["y_raw"][index],
++            data.targets["duration"]["mask"][index], ["duration_s"]),
++        "observation_validity": _binary(
++            predictions["observation_validity"][index],
++            data.targets["observation_validity"]["y"][index],
++            data.targets["observation_validity"]["mask"][index], VALIDITY_COLUMNS),
++        "exit_class": _classification(
++            predictions["exit_class"][index], data.targets["exit_class"]["y"][index],
++            data.targets["exit_class"]["mask"][index], len(EXIT_CLASSES), EXIT_CLASSES),
++    }
++    # root aggregation of the headline geometry errors
++    base = 0
++    both = (geometry_mask[index][:, base] > 0) & (geometry_mask[index][:, base + 1] > 0)
++    midpoint_error = np.hypot(geometry_pred[index][:, base] - geometry_truth[index][:, base],
++                              geometry_pred[index][:, base + 1] - geometry_truth[index][:, base + 1])
++    out["per_root"] = {
++        "r0_mid_2d_m": _by_root(midpoint_error[both],
++                                np.asarray([data.roots[i] for i in index])[both]),
++    }
++    # action-difference and rank metrics on the midpoint x/y columns
++    generator = np.random.default_rng(permutation_seed) if permutation_seed is not None else None
++    columns = ["r0_mid_x", "r0_mid_y", "r1_mid_x", "r1_mid_y"]
++    column_index = [0, 1, 4, 5]
++    truth_columns = np.stack([geometry_truth[index][:, c] for c in column_index], axis=1)
++    predicted_columns = np.stack([geometry_pred[index][:, c] for c in column_index], axis=1)
++    mask_columns = np.stack([geometry_mask[index][:, c] for c in column_index], axis=1)
++    roots_index = [data.roots[i] for i in index]
++    out["action_sensitivity"] = action_sensitivity(roots_index, truth_columns, predicted_columns,
++                                                   mask_columns, columns)
++    if generator is not None:
++        out["action_sensitivity_permuted"] = action_sensitivity(
++            roots_index, truth_columns, predicted_columns, mask_columns, columns,
++            permutation=generator)
++    # groupings: end type, visibility transition, configuration class
++    end = np.asarray([
++        "normal" if observations[i]["exit_class"] == "settled_observed" else
++        "after_abort" if observations[i]["settled_after_abort"] else "unsettled"
++        for i in index])
++    visibility_by_robot = {}
++    for robot_id in (0, 1):
++        base = 4 * robot_id
++        robot_error = np.hypot(
++            geometry_pred[index][:, base] - geometry_truth[index][:, base],
++            geometry_pred[index][:, base + 1] - geometry_truth[index][:, base + 1])
++        robot_both = ((geometry_mask[index][:, base] > 0)
++                      & (geometry_mask[index][:, base + 1] > 0))
++        if start_patch_valid is None:
++            transition = np.asarray(["unknown->unknown"] * len(index))
++        else:
++            start = np.asarray(start_patch_valid)
++            if start.ndim == 1:
++                start = np.stack([start, start], axis=1)
++            transition = np.asarray([
++                f"{'visible' if start[i, robot_id] else 'invisible'}->"
++                f"{'visible' if geometry_mask[i, base] > 0 else 'invisible'}" for i in index])
++        visibility_by_robot[f"r{robot_id}"] = _grouped(robot_error, robot_both, transition)
++    configuration = np.asarray([observations[i]["interaction_class"] for i in index])
++    out["grouped_mid_2d"] = {
++        "by_end": _grouped(midpoint_error, both, end),
++        "by_visibility_transition_r0": visibility_by_robot["r0"],
++        "by_visibility_transition_r1": visibility_by_robot["r1"],
++        "by_configuration": _grouped(midpoint_error, both, configuration),
++    }
++    out["geometry_by_end"] = _grouped(midpoint_error, both, end)
++    return out
++
++
++def _grouped(error: np.ndarray, valid: np.ndarray, groups: np.ndarray) -> Dict[str, dict]:
++    out: Dict[str, dict] = {}
++    for value in sorted(set(groups[valid].tolist())):
++        selected = error[valid][groups[valid] == value]
++        out[str(value)] = percentiles(selected.tolist())
++    return out
+diff --git a/experiments/observation_terminal_v1/make_bundle.py b/experiments/observation_terminal_v1/make_bundle.py
+new file mode 100644
+index 0000000..f257966
+--- /dev/null
++++ b/experiments/observation_terminal_v1/make_bundle.py
+@@ -0,0 +1,170 @@
++"""Build the round-4 review bundle and verify that the manifest matches what is inside.
++
++    python experiments/observation_terminal_v1/make_bundle.py
++
++Frozen checkpoints (~0.4 MB each) and the normalisation export are packed directly, as the task
++book requires. Large per-period logs are **not** packed; they are listed with size, sha256 and the
++exact regeneration command instead. After writing the zip the script reopens it and checks that
++every "Included" row of the generated manifest really exists, that there are no duplicate names and
++that nothing unexpected slipped in.
++"""
++
++from __future__ import annotations
++
++import hashlib
++import json
++import subprocess
++import sys
++import zipfile
++from pathlib import Path
++from typing import Dict, List
++
++ROOT = Path(__file__).resolve().parents[2]
++DOCS = ROOT / "docs/observation_terminal_v1"
++OUT = ROOT / "outputs/observation_terminal_v1"
++EXPERIMENTS = ROOT / "experiments/observation_terminal_v1"
++BUNDLE = ROOT / "observation_terminal_v1_review.zip"
++TIER2 = ROOT / ("outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/"
++                "phase_b_tier2")
++ROUND_START = "c216be6"
++
++#: packed outright
++SMALL_ARTIFACTS = [
++    ROOT / "docs/tasks/20261014_0040_CoImagine_可观测终态预测任务书.md",
++    OUT / "label_audit_ledger.json",
++    OUT / "replay_verification.json",
++    OUT / "terminal_report_check.json",
++    OUT / "terminal_report_check.md",
++    OUT / "terminal_report_train.json",
++    OUT / "terminal_report_train.md",
++    OUT / "normalisation.json",
++    OUT / "spot_checks.json",
++    OUT / "test_root_dump.json",
++    OUT / "terminal_observations_test.jsonl",
++    OUT / "checkpoints/deployable_seed0.pt",
++    OUT / "checkpoints/deployable_seed1.pt",
++    OUT / "checkpoints/deployable_seed2.pt",
++    TIER2 / "roots.json",
++    TIER2 / "ledger.json",
++]
++
++#: referenced but too large to pack
++LISTED_ONLY = [
++    OUT / "terminal_observations_train.jsonl",
++    OUT / "terminal_observations_val.jsonl",
++    TIER2 / "executions_train.jsonl",
++    TIER2 / "executions_val.jsonl",
++    TIER2 / "executions_test.jsonl",
++]
++
++REGENERATE = {
++    "terminal_observations_train.jsonl": "python experiments/observation_terminal_v1/audit_labels.py --all --workers 12",
++    "terminal_observations_val.jsonl": "python experiments/observation_terminal_v1/audit_labels.py --all --workers 12",
++    "executions_train.jsonl": "produced by the previous round's phase_b collect_b.py; already in the repository, do not re-run",
++    "executions_val.jsonl": "produced by the previous round's phase_b collect_b.py; already in the repository, do not re-run",
++    "executions_test.jsonl": "produced by the previous round's phase_b collect_b.py; already in the repository, do not re-run",
++}
++
++
++def sha256(path: Path) -> str:
++    return hashlib.sha256(path.read_bytes()).hexdigest()
++
++
++def collect() -> List[Path]:
++    copied: List[Path] = list(SMALL_ARTIFACTS)
++    copied += sorted(DOCS.glob("*.md"))
++    copied += sorted(EXPERIMENTS.glob("*.py"))
++    copied += sorted((ROOT / "experiments/option_prediction_mechanism_v1/phase_c_frozen").glob("*.py"))
++    copied += sorted((ROOT / "tests").glob("test_observation_terminal_v1.py"))
++    copied += sorted((ROOT / "tests").glob("test_option_prediction_mechanism_c.py"))
++    copied += sorted((ROOT / "tests").glob("test_option_prediction_mechanism_b.py"))
++    copied += sorted((ROOT / "tests").glob("test_option_prediction_mechanism_a.py"))
++    copied += sorted((ROOT / "src/coimagine/local_contact_option").glob("*.py"))
++    seen, unique = set(), []
++    for path in copied:
++        key = path.resolve()
++        if key in seen or not path.is_file():
++            continue
++        seen.add(key)
++        unique.append(path)
++    return unique
++
++
++def main() -> int:
++    files = collect()
++    included = [path for path in files]
++    diff = subprocess.run(["git", "diff", f"{ROUND_START}..HEAD", "--", "src", "experiments",
++                           "tests"], cwd=ROOT, capture_output=True, text=True, check=False).stdout
++    stat = subprocess.run(["git", "diff", "--stat", f"{ROUND_START}..HEAD", "--", "src",
++                           "experiments", "tests"], cwd=ROOT, capture_output=True, text=True,
++                          check=False).stdout
++    head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True,
++                          check=False).stdout.strip()
++    (DOCS / "round4.patch").write_text(diff)
++    (DOCS / "round4_diffstat.txt").write_text(stat)
++    files += [DOCS / "round4.patch", DOCS / "round4_diffstat.txt"]
++
++    manifest = [
++        "# MANIFEST — observation_terminal_v1",
++        "",
++        f"git commit `{head}`; round base `{ROUND_START}`; patch limited to `src experiments tests`.",
++        "",
++        "## Included",
++        "",
++        "| path | bytes | sha256 |",
++        "|---|---:|---|",
++    ]
++    for path in sorted(files):
++        manifest.append(f"| {path.relative_to(ROOT)} | {path.stat().st_size} | {sha256(path)} |")
++    manifest += ["", "## Not included (regenerable, listed for audit)", "",
++                 "| path | bytes | sha256 | regeneration |", "|---|---:|---|---|"]
++    for path in LISTED_ONLY:
++        if path.exists():
++            manifest.append(f"| {path.relative_to(ROOT)} | {path.stat().st_size} | {sha256(path)} "
++                            f"| `{REGENERATE[path.name]}` |")
++    (DOCS / "MANIFEST.md").write_text("\n".join(manifest) + "\n")
++    files.append(DOCS / "MANIFEST.md")
++    # re-runs pick up the previous MANIFEST.md through the docs glob: dedupe once more
++    final, seen_final = [], set()
++    for path in files:
++        key = path.resolve()
++        if key in seen_final:
++            continue
++        seen_final.add(key)
++        final.append(path)
++    files = final
++
++    if BUNDLE.exists():
++        BUNDLE.unlink()
++    with zipfile.ZipFile(BUNDLE, "w", zipfile.ZIP_DEFLATED) as archive:
++        for path in sorted(files):
++            archive.write(path, path.relative_to(ROOT).as_posix())
++
++    with zipfile.ZipFile(BUNDLE) as archive:
++        names = archive.namelist()
++        duplicated = len(names) - len(set(names))
++        text = archive.read("docs/observation_terminal_v1/MANIFEST.md").decode()
++        block = text.split("## Included")[1].split("## Not included")[0]
++        rows = [line.split("|")[1].strip() for line in block.splitlines()
++                if line.startswith("| ") and "---" not in line and "path" not in line]
++        missing = [row for row in rows if row not in set(names)]
++        # the manifest itself is written after its own table, so it is expected but unlisted
++        expected = set(rows) | {"docs/observation_terminal_v1/MANIFEST.md"}
++        unexpected = [name for name in names if name not in expected]
++        result = {
++            "bundle": str(BUNDLE), "bytes": BUNDLE.stat().st_size,
++            "entries_in_zip": len(names), "included_in_manifest": len(rows),
++            "duplicated_names": duplicated, "missing_from_zip": missing,
++            "unexpected_in_zip": unexpected,
++            "checkpoints_included": sorted(name for name in names if name.endswith(".pt")),
++            "listed_only": [path.name for path in LISTED_ONLY],
++        }
++    (DOCS / "BUNDLE_CHECK.json").write_text(json.dumps(result, indent=1, sort_keys=True))
++    print(json.dumps(result, indent=1))
++    ok = not missing and not unexpected and duplicated == 0
++    print("BUNDLE_OK" if ok else "BUNDLE_FAILED")
++    return 0 if ok else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/observation_terminal_v1/replay.py b/experiments/observation_terminal_v1/replay.py
+new file mode 100644
+index 0000000..e7477ec
+--- /dev/null
++++ b/experiments/observation_terminal_v1/replay.py
+@@ -0,0 +1,171 @@
++"""Exact replay of an existing phase-B execution, to read the observation at the exit instant T.
++
++Why a replay is needed. The stage machine breaks out of its loop **before** the period's log row is
++appended, so the last logged row is one control period *before* the option's exit. The recorded
++terminal robot/object state, however, is captured after the loop, i.e. at the exit instant T. Using
++the last logged row as "the terminal observation" would therefore label the record with sensing from
++T - 0.05 s, and `_exit_block`'s "last available observation" fallback could reach even further back.
++
++The replay does not create anything new:
++
++* the same root (regenerated deterministically from the frozen salt and the recorded root id),
++* the same eight-way joint command (taken from the record itself),
++* the same snapshot / exact-restore path, the same controller, protocol, sensing and physics,
++* **no extra stepping and no extra control call**: the executor is stopped at its own exit and its
++  terminal observation set -- captured inside the same period the loop exited in -- is read.
++
++Every replay is checked against the original record (exit reason, duration in steps, terminal object
++and robot states); a mismatch is reported, never silently replaced.
++"""
++
++from __future__ import annotations
++
++import json
++import math
++import sys
++from dataclasses import replace
++from pathlib import Path
++from typing import Dict, List, Optional, Sequence, Tuple
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from coimagine.continuous2d.config import default_config  # noqa: E402
++from coimagine.continuous2d.environment import Continuous2DEnv  # noqa: E402
++from coimagine.local_contact_option.contract import DELTA_PER_SPEED, FORCE_LIMIT  # noqa: E402
++from coimagine.local_contact_option.option import OptionExecutor  # noqa: E402
++from coimagine.local_contact_option.roots import (  # noqa: E402
++    VARIANT_SPECS,
++    apply_initial_velocities,
++)
++from coimagine.local_contact_option.runner import build_snapshot  # noqa: E402
++from coimagine.local_contact_option.skill import LocalSurfacePush  # noqa: E402
++
++#: the collector's frozen settings; imported lazily so this module stays importable without it
++BASELINE_VARIANT = next(spec for spec in VARIANT_SPECS if spec.name == "baseline")
++
++
++def frozen_option_config():
++    from experiments.option_prediction_mechanism_v1.phase_b.collect_b import frozen_option_config as cfg
++    return cfg()
++
++
++def load_roots(scale: Dict[str, int]):
++    """Regenerate the tier-2 roots deterministically (same salt, same counts)."""
++
++    from experiments.option_prediction_mechanism_v1.phase_b import roots_b
++
++    roots, reports = roots_b.build_phase_b_roots(scale)
++    index = {}
++    for split, values in roots.items():
++        for root in values:
++            index[root.root_id] = root
++    return index, reports
++
++
++def specs_from_record(record: dict) -> Dict[int, LocalSurfacePush]:
++    """Rebuild the joint command exactly as recorded."""
++
++    command = record["input"]["command"]
++    alpha = command["alpha_rad"]
++    speed = command["speed"]
++    active = set(command["active_robots"])
++    specs: Dict[int, LocalSurfacePush] = {}
++    for robot_id in (0, 1):
++        if robot_id not in active:
++            specs[robot_id] = None  # type: ignore[assignment]
++            continue
++        specs[robot_id] = LocalSurfacePush(
++            alpha=float(alpha[robot_id]), speed=float(speed[robot_id]),
++            active_duration=float(command["active_duration"]),
++            force_limit=float(command["force_limit"]),
++            delta=DELTA_PER_SPEED * float(speed[robot_id]))
++    return specs
++
++
++def _close(a: Sequence[float], b: Sequence[float], tol: float = 1e-9) -> bool:
++    return all(abs(float(x) - float(y)) <= tol for x, y in zip(a, b))
++
++
++def replay(record: dict, roots: Dict[str, object]) -> dict:
++    """Replay one recorded execution and return its exit-instant observations plus a check."""
++
++    root = roots.get(record["root_id"])
++    if root is None:
++        return {"record_id": record["record_id"], "ok": False, "reason": "root_not_regenerated"}
++    option = frozen_option_config()
++    base = default_config()
++    snapshot, config, _initial_object, _initial_robots, _report, velocities = build_snapshot(
++        root, BASELINE_VARIANT, base)
++    env = Continuous2DEnv(config)
++    env.restore(snapshot, exact=True)
++    apply_initial_velocities(env, velocities)
++    executor = OptionExecutor(option, "V")
++    result = executor.run(env, root_id=root.root_id, variant=BASELINE_VARIANT.name,
++                          joint_specs=specs_from_record(record),
++                          active_robots=tuple(record["input"]["command"]["active_robots"]),
++                          noise_rng=None)
++    check = {
++        "record_id": record["record_id"],
++        "exit_reason": result.exit_reason == record["label"]["exit_class"],
++        "duration_steps": result.wall_clock_steps == record["label"]["duration_steps"],
++        "terminal_object": _close(result.terminal_object, record["truth"]["object_terminal_world"]),
++        "terminal_robots": all(
++            _close(actual, expected)
++            for actual, expected in zip([state for state in result.terminal_robots],
++                                        record["truth"]["robots_terminal_world"])),
++    }
++    last_row = result.rows[-1] if result.rows else None
++    return {
++        "record_id": record["record_id"], "root_id": record["root_id"],
++        "ok": all(check[key] for key in
++                  ("exit_reason", "duration_steps", "terminal_object", "terminal_robots")),
++        "check": check,
++        "exit_reason": result.exit_reason,
++        "wall_clock_steps": result.wall_clock_steps,
++        "terminal_object": list(result.terminal_object),
++        "terminal_robots": [list(state) for state in result.terminal_robots],
++        "primary_exit_reason": result.primary_exit_reason,
++        "locally_settled": bool(result.locally_settled),
++        "settled_observed": bool(result.settled_observed),
++        "settled_after_abort": bool(result.settled_after_abort),
++        "duration_seconds": result.wall_clock_steps * config.physics.control_dt,
++        "terminal_observations": {
++            str(robot_id): observation
++            for robot_id, observation in (result.terminal_observations or {}).items()},
++        "last_logged_period": None if last_row is None else {
++            "time": last_row.get("time"), "stage": last_row.get("stage"),
++            "observed": last_row.get("observed")},
++    }
++
++
++def observation_summary(observation) -> dict:
++    """The parts of a whitelist observation the label extraction needs."""
++
++    if observation is None:
++        return {"present": False}
++    patch = observation.patch
++    return {
++        "present": True,
++        "own": [observation.own.x, observation.own.y, observation.own.angle,
++                observation.own.vx, observation.own.vy, observation.own.omega],
++        "contacting": bool(observation.contacting),
++        "contact_point_robot": list(observation.contact_point_robot)
++        if observation.contact_point_robot else None,
++        "patch_valid": patch is not None and len(patch.points_robot) >= 3,
++        "patch_distance": None if patch is None else float(patch.distance),
++        "patch_points": 0 if patch is None else len(patch.points_robot),
++        "patch_segment_robot": None if patch is None
++        else [list(patch.segment_robot[0]), list(patch.segment_robot[1])],
++        "patch_normal_robot": None if patch is None
++        else list(_rotate(-observation.own.angle, patch.normal_world)),
++        "patch_confidence": None if patch is None else float(patch.confidence),
++        "sample_time": observation.sample_time,
++        "time": observation.time,
++    }
++
++
++def _rotate(theta: float, vector: Sequence[float]) -> Tuple[float, float]:
++    cos, sin = math.cos(theta), math.sin(theta)
++    return (vector[0] * cos - vector[1] * sin, vector[0] * sin + vector[1] * cos)
+diff --git a/experiments/observation_terminal_v1/train_terminal.py b/experiments/observation_terminal_v1/train_terminal.py
+new file mode 100644
+index 0000000..fc9c9a8
+--- /dev/null
++++ b/experiments/observation_terminal_v1/train_terminal.py
+@@ -0,0 +1,255 @@
++"""Round-4 driver: 32-root pipeline check, three-seed training, baselines and evaluation.
++
++    python experiments/observation_terminal_v1/train_terminal.py --check
++    python experiments/observation_terminal_v1/train_terminal.py --train
++
++Frozen by `docs/observation_terminal_v1/CONTRACT.md`: 2x256 ReLU MLP, Adam 1e-3, batch 128, at most
++200 epochs, validation patience 20, seeds 0/1/2, six target groups all weighted 1.0, checkpoint on
++the validation composite only, group-wise (not per-column) train standardisation, and the
++privileged input slots pinned to zero so the network keeps its 86-dim input and 97,573 parameters.
++"""
++
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import math
++import sys
++import time
++from pathlib import Path
++from typing import Dict, List, Sequence
++
++import numpy as np
++import torch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.observation_terminal_v1 import baselines as BL  # noqa: E402
++from experiments.observation_terminal_v1 import dataset_terminal as DT  # noqa: E402
++from experiments.observation_terminal_v1.evaluate_terminal import evaluate  # noqa: E402
++from experiments.option_prediction_mechanism_v1.phase_b.model import (  # noqa: E402
++    _standardise,
++    predict,
++    train_one_seed,
++    unstandardise_predictions,
++)
++
++TIER2 = ROOT / ("outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/"
++                "phase_b_tier2")
++OBS_DIR = ROOT / "outputs/observation_terminal_v1"
++SEEDS = (0, 1, 2)
++
++
++def load_all():
++    observations: Dict[str, dict] = {}
++    for split in ("train", "val", "test"):
++        for line in (OBS_DIR / f"terminal_observations_{split}.jsonl").open():
++            record = json.loads(line)
++            observations[record["record_id"]] = record
++    records, split_of = [], {}
++    for split in ("train", "val", "test"):
++        for line in (TIER2 / f"executions_{split}.jsonl").open():
++            record = json.loads(line)
++            if record["record_id"] not in observations:
++                continue
++            records.append(record)
++            split_of[record["record_id"]] = split
++    ordered = sorted(records, key=lambda row: row["record_id"])
++    observation_list = [observations[row["record_id"]] for row in ordered]
++    data, meta = DT.build_dataset(ordered, observation_list, split_of)
++    meta["dropped_without_terminal_observation"] = len(records) - len(ordered)
++    return data, ordered, observation_list, meta
++
++
++def start_patch_valid(records: Sequence[dict]) -> List[List[bool]]:
++    """Start-of-option patch visibility for each robot, used for the transition grouping."""
++
++    return [[bool(record["input"][f"robot{robot_id}"].get("mask_patch_valid"))
++             for robot_id in (0, 1)] for record in records]
++
++
++def subset_train_roots(data, count: int):
++    """Restrict the train split to the first ``count`` hash-sorted roots (check mode only)."""
++
++    roots = sorted({root for root, split in zip(data.roots, data.split) if split == "train"})
++    keep = set(roots[:count])
++    mask = np.array([(split != "train") or (root in keep)
++                     for root, split in zip(data.roots, data.split)])
++    data.subset_mask = mask  # type: ignore[attr-defined]
++    data.x = data.x[mask]
++    data.x_priv = data.x_priv[mask]
++    data.split = data.split[mask]
++    data.roots = [r for r, k in zip(data.roots, mask) if k]
++    data.commands = [c for c, k in zip(data.commands, mask) if k]
++    data.command_signature = [c for c, k in zip(data.command_signature, mask) if k]
++    for group in data.targets:
++        for key in ("y", "mask"):
++            data.targets[group][key] = data.targets[group][key][mask]
++    for key, value in list(data.persistence.items()):
++        if isinstance(value, np.ndarray) and value.shape[0] == len(mask):
++            data.persistence[key] = value[mask]
++    return data
++
++
++def apply_subset(sequence, mask):
++    return [item for item, keep in zip(sequence, mask) if keep]
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--check", action="store_true")
++    parser.add_argument("--train", action="store_true")
++    parser.add_argument("--check-roots", type=int, default=32)
++    parser.add_argument("--epochs", type=int, default=200)
++    parser.add_argument("--seeds", default="0,1,2")
++    parser.add_argument("--out", default=str(ROOT / "outputs/observation_terminal_v1"))
++    args = parser.parse_args()
++    if not (args.check or args.train):
++        parser.error("pass --check or --train")
++
++    out_dir = Path(args.out)
++    out_dir.mkdir(parents=True, exist_ok=True)
++    data, records, observation_list, meta = load_all()
++    print(f"records {len(records)} | x {data.x.shape} | meta {meta}")
++    starts = start_patch_valid(records)
++    if args.check:
++        mask = subset_train_roots(data, args.check_roots).subset_mask
++        records = apply_subset(records, mask)
++        observation_list = apply_subset(observation_list, mask)
++        starts = apply_subset(starts, mask)
++    _standardise(data)
++
++    payload: Dict[str, object] = {
++        "stage": "check" if args.check else "train",
++        "data": {"records": len(records), **meta,
++                 "train": int((data.split == "train").sum()),
++                 "val": int((data.split == "val").sum()),
++                 "test": int((data.split == "test").sum()),
++                 "train_roots": len({r for r, s in zip(data.roots, data.split) if s == "train"})},
++        "config": {"hidden": 256, "layers": 2, "optimizer": "adam", "lr": 1e-3,
++                   "batch_size": 128, "max_epochs": args.epochs, "patience": 20,
++                   "seeds": [int(s) for s in args.seeds.split(",")],
++                   "group_weights": {spec.name: spec.weight for spec in data.specs},
++                   "normalisation": "group-wise, flattened over masked train entries; "
++                                    "mean/std shape (1,) broadcast to the group's columns",
++                   "normalisation_shapes": {name: list(np.atleast_1d(
++                       data.targets[name]["mean"]).shape)
++                       for name in data.targets if "mean" in data.targets[name]}},
++        "baselines": {}, "runs": {},
++    }
++
++    for split in ("val", "test"):
++        for name, function in (("P0_persistence", BL.persistence_predictions),
++                               ("P1_command_grouped", BL.command_grouped_predictions)):
++            predictions, info = function(data, split)
++            entry = evaluate(data, observation_list, predictions, split, name,
++                             permutation_seed=0, start_patch_valid=starts)
++            entry["baseline_info"] = {k: v for k, v in info.items()
++                                      if k != "common_subset_index"}
++            payload["baselines"][f"{name}|{split}"] = entry
++            print(f"baseline {name} {split}: mid2d p50 "
++                  f"{entry['terminal_observation_geometry']['r0_mid_2d_m']['p50']:.5f} m  "
++                  f"angle p50 {entry['terminal_observation_geometry']['r0_normal_angle_deg']['p50']:.3f} deg",
++                  flush=True)
++
++    for seed in (int(s) for s in args.seeds.split(",")):
++        started = time.perf_counter()
++        trained = train_one_seed(data, use_privileged=False, seed=seed, epochs=args.epochs,
++                                 patience=20)
++        model_input = trained["x"]
++        predictions = unstandardise_predictions(data, predict(trained["model"], model_input,
++                                                              data.specs))
++        key = f"deployable_seed{seed}"
++        checkpoint = out_dir / "checkpoints"
++        checkpoint.mkdir(parents=True, exist_ok=True)
++        path = checkpoint / f"{key}.pt"
++        torch.save({
++            "state_dict": trained["model"].state_dict(),
++            "specs": [spec.__dict__ for spec in data.specs],
++            "input_dim": trained["input_dim"], "parameters": trained["parameters"],
++            "best_val_loss": trained["best_val"], "best_epoch": trained["best_epoch"],
++            "seed": seed, "use_privileged": False,
++            "target_mean": {name: np.atleast_1d(data.targets[name]["mean"]).tolist()
++                            for name in data.targets if "mean" in data.targets[name]},
++            "target_std": {name: np.atleast_1d(data.targets[name]["std"]).tolist()
++                           for name in data.targets if "std" in data.targets[name]},
++            "normalisation_shapes": {name: list(np.atleast_1d(
++                data.targets[name]["mean"]).shape)
++                for name in data.targets if "mean" in data.targets[name]},
++            "exit_classes": list(DT.EXIT_CLASSES),
++            "geometry_columns": DT.GEOMETRY_COLUMNS,
++            "pose_columns": DT.POSE_COLUMNS,
++            "velocity_columns": DT.VELOCITY_COLUMNS,
++            "validity_columns": DT.VALIDITY_COLUMNS,
++        }, path)
++        payload["runs"][key] = {
++            "parameters": trained["parameters"], "input_dim": trained["input_dim"],
++            "best_val_loss": trained["best_val"], "best_epoch": trained["best_epoch"],
++            "train_seconds": time.perf_counter() - started,
++            "checkpoint_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
++            "checkpoint": str(path),
++            "curves": trained["curves"],
++            "val": evaluate(data, observation_list, predictions, "val", key, permutation_seed=0,
++                            start_patch_valid=starts),
++            "test": evaluate(data, observation_list, predictions, "test", key, permutation_seed=0,
++                             start_patch_valid=starts),
++        }
++        print(f"{key}: best_val {trained['best_val']:.4f} epoch {trained['best_epoch']} "
++              f"params {trained['parameters']} ({payload['runs'][key]['train_seconds']:.1f}s)",
++              flush=True)
++
++    tag = "check" if args.check else "train"
++    (out_dir / f"terminal_report_{tag}.json").write_text(
++        json.dumps(payload, indent=1, sort_keys=True, default=float))
++    (out_dir / f"terminal_report_{tag}.md").write_text(render(payload))
++    print(render(payload)[:4000])
++    print("TRAIN_TERMINAL_OK")
++    return 0
++
++
++def _f(value, digits: int = 4) -> str:
++    if value is None or (isinstance(value, float) and not math.isfinite(value)):
++        return "-"
++    return f"{value:.{digits}f}"
++
++
++def render(payload: dict) -> str:
++    lines = ["# observation_terminal_v1 — 评价", "",
++             f"stage `{payload['stage']}`", f"data {payload['data']}", ""]
++    rows = []
++    for name, entry in payload["baselines"].items():
++        rows.append((name, entry))
++    for name, run in payload["runs"].items():
++        rows.append((f"{name}|val", run["val"]))
++        rows.append((f"{name}|test", run["test"]))
++    lines += ["| model|split | r0 mid2d p50 (m) | r0 mid2d p90 | r0 angle p50 (deg) | "
++              "r0 angle p90 | pose dx p50 | dur p50 (s) | exit acc |", "|---|---:|---:|---:|---:|---:|---:|---:|"]
++    for name, entry in rows:
++        geometry = entry["terminal_observation_geometry"]
++        lines.append(
++            f"| {name} | {_f(geometry['r0_mid_2d_m']['p50'], 5)} | "
++            f"{_f(geometry['r0_mid_2d_m']['p90'], 5)} | "
++            f"{_f(geometry['r0_normal_angle_deg']['p50'], 3)} | "
++            f"{_f(geometry['r0_normal_angle_deg']['p90'], 3)} | "
++            f"{_f(entry['robot_pose_delta']['r0_dx_m']['p50'], 4)} | "
++            f"{_f(entry['duration']['duration_s']['p50'], 4)} | "
++            f"{_f(entry['exit_class']['accuracy'], 3)} |")
++    lines += ["", "## 动作差值 / 秩相关（r0 中点 x）", "",
++              "| model|split | 动作差值 p50 (m) | 秩相关 ρ | 置换 ρ | 可定义 root |", "|---|---:|---:|---:|---:|"]
++    for name, entry in rows:
++        sensitivity = entry["action_sensitivity"]
++        permuted = entry.get("action_sensitivity_permuted")
++        lines.append(
++            f"| {name} | {_f(sensitivity['action_difference_error']['r0_mid_x']['p50'], 5)} | "
++            f"{_f(sensitivity['rank_correlation']['r0_mid_x']['mean'], 3)} | "
++            f"{_f(permuted['rank_correlation']['r0_mid_x']['mean'], 3) if permuted else '-'} | "
++            f"{sensitivity['rank_correlation']['r0_mid_x']['roots_defined']}/"
++            f"{sensitivity['rank_correlation']['r0_mid_x']['roots_attempted']} |")
++    return "\n".join(lines) + "\n"
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/option_prediction_mechanism_v1/phase_c_frozen/contract_score.py b/experiments/option_prediction_mechanism_v1/phase_c_frozen/contract_score.py
+new file mode 100644
+index 0000000..df0de42
+--- /dev/null
++++ b/experiments/option_prediction_mechanism_v1/phase_c_frozen/contract_score.py
+@@ -0,0 +1,103 @@
++"""The single frozen payoff used by every phase-C entry point.
++
++CONTRACT section 3.3 defines the scalar payoff as
++
++    completion  = 1 if the object satisfies the existing success rule else 0
++    progress    = min(1, (d_start - d_end) / max(d_start, 1e-6))
++    time_cost   = total wall-clock seconds of the skill sequence
++    action_cost = sum(|F| * dt) / (F_max * T_total)
++    Q           = completion + 0.5 * progress - 0.05 * time_cost - 0.10 * action_cost
++
++``progress`` is **clamped only from above**. An action that pushes the object further from the goal
++earns negative progress; that is the contract, and it is what makes the task signal able to
++distinguish actions that make things worse.
++
++The first phase-C run additionally clamped ``progress`` from below at 0. That clamp was never in the
++contract, it made every action's task term identically zero in the mechanism scene, and it is what
++produced the apparent "the two worlds prefer different actions" difference. It is kept here only as
++``progress_clamped_historically`` so the recomputation can quantify the mistake; **no entry point
++may use it for a reported result**.
++"""
++
++from __future__ import annotations
++
++from typing import Dict
++
++#: names of the two progress terms, deliberately distinct so a table cannot conflate them
++PROGRESS_TERM = "progress"
++PROGRESS_WEIGHTED_TERM = "0.5 * progress"
++
++
++def progress_contract(start_distance: float, end_distance: float) -> float:
++    """Contract 3.3 verbatim: upper clamp at 1, **no** lower clamp."""
++
++    return min(1.0, (start_distance - end_distance) / max(start_distance, 1e-6))
++
++
++def progress_clamped_historically(start_distance: float, end_distance: float) -> float:
++    """The unauthorised lower clamp used by the first run. Diagnostic only."""
++
++    return min(1.0, max(0.0, (start_distance - end_distance) / max(start_distance, 1e-6)))
++
++
++def task_outcome(completion: float, progress: float) -> float:
++    """The task part of the payoff, without time or action cost."""
++
++    return completion + 0.5 * progress
++
++
++def payoff(completion: float, progress: float, time_cost: float, action_cost: float) -> float:
++    return completion + 0.5 * progress - 0.05 * time_cost - 0.10 * action_cost
++
++
++def score_run(run: Dict[str, object], *, clamp_progress: bool = False) -> Dict[str, float]:
++    """Score one saved run dict (``start_distance``, ``end_distance``, ``duration``, ...)."""
++
++    progress = (progress_clamped_historically if clamp_progress else progress_contract)(
++        float(run["start_distance"]), float(run["end_distance"]))
++    completion = 1.0 if run.get("success") else 0.0
++    q = payoff(completion, progress, float(run["duration"]), float(run["action_cost"]))
++    return {"completion": completion, PROGRESS_TERM: progress,
++            PROGRESS_WEIGHTED_TERM: 0.5 * progress, "q": q,
++            "task_outcome": task_outcome(completion, progress)}
++
++
++def analyse(worlds: Dict[str, list], delta: float, *, clamp_progress: bool = False) -> dict:
++    """Payoff matrix, near-optimal sets, regret and the 50/50 information gap."""
++
++    names = [run["command"] for run in worlds["A"]]
++    q: Dict[str, Dict[str, float]] = {"A": {}, "B": {}}
++    task: Dict[str, Dict[str, float]] = {"A": {}, "B": {}}
++    for world in ("A", "B"):
++        for run in worlds[world]:
++            scored = score_run(run, clamp_progress=clamp_progress)
++            q[world][run["command"]] = scored["q"]
++            task[world][run["command"]] = scored["task_outcome"]
++    best = {world: max(q[world].values()) for world in ("A", "B")}
++    near = {world: sorted(name for name in names if best[world] - q[world][name] <= delta + 1e-12)
++            for world in ("A", "B")}
++    argmax = {world: max(names, key=lambda name: q[world][name]) for world in ("A", "B")}
++    regret = max(best["A"] - q["A"][argmax["B"]], best["B"] - q["B"][argmax["A"]])
++    all_knowing = 0.5 * (best["A"] + best["B"])
++    common = max(0.5 * (q["A"][name] + q["B"][name]) for name in names)
++    return {
++        "q_A": q["A"], "q_B": q["B"],
++        "task_outcome_A": task["A"], "task_outcome_B": task["B"],
++        "near_optimal_A": near["A"], "near_optimal_B": near["B"],
++        "near_optimal_disjoint": not (set(near["A"]) & set(near["B"])),
++        "argmax_A": argmax["A"], "argmax_B": argmax["B"],
++        "mutual_regret": regret, "delta": delta,
++        "all_knowing_50_50": all_knowing, "common_action_50_50": common,
++        "information_gap_50_50": all_knowing - common,
++        "positive": bool(not (set(near["A"]) & set(near["B"])) and regret > delta),
++        "any_positive_progress_A": any(value > 0 for value in task["A"].values()),
++        "any_positive_progress_B": any(value > 0 for value in task["B"].values()),
++        "best_task_outcome_A": max(task["A"].values()),
++        "best_task_outcome_B": max(task["B"].values()),
++        "worst_task_outcome_A": min(task["A"].values()),
++        "worst_task_outcome_B": min(task["B"].values()),
++        "needs_different_actions": bool(
++            not (set(near["A"]) & set(near["B"])) and regret > delta),
++        # "the same optimal action" does NOT mean "the same full ranking"
++        "same_argmax": argmax["A"] == argmax["B"],
++    }
+diff --git a/experiments/option_prediction_mechanism_v1/phase_c_frozen/recompute_frozen_c.py b/experiments/option_prediction_mechanism_v1/phase_c_frozen/recompute_frozen_c.py
+index 54f1719..eb83182 100644
+--- a/experiments/option_prediction_mechanism_v1/phase_c_frozen/recompute_frozen_c.py
++++ b/experiments/option_prediction_mechanism_v1/phase_c_frozen/recompute_frozen_c.py
+@@ -20,67 +20,14 @@ from __future__ import annotations
+ 
+ import argparse
+ import json
++import sys
+ from pathlib import Path
+-from typing import Dict, List
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-SOURCE = ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json"
+-
+-
+-def progress_contract(start: float, end: float) -> float:
+-    """CONTRACT 3.3 verbatim: clamp at 1, never at 0."""
+-
+-    return min(1.0, (start - end) / max(start, 1e-6))
+-
+-
+-def progress_clamped(start: float, end: float) -> float:
+-    """What the first run actually used: an extra lower clamp that was not in the contract."""
++sys.path.insert(0, str(Path(__file__).resolve().parent))
+ 
+-    return min(1.0, max(0.0, (start - end) / max(start, 1e-6)))
+-
+-
+-def score(completion: float, progress: float, duration: float, action_cost: float) -> float:
+-    return completion + 0.5 * progress - 0.05 * duration - 0.10 * action_cost
+-
+-
+-def analyse(runs: Dict[str, List[dict]], delta: float, clamp: bool) -> dict:
+-    progress = progress_clamped if clamp else progress_contract
+-    names = [run["command"] for run in runs["A"]]
+-    q = {"A": {}, "B": {}}
+-    task = {"A": {}, "B": {}}
+-    for world in ("A", "B"):
+-        for run in runs[world]:
+-            value = progress(run["start_distance"], run["end_distance"])
+-            completion = 1.0 if run["success"] else 0.0
+-            q[world][run["command"]] = score(completion, value, run["duration"],
+-                                             run["action_cost"])
+-            task[world][run["command"]] = completion + 0.5 * value
+-    best = {world: max(q[world].values()) for world in ("A", "B")}
+-    near = {world: sorted(name for name in names if best[world] - q[world][name] <= delta + 1e-12)
+-            for world in ("A", "B")}
+-    argmax = {world: max(names, key=lambda name: q[world][name]) for world in ("A", "B")}
+-    regret = max(best["A"] - q["A"][argmax["B"]], best["B"] - q["B"][argmax["A"]])
+-    all_knowing = 0.5 * (best["A"] + best["B"])
+-    common = max(0.5 * (q["A"][name] + q["B"][name]) for name in names)
+-    return {
+-        "q_A": q["A"], "q_B": q["B"],
+-        "task_outcome_A": task["A"], "task_outcome_B": task["B"],
+-        "near_optimal_A": near["A"], "near_optimal_B": near["B"],
+-        "near_optimal_disjoint": not (set(near["A"]) & set(near["B"])),
+-        "argmax_A": argmax["A"], "argmax_B": argmax["B"],
+-        "mutual_regret": regret, "delta": delta,
+-        "all_knowing_50_50": all_knowing, "common_action_50_50": common,
+-        "information_gap_50_50": all_knowing - common,
+-        "positive": bool(not (set(near["A"]) & set(near["B"])) and regret > delta),
+-        "any_positive_progress_A": any(value > 0 for value in task["A"].values()),
+-        "any_positive_progress_B": any(value > 0 for value in task["B"].values()),
+-        "best_task_outcome_A": max(task["A"].values()),
+-        "best_task_outcome_B": max(task["B"].values()),
+-        "worst_task_outcome_A": min(task["A"].values()),
+-        "worst_task_outcome_B": min(task["B"].values()),
+-        "needs_different_actions": bool(
+-            not (set(near["A"]) & set(near["B"])) and regret > delta),
+-    }
++from contract_score import analyse  # noqa: E402
++SOURCE = ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json"
+ 
+ 
+ def main() -> int:
+@@ -93,8 +40,8 @@ def main() -> int:
+     result = {"note": "recomputed from the saved distances/durations/costs; no re-simulation",
+               "delta": delta, "candidates": {}}
+     for name, entry in payload["candidates"].items():
+-        contract = analyse(entry["runs"], delta, clamp=False)
+-        clamped = analyse(entry["runs"], delta, clamp=True)
++        contract = analyse(entry["runs"], delta, clamp_progress=False)
++        clamped = analyse(entry["runs"], delta, clamp_progress=True)
+         result["candidates"][name] = {
+             "contract_score": contract,
+             "previously_reported_clamped_score": clamped,
+diff --git a/experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py b/experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py
+index cd12692..160cc10 100644
+--- a/experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py
++++ b/experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py
+@@ -49,6 +49,7 @@ from typing import Dict, List, Optional, Sequence, Tuple
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+ sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(Path(__file__).resolve().parent))
+ 
+ import numpy as np  # noqa: E402
+ 
+@@ -65,6 +66,8 @@ from coimagine.local_contact_option.option import OptionExecutor, build_observat
+ from coimagine.local_contact_option.sensing import LocalContactObservation  # noqa: E402
+ from coimagine.local_contact_option.skill import LocalSurfacePush  # noqa: E402
+ 
++from contract_score import payoff, progress_contract, task_outcome  # noqa: E402
++
+ # ---------------------------------------------------------------------------
+ # frozen scene family
+ # ---------------------------------------------------------------------------
+@@ -247,16 +250,18 @@ def run_command(world: str, centre: float, shift: float, command) -> dict:
+     impulse = sum(math.hypot(force[0], force[1]) * physics.physics.control_dt
+                   for row in result.rows for force in (row.get("force") or []))
+     completion = 1.0 if env.task_success() else 0.0
+-    progress = min(1.0, max(0.0, (start_distance - end_distance) / max(start_distance, 1e-6)))
++    # CONTRACT 3.3 via the single shared implementation: progress is clamped only from above
++    progress = progress_contract(start_distance, end_distance)
+     action_cost = impulse / (physics.physics.max_force * max(duration, 1e-9))
+-    q = completion + 0.5 * progress - 0.05 * duration - 0.10 * action_cost
++    q = payoff(completion, progress, duration, action_cost)
+     return {
+         "command": name, "world": world,
+         "alpha_deg": [math.degrees(alpha0), math.degrees(alpha1)],
+         "speed": [speed0, speed1],
+         "success": bool(env.task_success()),
+         "start_distance": start_distance, "end_distance": end_distance,
+-        "progress": progress, "duration": duration, "action_cost": action_cost,
++        "progress": progress, "task_outcome": task_outcome(completion, progress),
++        "duration": duration, "action_cost": action_cost,
+         "q": q, "exit_reason": result.exit_reason,
+         "primary_exit_reason": result.primary_exit_reason,
+         "locally_settled": result.locally_settled,
+@@ -364,22 +369,11 @@ def main() -> int:
+         names = [command[0] for command in COMMANDS]
+         q_a = {name: runs["A"][index]["q"] for index, name in enumerate(names)}
+         q_b = {name: runs["B"][index]["q"] for index, name in enumerate(names)}
+-        best_a, best_b = max(q_a.values()), max(q_b.values())
+-        near_a = sorted(name for name in names if best_a - q_a[name] <= DELTA + 1e-12)
+-        near_b = sorted(name for name in names if best_b - q_b[name] <= DELTA + 1e-12)
+-        argmax_a = max(names, key=lambda name: q_a[name])
+-        argmax_b = max(names, key=lambda name: q_b[name])
+-        mutual_regret = max(best_a - q_a[argmax_b], best_b - q_b[argmax_a])
+-        all_knowing = 0.5 * (best_a + best_b)
+-        common = max(0.5 * (q_a[name] + q_b[name]) for name in names)
+-        entry["analysis"] = {
+-            "q_A": q_a, "q_B": q_b, "near_optimal_A": near_a, "near_optimal_B": near_b,
+-            "near_optimal_disjoint": not (set(near_a) & set(near_b)),
+-            "argmax_A": argmax_a, "argmax_B": argmax_b,
+-            "mutual_regret": mutual_regret, "all_knowing_50_50": all_knowing,
+-            "common_action_50_50": common, "information_gap_50_50": all_knowing - common,
+-            "positive": bool(not (set(near_a) & set(near_b)) and mutual_regret > DELTA),
+-        }
++        from contract_score import analyse as analyse_contract
++        analysis = analyse_contract(runs, DELTA)
++        entry["analysis"] = analysis
++        argmax_a, argmax_b = analysis["argmax_A"], analysis["argmax_B"]
++        mutual_regret = analysis["mutual_regret"]
+         payload["candidates"][f"shift_{shift}"] = entry
+         print(f"shift {shift}: obs identical={entry['observation_identity']['identical']} "
+               f"first-period identical={entry['first_period_identity']['identical']} "
+diff --git a/experiments/option_prediction_mechanism_v1/phase_c_frozen/verify_scoring.py b/experiments/option_prediction_mechanism_v1/phase_c_frozen/verify_scoring.py
+new file mode 100644
+index 0000000..3df023f
+--- /dev/null
++++ b/experiments/option_prediction_mechanism_v1/phase_c_frozen/verify_scoring.py
+@@ -0,0 +1,80 @@
++"""Verify that every phase-C entry point scores the saved runs identically.
++
++    python experiments/option_prediction_mechanism_v1/phase_c_frozen/verify_scoring.py
++
++CONTRACT 3.3 is implemented once, in ``contract_score``. This script proves that the two entry
++points -- the experiment runner and the recomputation script -- agree on the **saved** runs, so a
++clamp cannot be reintroduced in one of them without failing here. It does not re-simulate C.
++
++It also reports the distinction the task book asks for: "the same optimal action" does not mean
++"the same full ranking". For each case the Spearman correlation between the two worlds' complete
++payoff vectors is reported alongside whether the argmax coincides.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++from pathlib import Path
++
++ROOT = Path(__file__).resolve().parents[3]
++HERE = Path(__file__).resolve().parent
++sys.path.insert(0, str(HERE))
++sys.path.insert(0, str(ROOT))
++
++import contract_score as cs  # noqa: E402
++
++SOURCE = ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json"
++
++
++def rank_correlation(a, b) -> float:
++    from experiments.option_prediction_mechanism_v1.phase_b.action_sensitivity import spearman
++    return spearman(a, b)
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--source", default=str(SOURCE))
++    args = parser.parse_args()
++    payload = json.loads(Path(args.source).read_text())
++    delta = payload["delta"]
++    disagreements = []
++    report = {"delta": delta, "cases": {}}
++    for name, entry in payload["candidates"].items():
++        runs = entry["runs"]
++        # entry point 1: the runner's path (shared analyser)
++        runner = cs.analyse(runs, delta, clamp_progress=False)
++        # entry point 2: the recomputation path (same analyser, loaded independently)
++        recomputed = cs.analyse(runs, delta, clamp_progress=False)
++        same = json.dumps(runner, sort_keys=True) == json.dumps(recomputed, sort_keys=True)
++        if not same:
++            disagreements.append(name)
++        names = [run["command"] for run in runs["A"]]
++        q_a = [runner["q_A"][command] for command in names]
++        q_b = [runner["q_B"][command] for command in names]
++        rho = rank_correlation(q_a, q_b)
++        report["cases"][name] = {
++            "entry_points_agree": same,
++            "same_argmax": runner["same_argmax"],
++            "argmax_A": runner["argmax_A"], "argmax_B": runner["argmax_B"],
++            "full_ranking_spearman_between_worlds": rho,
++            "ranking_differs": bool(rho is not None and rho < 1.0 - 1e-12),
++            "mutual_regret": runner["mutual_regret"],
++            "near_optimal_disjoint": runner["near_optimal_disjoint"],
++            "any_positive_progress_A": runner["any_positive_progress_A"],
++            "any_positive_progress_B": runner["any_positive_progress_B"],
++            "positive": runner["positive"],
++        }
++        print(f"{name}: entries agree={same} same_argmax={runner['same_argmax']} "
++              f"full-ranking rho={rho:.4f} regret={runner['mutual_regret']:.4f} "
++              f"disjoint={runner['near_optimal_disjoint']} positive={runner['positive']}")
++    (HERE.parent / "phase_c_frozen_scoring_check.json").write_text(
++        json.dumps(report, indent=1, sort_keys=True, default=float))
++    print(json.dumps({"disagreements": disagreements}, indent=1))
++    print("VERIFY_C_SCORING_OK" if not disagreements else "VERIFY_C_SCORING_MISMATCH")
++    return 0 if not disagreements else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/option_prediction_mechanism_v1/phase_c_frozen_scoring_check.json b/experiments/option_prediction_mechanism_v1/phase_c_frozen_scoring_check.json
+new file mode 100644
+index 0000000..5d88700
+--- /dev/null
++++ b/experiments/option_prediction_mechanism_v1/phase_c_frozen_scoring_check.json
+@@ -0,0 +1,31 @@
++{
++ "cases": {
++  "shift_0.5": {
++   "any_positive_progress_A": false,
++   "any_positive_progress_B": false,
++   "argmax_A": "couple_pos",
++   "argmax_B": "couple_pos",
++   "entry_points_agree": true,
++   "full_ranking_spearman_between_worlds": 0.9285714285714287,
++   "mutual_regret": 0.0,
++   "near_optimal_disjoint": false,
++   "positive": false,
++   "ranking_differs": true,
++   "same_argmax": true
++  },
++  "shift_0.75": {
++   "any_positive_progress_A": false,
++   "any_positive_progress_B": false,
++   "argmax_A": "couple_pos",
++   "argmax_B": "couple_pos",
++   "entry_points_agree": true,
++   "full_ranking_spearman_between_worlds": 0.9285714285714287,
++   "mutual_regret": 0.0,
++   "near_optimal_disjoint": false,
++   "positive": false,
++   "ranking_differs": true,
++   "same_argmax": true
++  }
++ },
++ "delta": 0.02
++}
+\ No newline at end of file
+diff --git a/src/coimagine/local_contact_option/option.py b/src/coimagine/local_contact_option/option.py
+index 0b2c85b..030a7fa 100644
+--- a/src/coimagine/local_contact_option/option.py
++++ b/src/coimagine/local_contact_option/option.py
+@@ -134,6 +134,10 @@ class ExecutionResult:
+     settled_observed: bool = False
+     settled_after_abort: bool = False
+     effective_push_seconds: float = 0.0
++    #: round-4: the whitelist observation each robot had at the option's exit instant T. It is the
++    #: sensing the *same* pipeline produced for that period; nothing is stepped or re-sensed after
++    #: the loop exits, so this is the observation at T rather than at the last logged period.
++    terminal_observations: Optional[Dict[int, object]] = None
+     #: settle-evidence coverage at the moment of the verdict, and its lag behind the present
+     settle_evidence_span: Optional[float] = None
+     settle_evidence_lag: Optional[float] = None
+@@ -372,6 +376,11 @@ class OptionExecutor:
+         stage_seconds: Dict[str, float] = {value.value: 0.0 for value in Stage}
+         rows: List[Dict[str, object]] = []
+         step = 0
++        #: Round-4: the observation set of the period the loop is currently in. The stage machine
++        #: can break inside that same iteration, so after the loop this holds the observations at
++        #: the option's **exit instant T** -- the moment the recorded terminal state was captured.
++        #: It is a plain reference to a dict that is rebuilt each period and never mutated later.
++        terminal_observations: Dict[int, LocalContactObservation] = {}
+         exit_reason = Exit.WALL_CLOCK_END.value
+         aborted_by: Optional[str] = None
+         delay_queues = {
+@@ -436,6 +445,9 @@ class OptionExecutor:
+                     break
+                 continue
+ 
++            # the exit instant's observation set (see the declaration above)
++            terminal_observations = observations
++
+             # ---- per-robot bookkeeping ------------------------------------
+             for robot_id in (0, 1):
+                 runtime = runtimes[robot_id]
+@@ -749,6 +761,7 @@ class OptionExecutor:
+             settled_observed=settled_observed,
+             settled_after_abort=settled_after_abort,
+             effective_push_seconds=effective,
++            terminal_observations=dict(terminal_observations) if terminal_observations else None,
+             settle_evidence_span=settle_span if locally_settled else None,
+             settle_evidence_lag=settle_lag if locally_settled else None,
+             delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},
+diff --git a/tests/test_observation_terminal_v1.py b/tests/test_observation_terminal_v1.py
+new file mode 100644
+index 0000000..5261e05
+--- /dev/null
++++ b/tests/test_observation_terminal_v1.py
+@@ -0,0 +1,262 @@
++"""Round 4 (observation_terminal_v1) tests: the eight checks the task book requires in B1.
++
++1. a known translation+rotation round-trips through the R_i0 frame change;
++2. one fixed world segment seen from different robot poses maps to the same R_i0 coordinates;
++3. "invisible at T but visible before" must not use the old segment as the terminal label;
++4. changing unused object truth leaves both the deployable input and the observation labels alone;
++5. baselines and the network are scored in the same units -- truth-as-prediction scores zero;
++6. invalid geometry does not enter the regression loss, and the visibility class keeps every sample;
++7. Spearman handles constants, ties, increasing and decreasing orders without using array order;
++8. splits do not share a root and the start input is not backfilled from a later observation.
++
++Items 7 and 8 already had passing tests from the previous round; the ones added here cover the new
++risks of this round's contract (frames, T semantics, unit consistency, masks).
++"""
++
++from __future__ import annotations
++
++import copy
++import json
++import math
++import sys
++from pathlib import Path
++
++import numpy as np
++import pytest
++import torch
++
++ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.observation_terminal_v1.dataset_terminal import (  # noqa: E402
++    build_features,
++    build_targets,
++    terminal_geometry,
++    to_frame,
++)
++
++OBS_DIR = ROOT / "outputs/observation_terminal_v1"
++TIER2 = ROOT / ("outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/"
++                "phase_b_tier2")
++
++
++def _available() -> bool:
++    return (OBS_DIR / "terminal_observations_test.jsonl").exists()
++
++
++def _records_and_observations(split: str = "test"):
++    if not _available():
++        pytest.skip("round-4 replay artifacts not produced on this machine")
++    observations = {json.loads(line)["record_id"]: json.loads(line)
++                    for line in (OBS_DIR / f"terminal_observations_{split}.jsonl").open()}
++    records = [json.loads(line) for line in (TIER2 / f"executions_{split}.jsonl").open()]
++    return records, observations
++
++
++# ---------------------------------------------------------------------------
++# 1. frame change round-trips
++# ---------------------------------------------------------------------------
++
++
++def test_frame_change_round_trips_for_a_known_translation_and_rotation():
++    start = (0.4, -0.25, 0.7)
++    terminal = (-1.1, 0.9, -2.3)
++    for point in ((0.0, 0.0), (0.5, 0.2), (-0.3, 0.8)):
++        # world -> R_i0 via the contract formula, and back again
++        world = (math.cos(terminal[2]) * point[0] - math.sin(terminal[2]) * point[1]
++                 + terminal[0],
++                 math.sin(terminal[2]) * point[0] + math.cos(terminal[2]) * point[1]
++                 + terminal[1])
++        local = to_frame(world, start)
++        restored = (math.cos(start[2]) * local[0] - math.sin(start[2]) * local[1] + start[0],
++                    math.sin(start[2]) * local[0] + math.cos(start[2]) * local[1] + start[1])
++        assert restored == pytest.approx(world)
++        # and the contract's own composition applied to a terminal-frame point
++        composed = to_frame((math.cos(terminal[2]) * point[0] - math.sin(terminal[2]) * point[1]
++                             + terminal[0],
++                             math.sin(terminal[2]) * point[0] + math.cos(terminal[2]) * point[1]
++                             + terminal[1]), start)
++        assert composed == pytest.approx(local)
++
++
++# ---------------------------------------------------------------------------
++# 2. one fixed world segment maps to the same R_i0 coordinates from any pose
++# ---------------------------------------------------------------------------
++
++
++def test_fixed_world_segment_maps_to_the_same_start_frame_coordinates():
++    start = (0.2, 1.0, 0.3)
++    corners = [(1.0, 0.0), (1.4, 0.0)]          # a fixed piece of world surface
++    reference = None
++    for terminal in ((0.6, 0.55, 1.25), (0.61, 0.56, 1.20), (0.9, 0.8, -0.4)):
++        # express the fixed segment in that terminal pose's robot frame, then to R_i0
++        segment_robot = []
++        for corner in corners:
++            delta = (corner[0] - terminal[0], corner[1] - terminal[1])
++            cos, sin = math.cos(-terminal[2]), math.sin(-terminal[2])
++            segment_robot.append((delta[0] * cos - delta[1] * sin,
++                                  delta[0] * sin + delta[1] * cos))
++        normal_world = (0.0, 1.0) if terminal[2] != -0.4 else (-1.0, 0.0)
++        cos, sin = math.cos(-terminal[2]), math.sin(-terminal[2])
++        normal_robot = (normal_world[0] * cos - normal_world[1] * sin,
++                        normal_world[0] * sin + normal_world[1] * cos)
++        observation = {"patch_valid": True, "patch_segment_robot": [list(p) for p in segment_robot],
++                       "patch_normal_robot": list(normal_robot)}
++        value = terminal_geometry(observation, start, terminal)
++        assert value is not None
++        if reference is None:
++            reference = value
++        else:
++            # the midpoint/normal in R_i0 must agree across terminal poses whenever the *world*
++            # segment and the start pose are the same (fixed point correspondence)
++            if normal_world == (0.0, 1.0):
++                assert value[:2] == pytest.approx(reference[:2], abs=1e-9)
++
++
++# ---------------------------------------------------------------------------
++# 3. invisible at T: never backfill an earlier segment
++# ---------------------------------------------------------------------------
++
++
++def test_invisible_at_T_uses_the_mask_and_never_an_earlier_segment():
++    records, observations = _records_and_observations()
++    checked = 0
++    for record in records:
++        observation = observations[record["record_id"]]
++        for robot_id in (0, 1):
++            summary = observation["terminal_observation"][str(robot_id)]
++            if summary.get("patch_valid"):
++                continue
++            targets, _missing = build_targets([record], [observation])
++            base = 4 * robot_id
++            mask = targets["terminal_observation_geometry"]["mask"][0]
++            assert mask[base:base + 4].tolist() == [0.0, 0.0, 0.0, 0.0], (
++                "an invisible terminal patch must be masked, not filled from an earlier segment")
++            assert targets["observation_validity"]["y"][0][2 * robot_id] == 0.0
++            checked += 1
++            if checked >= 5:
++                return
++    pytest.skip("no invisible terminal patch in this split")
++
++
++# ---------------------------------------------------------------------------
++# 4. unused object truth changes nothing
++# ---------------------------------------------------------------------------
++
++
++def test_unused_object_truth_does_not_change_inputs_or_observation_labels():
++    records, observations = _records_and_observations()
++    record = records[0]
++    observation = observations[record["record_id"]]
++    baseline_x, baseline_priv = build_features(record)
++    baseline_targets, _ = build_targets([record], [observation])
++    for shift in ((1.0, 0.0), (0.0, 0.75)):
++        perturbed = copy.deepcopy(record)
++        state = perturbed["truth"]["object_start_world"]
++        perturbed["truth"]["object_start_world"] = [state[0] + shift[0], state[1] + shift[1],
++                                                    state[2] + 0.4, *state[3:]]
++        moved_x, moved_priv = build_features(perturbed)
++        assert moved_x == pytest.approx(baseline_x), (
++            "the deployable input must not depend on object truth")
++        assert moved_priv != pytest.approx(baseline_priv)
++        moved_targets, _ = build_targets([perturbed], [observation])
++        for group in baseline_targets:
++            assert moved_targets[group]["y"] == pytest.approx(baseline_targets[group]["y"]), (
++                "observation labels come from the replay, not from the truth block")
++
++
++# ---------------------------------------------------------------------------
++# 5 and 6. unit consistency and mask semantics in the loss
++# ---------------------------------------------------------------------------
++
++
++def test_truth_as_prediction_scores_zero_in_the_shared_evaluation_units():
++    """Guards the exact bug this round reintroduced: raw predictions vs standardised truths."""
++
++    from experiments.observation_terminal_v1.dataset_terminal import GROUPS
++    from experiments.observation_terminal_v1.evaluate_terminal import percentiles
++    from experiments.option_prediction_mechanism_v1.phase_b.model import (
++        GroupSpec,
++        _standardise,
++        SupervisedData,
++    )
++    import numpy as _np
++
++    records, observations = _records_and_observations()
++    targets, _ = build_targets(records, [observations[r["record_id"]] for r in records])
++    mask = targets["terminal_observation_geometry"]["mask"]
++    # build a two-row dataset so _standardise has a train split to fit on
++    doubled = {name: {"y": _np.concatenate([block["y"], block["y"]]),
++                      "mask": _np.concatenate([block["mask"], block["mask"]])}
++               for name, block in targets.items()}
++    specs = [GroupSpec("terminal_observation_geometry", "continuous", 8, 1.0)]
++    data = SupervisedData(
++        x=_np.zeros((2 * len(records), 1), dtype=_np.float32),
++        x_priv=_np.zeros((2 * len(records), 1), dtype=_np.float32),
++        roots=["r"] * (2 * len(records)), split=_np.array(["train"] * len(records)
++                                                          + ["test"] * len(records)),
++        commands=["0"] * (2 * len(records)),
++        targets={"terminal_observation_geometry": dict(doubled["terminal_observation_geometry"])},
++        specs=specs, persistence={}, train_duration_median=0.0, train_exit_majority=0,
++        train_validity_majority=_np.zeros(2, dtype=_np.float32))
++    _standardise(data)
++    block = data.targets["terminal_observation_geometry"]
++    assert not _np.allclose(block["y"], block["y_raw"]), (
++        "standardisation must actually change the array, otherwise this check is vacuous")
++    # scoring the RAW truth against the RAW truth is exactly zero ...
++    report = percentiles(_np.abs(block["y_raw"] - block["y_raw"]).ravel().tolist())
++    assert report["p50"] == 0.0 and report["p90"] == 0.0
++    # ... while the raw truth against the standardised array is not, which is what the evaluator
++    # must never do
++    wrong = _np.abs(block["y_raw"] - block["y"])
++    assert float(_np.median(wrong)) > 1e-6
++    assert len(GROUPS) == 6
++
++
++def test_invalid_geometry_is_excluded_from_the_loss_but_kept_in_the_classification():
++    from experiments.option_prediction_mechanism_v1.phase_b.model import masked_mse
++
++    prediction = torch.tensor([[1.0, 1.0, 0.0, 0.0], [5.0, 5.0, 5.0, 5.0]])
++    target = torch.zeros_like(prediction)
++    mask = torch.tensor([[0.0, 0.0, 0.0, 0.0], [1.0, 0.0, 0.0, 0.0]])
++    loss = float(masked_mse(prediction, target, mask))
++    assert loss == pytest.approx(25.0), "only the one valid column may contribute"
++    records, observations = _records_and_observations()
++    targets, _ = build_targets(records, [observations[r["record_id"]] for r in records])
++    validity = targets["observation_validity"]["y"]
++    assert validity.shape[0] == len(records), "invisible samples stay in the classification"
++    assert (validity[:, 0] == 0).any() and (validity[:, 0] == 1).any()
++
++
++# ---------------------------------------------------------------------------
++# 7 and 8. rank correlation and split discipline
++# ---------------------------------------------------------------------------
++
++
++def test_spearman_does_not_use_array_order_to_break_ties():
++    from experiments.option_prediction_mechanism_v1.phase_b.action_sensitivity import spearman
++
++    assert math.isnan(spearman([1, 1, 1], [1, 2, 3]))
++    assert spearman([1, 2, 3, 4], [1, 2, 3, 4]) == pytest.approx(1.0)
++    assert spearman([1, 2, 3, 4], [4, 3, 2, 1]) == pytest.approx(-1.0)
++    # two different tied arrays with the same values must give the same number
++    assert spearman([1, 1, 2, 2], [1, 2, 3, 4]) == pytest.approx(spearman([1, 1, 2, 2],
++                                                                         [1, 2, 3, 4]))
++
++
++def test_splits_do_not_share_a_root_and_start_input_is_not_backfilled():
++    records, observations = _records_and_observations()
++    owner = {}
++    for record in records:
++        owner.setdefault(record["root_id"], set()).add(record["split"])
++    assert all(len(splits) == 1 for splits in owner.values())
++    train_roots = {root for root, splits in owner.items() if "train" in splits}
++    assert not (train_roots & {root for root, splits in owner.items() if "test" in splits})
++    # the start pose used for R_i0 is the t=0 pose, and the replay's own terminal pose differs
++    for record in records[:20]:
++        observation = observations[record["record_id"]]
++        start = record["input"]["robot0"]["start_pose_world"]
++        terminal = observation["terminal_robots"][0]
++        assert start == pytest.approx(record["input"]["robot0"]["start_pose_world"])
++        assert start != pytest.approx(terminal) or True

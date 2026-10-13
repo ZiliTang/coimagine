@@ -1,6 +1,6 @@
 # MANIFEST — observation_terminal_v1
 
-git commit `c216be6be3a1b009f67b5d5be00d77d49de85348`; round base `c216be6`; patch limited to `src experiments tests`.
+git commit `46589547552d55ed1208f3be2b82f224a5b64cf3`; round base `c216be6`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -9,13 +9,12 @@ git commit `c216be6be3a1b009f67b5d5be00d77d49de85348`; round base `c216be6`; pat
 | docs/observation_terminal_v1/CONTRACT.md | 10430 | 40723a916a78e9078d9f5eeaf4669fc406ac0481d3e1a54092c626c6f1439c39 |
 | docs/observation_terminal_v1/ENVIRONMENT.md | 2091 | 41a2ec4a5154075e37fcc0f04591b9215184649001bbd9e2d0b8f8a5fec31707 |
 | docs/observation_terminal_v1/FIELDS.md | 5136 | fbb2d6532165e96bdec6e6a4be1c2794deb430cfc6741105f1290ee54c87903a |
-| docs/observation_terminal_v1/MANIFEST.md | 8632 | 014e52c79b38b739b14d12fd261593c55d56e4582ea256c314e1d43f4171a909 |
 | docs/observation_terminal_v1/README.md | 1228 | 7a45c477857a70523bed771c60887c1629c17303bde619ca72d0782f9f30272d |
 | docs/observation_terminal_v1/REPRODUCE.md | 1828 | c2e25bfe74cde2fb7eb201327233502a16d9c9b9f8cbc2893e035f44e6e69583 |
 | docs/observation_terminal_v1/STATUS.md | 2285 | d5708bea1c05f55d19afd73f0c8619c46dbb1f77f0d3150e0a13ace1d4031af7 |
 | docs/observation_terminal_v1/report.md | 5545 | 1caeaf8525b53fba824c314a1170b42f683a83666b0d3af06a3d4492aea38419 |
-| docs/observation_terminal_v1/round4.patch | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
-| docs/observation_terminal_v1/round4_diffstat.txt | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
+| docs/observation_terminal_v1/round4.patch | 125072 | ae7db9e0f15a5facfc61e66df3bab49112577277b7ecfc69ebb8431128404c92 |
+| docs/observation_terminal_v1/round4_diffstat.txt | 1178 | 5a9cf1dbf7f658a506b89029d97da636e3a18029e91fb1e1ccd715ccc4d728e7 |
 | docs/tasks/20261014_0040_CoImagine_可观测终态预测任务书.md | 16042 | 13e7abb14c6b97146b58f60e5c4b539c2d1f2b7e5b48b34ddf44856df880dbeb |
 | experiments/observation_terminal_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/observation_terminal_v1/audit_labels.py | 9972 | cebe02d0fa9db90b7325af609dbd2bd2f15a3f80f8df20519a1fcac065a8f39e |
