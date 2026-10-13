@@ -18,6 +18,10 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# The control-round animation scripts encode H.264. There is no system ffmpeg on the lab
+# machines, so the bundled binary from imageio-ffmpeg is used instead (see
+# experiments/local_position_push/make_animations.py).
+video = ["imageio-ffmpeg>=0.5"]
 # The deterministic-grid learning baseline needs PyTorch. Install the CPU wheel with
 #   pip install -e '.[deterministic-grid]' --extra-index-url https://download.pytorch.org/whl/cpu
 deterministic-grid = ["torch>=2.0"]
