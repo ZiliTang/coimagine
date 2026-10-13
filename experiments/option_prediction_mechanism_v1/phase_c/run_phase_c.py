@@ -53,6 +53,12 @@ from coimagine.continuous2d.skills import Hold, JointSpec, MoveTo, skill_to_dict
 #: One joint-skill window, from the mechanism scene module (recorded in every result).
 WINDOW_STEPS = ms.WINDOW_STEPS
 
+#: Frozen positive tolerance (CONTRACT 3.3).
+DELTA = 0.02
+#: The two search templates and the per-template cap of CONTRACT 3.2.
+TEMPLATES = ("T1", "T2")
+MAX_PAIRS_PER_TEMPLATE = 32
+
 
 def mechanism_config(params: ms.MechanismParams):
     """The per-candidate frozen configuration (object size + window length)."""
@@ -238,7 +244,7 @@ def evaluate_pair(pair: CandidatePair, *, max_sequences: Optional[int] = None,
     obs_b = pc.observe(scene_b, params.object_pose("B"), env.backend.robot_states())
     diff = pc.observation_differences(obs_a, obs_b)
     identity_max = max(diff.values())
-    identity_ok = identity_max <= 1e-12
+    identity_ok = pc.observation_is_identical(diff, tolerance=1e-12)
 
     by_id = pair.skill_by_id()
     q: Dict[str, Dict[str, float]] = {"A": {}, "B": {}}
@@ -281,9 +287,44 @@ def evaluate_pair(pair: CandidatePair, *, max_sequences: Optional[int] = None,
         world: sorted(key for key, value in outcomes[world].items() if value.get("diverged"))
         for world in ("A", "B")
     }
-    analysis = analyse_q(q, delta=DELTA, diverged=diverged)
+    # PRIMARY convention: the literal CONTRACT 3.3 reading -- every action of the common
+    # executable set, including sequences whose finite Q is a catastrophic engine outcome.
+    # This is the *conservative* choice for the disjointness claim because it can only ADD
+    # actions to the near-optimal sets, which makes an empty intersection harder to obtain.
+    analysis = analyse_q(q, delta=DELTA, diverged=None)
+    # SECONDARY convention: numerically diverged sequences removed, because the controller
+    # clamps force to F_max, so an impulse above 2*F_max*T is not a physical task outcome.
+    analysis_excluded = analyse_q(q, delta=DELTA, diverged=diverged)
+    analysis["divergence_excluded_convention"] = {
+        "near_optimal_A": analysis_excluded.get("near_optimal_A"),
+        "near_optimal_B": analysis_excluded.get("near_optimal_B"),
+        "mutual_regret": analysis_excluded.get("mutual_regret"),
+        "near_optimal_disjoint": analysis_excluded.get("near_optimal_disjoint"),
+        "positive": analysis_excluded.get("positive"),
+        "dropped_actions": analysis_excluded.get("dropped_diverged"),
+    }
     analysis["diverged_actions"] = diverged
+    # A positive additionally requires that the action each world actually prefers is a
+    # physically valid outcome in that world, not an engine blow-up.
+    if analysis.get("positive"):
+        preferred_A = analysis.get("argmax_A")
+        preferred_B = analysis.get("argmax_B")
+        if preferred_A in diverged["A"] or preferred_B in diverged["B"]:
+            analysis["positive"] = False
+            analysis["positive_reason"] = (
+                "the preferred action of a world diverged numerically, so the apparent "
+                "difference is an engine artefact, not a task outcome"
+            )
     analysis["divergence_clean"] = not (diverged["A"] or diverged["B"])
+    # The observation-identity check is a *precondition* of the proposition: if the two worlds
+    # can be told apart from the allowed shared input, the pair says nothing about ambiguity.
+    analysis["observation_identical"] = bool(identity_ok)
+    if not identity_ok:
+        analysis["positive"] = False
+        analysis["positive_reason"] = (
+            "observations already distinguish the two worlds "
+            f"(max abs difference {identity_max!r})"
+        )
     if not analysis.get("positive"):
         analysis.setdefault("positive_reason",
                             "near-optimal sets intersect or mutual regret <= delta")
@@ -311,6 +352,7 @@ def evaluate_pair(pair: CandidatePair, *, max_sequences: Optional[int] = None,
             "history": "cold start (no prior commands); both worlds have empty history",
         },
         "q": q,
+        "q_valid_in_both": sorted(set(q["A"]) & set(q["B"]) - set(diverged["A"]) - set(diverged["B"])),
         "outcomes": outcomes,
         "analysis": analysis,
         "replay": replay,
@@ -414,112 +456,119 @@ def build_candidates() -> List[CandidatePair]:
 # -- T1: two robots on the same long edge, object shifted along that edge --------------
 
 
+#: Reference-relative contact offsets used by every candidate pair.  The reference point is
+#: the midpoint of the two known robot poses, i.e. part of the static map, so the same skill
+#: resolves to the same world contact point in both worlds.
+CONTACT_OFFSETS = (-1.0, 0.0, 1.0)
+
+
+def _make_pair(template: str, index: int, params: ms.MechanismParams, flavour: str,
+               note: str) -> CandidatePair:
+    skills = (ac.symmetric_action_set(params, force_limit=15.0, offsets=CONTACT_OFFSETS)
+              if flavour == "symmetric"
+              else ac.one_sided_action_set(params, force_limit=15.0, offsets=CONTACT_OFFSETS))
+    return CandidatePair(
+        pair_id=f"{template}-{index:02d}-{flavour}", template=template, params=params,
+        skills=tuple(skills), note=f"{note} [{flavour}]",
+    )
+
+
 def build_t1_candidates() -> List[CandidatePair]:
-    pairs: List[CandidatePair] = []
-    setups = [
-        # (object centre x, shift, robot x, object length, goal, description)
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.60, 0.35), "baseline long edge"),
-        (8.50, 1.00, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.60, 0.35), "smaller shift"),
-        (8.50, 2.00, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.60, 0.35), "larger shift"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(12.20, 2.00, 0.60, 0.35), "goal further"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 2.30, 0.60, 0.35), "goal offset laterally"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 1.70, 0.60, 0.35), "goal offset other side"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.60, 0.22), "tight goal slot"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.45, 0.40), "wide-short goal"),
-        (8.50, 1.50, (8.40, 9.20), 6.0, Box(11.60, 2.00, 0.60, 0.35), "robots closer together"),
-        (8.50, 1.50, (7.60, 9.40), 6.0, Box(11.60, 2.00, 0.60, 0.35), "robots symmetric about centre"),
-        (9.00, 1.20, (8.40, 10.60), 6.0, Box(12.00, 2.00, 0.60, 0.35), "wider stance"),
-        (8.00, 1.20, (7.40, 9.60), 6.0, Box(11.20, 2.00, 0.60, 0.35), "shifted left staging"),
-        (8.50, 1.50, (8.00, 10.00), 5.0, Box(11.60, 2.00, 0.60, 0.35), "shorter object"),
-        (8.50, 1.50, (8.00, 10.00), 7.0, Box(11.60, 2.00, 0.60, 0.35), "longer object"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.60, 2.00, 0.80, 0.30), "wide goal"),
-        (8.50, 1.50, (8.00, 10.00), 6.0, Box(11.00, 1.80, 0.55, 0.30), "diagonal goal"),
-        (8.50, 1.50, (8.20, 9.60), 6.0, Box(11.40, 2.10, 0.50, 0.30), "asymmetric robots"),
-        (9.00, 1.00, (8.20, 10.20), 6.0, Box(12.00, 1.90, 0.55, 0.30), "lateral goal shift"),
+    """T1: two robots on the same long straight edge, object shifted along that edge.
+
+    The frozen grid is the whole T1 budget: 32 pairs.  It varies the tangential shift, the
+    object length, the goal placement, the robot stance and the action-set flavour.  Shape,
+    size, mass, goal, obstacles, arena and the **global robot poses** are identical inside a
+    pair; only ``object_pose.x`` changes by ``shift``.
+    """
+
+    specs: List[Tuple] = []
+    for shift, length in ((0.5, 6.0), (1.0, 5.0), (1.0, 6.0), (1.0, 7.0),
+                          (1.5, 5.0), (1.5, 6.0), (2.0, 5.0)):
+        for goal_x in (11.0, 11.5, 12.0):
+            specs.append((8.5, shift, length, (8.0, 10.0),
+                          Box(goal_x, 2.5, 3.5, 2.0),
+                          f"shift={shift} L={length} goal_x={goal_x}"))
+    specs += [
+        (8.0, 1.5, 6.0, (7.5, 9.5), Box(11.0, 2.5, 3.5, 2.0), "left staging"),
+        (9.0, 1.5, 6.0, (8.5, 10.5), Box(12.0, 2.5, 3.5, 2.0), "right staging"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(11.5, 2.0, 3.5, 2.0), "goal on the edge line"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(11.5, 3.0, 3.5, 2.0), "goal displaced in +y"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(11.5, 2.5, 3.5, 0.4), "tight goal band (negative control)"),
+        (8.5, 0.5, 6.0, (8.0, 10.0), Box(11.5, 2.5, 3.5, 2.0), "small shift (negative control)"),
+        (8.5, 2.0, 5.0, (8.0, 10.0), Box(11.5, 2.5, 3.5, 2.0), "large shift, short object"),
+        (8.5, 1.5, 6.0, (7.0, 9.0), Box(11.5, 2.5, 3.5, 2.0), "both robots left of centre"),
+        (8.5, 1.0, 6.0, (8.0, 10.0), Box(11.0, 2.5, 3.5, 2.0), "shift 1.0 goal 11.0"),
+        (8.5, 1.0, 6.0, (8.0, 10.0), Box(12.0, 2.5, 3.5, 2.0), "shift 1.0 goal 12.0"),
+        (8.5, 1.5, 5.0, (8.0, 10.0), Box(11.5, 2.5, 3.5, 2.0), "shift 1.5 short object"),
+        (8.5, 1.0, 7.0, (8.0, 10.0), Box(11.5, 2.0, 3.5, 3.0), "long object low goal band"),
+        (8.5, 1.0, 6.0, (8.5, 10.5), Box(11.5, 2.5, 3.5, 2.0), "right stance shift 1.0"),
+        (8.5, 1.5, 5.0, (8.5, 10.5), Box(11.5, 2.5, 3.5, 2.0), "right stance short object"),
     ]
-    for index, (cx, shift, robot_x, length, goal, note) in enumerate(setups):
-        if index >= MAX_PAIRS_PER_TEMPLATE:
-            break
-        for variant, action_set in enumerate(("symmetric", "one_sided")):
-            if len(pairs) >= MAX_PAIRS_PER_TEMPLATE:
-                break
-            params = ms.MechanismParams(
-                name=f"T1_p{index:02d}_{variant}", object_centre_x=cx, shift=shift,
-                goal=goal, robot_x=robot_x, object_len=length,
-            )
-            skills = (ac.symmetric_action_set(params, force_limit=15.0)
-                      if action_set == "symmetric"
-                      else ac.one_sided_action_set(params, force_limit=15.0))
-            pairs.append(CandidatePair(
-                pair_id=f"T1-{index:02d}-{action_set}", template="T1", params=params,
-                skills=tuple(skills), note=note,
-            ))
+    pairs: List[CandidatePair] = []
+    for index, (cx, shift, length, robot_x, goal, note) in enumerate(specs[:MAX_PAIRS_PER_TEMPLATE]):
+        flavour = "symmetric" if index % 2 == 0 else "one_sided"
+        params = ms.MechanismParams(
+            name=f"T1_p{index:02d}_{flavour}", object_centre_x=cx, shift=shift,
+            goal=goal, robot_x=robot_x, object_len=length,
+            reference_x=0.5 * (robot_x[0] + robot_x[1]),
+        )
+        pairs.append(_make_pair("T1", index, params, flavour, note))
     return pairs
 
 
-# -- T2: same local contact observations, a known passage makes the action differ ------
+def _t2_wall(wall_x: float, gap_center: float, gap: float, height: float) -> Tuple[Box, Box]:
+    lower_h = gap_center - gap / 2.0
+    upper_start = gap_center + gap / 2.0
+    return (
+        Box(wall_x, lower_h / 2.0, 0.09, lower_h / 2.0),
+        Box(wall_x, (upper_start + height) / 2.0, 0.09, (height - upper_start) / 2.0),
+    )
 
 
 def build_t2_candidates() -> List[CandidatePair]:
-    """T2: the same visible long edge, but a known passage/obstacle decides which action works.
+    """T2: same legal local contact observations, a known passage decides the action.
 
-    The passage is part of the *known static map* (identical in both worlds).  The two worlds
-    differ only in where the object's centre of mass is along the edge, exactly as in T1, so
-    the observation-identity argument is unchanged; the payoff now depends on whether the
-    object can be threaded through the passage.
+    The passage is part of the known static map and is identical in both worlds.  The two
+    worlds differ only in the object's tangential position, exactly as in T1.  ``wall_x`` is
+    always strictly east of both worlds' object, so the initial configuration is legal in
+    both, and it is beyond the 0.6 m scan range from every robot stance.  Again 32 pairs.
     """
 
-    pairs: List[CandidatePair] = []
-    setups = [
-        # (object centre x, shift, robot x, object length, goal, obstacles, note)
-        (7.00, 1.50, (6.50, 8.50), 6.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 0.90, 0.09, 0.90), Box(10.00, 3.10, 0.09, 0.90)),
-         "passage at x=10, gap 1.30"),
-        (7.00, 1.50, (6.50, 8.50), 6.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 1.10, 0.09, 1.10), Box(10.00, 2.90, 0.09, 1.10)),
-         "passage gap 0.70"),
-        (7.00, 2.00, (6.50, 8.50), 6.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 1.10, 0.09, 1.10), Box(10.00, 2.90, 0.09, 1.10)),
-         "passage gap 0.70, larger shift"),
-        (7.00, 1.50, (6.50, 8.50), 6.0, Box(11.20, 2.00, 0.60, 0.35),
-         (Box(9.60, 1.10, 0.09, 1.10), Box(9.60, 2.90, 0.09, 1.10)),
-         "earlier passage"),
-        (7.50, 1.50, (6.80, 9.00), 6.0, Box(11.60, 1.60, 0.60, 0.35),
-         (Box(10.00, 0.70, 0.09, 0.70), Box(10.00, 2.50, 0.09, 0.70)),
-         "passage offset from the goal line"),
-        (7.00, 1.50, (6.50, 8.50), 6.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 0.60, 0.09, 0.60), Box(10.00, 2.40, 0.09, 0.60)),
-         "narrow offset passage"),
-        (7.00, 1.00, (6.50, 8.50), 6.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 1.10, 0.09, 1.10), Box(10.00, 2.90, 0.09, 1.10)),
-         "smaller shift through passage"),
-        (7.00, 2.00, (6.50, 8.50), 7.0, Box(11.60, 2.00, 0.60, 0.35),
-         (Box(10.00, 1.10, 0.09, 1.10), Box(10.00, 2.90, 0.09, 1.10)),
-         "longer object through passage"),
+    specs: List[Tuple] = []
+    for shift, length in ((0.5, 6.0), (1.0, 5.0), (1.0, 6.0), (1.0, 7.0),
+                          (1.5, 5.0), (1.5, 6.0)):
+        for wall_x in (12.0, 12.5):
+            for gap in (1.5, 2.5):
+                specs.append((8.5, shift, length, (8.0, 10.0), Box(13.5, 2.5, 3.5, 2.5),
+                              (wall_x, 2.5, gap),
+                              f"shift={shift} L={length} wall={wall_x} gap={gap}"))
+    specs += [
+        (8.0, 1.5, 6.0, (7.5, 9.5), Box(13.0, 2.5, 3.5, 2.5), (12.0, 2.5, 2.5), "left staging"),
+        (9.0, 1.5, 6.0, (8.5, 10.5), Box(14.0, 2.5, 3.5, 2.5), (13.0, 2.5, 2.5), "right staging"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(13.5, 3.4, 3.5, 2.5), (12.5, 2.5, 2.5), "goal above the opening"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(13.5, 2.5, 3.5, 2.5), (12.5, 3.4, 2.5), "opening above the goal"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(13.5, 2.5, 3.5, 0.4), (12.5, 2.5, 2.5), "tight goal band (negative control)"),
+        (8.5, 0.5, 6.0, (8.0, 10.0), Box(13.5, 2.5, 3.5, 2.5), (12.5, 2.5, 2.5), "small shift (negative control)"),
+        (8.5, 1.5, 6.0, (7.0, 9.0), Box(13.5, 2.5, 3.5, 2.5), (12.5, 2.5, 2.5), "both robots left of centre"),
+        (8.5, 1.5, 6.0, (8.0, 10.0), Box(13.5, 2.5, 3.5, 2.5), (11.9, 2.5, 1.2), "narrow opening (collision probe)"),
+        (8.5, 1.0, 6.0, (8.0, 10.0), Box(13.0, 2.5, 3.5, 2.5), (12.0, 2.5, 2.5), "shift 1.0 wall 12.0"),
+        (8.5, 1.0, 6.0, (8.0, 10.0), Box(13.5, 2.5, 3.5, 2.5), (12.5, 2.5, 2.5), "shift 1.0 wall 12.5"),
+        (8.5, 1.5, 5.0, (8.0, 10.0), Box(12.5, 2.5, 3.5, 2.5), (11.8, 2.5, 2.5), "short object wall 11.8"),
+        (8.5, 1.0, 6.0, (8.5, 10.5), Box(13.5, 2.5, 3.5, 2.5), (12.5, 2.5, 2.5), "right stance shift 1.0"),
     ]
-    for index, (cx, shift, robot_x, length, goal, obstacles, note) in enumerate(setups):
-        if index >= MAX_PAIRS_PER_TEMPLATE:
-            break
-        for variant, action_set in enumerate(("symmetric", "one_sided")):
-            if len(pairs) >= MAX_PAIRS_PER_TEMPLATE:
-                break
-            params = ms.MechanismParams(
-                name=f"T2_p{index:02d}_{variant}", object_centre_x=cx, shift=shift,
-                goal=goal, obstacles=tuple(obstacles), robot_x=robot_x, object_len=length,
-            )
-            skills = (ac.symmetric_action_set(params, force_limit=15.0)
-                      if action_set == "symmetric"
-                      else ac.one_sided_action_set(params, force_limit=15.0))
-            pairs.append(CandidatePair(
-                pair_id=f"T2-{index:02d}-{action_set}", template="T2", params=params,
-                skills=tuple(skills), note=note,
-            ))
+    pairs: List[CandidatePair] = []
+    for index, (cx, shift, length, robot_x, goal, wall, note) in enumerate(specs[:MAX_PAIRS_PER_TEMPLATE]):
+        flavour = "symmetric" if index % 2 == 0 else "one_sided"
+        wall_x, gap_center, gap = wall
+        params = ms.MechanismParams(
+            name=f"T2_p{index:02d}_{flavour}", object_centre_x=cx, shift=shift,
+            goal=goal, obstacles=_t2_wall(wall_x, gap_center, gap, 4.0),
+            robot_x=robot_x, object_len=length,
+            reference_x=0.5 * (robot_x[0] + robot_x[1]),
+        )
+        pairs.append(_make_pair("T2", index, params, flavour, note))
     return pairs
-
-
-# ---------------------------------------------------------------------------
-# main
-# ---------------------------------------------------------------------------
 
 
 def main() -> int:
@@ -590,6 +639,15 @@ def main() -> int:
         pair = next(pair for pair in pairs if pair.pair_id == target["pair_id"])
         first = evaluate_pair(pair)
         second = evaluate_pair(pair)
+        def _stable(record):
+            return {
+                world: {
+                    key: {k: v for k, v in value.items() if k != "wall_seconds"}
+                    for key, value in record["outcomes"][world].items()
+                }
+                for world in ("A", "B")
+            }
+
         summary["repeatability"] = {
             "pair_id": pair.pair_id,
             "q_identical": first["q"] == second["q"],
@@ -597,7 +655,9 @@ def main() -> int:
                 abs(first["q"][world][key] - second["q"][world][key])
                 for world in ("A", "B") for key in first["q"][world]
             ),
-            "outcomes_identical": first["outcomes"] == second["outcomes"],
+            "outcomes_identical": _stable(first) == _stable(second),
+            "note": "wall_seconds (real simulation time) is excluded; the physical outcomes, "
+                    "commands, durations and impulses are compared exactly",
         }
         print("repeatability", json.dumps(summary["repeatability"]), flush=True)
 

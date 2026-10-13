@@ -72,6 +72,12 @@ class MechanismParams:
     robot_x: Tuple[float, float] = (6.00, 8.00)
     arena: Tuple[float, float] = ARENA
     standoff: float = CONTACT_STANDOFF
+    #: Fixed global x that anchors every skill's contact point.  It is part of the known
+    #: static map (both robots' own poses and the scene frame are known and shareable), NOT
+    #: a function of the object pose.  Skills are "contact at reference_x + d along the visible
+    #: edge", so the same skill resolves to the same **world** contact point in both worlds and
+    #: is deployable without knowing the object's hidden tangential position.
+    reference_x: float = 0.0
 
     def edges(self) -> Tuple[float, float]:
         return edge_lines(self.edge_y, self.object_thick)

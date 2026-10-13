@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Dict, List, Sequence
 
 import numpy as np
+import torch
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
@@ -212,11 +213,30 @@ def main() -> int:
             index_val = np.where(data.split == "val")[0]
             predictions = predict(trained["model"], x, data.specs)
             key = f"{arm}_seed{seed}"
+            checkpoint_dir = out_dir / "checkpoints"
+            checkpoint_dir.mkdir(parents=True, exist_ok=True)
+            checkpoint_path = checkpoint_dir / f"{key}.pt"
+            torch.save({
+                "state_dict": trained["model"].state_dict(),
+                "specs": [spec.__dict__ for spec in data.specs],
+                "input_dim": trained["input_dim"],
+                "best_val_loss": trained["best_val"],
+                "best_epoch": trained["best_epoch"],
+                "seed": seed, "arm": arm, "use_privileged": privileged,
+                "target_mean": {name: data.targets[name]["mean"].tolist()
+                                for name in data.targets if "mean" in data.targets[name]},
+                "target_std": {name: data.targets[name]["std"].tolist()
+                               for name in data.targets if "std" in data.targets[name]},
+                "exit_classes": list(EXIT_CLASSES),
+            }, checkpoint_path)
             payload["runs"][key] = {
                 "arm": arm, "seed": seed, "parameters": trained["parameters"],
                 "input_dim": trained["input_dim"], "best_val_loss": trained["best_val"],
                 "best_epoch": trained["best_epoch"], "train_seconds": time.perf_counter() - started,
                 "curves": trained["curves"],
+                "checkpoint": str(checkpoint_path),
+                "checkpoint_sha256": __import__("hashlib").sha256(
+                    checkpoint_path.read_bytes()).hexdigest(),
                 "val": evaluate(data, records, predictions, "val", key),
                 "test": evaluate(data, records, predictions, "test", key),
             }

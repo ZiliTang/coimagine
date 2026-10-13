@@ -52,15 +52,26 @@ class NamedJointSkill:
 
 
 def edge_contact(params: MechanismParams, robot_id: int, offset: float) -> Tuple[float, float]:
-    """Object-frame contact on the edge seen by ``robot_id`` at tangential ``offset``.
+    """Object-frame contact on the edge seen by ``robot_id`` at a deployable reference.
 
-    ``offset`` is measured from the object centre of world A along the long axis.  The lower
-    edge is at local ``y = -thick/2``, the upper edge at ``+thick/2``.
+    ``offset`` is measured from ``params.reference_x``, a point of the known static map, along
+    the long axis.  The object-frame coordinate is filled in only because ``PushContact``
+    stores it that way; the *decision* is "place my contact point at world x =
+    reference_x + offset on the visible edge", which the robot can compute from its own pose,
+    the visible edge geometry and the shared static map.  ``reference_x`` does not depend on
+    the object pose, so the same skill resolves to the **same world contact point** in both
+    worlds of a pair.
     """
 
     half = params.object_thick / 2.0
     y = -half if robot_id == 0 else half
-    return (round(offset, 6), round(y, 6))
+    return (round(params.reference_x + offset - params.object_centre_x, 6), round(y, 6))
+
+
+def skill_world_contact(params: MechanismParams, offset: float) -> float:
+    """The single world x that a skill with reference offset ``offset`` touches."""
+
+    return params.reference_x + offset
 
 
 def push_on_edge(params: MechanismParams, robot_id: int, offset: float,

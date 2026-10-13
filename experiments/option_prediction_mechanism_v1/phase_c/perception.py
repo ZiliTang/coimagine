@@ -436,8 +436,9 @@ def observation_differences(obs_a: SharedObservation, obs_b: SharedObservation) 
         track(f"robot{robot_id}.scan.origin", max(abs(sa.origin[0] - sb.origin[0]),
                                                   abs(sa.origin[1] - sb.origin[1])))
         track(f"robot{robot_id}.scan.yaw", abs(sa.yaw - sb.yaw))
-        ranges_diff = _optional_max_abs(sa.ranges, sb.ranges)
+        ranges_diff, ranges_mismatch = _optional_compare(sa.ranges, sb.ranges)
         diff[f"robot{robot_id}.scan.range"] = ranges_diff
+        diff[f"robot{robot_id}.scan.range_mismatch"] = float(ranges_mismatch)
         diff[f"robot{robot_id}.scan.valid_mismatch"] = float(
             sum(1 for x, y in zip(sa.valid, sb.valid) if x != y)
         )
@@ -463,10 +464,8 @@ def observation_differences(obs_a: SharedObservation, obs_b: SharedObservation) 
                   abs(sa.patch_normal_world[index] - sb.patch_normal_world[index]))
             track(f"robot{robot_id}.patch.tangent[{index}]",
                   abs(sa.patch_tangent_world[index] - sb.patch_tangent_world[index]))
-        diff[f"robot{robot_id}.patch.points_mismatch"] = float(
-            len(sa.patch_points_robot) - len(sb.patch_points_robot)
-        )
-        points_diff = _points_max_abs(sa.patch_points_robot, sb.patch_points_robot)
+        points_diff, points_mismatch = _points_compare(sa.patch_points_robot, sb.patch_points_robot)
+        diff[f"robot{robot_id}.patch.points_mismatch"] = float(points_mismatch)
         diff[f"robot{robot_id}.patch.points"] = points_diff
         seg_diff = max(
             abs(sa.patch_segment_robot[0][i] - sb.patch_segment_robot[0][i]) for i in range(2)
@@ -493,36 +492,57 @@ def observation_differences(obs_a: SharedObservation, obs_b: SharedObservation) 
     diff["map.goal"] = max(abs(x - y) for x, y in zip(obs_a.goal, obs_b.goal))
     diff["map.arena"] = max(abs(x - y) for x, y in zip(obs_a.arena, obs_b.arena))
     diff["map.object_size"] = max(abs(x - y) for x, y in zip(obs_a.object_size, obs_b.object_size))
-    obs_count = max(len(obs_a.obstacles), len(obs_b.obstacles))
     obs_diff = 0.0
-    for index in range(obs_count):
-        if index >= len(obs_a.obstacles) or index >= len(obs_b.obstacles):
-            obs_diff = float("inf")
-            break
-        obs_diff = max(obs_diff, max(abs(x - y) for x, y in zip(obs_a.obstacles[index],
-                                                              obs_b.obstacles[index])))
+    for box_a, box_b in zip(obs_a.obstacles, obs_b.obstacles):
+        obs_diff = max(obs_diff, max(abs(x - y) for x, y in zip(box_a, box_b)))
     diff["map.obstacles"] = obs_diff
+    diff["map.obstacles_count_mismatch"] = float(
+        abs(len(obs_a.obstacles) - len(obs_b.obstacles))
+    )
     diff["history_mismatch"] = float(int(len(obs_a.history) != len(obs_b.history)))
+    assert all(math.isfinite(value) for value in diff.values()), "non-finite difference reported"
     return diff
 
 
-def _optional_max_abs(a: Sequence[Optional[float]], b: Sequence[Optional[float]]) -> float:
+def _optional_compare(a: Sequence[Optional[float]], b: Sequence[Optional[float]]) -> Tuple[float, int]:
+    """Max abs difference over entries present in **both**, plus a mismatch count.
+
+    A quantity present in one world and absent in the other is a *mismatch*, not an infinite
+    numeric difference; it is returned separately so no caller can see ``inf``.
+    """
+
     if len(a) != len(b):
-        return float("inf")
+        return 0.0, abs(len(a) - len(b))
     worst = 0.0
+    mismatch = 0
     for x, y in zip(a, b):
         if x is None and y is None:
             continue
         if x is None or y is None:
-            return float("inf")
+            mismatch += 1
+            continue
         worst = max(worst, abs(x - y))
-    return worst
+    return worst, mismatch
 
 
-def _points_max_abs(a: Sequence[Vec], b: Sequence[Vec]) -> float:
-    if len(a) != len(b):
-        return float("inf")
+def _points_compare(a: Sequence[Vec], b: Sequence[Vec]) -> Tuple[float, int]:
+    """Max abs difference over the paired prefix, plus a length-mismatch flag."""
+
     worst = 0.0
     for pa, pb in zip(a, b):
         worst = max(worst, abs(pa[0] - pb[0]), abs(pa[1] - pb[1]))
-    return worst
+    return worst, abs(len(a) - len(b))
+
+
+def observation_is_identical(diff: Dict[str, float], *, tolerance: float = 1e-12) -> bool:
+    """Identity from finite quantities only: every mismatch count must be zero."""
+
+    for name, value in diff.items():
+        if not math.isfinite(value):
+            return False
+        if name.endswith("_mismatch"):
+            if value != 0.0:
+                return False
+        elif value > tolerance:
+            return False
+    return True
