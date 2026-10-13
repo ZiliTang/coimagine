@@ -1,0 +1,418 @@
+{
+ "abort_population_counterfactual": {
+  "V": {
+   "0.020": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 0,
+    "reclassified_as_settled": 0
+   },
+   "0.025": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 67,
+    "reclassified_as_settled": 0
+   },
+   "0.030": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 67,
+    "reclassified_as_settled": 0
+   },
+   "0.040": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 72,
+    "reclassified_as_settled": 0
+   },
+   "0.050": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 79,
+    "reclassified_as_settled": 0
+   },
+   "0.060": {
+    "abort_executions": 110,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 79,
+    "reclassified_as_settled": 0
+   }
+  },
+  "X": {
+   "0.020": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 0,
+    "reclassified_as_settled": 0
+   },
+   "0.025": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 121,
+    "reclassified_as_settled": 0
+   },
+   "0.030": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 121,
+    "reclassified_as_settled": 0
+   },
+   "0.040": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 140,
+    "reclassified_as_settled": 0
+   },
+   "0.050": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 144,
+    "reclassified_as_settled": 0
+   },
+   "0.060": {
+    "abort_executions": 189,
+    "note": "the controller keeps the abort reason as the terminal exit, so reaching quiet here does not change the recorded outcome",
+    "reached_quiet_within_budget": 144,
+    "reclassified_as_settled": 0
+   }
+  }
+ },
+ "applicability": {
+  "exact_for": "thresholds >= the deployed value, and budgets <= the logged length; the BRAKE/SETTLE force never depends on the settle test",
+  "not_exact_for": "a threshold below the deployed value (a run could have continued past the end of its log)",
+  "scope": "decision layer only. The trajectories are the recorded ones; this table does not show that a closed-loop continuation would improve",
+  "truth_checks": [
+   "bodies below SETTLE_LINEAR/SETTLE_ANGULAR (weaker on a rotating object)",
+   "rotation-aware true surface normal speed below the candidate threshold (what the estimator measures)"
+  ]
+ },
+ "budget_counterfactual": {
+  "V": {
+   "4.0": {
+    "eligible": 850,
+    "exact_within_log": true,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled_eligible": 647,
+    "total": 960
+   },
+   "5.0": {
+    "eligible": 850,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled_eligible": 647,
+    "total": 960
+   },
+   "6.0": {
+    "eligible": 850,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled_eligible": 647,
+    "total": 960
+   },
+   "8.0": {
+    "eligible": 850,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled_eligible": 647,
+    "total": 960
+   },
+   "by_variant": {
+    "baseline": {
+     "n": 120,
+     "settle_rate": 0.9083333333333333,
+     "settled": 109
+    },
+    "delay": {
+     "n": 120,
+     "settle_rate": 0.0,
+     "settled": 0
+    },
+    "noise": {
+     "n": 120,
+     "settle_rate": 0.0,
+     "settled": 0
+    },
+    "param": {
+     "n": 120,
+     "settle_rate": 0.9,
+     "settled": 108
+    },
+    "pos_10mm": {
+     "n": 120,
+     "settle_rate": 0.8916666666666667,
+     "settled": 107
+    },
+    "pos_2mm": {
+     "n": 120,
+     "settle_rate": 0.8916666666666667,
+     "settled": 107
+    },
+    "vel_0.02": {
+     "n": 120,
+     "settle_rate": 0.8916666666666667,
+     "settled": 107
+    },
+    "vel_0.05": {
+     "n": 120,
+     "settle_rate": 0.9083333333333333,
+     "settled": 109
+    }
+   },
+   "timeout_diagnosis": {
+    "median_min_estimate": 0.011330843135372777,
+    "min_estimate_below_deployed_threshold_ever": 188,
+    "min_estimate_never_below_threshold": 2,
+    "timeout_executions": 190
+   }
+  },
+  "X": {
+   "4.0": {
+    "eligible": 771,
+    "exact_within_log": true,
+    "settle_rate_settle_decided": 0.767833981841764,
+    "settled_eligible": 592,
+    "total": 960
+   },
+   "5.0": {
+    "eligible": 771,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.767833981841764,
+    "settled_eligible": 592,
+    "total": 960
+   },
+   "6.0": {
+    "eligible": 771,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.767833981841764,
+    "settled_eligible": 592,
+    "total": 960
+   },
+   "8.0": {
+    "eligible": 771,
+    "exact_within_log": false,
+    "settle_rate_settle_decided": 0.767833981841764,
+    "settled_eligible": 592,
+    "total": 960
+   },
+   "by_variant": {
+    "baseline": {
+     "n": 120,
+     "settle_rate": 0.8416666666666667,
+     "settled": 101
+    },
+    "delay": {
+     "n": 120,
+     "settle_rate": 0.0,
+     "settled": 0
+    },
+    "noise": {
+     "n": 120,
+     "settle_rate": 0.0,
+     "settled": 0
+    },
+    "param": {
+     "n": 120,
+     "settle_rate": 0.8083333333333333,
+     "settled": 97
+    },
+    "pos_10mm": {
+     "n": 120,
+     "settle_rate": 0.8166666666666667,
+     "settled": 98
+    },
+    "pos_2mm": {
+     "n": 120,
+     "settle_rate": 0.8166666666666667,
+     "settled": 98
+    },
+    "vel_0.02": {
+     "n": 120,
+     "settle_rate": 0.825,
+     "settled": 99
+    },
+    "vel_0.05": {
+     "n": 120,
+     "settle_rate": 0.825,
+     "settled": 99
+    }
+   },
+   "timeout_diagnosis": {
+    "median_min_estimate": 0.011437988973343255,
+    "min_estimate_below_deployed_threshold_ever": 171,
+    "min_estimate_never_below_threshold": 0,
+    "timeout_executions": 171
+   }
+  }
+ },
+ "constants": {
+  "BRAKE_SETTLE_LIMIT": 4.0,
+  "SETTLE_ANGULAR": 0.08,
+  "SETTLE_HOLD": 0.3,
+  "SETTLE_LINEAR": 0.03,
+  "SETTLE_SURFACE": 0.02
+ },
+ "run_id": "local-position-push-v1",
+ "split": "test",
+ "threshold_counterfactual": {
+  "V": {
+   "0.020": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 0,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6739583333333333,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled": 647,
+    "total": 960
+   },
+   "0.025": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 0,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6739583333333333,
+    "settle_rate_settle_decided": 0.7611764705882353,
+    "settled": 647,
+    "total": 960
+   },
+   "0.030": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 6,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6802083333333333,
+    "settle_rate_settle_decided": 0.768235294117647,
+    "settled": 653,
+    "total": 960
+   },
+   "0.040": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.011627906976744186,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 86,
+    "newly_truth_bodies_bad": 1,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.7635416666666667,
+    "settle_rate_settle_decided": 0.8623529411764705,
+    "settled": 733,
+    "total": 960
+   },
+   "0.050": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.11926605504587157,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 109,
+    "newly_truth_bodies_bad": 13,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.7875,
+    "settle_rate_settle_decided": 0.8894117647058823,
+    "settled": 756,
+    "total": 960
+   },
+   "0.060": {
+    "eligible": 850,
+    "excluded_aborts": 110,
+    "false_positive_rate_bodies": 0.3302752293577982,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 109,
+    "newly_truth_bodies_bad": 36,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.7875,
+    "settle_rate_settle_decided": 0.8894117647058823,
+    "settled": 756,
+    "total": 960
+   }
+  },
+  "X": {
+   "0.020": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 0,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6166666666666667,
+    "settle_rate_settle_decided": 0.767833981841764,
+    "settled": 592,
+    "total": 960
+   },
+   "0.025": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 1,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6177083333333333,
+    "settle_rate_settle_decided": 0.7691309987029832,
+    "settled": 593,
+    "total": 960
+   },
+   "0.030": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.0,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 6,
+    "newly_truth_bodies_bad": 0,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6229166666666667,
+    "settle_rate_settle_decided": 0.7756160830090791,
+    "settled": 598,
+    "total": 960
+   },
+   "0.040": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.0410958904109589,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 73,
+    "newly_truth_bodies_bad": 3,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.6927083333333334,
+    "settle_rate_settle_decided": 0.8625162127107653,
+    "settled": 665,
+    "total": 960
+   },
+   "0.050": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.1111111111111111,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 99,
+    "newly_truth_bodies_bad": 11,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.7197916666666667,
+    "settle_rate_settle_decided": 0.8962386511024644,
+    "settled": 691,
+    "total": 960
+   },
+   "0.060": {
+    "eligible": 771,
+    "excluded_aborts": 189,
+    "false_positive_rate_bodies": 0.30303030303030304,
+    "false_positive_rate_surface": 0.0,
+    "newly_settled": 99,
+    "newly_truth_bodies_bad": 30,
+    "newly_truth_surface_bad": 0,
+    "settle_rate": 0.7197916666666667,
+    "settle_rate_settle_decided": 0.8962386511024644,
+    "settled": 691,
+    "total": 960
+   }
+  }
+ }
+}

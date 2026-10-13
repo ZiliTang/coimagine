@@ -63,6 +63,22 @@ SURFACE_FRESHNESS = 0.20  # s
 SURFACE_CONSISTENCY = 0.05  # m/s
 
 # ---------------------------------------------------------------------------
+# round 2 (settle reliability). These are *protocol* options, off by default so that the v1
+# configuration stays bit-for-bit reproducible; the round-2 run records the values it used.
+# ---------------------------------------------------------------------------
+
+#: Baseline of the windowed settle estimator, in seconds of *sample time*. 0.0 keeps the v1
+#: consecutive-scan estimator. See ``control.update_windowed_surface_estimate`` for why the
+#: baseline -- not the threshold -- is the thing that had to change.
+SETTLE_WINDOW = 0.0
+#: The window must actually span this much sample time before it is allowed to decide. Guards
+#: against a verdict from two frames that are effectively simultaneous.
+SETTLE_WINDOW_MIN_BASELINE = 0.10
+#: Active brake: extra bounded inward force along the observed local normal during BRAKE/SETTLE,
+#: so the robot keeps holding the object instead of leaving it to glide. Local observation only.
+BRAKE_HOLD_FORCE = 0.0     # N, 0 disables (the v1 brake)
+
+# ---------------------------------------------------------------------------
 # surface-position-feedback push (arm X). Not a gain search: these are the single fixed
 # configuration the task book specifies.
 # ---------------------------------------------------------------------------
@@ -157,6 +173,10 @@ class OptionConfig:
     settle_angular: float = SETTLE_ANGULAR
     settle_surface: float = SETTLE_SURFACE
     settle_hold: float = SETTLE_HOLD
+    #: round-2 settle reliability (see the constants above)
+    settle_window: float = SETTLE_WINDOW
+    settle_window_min_baseline: float = SETTLE_WINDOW_MIN_BASELINE
+    brake_hold_force: float = BRAKE_HOLD_FORCE
     ready_contact_hold: float = READY_CONTACT_HOLD
     ready_both_hold: float = READY_BOTH_HOLD
     f_wall_clock: float = F_WALL_CLOCK

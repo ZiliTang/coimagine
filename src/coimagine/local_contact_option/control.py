@@ -182,6 +182,15 @@ def velocity_feedback_force(reference: Vec, velocity: Vec, kv: float, limit: flo
 
 
 @dataclass
+class SurfaceSample:
+    """One stored local scan: the surface points in the world frame and their normal."""
+
+    sample_time: float
+    points: List[Vec]
+    normal: Vec
+
+
+@dataclass
 class LocalControlState:
     """Controller-internal state. It is reset between skills, never between control periods."""
 
@@ -206,6 +215,9 @@ class LocalControlState:
     surface_matches: int = 0
     surface_unavailable_reason: Optional[str] = None
     surface_speed_sample_time: Optional[float] = None
+    #: ring buffer used by the windowed settle estimator (``SETTLE_WINDOW``). Empty unless
+    #: that estimator is enabled; each entry is one *distinct* local scan.
+    surface_history: List[SurfaceSample] = field(default_factory=list)
     monotonic_time: float = 0.0
     flags: List[str] = field(default_factory=list)
     max_step: float = 0.0
@@ -236,6 +248,7 @@ class LocalControlState:
         self.surface_matches = 0
         self.surface_unavailable_reason = None
         self.surface_speed_sample_time = None
+        self.surface_history = []
         self.flags = []
 
     def note(self, flag: str) -> None:
@@ -313,6 +326,32 @@ def brake_force(
     reference = state.reference.update((0.0, 0.0), dt)
     own = observation.own
     return velocity_feedback_force(reference, (own.vx, own.vy), state.kv, state.force_limit)
+
+
+def brake_force_with_hold(
+    observation: LocalContactObservation, state: LocalControlState, dt: float, hold_force: float
+) -> Vec:
+    """Brake, and (optionally) keep pressing the observed surface with a bounded preload.
+
+    ``hold_force = 0`` is exactly :func:`brake_force`. Otherwise a constant inward force along
+    the current *local* normal is added before the shared force limit is applied, so the robot
+    stays in contact and keeps holding the object instead of withdrawing and letting it glide.
+    Only the whitelist is read: the local patch normal and the robot's own state. No object
+    truth, no velocity or pose write.
+    """
+
+    force = brake_force(observation, state, dt)
+    if hold_force <= 0.0:
+        return force
+    normal = observation.unit_normal_world()
+    if normal is None:
+        return force
+    length = math.hypot(normal[0], normal[1])
+    if length < 1e-9:
+        return force
+    pushed = (force[0] + hold_force * normal[0] / length,
+              force[1] + hold_force * normal[1] / length)
+    return clip_norm(pushed, state.force_limit)
 
 
 # ---------------------------------------------------------------------------
@@ -398,5 +437,93 @@ def update_surface_estimate(
     state.previous_world_points = current
     state.previous_pose = pose
     state.previous_sample_time = sample_time
+    state.surface_consistency = consistency - abs(rms - median_abs)
+    return median_abs, signed, rms, matches, None
+
+
+def _matched_speeds(current: Sequence[Vec], reference: Sequence[Vec], normal: Vec, dt: float,
+                    tolerance: float) -> List[float]:
+    """Per-match signed normal speeds (m/s) of ``current`` against ``reference``."""
+
+    speeds: List[float] = []
+    for point in current:
+        best = None
+        best_distance = tolerance
+        for candidate in reference:
+            distance = _norm(_sub(point, candidate))
+            if distance < best_distance:
+                best_distance = distance
+                best = candidate
+        if best is None:
+            continue
+        delta = _sub(point, best)
+        speeds.append((delta[0] * normal[0] + delta[1] * normal[1]) / dt)
+    return speeds
+
+
+def update_windowed_surface_estimate(
+    state: LocalControlState, patch: Optional[LocalPatch], pose: Tuple[float, float, float],
+    sample_time: Optional[float], now: float, *, window: float, min_baseline: float,
+    tolerance: float = SURFACE_MATCH_TOLERANCE, freshness: float = SURFACE_FRESHNESS,
+    consistency: float = SURFACE_CONSISTENCY,
+) -> Tuple[Optional[float], Optional[float], Optional[float], int, Optional[str]]:
+    """Surface speed estimated over a **window** of local scans instead of one control period.
+
+    Why this exists. The quiet decision compares a surface-speed estimate against a fixed
+    threshold, and the deployed estimator divides a matched normal displacement by the gap
+    between two *consecutive* scans (0.05 s). Any per-ray range noise ``sigma`` therefore enters
+    the estimate as ``sigma * sqrt(2) / 0.05`` m/s -- with the pressure-test ``sigma = 0.002`` m
+    that is 0.057 m/s, against a 0.02 m/s threshold. The statistic is the median of the absolute
+    per-match speeds, which rejects mis-associations but keeps the full noise *scale*: the median
+    of ``|N(0, s)|`` is ``0.67 s``, not ``s / sqrt(n)``. On genuinely static states under that
+    noise the estimator reads about 0.033 m/s, so no threshold below the noise can ever be met.
+
+    The fix is to widen the baseline rather than move the threshold: matching the current scan
+    against the oldest scan still inside ``window`` seconds divides the *same* per-ray noise by a
+    baseline that is 6x longer, so the per-match noise speed drops to ~0.009 m/s. Real motion is
+    still visible -- a surface moving at the threshold covers ``threshold * window`` metres, well
+    above the noise -- and the statistic itself (median of absolute matched speeds) is unchanged,
+    so a symmetric +- motion cannot cancel.
+
+    Repeated sample timestamps (the 100 ms observation-delay pressure test delivers the same
+    frame on two consecutive control periods) do not reset the verdict: the frame is not stored
+    twice, and the window is simply re-evaluated from the distinct scans already in the buffer.
+
+    Returns the same tuple shape as :func:`update_surface_estimate`. ``None`` for the speed means
+    "cannot decide", which the caller treats as *not* settled -- a missing observation may never
+    be evidence of stillness.
+    """
+
+    if patch is None:
+        return None, None, None, 0, "no_patch"
+    if sample_time is None:
+        return None, None, None, 0, "no_sample_time"
+    if now - sample_time > freshness:
+        return None, None, None, 0, "stale_frame"
+
+    history = state.surface_history
+    if not history or sample_time > history[-1].sample_time + 1e-12:
+        history.append(SurfaceSample(sample_time, world_points(patch, pose),
+                                     (patch.normal_world[0], patch.normal_world[1])))
+    newest = history[-1]
+    # drop entries that fell out of the window (measured on sample time, not wall clock)
+    while len(history) > 1 and newest.sample_time - history[0].sample_time > window + 1e-12:
+        history.pop(0)
+    if len(history) < 2:
+        return None, None, None, 0, "insufficient_history"
+    oldest = history[0]
+    baseline = newest.sample_time - oldest.sample_time
+    if baseline < min_baseline:
+        return None, None, None, 0, "baseline_too_short"
+
+    speeds = _matched_speeds(newest.points, oldest.points, newest.normal, baseline, tolerance)
+    matches = len(speeds)
+    if matches < SURFACE_MATCH_MIN_POINTS:
+        return None, None, None, matches, "insufficient_matches"
+    absolute = sorted(abs(value) for value in speeds)
+    median_abs = absolute[len(absolute) // 2] if len(absolute) % 2 else (
+        0.5 * (absolute[len(absolute) // 2 - 1] + absolute[len(absolute) // 2]))
+    rms = math.sqrt(sum(value * value for value in speeds) / matches)
+    signed = sum(speeds) / matches
     state.surface_consistency = consistency - abs(rms - median_abs)
     return median_abs, signed, rms, matches, None

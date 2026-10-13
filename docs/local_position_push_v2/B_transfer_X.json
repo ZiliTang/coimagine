@@ -1,0 +1,164 @@
+{
+ "arm": "X",
+ "discrete_outcomes": {
+  "contact_at_end": 124,
+  "executions": 960,
+  "exit_reasons": {
+   "contact_lost": 146,
+   "patch_lost": 31,
+   "patch_support_lost": 12,
+   "settle_timeout": 171,
+   "settle_unobserved": 8,
+   "settled_observed": 592
+  },
+  "face_changed": 8,
+  "terminal_patch_available": 957,
+  "terminal_patch_unavailable_kept": 3
+ },
+ "feature_sets": {
+  "observable": {
+   "features": "observable",
+   "n": 957,
+   "per_target": {
+    "normal_angle_deg": {
+     "mae_mean": 6.432581627728232,
+     "mae_median": 3.982648451549056,
+     "r2": 0.4209427897867677,
+     "units": "deg"
+    },
+    "signed_distance": {
+     "mae_mean": 0.009175973620512123,
+     "mae_median": 0.007164192676885978,
+     "r2": 0.37494674183793275,
+     "units": "m"
+    },
+    "tangential_offset": {
+     "mae_mean": 0.013152012408531998,
+     "mae_median": 0.010778057327333697,
+     "r2": 0.6582704118534083,
+     "units": "m"
+    }
+   },
+   "roots": 120
+  },
+  "observable_plus_truth": {
+   "features": "observable_plus_truth",
+   "n": 957,
+   "per_target": {
+    "normal_angle_deg": {
+     "mae_mean": 4.849469956751154,
+     "mae_median": 2.974558890867577,
+     "r2": 0.6762867849747338,
+     "units": "deg"
+    },
+    "signed_distance": {
+     "mae_mean": 0.009104091377597809,
+     "mae_median": 0.006841208416426381,
+     "r2": 0.3913378774862092,
+     "units": "m"
+    },
+    "tangential_offset": {
+     "mae_mean": 0.013444579912361563,
+     "mae_median": 0.01070970861930643,
+     "r2": 0.6509409597290349,
+     "units": "m"
+    }
+   },
+   "roots": 120
+  },
+  "skill_only": {
+   "features": "skill_only",
+   "n": 957,
+   "per_target": {
+    "normal_angle_deg": {
+     "mae_mean": 7.251672637070532,
+     "mae_median": 3.02268110364405,
+     "r2": -0.012802794615494939,
+     "units": "deg"
+    },
+    "signed_distance": {
+     "mae_mean": 0.011663812307123716,
+     "mae_median": 0.009344513479585564,
+     "r2": 0.15974885466740152,
+     "units": "m"
+    },
+    "tangential_offset": {
+     "mae_mean": 0.02164450712333863,
+     "mae_median": 0.01402230220312528,
+     "r2": -0.05090683909668514,
+     "units": "m"
+    }
+   },
+   "roots": 120
+  },
+  "truth_reference": {
+   "features": "truth_reference",
+   "n": 957,
+   "per_target": {
+    "normal_angle_deg": {
+     "mae_mean": 4.487186279833509,
+     "mae_median": 2.514702878078001,
+     "r2": 0.713161993574404,
+     "units": "deg"
+    },
+    "signed_distance": {
+     "mae_mean": 0.009955880308583862,
+     "mae_median": 0.007764246904077399,
+     "r2": 0.31395473249837325,
+     "units": "m"
+    },
+    "tangential_offset": {
+     "mae_mean": 0.02062972405287192,
+     "mae_median": 0.01698731973137351,
+     "r2": 0.19750844326738182,
+     "units": "m"
+    }
+   },
+   "roots": 120
+  }
+ },
+ "note": "targets contain no object global pose component; the truth_reference set is an upper bound that is not a deployable input",
+ "residual_vs_hidden_object_orientation": {
+  "normal_angle_deg": {
+   "hidden_angle_quartile_residual_means": [
+    -1.5672386461232932,
+    1.7516948808933925,
+    0.1657407855633368,
+    -0.3736466076364185
+   ],
+   "n": 957,
+   "spearman_rho_residual_vs_hidden_angle": 0.062019764323323796,
+   "spread_across_quartiles": 3.3189335270166858
+  },
+  "signed_distance": {
+   "hidden_angle_quartile_residual_means": [
+    -0.002304095573261987,
+    0.00032621302873051087,
+    0.00174985340753176,
+    0.0001246163007620417
+   ],
+   "n": 957,
+   "spearman_rho_residual_vs_hidden_angle": 0.036410444311589775,
+   "spread_across_quartiles": 0.0040539489807937465
+  },
+  "tangential_offset": {
+   "hidden_angle_quartile_residual_means": [
+    -8.90487233024307e-05,
+    -0.0018490083483356547,
+    -0.002474414590546261,
+    0.004699051883178709
+   ],
+   "n": 957,
+   "spearman_rho_residual_vs_hidden_angle": 0.07973449427851287,
+   "spread_across_quartiles": 0.007173466473724971
+  }
+ },
+ "run_id": "local-position-push-v1",
+ "split": "test",
+ "targets": [
+  "signed_distance",
+  "tangential_offset",
+  "normal_angle_deg"
+ ],
+ "validation": "leave-one-root-out; all 8 variants of a root held out together"
+}

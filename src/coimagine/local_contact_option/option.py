@@ -39,9 +39,11 @@ from .control import (
     LocalControlState,
     ReferenceVelocity,
     brake_force,
+    brake_force_with_hold,
     clip_norm,
     local_push_force,
     update_surface_estimate,
+    update_windowed_surface_estimate,
     wrap_angle,
 )
 from .delay import DelayFrame, FixedDelayQueue
@@ -572,11 +574,20 @@ class OptionExecutor:
                     observation = observations[robot_id]
                     own_speed = math.hypot(observation.own.vx, observation.own.vy)
                     omega = abs(observation.own.omega)
-                    speed, signed, rms, matches, reason = update_surface_estimate(
-                        runtime.control, observation.patch,
-                        (observation.own.x, observation.own.y, observation.own.angle),
-                        observation.sample_time, observation.time,
-                    )
+                    if config.settle_window > 0.0:
+                        speed, signed, rms, matches, reason = update_windowed_surface_estimate(
+                            runtime.control, observation.patch,
+                            (observation.own.x, observation.own.y, observation.own.angle),
+                            observation.sample_time, observation.time,
+                            window=config.settle_window,
+                            min_baseline=config.settle_window_min_baseline,
+                        )
+                    else:
+                        speed, signed, rms, matches, reason = update_surface_estimate(
+                            runtime.control, observation.patch,
+                            (observation.own.x, observation.own.y, observation.own.angle),
+                            observation.sample_time, observation.time,
+                        )
                     runtime.surface_speed = speed
                     runtime.control.surface_speed = speed
                     runtime.control.surface_speed_signed = signed
@@ -633,7 +644,8 @@ class OptionExecutor:
                         Stage.DONE: "brake",
                     }.get(stage, "approach")
                 if mode == "brake":
-                    joint_force[robot_id] = brake_force(observations[robot_id], runtime.control, dt)
+                    joint_force[robot_id] = brake_force_with_hold(
+                        observations[robot_id], runtime.control, dt, config.brake_hold_force)
                     runtime.reference = runtime.control.reference.value
                 elif force_source == "position":
                     joint_force[robot_id] = self._position_force(

@@ -1,0 +1,650 @@
+{
+ "arms": {
+  "V": {
+   "executions": 960,
+   "exits": {
+    "contact_lost": 78,
+    "patch_lost": 32,
+    "settle_timeout": 190,
+    "settle_unobserved": 13,
+    "settled_observed": 647
+   },
+   "settle_rate": 0.6739583333333333
+  },
+  "X": {
+   "executions": 960,
+   "exits": {
+    "contact_lost": 146,
+    "patch_lost": 31,
+    "patch_support_lost": 12,
+    "settle_timeout": 171,
+    "settle_unobserved": 8,
+    "settled_observed": 592
+   },
+   "settle_rate": 0.6166666666666667
+  }
+ },
+ "constants": {
+  "BRAKE_SETTLE_LIMIT": 4.0,
+  "CONTROL_DT": 0.05,
+  "SETTLE_ANGULAR": 0.08,
+  "SETTLE_HOLD": 0.3,
+  "SETTLE_LINEAR": 0.03,
+  "SETTLE_SURFACE": 0.02
+ },
+ "definitions": {
+  "exit_instant_truth_low": "object and every active robot below SETTLE_LINEAR/SETTLE_ANGULAR at the recorded exit",
+  "local_settle": "recorded settled_observed (the on-board criterion)",
+  "settle_after_abort_recomputed": "an aborted run whose logged settle periods still satisfy the on-board criterion for SETTLE_HOLD",
+  "static_floor": 0.005,
+  "truth_surface_reference": "|v_object + omega x r| . normal at the observed contact point (rotation-aware)",
+  "window_truth_low": "that held for the whole trailing 0.3 s of logged settle periods"
+ },
+ "estimator_on_static_periods": {
+  "V": {
+   "estimate": {
+    "max": 0.10755802333755501,
+    "n": 12139,
+    "p50": 0.02943380626690948,
+    "p90": 0.04699449652931276,
+    "p95": 0.05176435576434169
+   },
+   "truth_surface_speed": {
+    "max": 0.004545421113653112,
+    "n": 12139,
+    "p50": 4.2988720360889675e-05,
+    "p90": 0.0018907838106571838,
+    "p95": 0.002883640356284035
+   }
+  },
+  "X": {
+   "estimate": {
+    "max": 0.09030594728865254,
+    "n": 12129,
+    "p50": 0.02999749783969815,
+    "p90": 0.04734705628067976,
+    "p95": 0.05194237712961271
+   },
+   "truth_surface_speed": {
+    "max": 0.004922848430409172,
+    "n": 12129,
+    "p50": 4.2754622427679416e-05,
+    "p90": 0.0018928281129396028,
+    "p95": 0.0028858303210485413
+   }
+  }
+ },
+ "estimator_on_static_periods_by_variant": {
+  "V": {
+   "baseline": {
+    "estimate": {
+     "max": 0.010021545838289833,
+     "n": 89,
+     "p50": 0.0033603303826413525,
+     "p90": 0.005834743594547001,
+     "p95": 0.006627827165830052
+    }
+   },
+   "delay": {
+    "estimate": {
+     "max": 0.03635756138515208,
+     "n": 4081,
+     "p50": 0.00010956925180374807,
+     "p90": 0.0031935955064765317,
+     "p95": 0.0049604140493649
+    }
+   },
+   "noise": {
+    "estimate": {
+     "max": 0.10755802333755501,
+     "n": 7528,
+     "p50": 0.03700849785317882,
+     "p90": 0.05020478930244653,
+     "p95": 0.05454666777850324
+    }
+   },
+   "param": {
+    "estimate": {
+     "max": 0.01202703535982132,
+     "n": 86,
+     "p50": 0.003543692453072105,
+     "p90": 0.005846863139627839,
+     "p95": 0.006983696053415266
+    }
+   },
+   "pos_10mm": {
+    "estimate": {
+     "max": 0.013678530953339681,
+     "n": 93,
+     "p50": 0.0032800415948063574,
+     "p90": 0.005745466666272398,
+     "p95": 0.0065064495029522424
+    }
+   },
+   "pos_2mm": {
+    "estimate": {
+     "max": 0.010065985019396699,
+     "n": 89,
+     "p50": 0.0033457471753509807,
+     "p90": 0.005801879354362251,
+     "p95": 0.006529570074829306
+    }
+   },
+   "vel_0.02": {
+    "estimate": {
+     "max": 0.008279700002249965,
+     "n": 81,
+     "p50": 0.003422197293886302,
+     "p90": 0.0060145931562721935,
+     "p95": 0.006444241222401014
+    }
+   },
+   "vel_0.05": {
+    "estimate": {
+     "max": 0.00933102776337647,
+     "n": 92,
+     "p50": 0.0033399016901171532,
+     "p90": 0.006142587170539774,
+     "p95": 0.007040364729899891
+    }
+   }
+  },
+  "X": {
+   "baseline": {
+    "estimate": {
+     "max": 0.00795058836243764,
+     "n": 88,
+     "p50": 0.003266358981533863,
+     "p90": 0.005717779502545524,
+     "p95": 0.006422888818813864
+    }
+   },
+   "delay": {
+    "estimate": {
+     "max": 0.03634816747772624,
+     "n": 4011,
+     "p50": 0.00011118242499608355,
+     "p90": 0.003235226785949534,
+     "p95": 0.004954373828315794
+    }
+   },
+   "noise": {
+    "estimate": {
+     "max": 0.09030594728865254,
+     "n": 7598,
+     "p50": 0.03724188087855592,
+     "p90": 0.050478178825848166,
+     "p95": 0.055023004093374434
+    }
+   },
+   "param": {
+    "estimate": {
+     "max": 0.011401305830504957,
+     "n": 79,
+     "p50": 0.0034973473131148167,
+     "p90": 0.005706867538692992,
+     "p95": 0.006559274630678375
+    }
+   },
+   "pos_10mm": {
+    "estimate": {
+     "max": 0.0156262637169207,
+     "n": 93,
+     "p50": 0.003336634897648251,
+     "p90": 0.0057930011447491075,
+     "p95": 0.00665476775850149
+    }
+   },
+   "pos_2mm": {
+    "estimate": {
+     "max": 0.015474432414988578,
+     "n": 90,
+     "p50": 0.003157138949126002,
+     "p90": 0.005777714116878768,
+     "p95": 0.006694511690222973
+    }
+   },
+   "vel_0.02": {
+    "estimate": {
+     "max": 0.0079087090572014,
+     "n": 83,
+     "p50": 0.0036288523190507846,
+     "p90": 0.005631163373311004,
+     "p95": 0.006294593795187648
+    }
+   },
+   "vel_0.05": {
+    "estimate": {
+     "max": 0.020034676149556743,
+     "n": 87,
+     "p50": 0.0034215614949762744,
+     "p90": 0.005732730931605497,
+     "p95": 0.00645679211073842
+    }
+   }
+  }
+ },
+ "estimator_when_moving": {
+  "V": {
+   "estimate": {
+    "max": 0.16087125686260723,
+    "n": 5524,
+    "p50": 0.047776940239758744,
+    "p90": 0.0888389592416046,
+    "p95": 0.10008591667388474
+   },
+   "truth_surface_speed": {
+    "max": 0.10764452907947353,
+    "n": 5524,
+    "p50": 0.03634127955023988,
+    "p90": 0.06805163969707176,
+    "p95": 0.07768815919508285
+   }
+  },
+  "X": {
+   "estimate": {
+    "max": 0.16501445898068767,
+    "n": 5117,
+    "p50": 0.046022334849465656,
+    "p90": 0.08730977735728479,
+    "p95": 0.09971857151430447
+   },
+   "truth_surface_speed": {
+    "max": 0.10987661740550467,
+    "n": 5117,
+    "p50": 0.03508465726448211,
+    "p90": 0.0676141753244477,
+    "p95": 0.07736551435290048
+   }
+  }
+ },
+ "estimator_when_moving_by_variant": {
+  "V": {
+   "baseline": {
+    "estimate": {
+     "max": 0.1298345641278576,
+     "n": 706,
+     "p50": 0.0453375946772951,
+     "p90": 0.0840734906203093,
+     "p95": 0.09604486631634833
+    }
+   },
+   "delay": {
+    "estimate": {
+     "max": 0.16087125686260723,
+     "n": 528,
+     "p50": 0.059795153854866855,
+     "p90": 0.119110435516353,
+     "p95": 0.13320906549103936
+    }
+   },
+   "noise": {
+    "estimate": {
+     "max": 0.14885873441073438,
+     "n": 702,
+     "p50": 0.05355991579901247,
+     "p90": 0.08967111826994419,
+     "p95": 0.1001551188069301
+    }
+   },
+   "param": {
+    "estimate": {
+     "max": 0.1271090799177295,
+     "n": 798,
+     "p50": 0.0445020947120849,
+     "p90": 0.08706577137507765,
+     "p95": 0.09949580749742133
+    }
+   },
+   "pos_10mm": {
+    "estimate": {
+     "max": 0.13236867107307965,
+     "n": 705,
+     "p50": 0.044735592260718215,
+     "p90": 0.0842006239044743,
+     "p95": 0.09624948257739911
+    }
+   },
+   "pos_2mm": {
+    "estimate": {
+     "max": 0.13034615314776193,
+     "n": 707,
+     "p50": 0.045452950506871724,
+     "p90": 0.08402216543050856,
+     "p95": 0.0960563963766817
+    }
+   },
+   "vel_0.02": {
+    "estimate": {
+     "max": 0.13308818789404187,
+     "n": 697,
+     "p50": 0.04533195689937621,
+     "p90": 0.08411917089788011,
+     "p95": 0.0958060329325146
+    }
+   },
+   "vel_0.05": {
+    "estimate": {
+     "max": 0.1320215457524076,
+     "n": 681,
+     "p50": 0.0452705134017717,
+     "p90": 0.08422355588439841,
+     "p95": 0.09606609538318638
+    }
+   }
+  },
+  "X": {
+   "baseline": {
+    "estimate": {
+     "max": 0.13315739751699274,
+     "n": 672,
+     "p50": 0.044237078887030226,
+     "p90": 0.08279924326540801,
+     "p95": 0.09509596426028642
+    }
+   },
+   "delay": {
+    "estimate": {
+     "max": 0.16501445898068767,
+     "n": 488,
+     "p50": 0.06012174797368778,
+     "p90": 0.11961870040645264,
+     "p95": 0.13231507339855503
+    }
+   },
+   "noise": {
+    "estimate": {
+     "max": 0.14705777012500237,
+     "n": 635,
+     "p50": 0.05099869841916314,
+     "p90": 0.08853953737805823,
+     "p95": 0.10140052175398295
+    }
+   },
+   "param": {
+    "estimate": {
+     "max": 0.13040974910698178,
+     "n": 750,
+     "p50": 0.04365079807857442,
+     "p90": 0.08375957479117221,
+     "p95": 0.09790123453716984
+    }
+   },
+   "pos_10mm": {
+    "estimate": {
+     "max": 0.13555552551214067,
+     "n": 644,
+     "p50": 0.04321404047796085,
+     "p90": 0.08307576212373091,
+     "p95": 0.09574942986707383
+    }
+   },
+   "pos_2mm": {
+    "estimate": {
+     "max": 0.1334143071779254,
+     "n": 649,
+     "p50": 0.043350266267512066,
+     "p90": 0.08347374500810936,
+     "p95": 0.09547369396977907
+    }
+   },
+   "vel_0.02": {
+    "estimate": {
+     "max": 0.13024095130464733,
+     "n": 638,
+     "p50": 0.04370816698822566,
+     "p90": 0.0838293508065183,
+     "p95": 0.09581475724471639
+    }
+   },
+   "vel_0.05": {
+    "estimate": {
+     "max": 0.1350087868289421,
+     "n": 641,
+     "p50": 0.04344539687084063,
+     "p90": 0.08288209372701155,
+     "p95": 0.09524657940026779
+    }
+   }
+  }
+ },
+ "exit_classification": {
+  "V": {
+   "contact_lost": 78,
+   "exit_instant_truth_low": 313,
+   "exit_surface_unavailable": 15,
+   "not_settled": 313,
+   "patch_lost": 32,
+   "settle_timeout": 190,
+   "settle_unobserved": 13,
+   "settled_observed": 647,
+   "window_truth_low": 313
+  },
+  "X": {
+   "contact_lost": 146,
+   "exit_instant_truth_low": 368,
+   "exit_surface_unavailable": 21,
+   "not_settled": 368,
+   "patch_lost": 31,
+   "patch_support_lost": 12,
+   "settle_timeout": 171,
+   "settle_unobserved": 8,
+   "settled_observed": 592,
+   "window_truth_low": 368
+  }
+ },
+ "exit_truth_window_cross": {
+  "V": {
+   "instant_low=True,window_low=False": 24,
+   "instant_low=True,window_low=True": 936
+  },
+  "X": {
+   "instant_low=True,window_low=False": 24,
+   "instant_low=True,window_low=True": 936
+  }
+ },
+ "frame_check": {
+  "expected_static": 0.0,
+  "expected_translation": 0.08,
+  "frame": "world",
+  "method": "two scans of a static surface from two robot poses 0.01 m apart; world_points() maps returns with the robot pose before matching, so the ego-motion cancels and the world points are identical",
+  "reference_translation_estimate": 0.08000000000000007,
+  "static_surface_estimate": 0.0,
+  "static_surface_matches": 4,
+  "static_surface_reason": null,
+  "static_surface_signed": 0.0,
+  "verdict": "robot motion does not enter the estimate"
+ },
+ "missing_logs": 0,
+ "not_settled_truth": {
+  "V": {
+   "exit_object_speed": {
+    "max": 0.012529787520746865,
+    "n": 313,
+    "p50": 2.1575286036096966e-06,
+    "p90": 0.0076794923273132126,
+    "p95": 0.009256301717660278
+   },
+   "exit_true_surface_normal_speed_rotation_aware": {
+    "max": 0.010406896578558459,
+    "n": 313,
+    "p50": 2.7442665370233834e-06,
+    "p90": 0.009108821926051613,
+    "p95": 0.00933473793469865
+   }
+  },
+  "X": {
+   "exit_object_speed": {
+    "max": 0.013659255139854179,
+    "n": 368,
+    "p50": 2.7001123715049137e-06,
+    "p90": 0.008671470930468776,
+    "p95": 0.009280372785167804
+   },
+   "exit_true_surface_normal_speed_rotation_aware": {
+    "max": 0.010525343613234218,
+    "n": 368,
+    "p50": 3.2703580487346477e-06,
+    "p90": 0.009304841959987941,
+    "p95": 0.00948850440484654
+   }
+  }
+ },
+ "per_variant": {
+  "V": {
+   "baseline": {
+    "contact_lost": 7,
+    "patch_lost": 4,
+    "push_completed": 109,
+    "reached_effective_push": 109,
+    "settled_observed": 109
+   },
+   "delay": {
+    "contact_lost": 22,
+    "patch_lost": 4,
+    "push_completed": 94,
+    "reached_effective_push": 94,
+    "settle_timeout": 82,
+    "settle_unobserved": 12
+   },
+   "noise": {
+    "contact_lost": 8,
+    "patch_lost": 4,
+    "push_completed": 108,
+    "reached_effective_push": 108,
+    "settle_timeout": 108
+   },
+   "param": {
+    "contact_lost": 8,
+    "patch_lost": 4,
+    "push_completed": 108,
+    "reached_effective_push": 108,
+    "settled_observed": 108
+   },
+   "pos_10mm": {
+    "contact_lost": 9,
+    "patch_lost": 4,
+    "push_completed": 107,
+    "reached_effective_push": 107,
+    "settled_observed": 107
+   },
+   "pos_2mm": {
+    "contact_lost": 9,
+    "patch_lost": 4,
+    "push_completed": 107,
+    "reached_effective_push": 107,
+    "settled_observed": 107
+   },
+   "vel_0.02": {
+    "contact_lost": 8,
+    "patch_lost": 4,
+    "push_completed": 108,
+    "reached_effective_push": 108,
+    "settle_unobserved": 1,
+    "settled_observed": 107
+   },
+   "vel_0.05": {
+    "contact_lost": 7,
+    "patch_lost": 4,
+    "push_completed": 109,
+    "reached_effective_push": 109,
+    "settled_observed": 109
+   }
+  },
+  "X": {
+   "baseline": {
+    "contact_lost": 14,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 101,
+    "reached_effective_push": 101,
+    "settled_observed": 101
+   },
+   "delay": {
+    "contact_lost": 35,
+    "patch_lost": 4,
+    "patch_support_lost": 2,
+    "push_completed": 79,
+    "reached_effective_push": 79,
+    "settle_timeout": 73,
+    "settle_unobserved": 6
+   },
+   "noise": {
+    "contact_lost": 17,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 98,
+    "reached_effective_push": 98,
+    "settle_timeout": 98
+   },
+   "param": {
+    "contact_lost": 15,
+    "patch_lost": 3,
+    "patch_support_lost": 4,
+    "push_completed": 99,
+    "reached_effective_push": 99,
+    "settle_unobserved": 1,
+    "settled_observed": 97
+   },
+   "pos_10mm": {
+    "contact_lost": 17,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 98,
+    "reached_effective_push": 98,
+    "settled_observed": 98
+   },
+   "pos_2mm": {
+    "contact_lost": 17,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 98,
+    "reached_effective_push": 98,
+    "settled_observed": 98
+   },
+   "vel_0.02": {
+    "contact_lost": 15,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 100,
+    "reached_effective_push": 100,
+    "settle_unobserved": 1,
+    "settled_observed": 99
+   },
+   "vel_0.05": {
+    "contact_lost": 16,
+    "patch_lost": 4,
+    "patch_support_lost": 1,
+    "push_completed": 99,
+    "reached_effective_push": 99,
+    "settled_observed": 99
+   }
+  }
+ },
+ "push_stats": {
+  "V": {
+   "executions": 960,
+   "push_completed": 850,
+   "reached_effective_push": 850
+  },
+  "X": {
+   "executions": 960,
+   "push_completed": 772,
+   "reached_effective_push": 772
+  }
+ },
+ "run_id": "local-position-push-v1",
+ "settle_after_abort": {
+  "V": {
+   "abort_executions": 110,
+   "recomputed_criterion_fired": 0,
+   "recorded_settled_after_abort": 0
+  },
+  "X": {
+   "abort_executions": 189,
+   "recomputed_criterion_fired": 0,
+   "recorded_settled_after_abort": 0
+  }
+ },
+ "split": "test"
+}
