@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `c62aaab46d654ee3e6ec245d30918eac0601409b`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `ea3f1ee201a7cc13901913f6150f707b0ff3f143`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -19,7 +19,7 @@ git commit `c62aaab46d654ee3e6ec245d30918eac0601409b`; round base `d7731ca`; pat
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 12178 | 4b2aece0a2e924826e836b550ff76b3fd5c52aa873708bec9828c203dd35384e |
-| experiments/night_sequence_v1/assets.py | 70197 | 0be82f70056cbc33f5748230b75db74a4fe9348f9a985a45e69723d9b3bbb928 |
+| experiments/night_sequence_v1/assets.py | 70443 | 4ff8f9e7e739a894b7cb8c8cf46d09ef90e8f31ad96b1570c338b46b259c5078 |
 | experiments/night_sequence_v1/collect.py | 9938 | 5ec09658a336a677690995b8078ceb61de806e7169aa2a843f4e174279fd9401 |
 | experiments/night_sequence_v1/data_index.py | 5543 | 590c6669cb34849952efc4afdc506b1045ff090838785152fddadd2861e1370d |
 | experiments/night_sequence_v1/dataset.py | 12105 | 836961959a753d9ff09a7b715e0238bd826ba9af0b2c97ae2293f3a2c65768d1 |

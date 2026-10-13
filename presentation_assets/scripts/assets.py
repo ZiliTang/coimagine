@@ -1336,6 +1336,9 @@ def main() -> int:
               "", "本轮结果"],
              ["闭环收益", "预测→决策", "", "", "未评估"]]
     write_csv("progress_facts.csv", facts[0], facts[1:])
+    # the task book places progress_facts.csv at the package root, alongside INDEX.md and overview.png
+    (ASSETS / "progress_facts.csv").write_text(
+        "\n".join(",".join("" if v is None else str(v) for v in row) for row in facts) + "\n")
     summary = {"font": font, "scripts": scripts,
                "figures": {k: v.get("figure") for k, v in figures.items()},
                "skipped": skipped, "videos": videos, "overview": overview, "index": index,

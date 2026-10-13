@@ -1,0 +1,7 @@
+阶段,完成内容,证据文件,关键数字,状态
+Gridworld,候选序列收益高估诊断,docs/20261013_1937_CoImagine_研究主线与验证原则_v1 (1).md,,历史讨论结论
+连续2D 平台,局部接触传感 + option 阶段机 + 判稳,src/coimagine/local_contact_option/,F_max=15N, dt=0.05s,已验证
+观测终态接口,R_i0 片段几何 + 自身运动,docs/observation_terminal_v1/report.md,中点 p50 3.8-5.0cm vs 起始保持 14.1cm,已验证
+序列数据,D1 option 内部序列,docs/night_sequence_v1/DATA_INDEX.md,4096 root / 32768 序列,已验证
+架构对照,MLP-history vs Transformer-history,presentation_assets/figures/F07,,本轮结果
+闭环收益,预测→决策,,,未评估
