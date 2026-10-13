@@ -1,7 +1,12 @@
 # night_sequence_v1 — REPORT
 
 任务书：`docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md`（v2.1）。
-协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`。
+协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`；
+模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。
+
+## 0. 一句话结论
+
+**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m），但更多独立起点（512→16384）几乎没有继续改善，历史窗口优于单帧，而 Transformer 在参数比 1.80× 的条件下**没有**胜过历史 MLP；执行前（t=0）最好的是命令+已过去时间分组统计 P1，模型只在执行中取胜。**
 
 ## 1. 规模（四个不同的量）
 

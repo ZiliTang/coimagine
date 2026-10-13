@@ -19,7 +19,7 @@
 | d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 3200 | 2800 | 0.2010 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt` |
 | d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 2800 | 0.2076 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt` |
 | d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 2800 | 0.2085 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt` |
-| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 2400 | 0.1137 | `outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt` |
+| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 2400 | 0.1138 | `outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt` |
 | d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 2800 | 0.2027 | `outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt` |
 
 ## 失败记录

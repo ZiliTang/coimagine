@@ -384,3 +384,45 @@ def test_small_batch_reduces_loss_and_reload_matches():
         after = reloaded(windows, valids)["terminal_geometry"]
     assert torch.allclose(before, after, atol=1e-6)
     path.unlink()
+
+
+# ---------------------------------------------------------------------------
+# the unified inference entry: all three architectures, one semantic layout
+# ---------------------------------------------------------------------------
+
+
+def test_unified_inference_entry_returns_shared_semantics():
+    from experiments.night_sequence_v1.predict import Predictor, SEMANTICS, TIER_SPLITS
+    from experiments.night_sequence_v1.dataset import Tokens
+
+    PREDICT_SPLITS = TIER_SPLITS
+
+    tokens = Tokens(PREDICT_SPLITS["d1"])
+    test_rows = np.where(tokens.split_of == "test")[0]
+    if len(test_rows) == 0:
+        pytest.skip("no test split in this tier")
+    index = int(test_rows[0])
+    produced = {}
+    for kind in ("mlp_current", "mlp_history", "transformer_history"):
+        path = DATA / "runs" / f"d1_{kind}_seed0.pt"
+        if not path.exists():
+            continue
+        predictor = Predictor(path, tokens)
+        result = predictor.predict(index, 20)
+        produced[kind] = result
+        for name, spec in SEMANTICS.items():
+            if name == "terminal_exit_class":
+                assert "index" in result[name] and "name" in result[name]
+                continue
+            assert set(spec["columns"]).issubset(set(result[name])), name
+            assert all(np.isfinite(result[name][column]) for column in spec["columns"])
+    assert produced, "no checkpoint available to exercise the entry"
+    # every architecture must expose the same field names for the same target
+    keys = {kind: set(result.keys()) for kind, result in produced.items()}
+    common = set.intersection(*keys.values())
+    for name in SEMANTICS:
+        assert name in common, f"{name} missing from some architecture"
+    # and the window end must respect the observed prefix length
+    for kind, result in produced.items():
+        assert result["window_end_period"] == 19, kind
+        assert result["observed_seconds"] == pytest.approx(0.95)
