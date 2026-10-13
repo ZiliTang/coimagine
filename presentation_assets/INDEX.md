@@ -49,7 +49,7 @@
 ## F06 学习过程与规模效应
 
 - 图片：`presentation_assets/figures/F06_learning_curves.png`（矢量版 `presentation_assets/figures/F06_learning_curves.pdf`）
-- 数据：`presentation_assets/data/F06_run_summary.csv`, `presentation_assets/data/F06_data_scale_to_error.csv`
+- 数据：`presentation_assets/data/F06_run_summary.csv`, `presentation_assets/data/F06_data_scale_to_error.csv`, `presentation_assets/data/F06_inference_cost.csv`
 - 建议用途：三种模型在同一更新轴上的验证曲线与分项损失，另表给出参数量、最优更新与耗时。
 - 能说明什么：曲线按同一更新数对齐，计算成本另报。
 - 不能说明什么：未完成或预算不同的 run 明确标注；单 seed 不画置信区间。

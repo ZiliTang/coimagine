@@ -1,12 +1,12 @@
 # STATUS — night_sequence_v1
 
-生成时间：2026-10-14 04:39 (Asia/Shanghai)
+生成时间：2026-10-14 05:10 (Asia/Shanghai)
 
 ## 起点与工作区
 
-- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`8b0593a1326079478128ee7a01739d131c8cd669`。
+- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`e27b6ee553c02b63bdb2b67770e55cdbbc0cbc0e`。
 - 起点工作区差异：仅新增任务书 `docs/tasks/20261014_0205_...md`（未跟踪），未改动任何已冻结配置。
-- 生成时未提交改动条数：6。
+- 生成时未提交改动条数：22。
 
 ## 环境
 
@@ -52,7 +52,7 @@
 | d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 2800 | 0.2076 |
 | d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 2800 | 0.2085 |
 | d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 2400 | 0.1138 |
-| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 2800 | 0.2027 |
+| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 2800 | 0.2006 |
 
 合计 17 次正式训练。全部 run 使用统一更新预算 3200（标定见 CONTRACT §4）。
 

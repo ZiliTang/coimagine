@@ -799,12 +799,30 @@ def f06(store: Store) -> dict:
                      entry["best_val"], entry["best_update"]])
     csv = write_csv("F06_run_summary.csv",
                     ["run", "model", "tier", "seed", "parameters", "best_val", "best_update"], rows)
+    cost_rows = []
+    stats_path = DATA / "analysis" / "d1" / "stats_and_cost.json"
+    if stats_path.exists():
+        stats = json.loads(stats_path.read_text())
+        for cost in stats["inference_cost"]:
+            cost_rows.append([cost["model"], cost["parameters"], cost["peak_rss_delta_mb"],
+                              cost["batch1_latency_ms"], cost["batch128_latency_ms"],
+                              cost["batch128_throughput_per_s"]])
+    cost_csv = write_csv("F06_inference_cost.csv",
+                         ["model", "parameters", "peak_rss_delta_mb", "batch1_latency_ms",
+                          "batch128_latency_ms", "batch128_throughput_per_s"], cost_rows)
+    if cost_rows:
+        fastest = max(row[5] for row in cost_rows)
+        slowest = min(row[5] for row in cost_rows)
+        axes[0].text(0.03, 0.05,
+                     f"batch=128 吞吐 {slowest:.0f}–{fastest:.0f} 样本/秒\n"
+                     f"相同更新数 ≠ 相同 FLOPs",
+                     transform=axes[0].transAxes, fontsize=8)
     scale_csv = write_csv("F06_data_scale_to_error.csv",
                           ["tier", "independent_roots", "t0_terminal_mid2d_p50_m",
                            "in_execution_mid2d_p50_m"],
                           [[tier, scale[tier][0], scale[tier][1], scale[tier][2]]
                            for tier in sorted(scale)])
-    return {"figure": paths, "data": [csv, scale_csv], "runs": len(rows),
+    return {"figure": paths, "data": [csv, scale_csv, cost_csv], "runs": len(rows),
             "curves_available": len(curves), "scale": {t: v[0] for t, v in scale.items()}}
 
 
@@ -883,6 +901,16 @@ def f07(store: Store) -> dict:
         ax.legend(fontsize=7.5, loc="upper center", ncol=2)
         ax.set_ylim(0, max(max(gaps), max(rhos)) * 1.35)
         ax.grid(alpha=0.25, axis="y")
+        stats_path = DATA / "analysis" / tier / "stats_and_cost.json"
+        if stats_path.exists():
+            stats = json.loads(stats_path.read_text())
+            for key, value in stats["paired_root_bootstrap"].items():
+                ax.text(0.02, 0.95,
+                        f"配对 root bootstrap：hist vs trf 中位差 "
+                        f"{value['observed_median_difference_m']:+.4f} m\n"
+                        f"95% CI [{value['ci95_low_m']:+.4f}, {value['ci95_high_m']:+.4f}]，"
+                        f"root {value['roots']}",
+                        transform=ax.transAxes, fontsize=7.5, va="top")
     else:
         ax.text(0.5, 0.5, "no action-sensitivity yet", ha="center")
 
@@ -960,11 +988,11 @@ def f07(store: Store) -> dict:
         if not isinstance(entry, dict) or "t0" not in entry:
             continue
         geometry = entry["t0"]["terminal_geometry"]
+        pose = entry["t0"]["terminal_pose"]
         rows.append([label, geometry["r0_mid_2d"]["p50"], geometry["r0_mid_2d"]["p90"],
                      geometry["r0_normal_angle_deg"]["p50"],
-                     entry["t0"]["terminal_pose"]["p50"],
-                     entry["t0"]["terminal_remaining"]["p50"] if "p50" in
-                     entry["t0"]["terminal_remaining"] else None,
+                     pose.get("all_columns_flattened", pose).get("p50"),
+                     entry["t0"]["terminal_remaining"].get("p50"),
                      entry["t0"]["terminal_exit_class"]["accuracy"]])
     csv = write_csv("F07_metrics_t0.csv",
                     ["model", "r0_mid2d_p50_m", "r0_mid2d_p90_m", "r0_normal_p50_deg",

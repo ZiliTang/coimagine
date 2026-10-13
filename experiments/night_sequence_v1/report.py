@@ -42,7 +42,7 @@ def row(label: str, entry: dict) -> List[str]:
             fmt(geometry.get("r0_mid_2d", {}).get("p50")),
             fmt(geometry.get("r0_mid_2d", {}).get("p90")),
             fmt(geometry.get("r0_normal_angle_deg", {}).get("p50")),
-            fmt(block.get("terminal_pose", {}).get("p50")),
+            fmt(block.get("terminal_pose", {}).get("all_columns_flattened", {}).get("p50")),
             fmt(block.get("terminal_remaining", {}).get("p50"), 3),
             fmt(block.get("terminal_exit_class", {}).get("accuracy"), 3)]
 
@@ -66,10 +66,10 @@ def main() -> int:
              "模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。", "",
              "## 0. 一句话结论", "",
              "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用"
-             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m），但更多独立起点"
-             "（512→16384）几乎没有继续改善，历史窗口优于单帧，而 Transformer 在参数比 1.80× 的"
-             "条件下**没有**胜过历史 MLP；执行前（t=0）最好的是命令+已过去时间分组统计 P1，"
-             "模型只在执行中取胜。**", ""]
+             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m；配对 root bootstrap "
+             "95% CI 不含 0），但更多独立起点（512→16384，32×）几乎没有继续改善，历史窗口优于单帧，"
+             "而 Transformer 在参数比 1.80× 的条件下**没有**胜过历史 MLP，batch=128 延迟却是它的 "
+             "24–29 倍；执行前（t=0）最好的是命令+已过去时间分组统计 P1，模型只在执行中取胜。**", ""]
 
     # ---- scale
     lines += ["## 1. 规模（四个不同的量）", "",
@@ -110,8 +110,8 @@ def main() -> int:
         payload = tiers[tier]
         lines += [f"## 3{'.' if tier == 'd0' else ''} {tier.upper()} 主对照（test，t=0 终态）",
                   "",
-                  "| 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | 位姿 p50 | "
-                  "剩余时长 p50 (s) | 退出准确率 |",
+                  "| 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | "
+                  "位姿各列合并 p50 | 剩余时长 p50 (s) | 退出准确率 |",
                   "|---|---:|---:|---:|---:|---:|---:|"]
         for label in ("P0_hold|test", "P1_grouped|test"):
             if label in payload["baselines"]:
@@ -227,7 +227,45 @@ def main() -> int:
                   "执行中终态 r0 中点 p50 (m) | 执行中样本 |", "|---|---:|---:|---:|---:|"]
         lines += rows + [""]
 
-    lines += ["## 6. 能支持什么、不能支持什么", "",
+    # ---- statistics and cost
+    stats = {}
+    for tier in ("d0", "d1", "d2"):
+        path = DATA / "analysis" / tier / "stats_and_cost.json"
+        if path.exists():
+            stats[tier] = json.loads(path.read_text())
+    if stats:
+        lines += ["## 6. 统计显著性与计算成本", "",
+                  "**配对 root bootstrap**（同一样本上两模型逐例配对，重采样单位是 root；"
+                  "帧与动作不算独立样本）：", "",
+                  "| 档位 | 比较 | 中位差 (m) | 95% CI | 有效 root | P(前者更好) |",
+                  "|---|---|---:|---|---:|---:|"]
+        for tier, entry in stats.items():
+            for key, value in entry["paired_root_bootstrap"].items():
+                lines.append(f"| {tier} | {key.replace('_seed0', '').replace('_vs_', ' vs ')} | "
+                             f"{value['observed_median_difference_m']:+.5f} | "
+                             f"[{value['ci95_low_m']:+.5f}, {value['ci95_high_m']:+.5f}] | "
+                             f"{value['roots']} | {value['fraction_draws_below_zero']:.3f} |")
+        lines += ["", "训练 seed 波动（与 bootstrap 分开报告，未并入区间）：", "",
+                  "| 模型族 | seeds | 极差 (m) |", "|---|---:|---:|"]
+        for tier, entry in stats.items():
+            for family, value in entry["training_seed_spread_m"].items():
+                lines.append(f"| {family} | {value['seeds']} | {value['range']:.5f} |")
+        lines += ["", "**推理成本**（torch 线程固定为 1；峰值内存为“建模 + 一次前向”的进程 RSS 增量）：", "",
+                  "| 模型 | 参数量 | 峰值 RSS 增量 | batch=1 延迟 | batch=128 延迟 | 吞吐 |",
+                  "|---|---:|---:|---:|---:|---:|"]
+        for cost in stats["d1"]["inference_cost"]:
+            lines.append(f"| {cost['model']} | {cost['parameters']:,} | "
+                         f"{cost['peak_rss_delta_mb']:.1f} MB | {cost['batch1_latency_ms']:.2f} ms | "
+                         f"{cost['batch128_latency_ms']:.2f} ms | "
+                         f"{cost['batch128_throughput_per_s']:.0f} /s |")
+        lines += ["", "相同更新数**不等于**相同 FLOPs：Transformer-history 的 batch=128 延迟约为 "
+                      "MLP-history 的 24–29 倍，参数却更少。这是研究问题 3 里“代价多少”的答案，"
+                      "因此架构结论必须与计算成本一起读。", "",
+                  "动作差值/秩相关的**置换对照**（打乱同 root 内动作标签后重算）："
+                  "ρ 从 0.71 降到约 −0.04，说明该指标确实在测动作对应关系，而不是从数据规模里"
+                  "凭空得到相关性。", ""]
+
+    lines += ["## 7. 能支持什么、不能支持什么", "",
               "**能支持**：预测接口可训练、可评价；两档数据均可加载；架构对照在相同输入、mask、"
               "目标与更新预算下完成；误差在**原始单位**和**真实标签 mask**上计算。", "",
               "**不能支持**：",
@@ -238,12 +276,12 @@ def main() -> int:
               "- 单步/序列预测改善不等于规划改善；本轮没有闭环实验，**未评估**闭环收益。",
               "- 不能由观测误差推出状态已辨识、未来分支合法或可递归。",
               "- 未按成功或误差筛选样本，也未在 test 上继续调参；结构在训练前写入 CONTRACT。", "",
-              "## 7. 未验证 / 未完成", "",
+              "## 8. 未验证 / 未完成", "",
               "- 自由多步递推所需的完整状态字段（见 `presentation_assets/figures/F08`）。",
               "- 闭环任务收益：本轮无实验。",
               "- 任务容差下几厘米中点误差是否可用：需要下游技能的容差定义。",
               "- 信息歧义正例：原场景冻结协议重做为负结果，未在其他场景验证。", "",
-              "## 8. 下一轮只建议一项工作", "",
+              "## 9. 下一轮只建议一项工作", "",
               "**把执行中评价改成“真实前缀 + 逐步回灌自身预测”的受限递推，并明确标注哪些字段仍是"
               "真值输入。** 依据：本轮已能预测固定 Δt 的下一个观测与终态，但完全不知道误差如何随"
               "递推步数累积；这是当前唯一挡住“能否自主推演”的未知量，且不需要新数据或新场景。", ""]

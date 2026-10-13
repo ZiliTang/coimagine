@@ -39,6 +39,10 @@ from experiments.night_sequence_v1.dataset import (  # noqa: E402
     Tokens,
     build_example,
 )
+from experiments.night_sequence_v1.windows import (  # noqa: E402
+    POSE_COLUMNS,
+    VELOCITY_COLUMNS,
+)
 from experiments.night_sequence_v1.sequence_metrics import (  # noqa: E402
     action_sensitivity,
     percentiles,
@@ -299,9 +303,13 @@ class GroupedStatistics:
 
 def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.ndarray],
                          predictions: Dict[str, np.ndarray], *, binary_kind: str,
-                         groups: Dict[str, np.ndarray]) -> Dict[str, object]:
+                         groups: Dict[str, np.ndarray],
+                         roots: Optional[Sequence[str]] = None) -> Dict[str, object]:
     """Continuous errors in original units, binary/class recall, grouped by the given keys."""
 
+    if roots is None:
+        roots = [f"row{i}" for i in range(len(predictions["terminal_geometry"]))]
+    roots = np.asarray(roots)
     report: Dict[str, object] = {}
     geometry = {}
     for robot_id in (0, 1):
@@ -338,11 +346,22 @@ def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.nda
         process_geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
             np.degrees(difference)[value].tolist())
     report["process_geometry"] = process_geometry
-    for name in ("terminal_pose", "terminal_velocity", "terminal_remaining",
-                 "process_pose", "process_velocity"):
+    # continuous groups are reported **per column**: flattening metres together with radians would
+    # mix units in one distribution and make the percentile meaningless
+    for name, columns in (("terminal_pose", POSE_COLUMNS),
+                          ("terminal_velocity", VELOCITY_COLUMNS),
+                          ("process_pose", POSE_COLUMNS),
+                          ("process_velocity", VELOCITY_COLUMNS)):
         value = masks[name] > 0
-        report[name] = percentiles(np.abs(predictions[name][value]
-                                          - targets[name][value]).ravel().tolist())
+        difference = np.abs(predictions[name] - targets[name])
+        report[name] = {column: percentiles(difference[value[:, index], index].tolist())
+                        for index, column in enumerate(columns)}
+        report[name]["all_columns_flattened"] = percentiles(
+            difference[value].ravel().tolist())
+    value = masks["terminal_remaining"] > 0
+    report["terminal_remaining"] = percentiles(
+        np.abs(predictions["terminal_remaining"][value]
+               - targets["terminal_remaining"][value]).ravel().tolist())
     for name in ("terminal_validity", "process_validity"):
         per_column = {}
         probability = predictions[name] if binary_kind == "probability" else \
@@ -353,10 +372,20 @@ def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.nda
             predicted = probability[value, column] >= 0.5
             actual = targets[name][value, column] >= 0.5
             positives = int(actual.sum())
+            true_positive = int((predicted & actual).sum())
+            false_positive = int((predicted & ~actual).sum())
+            false_negative = int((~predicted & actual).sum())
+            true_negative = int((~predicted & ~actual).sum())
+            negatives = int((~actual).sum())
             per_column[label] = {
-                "n": int(value.sum()), "positives": positives,
+                "n": int(value.sum()), "positives": positives, "negatives": negatives,
                 "predicted_positives": int(predicted.sum()),
-                "recall": float((predicted & actual).sum() / positives) if positives else None,
+                "recall": float(true_positive / positives) if positives else None,
+                "specificity": float(true_negative / negatives) if negatives else None,
+                "precision": float(true_positive / max(1, true_positive + false_positive)),
+                "confusion": {"true_negative": true_negative, "false_positive": false_positive,
+                              "false_negative": false_negative, "true_positive": true_positive},
+                "evidence_insufficient": positives < 10,
                 "accuracy": float((predicted == actual).mean()) if value.any() else None}
         report[name] = per_column
     for name in ("terminal_exit_class", "process_exit"):
@@ -380,18 +409,18 @@ def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.nda
                                    for c in classes},
                         "accuracy": float((predicted == actual).mean())}
     # grouped continuous error by elapsed bin / stage / configuration
+    dx = np.abs(predictions["terminal_geometry"][:, 0] - targets["terminal_geometry"][:, 0])
+    dy = np.abs(predictions["terminal_geometry"][:, 1] - targets["terminal_geometry"][:, 1])
+    midpoint_error = np.hypot(dx, dy)
+    visible = masks["terminal_geometry"][:, 0] > 0
     grouped = {}
     for key, values in groups.items():
         per_group = {}
         for group_value in sorted(set(values.tolist())):
-            selected = values == group_value
-            value = selected & (masks["terminal_geometry"][:, 0] > 0)
-            dx = np.abs(predictions["terminal_geometry"][:, 0]
-                        - targets["terminal_geometry"][:, 0])
-            dy = np.abs(predictions["terminal_geometry"][:, 1]
-                        - targets["terminal_geometry"][:, 1])
-            entry = percentiles(np.hypot(dx, dy)[value].tolist())
-            entry["samples"] = int(value.sum())
+            selected = (values == group_value) & visible
+            entry = percentiles(midpoint_error[selected].tolist())
+            entry["samples"] = int(selected.sum())
+            entry["independent_roots"] = int(len(set(np.asarray(roots)[selected].tolist())))
             per_group[str(group_value)] = entry
         grouped[key] = per_group
     report["grouped"] = grouped

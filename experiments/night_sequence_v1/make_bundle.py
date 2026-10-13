@@ -54,10 +54,11 @@ def collect_review() -> List[Path]:
               DATA / "label_audit_ledger.json", DATA / "collection_d0.json",
               DATA / "collection_eval.json", DATA / "collection_d1.json",
               DATA / "run_ledger.jsonl"]
-    for tier in ("d0", "d1"):
-        metrics = DATA / "analysis" / tier / "metrics.json"
-        if metrics.exists():
-            files.append(metrics)
+    for tier in ("d0", "d1", "d2"):
+        for name in ("metrics.json", "stats_and_cost.json"):
+            path = DATA / "analysis" / tier / name
+            if path.exists():
+                files.append(path)
     # a complete small sample of real sequences, so the loader can be exercised from the ZIP alone
     for split in ("d0", "val", "test"):
         shards = sorted((DATA / "sequences").glob(f"{split}_*.npz"))

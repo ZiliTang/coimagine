@@ -155,14 +155,17 @@ def main() -> int:
         for mode, label in (("p0", "P0_hold"), ("p1", "P1_grouped")):
             predictions = baseline_predictions(tokens, index_all, end_all, statistics, mode,
                                                remaining_table, exit_table)
+            roots_all = tokens.roots[index_all]
             report = {"all": evaluate_predictions(targets, masks, predictions,
-                                                  binary_kind="probability", groups=groups),
+                                                  binary_kind="probability", groups=groups,
+                                                  roots=roots_all),
                       "t0": evaluate_predictions(
                           {k: v[zero] for k, v in targets.items()},
                           {k: v[zero] for k, v in masks.items()},
                           {k: v[zero] for k, v in predictions.items()},
                           binary_kind="probability",
-                          groups={k: v[zero] for k, v in groups.items()})}
+                          groups={k: v[zero] for k, v in groups.items()},
+                          roots=roots_all[zero])}
             payload["baselines"][f"{label}|{split}"] = report
             np.savez_compressed(out_dir / f"predictions_{label}_{split}.npz",
                                 index=index_all, end=end_all, split=np.array([split]),
@@ -173,14 +176,17 @@ def main() -> int:
         for checkpoint in sorted(RUNS.glob(f"{args.tier}_*_seed*.pt")):
             tag = checkpoint.stem
             predictions, normalisation = model_predictions(checkpoint, tokens, index_all, end_all)
+            roots_all = tokens.roots[index_all]
             report = {"all": evaluate_predictions(targets, masks, predictions,
-                                                  binary_kind="logit", groups=groups),
+                                                  binary_kind="logit", groups=groups,
+                                                  roots=roots_all),
                       "t0": evaluate_predictions(
                           {k: v[zero] for k, v in targets.items()},
                           {k: v[zero] for k, v in masks.items()},
                           {k: v[zero] for k, v in predictions.items()},
                           binary_kind="logit",
-                          groups={k: v[zero] for k, v in groups.items()})}
+                          groups={k: v[zero] for k, v in groups.items()},
+                          roots=roots_all[zero])}
             payload["models"][f"{tag}|{split}"] = report
             np.savez_compressed(out_dir / f"predictions_{tag}_{split}.npz",
                                 index=index_all, end=end_all, split=np.array([split]),
@@ -200,6 +206,19 @@ def main() -> int:
             payload["models"].setdefault("action_sensitivity", {})[tag] = action_sensitivity(
                 roots, truth, predicted, geometry_mask,
                 ["r0_x", "r0_y", "r1_x", "r1_y"])
+            # permutation control: shuffle the action labels inside each root and recompute. The
+            # spread is unchanged by construction, so any surviving rank correlation would mean the
+            # metric is not measuring the action correspondence at all.
+            payload["models"]["action_sensitivity"][tag]["permuted"] = action_sensitivity(
+                roots, truth, predicted, geometry_mask,
+                ["r0_x", "r0_y", "r1_x", "r1_y"],
+                permutation=np.random.default_rng(12345))
+            # per-example midpoint error, keyed by root, for the paired bootstrap
+            error = np.hypot(predicted[:, 0] - truth[:, 0], predicted[:, 1] - truth[:, 1])
+            valid_mask = geometry_mask[:, 0] > 0
+            payload["models"].setdefault("paired_errors", {})[tag] = {
+                "roots": [str(r) for r in roots], "t0_error": error.tolist(),
+                "t0_valid": valid_mask.tolist()}
     (out_dir / "metrics.json").write_text(json.dumps(payload, indent=1, sort_keys=True, default=float))
     print("ANALYSIS_OK")
     return 0
