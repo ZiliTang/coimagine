@@ -13,10 +13,14 @@ dependencies = [
   "matplotlib>=3.7",
   "numpy>=1.24",
   "PyYAML>=6.0",
+  "pymunk==6.9.0",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# The deterministic-grid learning baseline needs PyTorch. Install the CPU wheel with
+#   pip install -e '.[deterministic-grid]' --extra-index-url https://download.pytorch.org/whl/cpu
+deterministic-grid = ["torch>=2.0"]
 
 [project.scripts]
 coimagine-2d = "coimagine.cli:main"

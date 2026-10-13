@@ -12,3 +12,6 @@ data/
 **:Zone.Identifier
 # local packaged snapshot
 coimagine.zip
+
+# review bundles and animation packages: regenerable from the committed code and scripts
+*.zip
