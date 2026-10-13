@@ -287,21 +287,22 @@ def evaluate_pair(pair: CandidatePair, *, max_sequences: Optional[int] = None,
         world: sorted(key for key, value in outcomes[world].items() if value.get("diverged"))
         for world in ("A", "B")
     }
-    # PRIMARY convention: the literal CONTRACT 3.3 reading -- every action of the common
-    # executable set, including sequences whose finite Q is a catastrophic engine outcome.
-    # This is the *conservative* choice for the disjointness claim because it can only ADD
-    # actions to the near-optimal sets, which makes an empty intersection harder to obtain.
-    analysis = analyse_q(q, delta=DELTA, diverged=None)
-    # SECONDARY convention: numerically diverged sequences removed, because the controller
-    # clamps force to F_max, so an impulse above 2*F_max*T is not a physical task outcome.
-    analysis_excluded = analyse_q(q, delta=DELTA, diverged=diverged)
-    analysis["divergence_excluded_convention"] = {
-        "near_optimal_A": analysis_excluded.get("near_optimal_A"),
-        "near_optimal_B": analysis_excluded.get("near_optimal_B"),
-        "mutual_regret": analysis_excluded.get("mutual_regret"),
-        "near_optimal_disjoint": analysis_excluded.get("near_optimal_disjoint"),
-        "positive": analysis_excluded.get("positive"),
-        "dropped_actions": analysis_excluded.get("dropped_diverged"),
+    # PRIMARY convention: numerically diverged sequences are removed from the common
+    # executable set.  The controller clamps force to F_max, so an impulse above
+    # 2*F_max*T is not a physical task outcome; scoring it would let an engine blow-up
+    # masquerade as a payoff.
+    analysis = analyse_q(q, delta=DELTA, diverged=diverged)
+    # ROBUSTNESS convention: the literal CONTRACT 3.3 reading over every action, including
+    # those whose finite Q is a catastrophic engine outcome.  Including them can only ADD
+    # actions to the near-optimal sets, i.e. it makes the disjointness claim harder, so it is
+    # reported for every pair and is the stronger statement when it holds.
+    analysis_all = analyse_q(q, delta=DELTA, diverged=None)
+    analysis["all_actions_convention"] = {
+        "near_optimal_A": analysis_all.get("near_optimal_A"),
+        "near_optimal_B": analysis_all.get("near_optimal_B"),
+        "mutual_regret": analysis_all.get("mutual_regret"),
+        "near_optimal_disjoint": analysis_all.get("near_optimal_disjoint"),
+        "positive": analysis_all.get("positive"),
     }
     analysis["diverged_actions"] = diverged
     # A positive additionally requires that the action each world actually prefers is a

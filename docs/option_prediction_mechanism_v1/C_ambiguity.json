@@ -4,10 +4,24 @@
    "all_knowing_two_skill": 0.255863525290414,
    "any_post_skill1_indistinguishable": false,
    "common_plan": 0.1452924732132892,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.11057105207712481,
    "legal_observation_conditioned": 0.19401808018517597,
    "legal_plan_first_skill": "lower_y_0",
    "mean_state_planner": 0.1452924732132892,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 10,
     "lower_y_0": 8,
@@ -23,10 +37,24 @@
    "all_knowing_two_skill": -0.6091230155773426,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.6091230155773426,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.0,
    "legal_observation_conditioned": -0.6091230155773426,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.6091230155773426,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 10,
     "lower_y_0": 8,
@@ -42,10 +70,69 @@
    "all_knowing_two_skill": 0.6657005456741929,
    "any_post_skill1_indistinguishable": false,
    "common_plan": 0.5530975664831754,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": [
+     "along_neg_0/along_neg_0",
+     "along_neg_0/along_neg_1",
+     "along_neg_0/along_neg_2",
+     "along_neg_0/along_pos_0",
+     "along_neg_0/along_pos_1",
+     "along_neg_0/along_pos_2",
+     "along_neg_0/spin_neg",
+     "along_neg_0/spin_pos",
+     "along_neg_1/along_neg_0",
+     "along_neg_1/along_neg_1",
+     "along_neg_1/along_neg_2",
+     "along_neg_1/along_pos_0",
+     "along_neg_1/along_pos_1",
+     "along_neg_1/along_pos_2",
+     "along_neg_1/spin_neg",
+     "along_neg_1/spin_pos",
+     "along_neg_2/along_neg_0",
+     "along_neg_2/along_neg_1",
+     "along_neg_2/along_neg_2",
+     "along_neg_2/along_pos_0",
+     "along_neg_2/along_pos_1",
+     "along_neg_2/along_pos_2",
+     "along_neg_2/spin_neg",
+     "along_neg_2/spin_pos",
+     "along_pos_0/along_neg_1",
+     "along_pos_0/along_neg_2",
+     "along_pos_1/along_neg_0",
+     "along_pos_1/along_neg_1",
+     "along_pos_1/along_neg_2",
+     "along_pos_1/along_pos_0",
+     "along_pos_1/along_pos_2",
+     "along_pos_1/spin_neg",
+     "along_pos_1/spin_pos",
+     "along_pos_2/along_neg_1",
+     "along_pos_2/along_neg_2",
+     "along_pos_2/along_pos_2",
+     "along_pos_2/spin_neg",
+     "spin_neg/along_neg_0",
+     "spin_neg/along_neg_1",
+     "spin_neg/along_neg_2",
+     "spin_pos/along_neg_0",
+     "spin_pos/along_neg_1",
+     "spin_pos/along_neg_2",
+     "spin_pos/along_pos_2"
+    ]
+   },
    "information_gap_two_skill": 0.11260297919101747,
    "legal_observation_conditioned": 0.6657005456741929,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": 0.5530975664831754,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 14,
     "along_neg_1": 50,
@@ -61,10 +148,24 @@
    "all_knowing_two_skill": 0.19772853018878261,
    "any_post_skill1_indistinguishable": false,
    "common_plan": 0.1322472024082506,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.065481327780532,
    "legal_observation_conditioned": 0.152288823527931,
    "legal_plan_first_skill": "lower_y_0",
    "mean_state_planner": 0.1322472024082506,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 17,
     "lower_y_0": 10,
@@ -80,10 +181,24 @@
    "all_knowing_two_skill": 0.13393890442090722,
    "any_post_skill1_indistinguishable": false,
    "common_plan": 0.11862948823473524,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.015309416186171987,
    "legal_observation_conditioned": 0.11862948823473524,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": 0.11862948823473524,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 5,
     "along_neg_1": 56,
@@ -99,10 +214,24 @@
    "all_knowing_two_skill": -0.6984741761213803,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7152312637183338,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.01675708759695349,
    "legal_observation_conditioned": -0.6984741761213803,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.7152312637183338,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 11,
     "lower_y_0": 8,
@@ -118,10 +247,24 @@
    "all_knowing_two_skill": -0.0642692505310215,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.08395783972012105,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.019688589189099548,
    "legal_observation_conditioned": -0.0642692505310215,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.08395783972012105,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 11,
     "lower_y_0": 8,
@@ -137,10 +280,24 @@
    "all_knowing_two_skill": -0.0631359016794425,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.08282449086854332,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.019688589189100825,
    "legal_observation_conditioned": -0.0631359016794425,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.08282449086854332,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 11,
     "lower_y_0": 8,
@@ -156,10 +313,24 @@
    "all_knowing_two_skill": 0.13393890442090722,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.025046321235783542,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.15898522565669077,
    "legal_observation_conditioned": -0.017404425029022563,
    "legal_plan_first_skill": "along_pos_1",
    "mean_state_planner": -0.025046321235783542,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 5,
     "along_neg_1": 56,
@@ -175,10 +346,24 @@
    "all_knowing_two_skill": 0.19772853018878261,
    "any_post_skill1_indistinguishable": false,
    "common_plan": 0.1322472024082506,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.065481327780532,
    "legal_observation_conditioned": 0.152288823527931,
    "legal_plan_first_skill": "lower_y_0",
    "mean_state_planner": 0.1322472024082506,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 17,
     "lower_y_0": 10,
@@ -194,10 +379,24 @@
    "all_knowing_two_skill": -0.7799737026379416,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.8125496899014366,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.03257598726349498,
    "legal_observation_conditioned": -0.8007614576806611,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.8125496899014366,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 5,
     "lower_y_0": 8,
@@ -213,10 +412,24 @@
    "all_knowing_two_skill": -0.7626695700375146,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7626695700375146,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.0,
    "legal_observation_conditioned": -0.7626695700375146,
    "legal_plan_first_skill": "upper_x",
    "mean_state_planner": -0.7626695700375146,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 10,
     "lower_y_0": 8,
@@ -232,10 +445,24 @@
    "all_knowing_two_skill": -0.8034035278815498,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.8128616650940184,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.009458137212468576,
    "legal_observation_conditioned": -0.811130500484547,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": -0.8128616650940184,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 23,
     "along_neg_1": 40,
@@ -251,10 +478,24 @@
    "all_knowing_two_skill": -0.749033439970163,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7877955398104011,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.03876209984023804,
    "legal_observation_conditioned": -0.7706552877915873,
    "legal_plan_first_skill": "lower_x",
    "mean_state_planner": -0.7877955398104011,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 16,
     "lower_y_0": 7,
@@ -270,10 +511,24 @@
    "all_knowing_two_skill": -0.7404095573218623,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7909875149022473,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.05057795758038497,
    "legal_observation_conditioned": -0.7739820993454919,
    "legal_plan_first_skill": "lower_y_2",
    "mean_state_planner": -0.7909875149022473,
+   "post_skill1_any_mismatch": {
+    "lower_x": true,
+    "lower_y_0": true,
+    "lower_y_1": true,
+    "lower_y_2": true,
+    "upper_x": true,
+    "upper_y_0": true,
+    "upper_y_1": true,
+    "upper_y_2": true
+   },
    "post_skill1_max_abs_difference": {
     "lower_x": 13,
     "lower_y_0": 10,
@@ -289,10 +544,24 @@
    "all_knowing_two_skill": -0.7315258035970684,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7689090270855852,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.03738322348851675,
    "legal_observation_conditioned": -0.7639916459964349,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": -0.7689090270855852,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 5,
     "along_neg_1": 53,
@@ -308,10 +577,24 @@
    "all_knowing_two_skill": -0.7502776694150153,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7617255668288692,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.01144789741385388,
    "legal_observation_conditioned": -0.7617255668288692,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": -0.7617255668288692,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 13,
     "along_neg_1": 56,
@@ -327,10 +610,24 @@
    "all_knowing_two_skill": -0.7613239468434405,
    "any_post_skill1_indistinguishable": false,
    "common_plan": -0.7613239468434405,
+   "diverged_two_skill_sequences": {
+    "A": [],
+    "B": []
+   },
    "information_gap_two_skill": 0.0,
    "legal_observation_conditioned": -0.7613239468434405,
    "legal_plan_first_skill": "spin_pos",
    "mean_state_planner": -0.7613239468434405,
+   "post_skill1_any_mismatch": {
+    "along_neg_0": true,
+    "along_neg_1": true,
+    "along_neg_2": true,
+    "along_pos_0": true,
+    "along_pos_1": true,
+    "along_pos_2": true,
+    "spin_neg": false,
+    "spin_pos": true
+   },
    "post_skill1_max_abs_difference": {
     "along_neg_0": 13,
     "along_neg_1": 56,
@@ -360,85 +657,51 @@
  },
  "delta": 0.02,
  "frozen_config_hash": "765ede7cf67318f1",
- "identity_failure_details": {
-  "T1-18-symmetric": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  },
-  "T1-19-one_sided": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  },
-  "T1-20-symmetric": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  },
-  "T1-27-one_sided": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  },
-  "T1-28-symmetric": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  },
-  "T2-30-symmetric": {
-   "nonzero": {
-    "robot0.patch.arc_rays": 72,
-    "robot0.patch.occluder_mismatch": 1.0,
-    "robot0.patch.points_mismatch": 72.0,
-    "robot0.patch.present_mismatch": 1.0,
-    "robot0.patch.segment": 0.34641016151377535,
-    "robot0.scan.hit_label_mismatch": 36.0,
-    "robot0.scan.range_mismatch": 36.0,
-    "robot0.scan.target_flag_mismatch": 36.0
-   },
-   "short_faces_outside_range": true
-  }
+ "history": "cold start: no commands before the decision, identical (empty) history",
+ "intersection_breakdown": {
+  "mutual_regret_exactly_0": [
+   "T1-00-symmetric",
+   "T1-02-symmetric",
+   "T1-04-symmetric",
+   "T1-06-symmetric",
+   "T1-08-symmetric",
+   "T1-09-one_sided",
+   "T1-10-symmetric",
+   "T1-11-one_sided",
+   "T1-14-symmetric",
+   "T1-26-symmetric",
+   "T1-30-symmetric",
+   "T2-00-symmetric",
+   "T2-02-symmetric",
+   "T2-06-symmetric",
+   "T2-08-symmetric"
+  ],
+  "mutual_regret_positive_but_intersecting": [
+   "T1-01-one_sided",
+   "T1-07-one_sided",
+   "T1-15-one_sided",
+   "T1-22-symmetric",
+   "T1-25-one_sided",
+   "T1-29-one_sided",
+   "T2-01-one_sided",
+   "T2-03-one_sided",
+   "T2-04-symmetric",
+   "T2-09-one_sided",
+   "T2-10-symmetric",
+   "T2-11-one_sided",
+   "T2-13-one_sided",
+   "T2-14-symmetric",
+   "T2-15-one_sided",
+   "T2-16-symmetric",
+   "T2-18-symmetric",
+   "T2-20-symmetric",
+   "T2-21-one_sided",
+   "T2-23-one_sided",
+   "T2-24-symmetric",
+   "T2-25-one_sided",
+   "T2-29-one_sided",
+   "T2-31-one_sided"
+  ]
  },
  "pairs_per_template": {
   "T1": 32,
@@ -446,6 +709,26 @@
  },
  "pairs_total": 64,
  "positives": [
+  "T1-03-one_sided",
+  "T1-05-one_sided",
+  "T1-12-symmetric",
+  "T1-13-one_sided",
+  "T1-16-symmetric",
+  "T1-17-one_sided",
+  "T1-21-one_sided",
+  "T1-23-one_sided",
+  "T1-24-symmetric",
+  "T1-31-one_sided",
+  "T2-05-one_sided",
+  "T2-07-one_sided",
+  "T2-12-symmetric",
+  "T2-17-one_sided",
+  "T2-19-one_sided",
+  "T2-22-symmetric",
+  "T2-26-symmetric",
+  "T2-28-symmetric"
+ ],
+ "positives_also_positive_under_all_actions_convention": [
   "T1-03-one_sided",
   "T1-05-one_sided",
   "T1-12-symmetric",
@@ -479,12 +762,45 @@
    "near_optimal_A": [
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_0"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_0"
+   ],
    "note": "shift=1.0 L=5.0 goal_x=11.0 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-03-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.0,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p03_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.0,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.4488141819696896,
     "lower_y_0": -0.476566970065773,
@@ -515,6 +831,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "1150d7fea233c6b9",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "31f7ede28ccfd1cc",
+     "lower_y_0": "80447d7ea83d0dca",
+     "lower_y_1": "506b47ab71c27989",
+     "lower_y_2": "eb03e148c02ce153",
+     "upper_x": "ea45bac6676479f5",
+     "upper_y_0": "de97f51ecf0ed826",
+     "upper_y_1": "a9259e627c786b97",
+     "upper_y_2": "4b07845d93872928"
+    }
+   },
+   "scene_hashes": {
+    "A": "416a53c9ac51cf5c",
+    "B": "b882bea613207572"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -532,12 +874,45 @@
    "near_optimal_A": [
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.0 L=5.0 goal_x=12.0 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-05-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 12.0,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p05_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.0,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5167877728874418,
     "lower_y_0": -0.530598135666395,
@@ -568,6 +943,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "1150d7fea233c6b9",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "31f7ede28ccfd1cc",
+     "lower_y_0": "80447d7ea83d0dca",
+     "lower_y_1": "506b47ab71c27989",
+     "lower_y_2": "eb03e148c02ce153",
+     "upper_x": "ea45bac6676479f5",
+     "upper_y_0": "de97f51ecf0ed826",
+     "upper_y_1": "a9259e627c786b97",
+     "upper_y_2": "4b07845d93872928"
+    }
+   },
+   "scene_hashes": {
+    "A": "4dd96a2a43c734e8",
+    "B": "90ea3944c7dae4e5"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -591,12 +992,46 @@
    "near_optimal_A": [
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_0",
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "spin_pos"
    ],
+   "near_optimal_B_all_actions": [
+    "spin_pos"
+   ],
    "note": "shift=1.5 L=5.0 goal_x=11.0 [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-12-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.0,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p12_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.8215162865229296,
     "along_neg_1": -0.5981807500479595,
@@ -622,6 +1057,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "4dc271f306a7444f",
+     "along_neg_1": "f0b4029eede3fbf5",
+     "along_neg_2": "5fbcd7c84e2f51b7",
+     "along_pos_0": "501bd85f2ef04327",
+     "along_pos_1": "e7a219627581bf77",
+     "along_pos_2": "889c275c5568fbac",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "e99a633c54a69034"
+    },
+    "B": {
+     "along_neg_0": "c11f3eb4f9f2cecd",
+     "along_neg_1": "63903f0c99e8be13",
+     "along_neg_2": "9b4d10568036caf3",
+     "along_pos_0": "23837d4bb7228bed",
+     "along_pos_1": "bc4b5ed477e4f0f2",
+     "along_pos_2": "8367c4ccccff228d",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "4fd0aa343c646eea"
+    }
+   },
+   "scene_hashes": {
+    "A": "ba8e5606a1817e29",
+    "B": "e78c96fc442ee156"
+   },
    "success_A": [],
    "success_B": [
     "along_pos_2",
@@ -642,13 +1103,47 @@
    "near_optimal_A": [
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_x",
     "lower_y_0"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_x",
+    "lower_y_0"
+   ],
    "note": "shift=1.5 L=5.0 goal_x=11.5 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-13-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.5,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p13_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.4912976762932847,
     "lower_y_0": -0.5103364485661618,
@@ -679,6 +1174,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "1150d7fea233c6b9",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "cbdd033c57eca418",
+     "lower_y_0": "9ffa3cd6d8799241",
+     "lower_y_1": "836fcf6faf198f55",
+     "lower_y_2": "7b0a7fe720550e5f",
+     "upper_x": "77253accc676a429",
+     "upper_y_0": "ca3a5812bccd5511",
+     "upper_y_1": "a1ab639a1538dec8",
+     "upper_y_2": "d562fe102c6d11c4"
+    }
+   },
+   "scene_hashes": {
+    "A": "3876519a05a4bcf4",
+    "B": "af8422f3bcd89252"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -696,12 +1217,45 @@
    "near_optimal_A": [
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_1"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_1"
+   ],
    "note": "shift=1.5 L=6.0 goal_x=11.5 [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-16-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.5,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p16_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.7738452693355755,
     "along_neg_1": -0.701275597212258,
@@ -732,6 +1286,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "fae43e36cece7cd6",
+     "along_neg_1": "2ae91d793862f2dd",
+     "along_neg_2": "a1532f188a79a979",
+     "along_pos_0": "27fb590430093505",
+     "along_pos_1": "eec9bf1be67b34f9",
+     "along_pos_2": "3fa8fa01a9dc2a2d",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "36041440e760c840"
+    },
+    "B": {
+     "along_neg_0": "9496c78c7b634437",
+     "along_neg_1": "ed09b6fdac68c488",
+     "along_neg_2": "ae31d2d3ced3ca65",
+     "along_pos_0": "168844ce673c920d",
+     "along_pos_1": "16ca8d52a052c957",
+     "along_pos_2": "b0d21850adb3b0d3",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "594dac5f11f6ebf7"
+    }
+   },
+   "scene_hashes": {
+    "A": "46630de2632d9814",
+    "B": "1935374149465b1b"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -750,12 +1330,46 @@
     "lower_x",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.5 L=6.0 goal_x=12.0 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-17-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 12.0,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p17_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.543537832030581,
     "lower_y_0": -0.5586453397257479,
@@ -786,6 +1400,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "d426f98fd748038d",
+     "lower_y_0": "a771295cab75a5c9",
+     "lower_y_1": "592c2eefbd8ec9eb",
+     "lower_y_2": "bce7678f7d164a3e",
+     "upper_x": "0495e04cbc419717",
+     "upper_y_0": "156bc48a67a59ead",
+     "upper_y_1": "f1e8862c3363872d",
+     "upper_y_2": "6f39044746d4ed0b"
+    },
+    "B": {
+     "lower_x": "d4f536fa403312a1",
+     "lower_y_0": "122269f64ffcb42b",
+     "lower_y_1": "4e89d5fec106c7f9",
+     "lower_y_2": "ead6528bbe26ddc2",
+     "upper_x": "0e37e5e88e59e668",
+     "upper_y_0": "9cbce182aae3f806",
+     "upper_y_1": "6c7d8eb66a7638ae",
+     "upper_y_2": "14e711f9f0df1870"
+    }
+   },
+   "scene_hashes": {
+    "A": "03df54532a6175a7",
+    "B": "4b9a415029ef4356"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -804,12 +1444,46 @@
     "lower_x",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "left staging [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-21-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.0,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p21_one_sided",
+    "object_centre_x": 8.0,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 8.5,
+    "robot_x": [
+     7.5,
+     9.5
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5281561684817613,
     "lower_y_0": -0.5481007551058599,
@@ -840,6 +1514,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "da59a67cdd4ec2a4",
+     "lower_y_0": "4d2a5e2a2f94e0b2",
+     "lower_y_1": "f43a63864c5e74df",
+     "lower_y_2": "a2fcaa1b39b20b96",
+     "upper_x": "08d746aa54e1c869",
+     "upper_y_0": "cc99d1730229106d",
+     "upper_y_1": "55f85a5655fb94bb",
+     "upper_y_2": "921c231b0668809e"
+    },
+    "B": {
+     "lower_x": "30dcf594f1f1cf23",
+     "lower_y_0": "72b00bc2261bd2ea",
+     "lower_y_1": "6debc2c7fd66e7e6",
+     "lower_y_2": "c388a016f2d144d2",
+     "upper_x": "4771dedabb51db84",
+     "upper_y_0": "c3303effb3f90e6e",
+     "upper_y_1": "36a73a5cfabe281c",
+     "upper_y_2": "d6f9f2f225c44c9c"
+    }
+   },
+   "scene_hashes": {
+    "A": "546c945c8b722e08",
+    "B": "99961897def61496"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -858,12 +1558,46 @@
     "lower_x",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "goal on the edge line [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-23-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.5,
+     "cy": 2.0,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p23_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5281561684817614,
     "lower_y_0": -0.5481007551058591,
@@ -894,6 +1628,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "d426f98fd748038d",
+     "lower_y_0": "a771295cab75a5c9",
+     "lower_y_1": "592c2eefbd8ec9eb",
+     "lower_y_2": "bce7678f7d164a3e",
+     "upper_x": "0495e04cbc419717",
+     "upper_y_0": "156bc48a67a59ead",
+     "upper_y_1": "f1e8862c3363872d",
+     "upper_y_2": "6f39044746d4ed0b"
+    },
+    "B": {
+     "lower_x": "d4f536fa403312a1",
+     "lower_y_0": "122269f64ffcb42b",
+     "lower_y_1": "4e89d5fec106c7f9",
+     "lower_y_2": "ead6528bbe26ddc2",
+     "upper_x": "0e37e5e88e59e668",
+     "upper_y_0": "9cbce182aae3f806",
+     "upper_y_1": "6c7d8eb66a7638ae",
+     "upper_y_2": "14e711f9f0df1870"
+    }
+   },
+   "scene_hashes": {
+    "A": "91662a74c85fb0b8",
+    "B": "9e8b552605cfe2ff"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -911,12 +1671,45 @@
    "near_optimal_A": [
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_1"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_1"
+   ],
    "note": "goal displaced in +y [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-24-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.5,
+     "cy": 3.0,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p24_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.7739659214877644,
     "along_neg_1": -0.701275597212258,
@@ -947,6 +1740,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "fae43e36cece7cd6",
+     "along_neg_1": "2ae91d793862f2dd",
+     "along_neg_2": "a1532f188a79a979",
+     "along_pos_0": "27fb590430093505",
+     "along_pos_1": "eec9bf1be67b34f9",
+     "along_pos_2": "3fa8fa01a9dc2a2d",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "36041440e760c840"
+    },
+    "B": {
+     "along_neg_0": "9496c78c7b634437",
+     "along_neg_1": "ed09b6fdac68c488",
+     "along_neg_2": "ae31d2d3ced3ca65",
+     "along_pos_0": "168844ce673c920d",
+     "along_pos_1": "16ca8d52a052c957",
+     "along_pos_2": "b0d21850adb3b0d3",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "594dac5f11f6ebf7"
+    }
+   },
+   "scene_hashes": {
+    "A": "bdfd5250a5706faa",
+    "B": "eabeb793f78769af"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -964,13 +1783,47 @@
    "near_optimal_A": [
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_x",
     "lower_y_0"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_x",
+    "lower_y_0"
+   ],
    "note": "shift 1.5 short object [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T1-31-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 11.5,
+     "cy": 2.5,
+     "half_h": 2.0,
+     "half_w": 3.5
+    },
+    "name": "T1_p31_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.4912976762932847,
     "lower_y_0": -0.5103364485661618,
@@ -1001,6 +1854,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "1150d7fea233c6b9",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "cbdd033c57eca418",
+     "lower_y_0": "9ffa3cd6d8799241",
+     "lower_y_1": "836fcf6faf198f55",
+     "lower_y_2": "7b0a7fe720550e5f",
+     "upper_x": "77253accc676a429",
+     "upper_y_0": "ca3a5812bccd5511",
+     "upper_y_1": "a1ab639a1538dec8",
+     "upper_y_2": "d562fe102c6d11c4"
+    }
+   },
+   "scene_hashes": {
+    "A": "a213d36cfab8178b",
+    "B": "aba1e887c4e957eb"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T1"
@@ -1020,12 +1899,62 @@
     "lower_y_0",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "lower_y_0",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.0 L=5.0 wall=12.0 gap=2.5 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-05-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p05_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.0,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5550229177786774,
     "lower_y_0": -0.560990666316745,
@@ -1056,6 +1985,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "fc15dc386af0e273",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "763e535b228ab3e0",
+     "lower_y_0": "80447d7ea83d0dca",
+     "lower_y_1": "dcd1b3c5c2af7f56",
+     "lower_y_2": "2770f1f1724cbf31",
+     "upper_x": "8e146baa58fb4829",
+     "upper_y_0": "db72dfc3f6051a9e",
+     "upper_y_1": "80ab954dd5e26afc",
+     "upper_y_2": "bb61ad0d3bd53192"
+    }
+   },
+   "scene_hashes": {
+    "A": "f5dd20172acee697",
+    "B": "a2463bd037a1f53d"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1075,12 +2030,62 @@
     "lower_y_0",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "lower_y_0",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.0 L=5.0 wall=12.5 gap=2.5 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-07-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p07_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.0,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5550229177786774,
     "lower_y_0": -0.560990666316745,
@@ -1111,6 +2116,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "fc15dc386af0e273",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "31f7ede28ccfd1cc",
+     "lower_y_0": "80447d7ea83d0dca",
+     "lower_y_1": "dcd1b3c5c2af7f56",
+     "lower_y_2": "2770f1f1724cbf31",
+     "upper_x": "ea45bac6676479f5",
+     "upper_y_0": "de97f51ecf0ed826",
+     "upper_y_1": "a9259e627c786b97",
+     "upper_y_2": "4b07845d93872928"
+    }
+   },
+   "scene_hashes": {
+    "A": "f7b177b4c695e0fd",
+    "B": "1fde8e0af081cfd4"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1128,12 +2159,60 @@
    "near_optimal_A": [
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_1"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_1"
+   ],
    "note": "shift=1.0 L=7.0 wall=12.0 gap=1.5 [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-12-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p12_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 7.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 0.875,
+      "half_h": 0.875,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 3.625,
+      "half_h": 0.375,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.0,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.7456689638799853,
     "along_neg_1": -0.7064743835062799,
@@ -1164,6 +2243,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "efd64281a273d305",
+     "along_neg_1": "a97ec2cab364a989",
+     "along_neg_2": "8b683220d4754714",
+     "along_pos_0": "53e7a78d692f0de1",
+     "along_pos_1": "7375fed50e738d25",
+     "along_pos_2": "aee3647f7fe31f04",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "18329fdf6368f673"
+    },
+    "B": {
+     "along_neg_0": "ac4fed2d6ec2b7d0",
+     "along_neg_1": "cc95427874d25cb1",
+     "along_neg_2": "d24ed8fa381a6a50",
+     "along_pos_0": "d2bb0016f48ed88b",
+     "along_pos_1": "1ab8cd7acee348da",
+     "along_pos_2": "511541bef89f2d81",
+     "spin_neg": "c907079a8be3b6d6",
+     "spin_pos": "1e3300d630e5b992"
+    }
+   },
+   "scene_hashes": {
+    "A": "cb932e43962950c5",
+    "B": "0444dd79b1cde913"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1183,12 +2288,62 @@
     "lower_y_0",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "lower_y_0",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.5 L=5.0 wall=12.0 gap=2.5 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-17-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p17_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.0,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5550229177786774,
     "lower_y_0": -0.560990666316745,
@@ -1219,6 +2374,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "fc15dc386af0e273",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "b04ec23fcd4eb5a1",
+     "lower_y_0": "1ec0b756affc779e",
+     "lower_y_1": "ec45560a1031914f",
+     "lower_y_2": "1166ab3045426ced",
+     "upper_x": "4b668755436b4860",
+     "upper_y_0": "5d9913113d3e04ce",
+     "upper_y_1": "ee30a99cd47ca9dd",
+     "upper_y_2": "71562b6226d00ddd"
+    }
+   },
+   "scene_hashes": {
+    "A": "0568ce0242d0f68a",
+    "B": "f56844b1c76bfbd2"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1238,12 +2419,62 @@
     "lower_y_0",
     "upper_x"
    ],
+   "near_optimal_A_all_actions": [
+    "lower_x",
+    "lower_y_0",
+    "upper_x"
+   ],
    "near_optimal_B": [
     "lower_y_2"
    ],
+   "near_optimal_B_all_actions": [
+    "lower_y_2"
+   ],
    "note": "shift=1.5 L=5.0 wall=12.5 gap=2.5 [one_sided]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-19-one_sided",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p19_one_sided",
+    "object_centre_x": 8.5,
+    "object_len": 5.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "lower_x": -0.5550229177786774,
     "lower_y_0": -0.560990666316745,
@@ -1274,6 +2505,32 @@
     "upper_y_1",
     "upper_y_2"
    ],
+   "replay_hashes": {
+    "A": {
+     "lower_x": "b0ae7aff02e8eb99",
+     "lower_y_0": "06f22bf7a2ba1c6b",
+     "lower_y_1": "310683a4e1fae1ae",
+     "lower_y_2": "284a4f05fcfaec2e",
+     "upper_x": "c1ba35ca5cab51be",
+     "upper_y_0": "fc15dc386af0e273",
+     "upper_y_1": "dd89706b8be63ecb",
+     "upper_y_2": "2c07f0d5e834b386"
+    },
+    "B": {
+     "lower_x": "76ffa1835448d485",
+     "lower_y_0": "f7a1c1f25df14cd1",
+     "lower_y_1": "836fcf6faf198f55",
+     "lower_y_2": "7b0a7fe720550e5f",
+     "upper_x": "e237527fb84b61e7",
+     "upper_y_0": "bfe60a1ad751ff01",
+     "upper_y_1": "76409c407cd08740",
+     "upper_y_2": "1ae8e0f96157666a"
+    }
+   },
+   "scene_hashes": {
+    "A": "dcc95d7e0d802295",
+    "B": "b7bb242b64bc3029"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1292,12 +2549,61 @@
     "along_pos_1",
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_1",
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_0"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_0"
+   ],
    "note": "shift=1.5 L=6.0 wall=12.5 gap=1.5 [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-22-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p22_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 0.875,
+      "half_h": 0.875,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 3.625,
+      "half_h": 0.375,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.7221971595845332,
     "along_neg_1": -0.6793342440718069,
@@ -1328,6 +2634,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "8a4bd8f90c227e08",
+     "along_neg_1": "8aae6c25be9c3031",
+     "along_neg_2": "a1532f188a79a979",
+     "along_pos_0": "49f071f6764c16f8",
+     "along_pos_1": "eec9bf1be67b34f9",
+     "along_pos_2": "5a8030a36143eac1",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "36041440e760c840"
+    },
+    "B": {
+     "along_neg_0": "125d68153b94db29",
+     "along_neg_1": "825c03e56a33ca9a",
+     "along_neg_2": "a4f5805c9ccfbd22",
+     "along_pos_0": "26d1dad91f4c3fa6",
+     "along_pos_1": "5ed3a312aa5f3fe8",
+     "along_pos_2": "cdff1e939489ed8a",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "940a7c81f881d616"
+    }
+   },
+   "scene_hashes": {
+    "A": "9b98c6b98c74b6c6",
+    "B": "9cf9748d50fd056f"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1346,12 +2678,61 @@
     "along_pos_1",
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_1",
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_0"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_0"
+   ],
    "note": "goal above the opening [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-26-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 3.4,
+     "half_h": 2.5,
+     "half_w": 3.5
+    },
+    "name": "T2_p26_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.7221971595845332,
     "along_neg_1": -0.6793342440718069,
@@ -1382,6 +2763,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "8a4bd8f90c227e08",
+     "along_neg_1": "8aae6c25be9c3031",
+     "along_neg_2": "a1532f188a79a979",
+     "along_pos_0": "27fb590430093505",
+     "along_pos_1": "eec9bf1be67b34f9",
+     "along_pos_2": "29f3b29a3f1c9b6b",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "36041440e760c840"
+    },
+    "B": {
+     "along_neg_0": "cd03d5a2af9d1100",
+     "along_neg_1": "fd661ec2a4d3cb99",
+     "along_neg_2": "2a69c91a7e230220",
+     "along_pos_0": "2355a62efb6a4fae",
+     "along_pos_1": "8884d8891e8c5c32",
+     "along_pos_2": "b8c9f7d4396c0aef",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "1d6f40c2719fad33"
+    }
+   },
+   "scene_hashes": {
+    "A": "1c8db66aa3711505",
+    "B": "3bdc6fccf370a241"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1400,12 +2807,61 @@
     "along_pos_1",
     "along_pos_2"
    ],
+   "near_optimal_A_all_actions": [
+    "along_pos_1",
+    "along_pos_2"
+   ],
    "near_optimal_B": [
     "along_pos_0"
    ],
+   "near_optimal_B_all_actions": [
+    "along_pos_0"
+   ],
    "note": "tight goal band (negative control) [symmetric]",
+   "observation_identical": true,
    "observation_max_abs_difference": 0.0,
    "pair_id": "T2-28-symmetric",
+   "params": {
+    "arena": [
+     14.0,
+     4.0
+    ],
+    "edge_y": 2.0,
+    "goal": {
+     "angle": 0.0,
+     "cx": 13.5,
+     "cy": 2.5,
+     "half_h": 0.4,
+     "half_w": 3.5
+    },
+    "name": "T2_p28_symmetric",
+    "object_centre_x": 8.5,
+    "object_len": 6.0,
+    "object_thick": 0.3,
+    "obstacles": [
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 0.625,
+      "half_h": 0.625,
+      "half_w": 0.09
+     },
+     {
+      "angle": 0.0,
+      "cx": 12.5,
+      "cy": 3.875,
+      "half_h": 0.125,
+      "half_w": 0.09
+     }
+    ],
+    "reference_x": 9.0,
+    "robot_x": [
+     8.0,
+     10.0
+    ],
+    "shift": 1.5,
+    "standoff": 0.02
+   },
    "q_A": {
     "along_neg_0": -0.735855382328374,
     "along_neg_1": -0.6785221932569736,
@@ -1436,6 +2892,32 @@
     "spin_neg",
     "spin_pos"
    ],
+   "replay_hashes": {
+    "A": {
+     "along_neg_0": "8a4bd8f90c227e08",
+     "along_neg_1": "8aae6c25be9c3031",
+     "along_neg_2": "a1532f188a79a979",
+     "along_pos_0": "27fb590430093505",
+     "along_pos_1": "eec9bf1be67b34f9",
+     "along_pos_2": "29f3b29a3f1c9b6b",
+     "spin_neg": "868b4e0042aab6c0",
+     "spin_pos": "36041440e760c840"
+    },
+    "B": {
+     "along_neg_0": "cd03d5a2af9d1100",
+     "along_neg_1": "fd661ec2a4d3cb99",
+     "along_neg_2": "2a69c91a7e230220",
+     "along_pos_0": "2355a62efb6a4fae",
+     "along_pos_1": "8884d8891e8c5c32",
+     "along_pos_2": "b8c9f7d4396c0aef",
+     "spin_neg": "8ce4cdc14691c34e",
+     "spin_pos": "1d6f40c2719fad33"
+    }
+   },
+   "scene_hashes": {
+    "A": "a5329b73f9fd55e6",
+    "B": "b67db83f83808f89"
+   },
    "success_A": [],
    "success_B": [],
    "template": "T2"
@@ -1520,6 +3002,7 @@
   "pair_id": "T1-03-one_sided",
   "q_identical": true
  },
+ "robot_poses": "identical global poses in both worlds (required; verified)",
  "sensing": {
   "declared": "frozen 0.6 m range and 72 rays; a forward +/-60 deg cone is the one declared narrowing (removes the arena behind each robot)",
   "fov_half_angle_deg": 59.99999999999999,

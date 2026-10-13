@@ -1,7 +1,7 @@
 # option_prediction_mechanism_v1 — review bundle manifest
 
-built 2026-10-13T13:04:54+00:00
-git commit 5a8702a6421fa642a509128d0028f50230690f2f
+built 2026-10-13T13:08:54+00:00
+git commit ea65d0cfce058b23542a7223b095e147a0356aa8
 
 ## Included
 
@@ -11,9 +11,10 @@ git commit 5a8702a6421fa642a509128d0028f50230690f2f
 | docs/option_prediction_mechanism_v1/A_settle_fix_old_vs_new.mp4 | 816346 | 450867b65a6418fd |
 | docs/option_prediction_mechanism_v1/B_prediction.md | 6388 | 08cab012c700b81c |
 | docs/option_prediction_mechanism_v1/CONTRACT.md | 10774 | afdc86062a1e0e57 |
-| docs/option_prediction_mechanism_v1/C_ambiguity.json | 42669 | a6405e3fd7ae9233 |
-| docs/option_prediction_mechanism_v1/C_ambiguity.md | 26491 | 57602981715555fb |
+| docs/option_prediction_mechanism_v1/C_ambiguity.json | 74461 | a5f6c6ee7564843d |
+| docs/option_prediction_mechanism_v1/C_ambiguity.md | 27350 | 59000ccc2a26603f |
 | docs/option_prediction_mechanism_v1/ENVIRONMENT.md | 2676 | 9f8d38da312b4d80 |
+| docs/option_prediction_mechanism_v1/MANIFEST.md | 9693 | b2b687ac354bf3aa |
 | docs/option_prediction_mechanism_v1/REPRODUCE.md | 3581 | 59612c15568d675d |
 | docs/option_prediction_mechanism_v1/STATUS.md | 3229 | 7505d46a7d503b25 |
 | docs/option_prediction_mechanism_v1/report.md | 6713 | 15170387a6e88b6f |
@@ -32,7 +33,7 @@ git commit 5a8702a6421fa642a509128d0028f50230690f2f
 | experiments/option_prediction_mechanism_v1/phase_c/belief_reference.py | 11867 | ab81e61241710c90 |
 | experiments/option_prediction_mechanism_v1/phase_c/mechanism_scene.py | 7246 | fd6d4f66a24404f0 |
 | experiments/option_prediction_mechanism_v1/phase_c/perception.py | 23437 | 638db4f7cb440017 |
-| experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py | 32773 | 0dd2bf0a56110376 |
+| experiments/option_prediction_mechanism_v1/phase_c/run_phase_c.py | 32753 | 51dfbdf13bdccad4 |
 | experiments/option_prediction_mechanism_v1/verify_c_positive.py | 6375 | f3cd316cca65fc1f |
 | tests/test_option_prediction_mechanism_a.py | 11477 | 143ffdc3b24650b8 |
 | tests/test_option_prediction_mechanism_b.py | 5886 | e155688e49d794e0 |
@@ -69,7 +70,7 @@ git commit 5a8702a6421fa642a509128d0028f50230690f2f
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/executions_test.jsonl | 3264367 | f9bc881478e6e8e2 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/roots.json | 1121161 | 56202ef5718f2ba2 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b_tier2/commands.json | 1667405 | c0fce466057a0b6e | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
-| outputs/option_prediction_mechanism_v1/phase_c/phase_c_records.json | 2330275 | f3c7b2333d85b2f3 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
+| outputs/option_prediction_mechanism_v1/phase_c/phase_c_records.json | 2330287 | 9a98a3a1e9602182 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/checkpoints/deployable_seed0.pt | 397497 | 5ade63bd3fae9006 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/checkpoints/deployable_seed1.pt | 397497 | 3073f6118db79444 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |
 | outputs/option_prediction_mechanism_v1/option-prediction-mechanism-v1/phase_b/checkpoints/deployable_seed2.pt | 397497 | 86f05a0cabbb7fc9 | see docs/option_prediction_mechanism_v1/REPRODUCE.md |

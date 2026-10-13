@@ -47,8 +47,8 @@
 | 质量/摩擦/阻尼/力上限 | 全部沿用 `PhysicsConfig`（3.0 kg、0.6、8.0/0.6、F_max=15 N），未改 |
 | 机器人 | 固定全局位姿（**两世界逐位相同**），机体系 yaw 朝物体一侧；机壳距长边 0.02 m |
 | 物体位姿 | 世界 A：x = `object_centre_x`；世界 B：x = `object_centre_x + shift`（只动 x，角度 0） |
-| 窗口 | `window_steps = 120`（6.0 s），**这是相对冻结 benchmark 的唯一物理层改动**，见 §1.4 |
-| 动作序列后 | 追加一个 `hold`×2 结算窗（`SETTLE_STEPS=120`），让既有 success 规则（goal 内 + 低速保持 0.5 s）有机会成立 |
+| 窗口 | `window_steps = 120`（6.0 s），见 §1.4 |
+| 动作序列后 | 追加一个 `hold`×2 窗（与技能窗同长 6.0 s），让既有 success 规则（goal 内 + 低速保持 0.5 s）有机会成立 |
 
 **合法性**：每一对的两世界都用 `continuous2d.legality.legality_report` 检查，64 对全部
 `legal=True`（最小间隙 ≥ 0.005 m）。T2 的墙也满足"两世界物体都在墙西侧"。
@@ -76,12 +76,18 @@
    而短边距最近机器人 ≥ 1.0 m（7 m 物体）/ ≥ 0.5 m（5 m 物体，仍 > 0.347 m 半跨度）。
    每对都逐量核验 `short_face_visible = False`（`observation_identity.short_faces_outside_range`）。
 
-### 1.4 窗口长度（另一项必须声明的改动）
+### 1.4 相对冻结 `Continuous2DConfig` 的全部改动（逐条列清）
 
-冻结 benchmark 的联合技能窗是 2.0 s（`window_steps=40`）。机构的 `PushContact` 内部有
-`push_speed = 0.26 m/s` 的速度上限，2 s 内物体最多动 ~0.5 m，几乎不可能有动作真正完成，
-所有 Q 都退化成微小的 progress 差。因此机制场景把窗口设为 **6.0 s（120 步）**。
-控制器、物理、力上限、success 规则、评分公式全部未改，数值写在每条记录里。
+机制场景用的 `PhysicsConfig` 与冻结默认值只有**两项**不同，且都写在每条记录的参数里：
+
+| 项 | 冻结值 | 机制值 | 理由 |
+|---|---|---|---|
+| `object_width/height` | 1.0 × 0.25 m | `object_len`(5/6/7) × 0.30 m | 长矩形是 CONTRACT 3.2 明确允许的新场景；`PymunkBackend` 从 `PhysicsConfig` 而非 `SceneSpec` 取物体尺寸，所以必须同时写进 config |
+| `window_steps` | 40（2.0 s） | 120（6.0 s） | `PushContact` 内部 `push_speed = 0.26 m/s`，2 s 内物体最多动 ~0.5 m，几乎不可能有动作真正完成，所有 Q 会退化成微小 progress 差 |
+
+控制器（V 速度式局部推动的 continuous2d 技能）、质量/摩擦/阻尼/`F_max`、success 规则
+（`velocity_tolerance`/`angular_tolerance`/`success_hold_time`/`goal_margin`）、评分公式
+**全部未改**。冻结默认 config 哈希 `765ede7cf67318f1` 已记录在 `phase_c_records.json`。
 
 ---
 
@@ -242,7 +248,8 @@ peak speed > 5 m/s 的序列判为**数值发散**，**从收益矩阵中删除*
 若**不剔除**、把引擎暴走当成真实灾难性结果一起打分（`q` 会到 −1e5 量级），则
 `A*_A(0.02) = {along_pos_0, along_pos_2}`、`A*_B(0.02) = {spin_pos}`，
 交集仍为 **∅**，互相 regret **仍然 = 0.2562**，判据**仍然成立**。
-两种约定下 18/18 个正例都成立（`analysis.all_actions_convention` 逐对记录）。
+两种约定下 **18/18** 个正例都成立（`analysis.all_actions_convention` 逐对记录），
+且两种约定给出的互相 regret 完全相同。
 本报告只把"发散剔除"作为主约定，并把两种约定都写进 JSON，避免结论依赖这一约定。
 注意：`T1-25-one_sided` 之类的 near-miss 在两种约定下都不成立，不受此影响。
 - 全知 50/50 `0.5·max_A Q + 0.5·max_B Q` = **+0.11611**；
@@ -347,7 +354,10 @@ JSON 中**不含任何 `Infinity`**（缺失量记 `*_mismatch` 计数，数值�
 
 - **场景不合法**：0 对（初版有 6 个 T2 网格使墙与物体初始重叠，已改墙位并重跑，
   当前 64 对 `legal=True`）。
-- **少于 8 个共同有效动作**：1 对（`T1-09-*`，锚定世界 B 大范围发散），归入"无有效共同动作"。
+- **少于 8 个共同有效动作**：1 对，`T2-27-one_sided`：世界 B 中**全部 8 个动作**都把物体撞进
+  窄墙口并使引擎发散（`diverged_actions.B` = 全部 8 个），因此不存在任何共同有效动作。
+  在 all-actions 约定下它的近优集合相交，仍非正例。这是"技能集合/场景过于苛刻"型负例。
+- 全库共 30 个（世界×动作）序列被判数值发散，逐条列在 `analysis.diverged_actions`。
 - 观测已区分的 6 对：`T1-18-symmetric`、`T1-19-one_sided`、`T1-20-symmetric`、
   `T1-27-one_sided`、`T1-28-symmetric`、`T2-30-symmetric`。原因同一且已逐对定位：
   这些都在 `L=5.0, shift=2.0` 组合下，世界 B 的物体左端点恰好落在 robot0 的 x 上
