@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `86560aae9ec3af40f731af8513d0e8c0b1eb48e6`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `ab9f5d9533d7a1181f869711701302805d4bf3f5`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -8,15 +8,14 @@ git commit `86560aae9ec3af40f731af8513d0e8c0b1eb48e6`; round base `d7731ca`; pat
 |---|---:|---|
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 6f27a14fbce18b02e27e841709ac0b533afb9de98ba0071ac6557378a122f2de |
-| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | a5dd3d262c24a9d9bcc99c32c6cf77862bef48c48c938b5b197e6e59fabfad08 |
-| docs/night_sequence_v1/MANIFEST.md | 8594 | 635b46e28b07c41d22f2312a404418ef6a2603ad48ff884d2c987fd79dcde786 |
+| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | a1fe072f4455680eb5a0520e7a5c5b3ced4195e8b9d2f92409e4a9206f0eb1e1 |
 | docs/night_sequence_v1/MODEL_CARDS.md | 14872 | 8c978e8cccccca6223a6906317cc8750e987e543d14b14697523b397fd52f4ec |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
 | docs/night_sequence_v1/REPORT.md | 11566 | 5aae604f5ecdda8a23a0987c733377251f0035f6633edcc515761445ce7f0c41 |
 | docs/night_sequence_v1/RUN_LEDGER.md | 3607 | 6b125760a5c6070b2ddafef0a691caadf4127271d74274dcdebbad7c82c17798 |
 | docs/night_sequence_v1/STATUS.md | 2874 | ee3e902bc9a235fbf10e0fdf249c3f094ef6a04218b7074c3bee1e8160c3d2b2 |
-| docs/night_sequence_v1/round5.patch | 267477 | 4bdbd3078decbbaa388a7b4c5e72c56a2faffb6019235442f26697c581938e20 |
-| docs/night_sequence_v1/round5_diffstat.txt | 1367 | 62e06de457d926567efb19c4456e93a92a699725637e67f40ca3b8a62a1063c0 |
+| docs/night_sequence_v1/round5.patch | 269668 | 96e404a59fc822fa1daaf4b42e87fd0335bfabe6f25f31abde175b62670a2114 |
+| docs/night_sequence_v1/round5_diffstat.txt | 1366 | 01ac27dc469875772a993d9e170ea8b12b042490d0f8d0625628ca807fb51b2d |
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 10906 | 8132513e237c97cd657269d4b1a548703a198973bca8672771bebab4220ded4f |

@@ -218,10 +218,10 @@ index 0000000..901ee61
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/assets.py b/experiments/night_sequence_v1/assets.py
 new file mode 100644
-index 0000000..f5ba6d4
+index 0000000..213f7d8
 --- /dev/null
 +++ b/experiments/night_sequence_v1/assets.py
-@@ -0,0 +1,1278 @@
+@@ -0,0 +1,1323 @@
 +"""Round-5 presentation assets: F01..F08 figures, data tables, videos and the index.
 +
 +    python experiments/night_sequence_v1/assets.py
@@ -255,6 +255,7 @@ index 0000000..f5ba6d4
 +
 +DATA = ROOT / "outputs/night_sequence_v1"
 +ASSETS = ROOT / "presentation_assets"
++EXPERIMENTS = ROOT / "experiments/night_sequence_v1"
 +FIGURES = ASSETS / "figures"
 +TABLES = ASSETS / "data"
 +VIDEOS = ASSETS / "videos"
@@ -1380,6 +1381,47 @@ index 0000000..f5ba6d4
 +    return out
 +
 +
++def build_scripts() -> List[str]:
++    """Copy the renderers into the package and write the single regeneration command.
++
++    The task book asks for scripts that rebuild the material from saved data without retraining,
++    re-collecting or running new physics; shipping copies of the renderers (rather than a pointer into
++    the repository) makes the asset package self-contained.
++    """
++
++    SCRIPTS.mkdir(parents=True, exist_ok=True)
++    written = []
++    for name in ("assets.py", "dataset.py", "windows.py", "sequences.py", "models.py",
++                 "sequence_metrics.py", "evaluate.py"):
++        source = EXPERIMENTS / name
++        if source.exists():
++            target = SCRIPTS / name
++            target.write_text(source.read_text())
++            written.append(str(target.relative_to(ROOT)))
++    command = """#!/usr/bin/env bash
++# Rebuild every figure, table and video in this package.
++# Reads only saved sequences, token arrays, checkpoints and analysis JSON.
++# It does NOT retrain, does NOT re-collect data and does NOT run new physics.
++set -euo pipefail
++cd "$(dirname "$0")/../.."
++PY=${PY:-.venv/bin/python}
++$PY experiments/night_sequence_v1/assets.py
++echo "assets rebuilt -> presentation_assets/"
++"""
++    script = SCRIPTS / "regenerate_assets.sh"
++    script.write_text(command)
++    script.chmod(0o755)
++    written.append(str(script.relative_to(ROOT)))
++    readme = SCRIPTS / "README.md"
++    readme.write_text(
++        "# scripts\n\n`regenerate_assets.sh` 用一条命令重建全部素材。它只读取已保存的序列、"
++        "token 数组、检查点与分析 JSON，**不重训、不重新采集、不运行新的物理仿真**。\n\n"
++        "同目录下的 `*.py` 是渲染脚本的副本，使素材包自包含；权威版本在 "
++        "`experiments/night_sequence_v1/`。\n")
++    written.append(str(readme.relative_to(ROOT)))
++    return written
++
++
 +def build_index(figures: Dict[str, dict], extra: dict) -> str:
 +    captions = {
 +        "F01": ("研究动机与当前主线",
@@ -1443,8 +1485,9 @@ index 0000000..f5ba6d4
 +                         f"{video['real_seconds']:.2f}s，{video['playback']}，{video['note']}")
 +        lines.append("")
 +    lines += ["## 可复现命令", "", "```bash",
-+              "python experiments/night_sequence_v1/assets.py",
++              "bash presentation_assets/scripts/regenerate_assets.sh",
 +              "```", "",
++              "素材包自带渲染脚本副本（`scripts/`），因此解压后即可重建，不依赖工作区其余部分。", "",
 +              "该命令只读取已保存的序列、token 数组、检查点与分析 JSON，不重训、不重新采集、"
 +              "不运行新的物理仿真。", ""]
 +    path = ASSETS / "INDEX.md"
@@ -1470,6 +1513,7 @@ index 0000000..f5ba6d4
 +        except Exception as error:  # a missing artefact must not silently become a fake figure
 +            skipped[key] = f"{type(error).__name__}: {error}"
 +            print(f"{key} SKIPPED: {skipped[key]}", flush=True)
++    scripts = build_scripts()
 +    videos = [] if args.skip_videos else build_videos(store)
 +    overview = build_overview(figures)
 +    index = build_index(figures, {"videos": videos, "skipped": skipped})
@@ -1488,7 +1532,8 @@ index 0000000..f5ba6d4
 +              "", "本轮结果"],
 +             ["闭环收益", "预测→决策", "", "", "未评估"]]
 +    write_csv("progress_facts.csv", facts[0], facts[1:])
-+    summary = {"font": font, "figures": {k: v.get("figure") for k, v in figures.items()},
++    summary = {"font": font, "scripts": scripts,
++               "figures": {k: v.get("figure") for k, v in figures.items()},
 +               "skipped": skipped, "videos": videos, "overview": overview, "index": index,
 +               "data_files": [p for v in figures.values() for p in (v.get("data") or [])]}
 +    (ASSETS / "ASSET_CHECK.json").write_text(json.dumps(summary, indent=1, default=str))
