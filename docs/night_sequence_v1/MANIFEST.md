@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `ab9f5d9533d7a1181f869711701302805d4bf3f5`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `c62aaab46d654ee3e6ec245d30918eac0601409b`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -9,35 +9,40 @@ git commit `ab9f5d9533d7a1181f869711701302805d4bf3f5`; round base `d7731ca`; pat
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 6f27a14fbce18b02e27e841709ac0b533afb9de98ba0071ac6557378a122f2de |
 | docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | a1fe072f4455680eb5a0520e7a5c5b3ced4195e8b9d2f92409e4a9206f0eb1e1 |
-| docs/night_sequence_v1/MODEL_CARDS.md | 14872 | 8c978e8cccccca6223a6906317cc8750e987e543d14b14697523b397fd52f4ec |
+| docs/night_sequence_v1/MODEL_CARDS.md | 14872 | af06ba38605ef5d4311a433c419594ff1d975079bdc96b4184f610b504b914aa |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
-| docs/night_sequence_v1/REPORT.md | 11566 | 5aae604f5ecdda8a23a0987c733377251f0035f6633edcc515761445ce7f0c41 |
-| docs/night_sequence_v1/RUN_LEDGER.md | 3607 | 6b125760a5c6070b2ddafef0a691caadf4127271d74274dcdebbad7c82c17798 |
-| docs/night_sequence_v1/STATUS.md | 2874 | ee3e902bc9a235fbf10e0fdf249c3f094ef6a04218b7074c3bee1e8160c3d2b2 |
-| docs/night_sequence_v1/round5.patch | 269668 | 96e404a59fc822fa1daaf4b42e87fd0335bfabe6f25f31abde175b62670a2114 |
-| docs/night_sequence_v1/round5_diffstat.txt | 1366 | 01ac27dc469875772a993d9e170ea8b12b042490d0f8d0625628ca807fb51b2d |
+| docs/night_sequence_v1/REPORT.md | 13479 | 683c771ce6cf9e04ef16d03ebcd74750f2244d7d1b35b3103e75512c98af33c6 |
+| docs/night_sequence_v1/RUN_LEDGER.md | 3607 | fad4a6d69f5e58a03f2e6211459b36914cc08fa4c3dcb363390325e1edcb662b |
+| docs/night_sequence_v1/STATUS.md | 2875 | cf92abcb92723c1b0383bd8aadf050afd17ff813b9a28a8386bb75ea5689fe5c |
+| docs/night_sequence_v1/round5.patch | 285385 | 00178e00f93e35bdbf85c635064b045717762b90679311d60a08d62925bd9a53 |
+| docs/night_sequence_v1/round5_diffstat.txt | 1429 | e5bbddc8491359e6f2a33e18b435cea6854ff58798bb22bbc7ab310cb832f03b |
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
-| experiments/night_sequence_v1/analysis.py | 10906 | 8132513e237c97cd657269d4b1a548703a198973bca8672771bebab4220ded4f |
-| experiments/night_sequence_v1/assets.py | 68529 | 9c2268268f07250c68d66fb17c8431e7a6ea2125610d01cab00f54764c205ab4 |
+| experiments/night_sequence_v1/analysis.py | 12178 | 4b2aece0a2e924826e836b550ff76b3fd5c52aa873708bec9828c203dd35384e |
+| experiments/night_sequence_v1/assets.py | 70197 | 0be82f70056cbc33f5748230b75db74a4fe9348f9a985a45e69723d9b3bbb928 |
 | experiments/night_sequence_v1/collect.py | 9938 | 5ec09658a336a677690995b8078ceb61de806e7169aa2a843f4e174279fd9401 |
 | experiments/night_sequence_v1/data_index.py | 5543 | 590c6669cb34849952efc4afdc506b1045ff090838785152fddadd2861e1370d |
 | experiments/night_sequence_v1/dataset.py | 12105 | 836961959a753d9ff09a7b715e0238bd826ba9af0b2c97ae2293f3a2c65768d1 |
-| experiments/night_sequence_v1/evaluate.py | 21685 | 76691b243ed2933bde4965d98981316a3b40be86e415d24fd971ac2067ddbf34 |
-| experiments/night_sequence_v1/make_bundle.py | 10727 | b10d7ebfec3e066332eca3f7278ebe95c51150e33c0e2b03f479375ef48fdf41 |
+| experiments/night_sequence_v1/evaluate.py | 23474 | fd1bbccd795d5cbc24886ddfe60f99aa224052e606897502865a83a8e2aecccf |
+| experiments/night_sequence_v1/make_bundle.py | 10787 | 71ce39de8e475bbefc3a8f6ee4416db744117f8fb0432327f95aba67aff28408 |
 | experiments/night_sequence_v1/model_cards.py | 4019 | 97be3aed45fa7932d177cdb3ad2ba4b2acbb0aa95e9f4979f8f65377cd6b034c |
 | experiments/night_sequence_v1/models.py | 10483 | c9705677a7f5355adcd301fa16bcd9ae22524508174c7f526f70ca0c6dc6da26 |
 | experiments/night_sequence_v1/predict.py | 8257 | d9940e98956fc098114fcd0e895fdda5a8308266e413ef464f94745e8d720302 |
-| experiments/night_sequence_v1/report.py | 14677 | f9892f1f286d544024677b9ed27558be9fd81379038d91f5e6d66295a07e7973 |
+| experiments/night_sequence_v1/report.py | 17583 | ac03fe65e59cad992daeae01394ae884d7a35d415f50dea2fc370bf1cd0e77e8 |
 | experiments/night_sequence_v1/run_matrix.py | 3568 | 78d5136bc3c1c7b2d6f40ad251b6dd2c06d291c5973568821c5fb33edad87423 |
 | experiments/night_sequence_v1/sequence_metrics.py | 3525 | 1326d491b9f5bafe79dd618cf2a1415dbc8f3446d5f461b601157606a401020f |
 | experiments/night_sequence_v1/sequences.py | 18516 | 8864a322f949ccdf91e10712313b99e431305e4f5966621c82674f2c28076dc3 |
+| experiments/night_sequence_v1/stats_and_cost.py | 7499 | 9e894c892b6c519e787474643f0fa9983fbb09cc01a1f427626bdeff7735ee22 |
 | experiments/night_sequence_v1/status.py | 6159 | 15abb83cd1a34a2347f71f5dac98627d919f112ecbfb6dd611ef6cace8c1c225 |
 | experiments/night_sequence_v1/train.py | 10263 | e5a49f7629975850d811f998e35eadd2d8677ff6ab92629bb2b86439600a843e |
 | experiments/night_sequence_v1/verify_from_zip.py | 4779 | 3c0af976ffe6d44a3fbc2e5f35e38f8d5bfec8ff2f3bc0ccc33584c12a745084 |
 | experiments/night_sequence_v1/windows.py | 12559 | 552d13f42f56b45ba97a96632b9db97fc43ebcf95cb138a6dceece937add3d12 |
-| outputs/night_sequence_v1/analysis/d0/metrics.json | 212770 | cdc49fdd7ec7b6322728e61941d1c1a00ab9b9ed9b974a696581d5895f92737d |
-| outputs/night_sequence_v1/analysis/d1/metrics.json | 293044 | a60f54470a89b8a7779512f0d35df82dfe5c6c6dadc4b56c2e9ec218f051de3b |
+| outputs/night_sequence_v1/analysis/d0/metrics.json | 2257515 | d331b6764eed2e9577a62e8c5baf1c2ecfbc832d1ce80d6db5bf89e66e4e415c |
+| outputs/night_sequence_v1/analysis/d0/stats_and_cost.json | 1970 | 9c36908fb4cda8a26248929610349a429ee5a43e19ebdb4c79db81363d1b2b88 |
+| outputs/night_sequence_v1/analysis/d1/metrics.json | 3334791 | a2a98bd9531a6ebf0ab7d52dfb2be330ce19c45e47c6499f0d73a4578b4ddef6 |
+| outputs/night_sequence_v1/analysis/d1/stats_and_cost.json | 2109 | c204e4b0faae2b09a0f369d958570787bb753e180f2ab94488e29016c7d7f004 |
+| outputs/night_sequence_v1/analysis/d2/metrics.json | 818379 | aea964c59d674095a61f44455e203484915d20e87281bcf035cde2dda5b7e0c5 |
+| outputs/night_sequence_v1/analysis/d2/stats_and_cost.json | 1691 | d5a8393fa6b47f053c09156a8be5d817c7307d620386abbab36a05c6fa847175 |
 | outputs/night_sequence_v1/collection_d0.json | 19686 | 5afba4f6d3ce257bcec52887134cbeefae21133313ad2ef7c8ce41c890b8efbf |
 | outputs/night_sequence_v1/collection_d1.json | 142566 | 81750af8e35bea30e50f73f0b1312a79c47f746821c451e4c79228b80561f386 |
 | outputs/night_sequence_v1/collection_eval.json | 30119 | 7d10005fcaa624a0b5918a18a1419561bc1749bb7eda3bdd8c509092e690babd |

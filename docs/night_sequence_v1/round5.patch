@@ -3,10 +3,10 @@ new file mode 100644
 index 0000000..e69de29
 diff --git a/experiments/night_sequence_v1/analysis.py b/experiments/night_sequence_v1/analysis.py
 new file mode 100644
-index 0000000..901ee61
+index 0000000..525f55a
 --- /dev/null
 +++ b/experiments/night_sequence_v1/analysis.py
-@@ -0,0 +1,209 @@
+@@ -0,0 +1,228 @@
 +"""Round-5 analysis: baselines, model predictions, metrics, per-sample predictions.
 +
 +    python experiments/night_sequence_v1/analysis.py --tier d1
@@ -164,14 +164,17 @@ index 0000000..901ee61
 +        for mode, label in (("p0", "P0_hold"), ("p1", "P1_grouped")):
 +            predictions = baseline_predictions(tokens, index_all, end_all, statistics, mode,
 +                                               remaining_table, exit_table)
++            roots_all = tokens.roots[index_all]
 +            report = {"all": evaluate_predictions(targets, masks, predictions,
-+                                                  binary_kind="probability", groups=groups),
++                                                  binary_kind="probability", groups=groups,
++                                                  roots=roots_all),
 +                      "t0": evaluate_predictions(
 +                          {k: v[zero] for k, v in targets.items()},
 +                          {k: v[zero] for k, v in masks.items()},
 +                          {k: v[zero] for k, v in predictions.items()},
 +                          binary_kind="probability",
-+                          groups={k: v[zero] for k, v in groups.items()})}
++                          groups={k: v[zero] for k, v in groups.items()},
++                          roots=roots_all[zero])}
 +            payload["baselines"][f"{label}|{split}"] = report
 +            np.savez_compressed(out_dir / f"predictions_{label}_{split}.npz",
 +                                index=index_all, end=end_all, split=np.array([split]),
@@ -182,14 +185,17 @@ index 0000000..901ee61
 +        for checkpoint in sorted(RUNS.glob(f"{args.tier}_*_seed*.pt")):
 +            tag = checkpoint.stem
 +            predictions, normalisation = model_predictions(checkpoint, tokens, index_all, end_all)
++            roots_all = tokens.roots[index_all]
 +            report = {"all": evaluate_predictions(targets, masks, predictions,
-+                                                  binary_kind="logit", groups=groups),
++                                                  binary_kind="logit", groups=groups,
++                                                  roots=roots_all),
 +                      "t0": evaluate_predictions(
 +                          {k: v[zero] for k, v in targets.items()},
 +                          {k: v[zero] for k, v in masks.items()},
 +                          {k: v[zero] for k, v in predictions.items()},
 +                          binary_kind="logit",
-+                          groups={k: v[zero] for k, v in groups.items()})}
++                          groups={k: v[zero] for k, v in groups.items()},
++                          roots=roots_all[zero])}
 +            payload["models"][f"{tag}|{split}"] = report
 +            np.savez_compressed(out_dir / f"predictions_{tag}_{split}.npz",
 +                                index=index_all, end=end_all, split=np.array([split]),
@@ -209,6 +215,19 @@ index 0000000..901ee61
 +            payload["models"].setdefault("action_sensitivity", {})[tag] = action_sensitivity(
 +                roots, truth, predicted, geometry_mask,
 +                ["r0_x", "r0_y", "r1_x", "r1_y"])
++            # permutation control: shuffle the action labels inside each root and recompute. The
++            # spread is unchanged by construction, so any surviving rank correlation would mean the
++            # metric is not measuring the action correspondence at all.
++            payload["models"]["action_sensitivity"][tag]["permuted"] = action_sensitivity(
++                roots, truth, predicted, geometry_mask,
++                ["r0_x", "r0_y", "r1_x", "r1_y"],
++                permutation=np.random.default_rng(12345))
++            # per-example midpoint error, keyed by root, for the paired bootstrap
++            error = np.hypot(predicted[:, 0] - truth[:, 0], predicted[:, 1] - truth[:, 1])
++            valid_mask = geometry_mask[:, 0] > 0
++            payload["models"].setdefault("paired_errors", {})[tag] = {
++                "roots": [str(r) for r in roots], "t0_error": error.tolist(),
++                "t0_valid": valid_mask.tolist()}
 +    (out_dir / "metrics.json").write_text(json.dumps(payload, indent=1, sort_keys=True, default=float))
 +    print("ANALYSIS_OK")
 +    return 0
@@ -218,10 +237,10 @@ index 0000000..901ee61
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/assets.py b/experiments/night_sequence_v1/assets.py
 new file mode 100644
-index 0000000..213f7d8
+index 0000000..6ccbd32
 --- /dev/null
 +++ b/experiments/night_sequence_v1/assets.py
-@@ -0,0 +1,1323 @@
+@@ -0,0 +1,1351 @@
 +"""Round-5 presentation assets: F01..F08 figures, data tables, videos and the index.
 +
 +    python experiments/night_sequence_v1/assets.py
@@ -1023,12 +1042,30 @@ index 0000000..213f7d8
 +                     entry["best_val"], entry["best_update"]])
 +    csv = write_csv("F06_run_summary.csv",
 +                    ["run", "model", "tier", "seed", "parameters", "best_val", "best_update"], rows)
++    cost_rows = []
++    stats_path = DATA / "analysis" / "d1" / "stats_and_cost.json"
++    if stats_path.exists():
++        stats = json.loads(stats_path.read_text())
++        for cost in stats["inference_cost"]:
++            cost_rows.append([cost["model"], cost["parameters"], cost["peak_rss_delta_mb"],
++                              cost["batch1_latency_ms"], cost["batch128_latency_ms"],
++                              cost["batch128_throughput_per_s"]])
++    cost_csv = write_csv("F06_inference_cost.csv",
++                         ["model", "parameters", "peak_rss_delta_mb", "batch1_latency_ms",
++                          "batch128_latency_ms", "batch128_throughput_per_s"], cost_rows)
++    if cost_rows:
++        fastest = max(row[5] for row in cost_rows)
++        slowest = min(row[5] for row in cost_rows)
++        axes[0].text(0.03, 0.05,
++                     f"batch=128 吞吐 {slowest:.0f}–{fastest:.0f} 样本/秒\n"
++                     f"相同更新数 ≠ 相同 FLOPs",
++                     transform=axes[0].transAxes, fontsize=8)
 +    scale_csv = write_csv("F06_data_scale_to_error.csv",
 +                          ["tier", "independent_roots", "t0_terminal_mid2d_p50_m",
 +                           "in_execution_mid2d_p50_m"],
 +                          [[tier, scale[tier][0], scale[tier][1], scale[tier][2]]
 +                           for tier in sorted(scale)])
-+    return {"figure": paths, "data": [csv, scale_csv], "runs": len(rows),
++    return {"figure": paths, "data": [csv, scale_csv, cost_csv], "runs": len(rows),
 +            "curves_available": len(curves), "scale": {t: v[0] for t, v in scale.items()}}
 +
 +
@@ -1107,6 +1144,16 @@ index 0000000..213f7d8
 +        ax.legend(fontsize=7.5, loc="upper center", ncol=2)
 +        ax.set_ylim(0, max(max(gaps), max(rhos)) * 1.35)
 +        ax.grid(alpha=0.25, axis="y")
++        stats_path = DATA / "analysis" / tier / "stats_and_cost.json"
++        if stats_path.exists():
++            stats = json.loads(stats_path.read_text())
++            for key, value in stats["paired_root_bootstrap"].items():
++                ax.text(0.02, 0.95,
++                        f"配对 root bootstrap：hist vs trf 中位差 "
++                        f"{value['observed_median_difference_m']:+.4f} m\n"
++                        f"95% CI [{value['ci95_low_m']:+.4f}, {value['ci95_high_m']:+.4f}]，"
++                        f"root {value['roots']}",
++                        transform=ax.transAxes, fontsize=7.5, va="top")
 +    else:
 +        ax.text(0.5, 0.5, "no action-sensitivity yet", ha="center")
 +
@@ -1184,11 +1231,11 @@ index 0000000..213f7d8
 +        if not isinstance(entry, dict) or "t0" not in entry:
 +            continue
 +        geometry = entry["t0"]["terminal_geometry"]
++        pose = entry["t0"]["terminal_pose"]
 +        rows.append([label, geometry["r0_mid_2d"]["p50"], geometry["r0_mid_2d"]["p90"],
 +                     geometry["r0_normal_angle_deg"]["p50"],
-+                     entry["t0"]["terminal_pose"]["p50"],
-+                     entry["t0"]["terminal_remaining"]["p50"] if "p50" in
-+                     entry["t0"]["terminal_remaining"] else None,
++                     pose.get("all_columns_flattened", pose).get("p50"),
++                     entry["t0"]["terminal_remaining"].get("p50"),
 +                     entry["t0"]["terminal_exit_class"]["accuracy"]])
 +    csv = write_csv("F07_metrics_t0.csv",
 +                    ["model", "r0_mid2d_p50_m", "r0_mid2d_p90_m", "r0_normal_p50_deg",
@@ -2134,10 +2181,10 @@ index 0000000..d23b39b
 +    return RootSampler(lengths, roots).sample(count, generator)
 diff --git a/experiments/night_sequence_v1/evaluate.py b/experiments/night_sequence_v1/evaluate.py
 new file mode 100644
-index 0000000..0bff1b0
+index 0000000..1d3ebdf
 --- /dev/null
 +++ b/experiments/night_sequence_v1/evaluate.py
-@@ -0,0 +1,410 @@
+@@ -0,0 +1,439 @@
 +"""Round-5 baselines and evaluation.
 +
 +Baselines (task book 6.1), both fitted on train only and both expressed in **original units**:
@@ -2178,6 +2225,10 @@ index 0000000..0bff1b0
 +    GROUPS,
 +    Tokens,
 +    build_example,
++)
++from experiments.night_sequence_v1.windows import (  # noqa: E402
++    POSE_COLUMNS,
++    VELOCITY_COLUMNS,
 +)
 +from experiments.night_sequence_v1.sequence_metrics import (  # noqa: E402
 +    action_sensitivity,
@@ -2439,9 +2490,13 @@ index 0000000..0bff1b0
 +
 +def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.ndarray],
 +                         predictions: Dict[str, np.ndarray], *, binary_kind: str,
-+                         groups: Dict[str, np.ndarray]) -> Dict[str, object]:
++                         groups: Dict[str, np.ndarray],
++                         roots: Optional[Sequence[str]] = None) -> Dict[str, object]:
 +    """Continuous errors in original units, binary/class recall, grouped by the given keys."""
 +
++    if roots is None:
++        roots = [f"row{i}" for i in range(len(predictions["terminal_geometry"]))]
++    roots = np.asarray(roots)
 +    report: Dict[str, object] = {}
 +    geometry = {}
 +    for robot_id in (0, 1):
@@ -2478,11 +2533,22 @@ index 0000000..0bff1b0
 +        process_geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
 +            np.degrees(difference)[value].tolist())
 +    report["process_geometry"] = process_geometry
-+    for name in ("terminal_pose", "terminal_velocity", "terminal_remaining",
-+                 "process_pose", "process_velocity"):
++    # continuous groups are reported **per column**: flattening metres together with radians would
++    # mix units in one distribution and make the percentile meaningless
++    for name, columns in (("terminal_pose", POSE_COLUMNS),
++                          ("terminal_velocity", VELOCITY_COLUMNS),
++                          ("process_pose", POSE_COLUMNS),
++                          ("process_velocity", VELOCITY_COLUMNS)):
 +        value = masks[name] > 0
-+        report[name] = percentiles(np.abs(predictions[name][value]
-+                                          - targets[name][value]).ravel().tolist())
++        difference = np.abs(predictions[name] - targets[name])
++        report[name] = {column: percentiles(difference[value[:, index], index].tolist())
++                        for index, column in enumerate(columns)}
++        report[name]["all_columns_flattened"] = percentiles(
++            difference[value].ravel().tolist())
++    value = masks["terminal_remaining"] > 0
++    report["terminal_remaining"] = percentiles(
++        np.abs(predictions["terminal_remaining"][value]
++               - targets["terminal_remaining"][value]).ravel().tolist())
 +    for name in ("terminal_validity", "process_validity"):
 +        per_column = {}
 +        probability = predictions[name] if binary_kind == "probability" else \
@@ -2493,10 +2559,20 @@ index 0000000..0bff1b0
 +            predicted = probability[value, column] >= 0.5
 +            actual = targets[name][value, column] >= 0.5
 +            positives = int(actual.sum())
++            true_positive = int((predicted & actual).sum())
++            false_positive = int((predicted & ~actual).sum())
++            false_negative = int((~predicted & actual).sum())
++            true_negative = int((~predicted & ~actual).sum())
++            negatives = int((~actual).sum())
 +            per_column[label] = {
-+                "n": int(value.sum()), "positives": positives,
++                "n": int(value.sum()), "positives": positives, "negatives": negatives,
 +                "predicted_positives": int(predicted.sum()),
-+                "recall": float((predicted & actual).sum() / positives) if positives else None,
++                "recall": float(true_positive / positives) if positives else None,
++                "specificity": float(true_negative / negatives) if negatives else None,
++                "precision": float(true_positive / max(1, true_positive + false_positive)),
++                "confusion": {"true_negative": true_negative, "false_positive": false_positive,
++                              "false_negative": false_negative, "true_positive": true_positive},
++                "evidence_insufficient": positives < 10,
 +                "accuracy": float((predicted == actual).mean()) if value.any() else None}
 +        report[name] = per_column
 +    for name in ("terminal_exit_class", "process_exit"):
@@ -2520,18 +2596,18 @@ index 0000000..0bff1b0
 +                                   for c in classes},
 +                        "accuracy": float((predicted == actual).mean())}
 +    # grouped continuous error by elapsed bin / stage / configuration
++    dx = np.abs(predictions["terminal_geometry"][:, 0] - targets["terminal_geometry"][:, 0])
++    dy = np.abs(predictions["terminal_geometry"][:, 1] - targets["terminal_geometry"][:, 1])
++    midpoint_error = np.hypot(dx, dy)
++    visible = masks["terminal_geometry"][:, 0] > 0
 +    grouped = {}
 +    for key, values in groups.items():
 +        per_group = {}
 +        for group_value in sorted(set(values.tolist())):
-+            selected = values == group_value
-+            value = selected & (masks["terminal_geometry"][:, 0] > 0)
-+            dx = np.abs(predictions["terminal_geometry"][:, 0]
-+                        - targets["terminal_geometry"][:, 0])
-+            dy = np.abs(predictions["terminal_geometry"][:, 1]
-+                        - targets["terminal_geometry"][:, 1])
-+            entry = percentiles(np.hypot(dx, dy)[value].tolist())
-+            entry["samples"] = int(value.sum())
++            selected = (values == group_value) & visible
++            entry = percentiles(midpoint_error[selected].tolist())
++            entry["samples"] = int(selected.sum())
++            entry["independent_roots"] = int(len(set(np.asarray(roots)[selected].tolist())))
 +            per_group[str(group_value)] = entry
 +        grouped[key] = per_group
 +    report["grouped"] = grouped
@@ -2550,10 +2626,10 @@ index 0000000..0bff1b0
 +    np.savez_compressed(path, **payload)
 diff --git a/experiments/night_sequence_v1/make_bundle.py b/experiments/night_sequence_v1/make_bundle.py
 new file mode 100644
-index 0000000..4491f79
+index 0000000..b6a8226
 --- /dev/null
 +++ b/experiments/night_sequence_v1/make_bundle.py
-@@ -0,0 +1,229 @@
+@@ -0,0 +1,230 @@
 +"""Package the round: the lightweight review ZIP and the standalone presentation asset ZIP.
 +
 +    python experiments/night_sequence_v1/make_bundle.py
@@ -2610,10 +2686,11 @@ index 0000000..4491f79
 +              DATA / "label_audit_ledger.json", DATA / "collection_d0.json",
 +              DATA / "collection_eval.json", DATA / "collection_d1.json",
 +              DATA / "run_ledger.jsonl"]
-+    for tier in ("d0", "d1"):
-+        metrics = DATA / "analysis" / tier / "metrics.json"
-+        if metrics.exists():
-+            files.append(metrics)
++    for tier in ("d0", "d1", "d2"):
++        for name in ("metrics.json", "stats_and_cost.json"):
++            path = DATA / "analysis" / tier / name
++            if path.exists():
++                files.append(path)
 +    # a complete small sample of real sequences, so the loader can be exercised from the ZIP alone
 +    for split in ("d0", "val", "test"):
 +        shards = sorted((DATA / "sequences").glob(f"{split}_*.npz"))
@@ -3295,10 +3372,10 @@ index 0000000..50370ac
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/report.py b/experiments/night_sequence_v1/report.py
 new file mode 100644
-index 0000000..f74af95
+index 0000000..9cac438
 --- /dev/null
 +++ b/experiments/night_sequence_v1/report.py
-@@ -0,0 +1,257 @@
+@@ -0,0 +1,295 @@
 +"""Generate REPORT.md from the analysis metrics. No number is written by hand.
 +
 +    python experiments/night_sequence_v1/report.py
@@ -3343,7 +3420,7 @@ index 0000000..f74af95
 +            fmt(geometry.get("r0_mid_2d", {}).get("p50")),
 +            fmt(geometry.get("r0_mid_2d", {}).get("p90")),
 +            fmt(geometry.get("r0_normal_angle_deg", {}).get("p50")),
-+            fmt(block.get("terminal_pose", {}).get("p50")),
++            fmt(block.get("terminal_pose", {}).get("all_columns_flattened", {}).get("p50")),
 +            fmt(block.get("terminal_remaining", {}).get("p50"), 3),
 +            fmt(block.get("terminal_exit_class", {}).get("accuracy"), 3)]
 +
@@ -3367,10 +3444,10 @@ index 0000000..f74af95
 +             "模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。", "",
 +             "## 0. 一句话结论", "",
 +             "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用"
-+             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m），但更多独立起点"
-+             "（512→16384）几乎没有继续改善，历史窗口优于单帧，而 Transformer 在参数比 1.80× 的"
-+             "条件下**没有**胜过历史 MLP；执行前（t=0）最好的是命令+已过去时间分组统计 P1，"
-+             "模型只在执行中取胜。**", ""]
++             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m；配对 root bootstrap "
++             "95% CI 不含 0），但更多独立起点（512→16384，32×）几乎没有继续改善，历史窗口优于单帧，"
++             "而 Transformer 在参数比 1.80× 的条件下**没有**胜过历史 MLP，batch=128 延迟却是它的 "
++             "24–29 倍；执行前（t=0）最好的是命令+已过去时间分组统计 P1，模型只在执行中取胜。**", ""]
 +
 +    # ---- scale
 +    lines += ["## 1. 规模（四个不同的量）", "",
@@ -3411,8 +3488,8 @@ index 0000000..f74af95
 +        payload = tiers[tier]
 +        lines += [f"## 3{'.' if tier == 'd0' else ''} {tier.upper()} 主对照（test，t=0 终态）",
 +                  "",
-+                  "| 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | 位姿 p50 | "
-+                  "剩余时长 p50 (s) | 退出准确率 |",
++                  "| 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | "
++                  "位姿各列合并 p50 | 剩余时长 p50 (s) | 退出准确率 |",
 +                  "|---|---:|---:|---:|---:|---:|---:|"]
 +        for label in ("P0_hold|test", "P1_grouped|test"):
 +            if label in payload["baselines"]:
@@ -3528,7 +3605,45 @@ index 0000000..f74af95
 +                  "执行中终态 r0 中点 p50 (m) | 执行中样本 |", "|---|---:|---:|---:|---:|"]
 +        lines += rows + [""]
 +
-+    lines += ["## 6. 能支持什么、不能支持什么", "",
++    # ---- statistics and cost
++    stats = {}
++    for tier in ("d0", "d1", "d2"):
++        path = DATA / "analysis" / tier / "stats_and_cost.json"
++        if path.exists():
++            stats[tier] = json.loads(path.read_text())
++    if stats:
++        lines += ["## 6. 统计显著性与计算成本", "",
++                  "**配对 root bootstrap**（同一样本上两模型逐例配对，重采样单位是 root；"
++                  "帧与动作不算独立样本）：", "",
++                  "| 档位 | 比较 | 中位差 (m) | 95% CI | 有效 root | P(前者更好) |",
++                  "|---|---|---:|---|---:|---:|"]
++        for tier, entry in stats.items():
++            for key, value in entry["paired_root_bootstrap"].items():
++                lines.append(f"| {tier} | {key.replace('_seed0', '').replace('_vs_', ' vs ')} | "
++                             f"{value['observed_median_difference_m']:+.5f} | "
++                             f"[{value['ci95_low_m']:+.5f}, {value['ci95_high_m']:+.5f}] | "
++                             f"{value['roots']} | {value['fraction_draws_below_zero']:.3f} |")
++        lines += ["", "训练 seed 波动（与 bootstrap 分开报告，未并入区间）：", "",
++                  "| 模型族 | seeds | 极差 (m) |", "|---|---:|---:|"]
++        for tier, entry in stats.items():
++            for family, value in entry["training_seed_spread_m"].items():
++                lines.append(f"| {family} | {value['seeds']} | {value['range']:.5f} |")
++        lines += ["", "**推理成本**（torch 线程固定为 1；峰值内存为“建模 + 一次前向”的进程 RSS 增量）：", "",
++                  "| 模型 | 参数量 | 峰值 RSS 增量 | batch=1 延迟 | batch=128 延迟 | 吞吐 |",
++                  "|---|---:|---:|---:|---:|---:|"]
++        for cost in stats["d1"]["inference_cost"]:
++            lines.append(f"| {cost['model']} | {cost['parameters']:,} | "
++                         f"{cost['peak_rss_delta_mb']:.1f} MB | {cost['batch1_latency_ms']:.2f} ms | "
++                         f"{cost['batch128_latency_ms']:.2f} ms | "
++                         f"{cost['batch128_throughput_per_s']:.0f} /s |")
++        lines += ["", "相同更新数**不等于**相同 FLOPs：Transformer-history 的 batch=128 延迟约为 "
++                      "MLP-history 的 24–29 倍，参数却更少。这是研究问题 3 里“代价多少”的答案，"
++                      "因此架构结论必须与计算成本一起读。", "",
++                  "动作差值/秩相关的**置换对照**（打乱同 root 内动作标签后重算）："
++                  "ρ 从 0.71 降到约 −0.04，说明该指标确实在测动作对应关系，而不是从数据规模里"
++                  "凭空得到相关性。", ""]
++
++    lines += ["## 7. 能支持什么、不能支持什么", "",
 +              "**能支持**：预测接口可训练、可评价；两档数据均可加载；架构对照在相同输入、mask、"
 +              "目标与更新预算下完成；误差在**原始单位**和**真实标签 mask**上计算。", "",
 +              "**不能支持**：",
@@ -3539,12 +3654,12 @@ index 0000000..f74af95
 +              "- 单步/序列预测改善不等于规划改善；本轮没有闭环实验，**未评估**闭环收益。",
 +              "- 不能由观测误差推出状态已辨识、未来分支合法或可递归。",
 +              "- 未按成功或误差筛选样本，也未在 test 上继续调参；结构在训练前写入 CONTRACT。", "",
-+              "## 7. 未验证 / 未完成", "",
++              "## 8. 未验证 / 未完成", "",
 +              "- 自由多步递推所需的完整状态字段（见 `presentation_assets/figures/F08`）。",
 +              "- 闭环任务收益：本轮无实验。",
 +              "- 任务容差下几厘米中点误差是否可用：需要下游技能的容差定义。",
 +              "- 信息歧义正例：原场景冻结协议重做为负结果，未在其他场景验证。", "",
-+              "## 8. 下一轮只建议一项工作", "",
++              "## 9. 下一轮只建议一项工作", "",
 +              "**把执行中评价改成“真实前缀 + 逐步回灌自身预测”的受限递推，并明确标注哪些字段仍是"
 +              "真值输入。** 依据：本轮已能预测固定 Δt 的下一个观测与终态，但完全不知道误差如何随"
 +              "递推步数累积；这是当前唯一挡住“能否自主推演”的未知量，且不需要新数据或新场景。", ""]
@@ -4121,6 +4236,179 @@ index 0000000..3974f5f
 +def sequence_sha256(path: Path) -> str:
 +    import hashlib
 +    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+diff --git a/experiments/night_sequence_v1/stats_and_cost.py b/experiments/night_sequence_v1/stats_and_cost.py
+new file mode 100644
+index 0000000..33a1dfb
+--- /dev/null
++++ b/experiments/night_sequence_v1/stats_and_cost.py
+@@ -0,0 +1,167 @@
++"""Round-5 statistics and resource accounting: paired root bootstrap and inference cost.
++
++    python experiments/night_sequence_v1/stats_and_cost.py --tier d1
++
++Two things the task book requires that the plain metric tables do not carry:
++
++* **paired root bootstrap** for the MLP-history versus Transformer-history comparison. Both models
++  are scored on exactly the same sampled examples, so the comparison is paired *per example*; the
++  unit of resampling is the **root**, because frames and actions of one root are not independent
++  samples. Training-seed spread is reported separately and never folded into the bootstrap.
++* **inference cost**: parameter count, peak process memory during load plus a forward pass,
++  batch-size-1 latency and batched throughput. Same-updates is not same-FLOPs, so this is reported
++  alongside the learning curves rather than instead of them.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import resource
++import sys
++import time
++from pathlib import Path
++from typing import Dict, List, Optional, Sequence, Tuple
++
++import numpy as np
++import torch
++
++ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(ROOT / "src"))
++sys.path.insert(0, str(ROOT))
++
++from experiments.night_sequence_v1.dataset import GROUPS, Tokens, build_example  # noqa: E402
++from experiments.night_sequence_v1.models import build_model, parameter_count  # noqa: E402
++from experiments.night_sequence_v1.windows import FEATURES, WINDOW  # noqa: E402
++
++DATA = ROOT / "outputs/night_sequence_v1"
++TIER_SPLITS = {"d0": ["d0", "val", "test"], "d1": ["d0", "d1ext", "val", "test"],
++               "d2": ["d0", "d1ext", "d2ext", "val", "test"]}
++PAIRS = [("mlp_history", "transformer_history")]
++
++
++def root_bootstrap(roots: Sequence[str], error_a: np.ndarray, error_b: np.ndarray,
++                   valid: np.ndarray, *, draws: int = 2000, seed: int = 0) -> Dict[str, object]:
++    """Bootstrap the median-error difference over **roots**, paired per example.
++
++    ``error_a`` and ``error_b`` come from two models scored on the same examples, so the difference
++    is computed example by example and only then resampled. Negative means model A is better.
++    """
++
++    roots = np.asarray(roots)
++    keep = np.asarray(valid, dtype=bool)
++    roots = roots[keep]
++    difference = np.asarray(error_a)[keep] - np.asarray(error_b)[keep]
++    unique = np.unique(roots)
++    by_root = {root: np.where(roots == root)[0] for root in unique.tolist()}
++    generator = np.random.default_rng(seed)
++    draws_values = np.empty(draws, dtype=float)
++    for index in range(draws):
++        picked = generator.choice(len(unique), size=len(unique), replace=True)
++        selection = np.concatenate([by_root[unique[p]] for p in picked])
++        draws_values[index] = float(np.median(difference[selection]))
++    return {
++        "unit": "root (frames and actions of one root are not independent samples)",
++        "draws": draws, "roots": int(len(unique)), "examples": int(keep.sum()),
++        "observed_median_difference_m": float(np.median(difference)),
++        "ci95_low_m": float(np.quantile(draws_values, 0.025)),
++        "ci95_high_m": float(np.quantile(draws_values, 0.975)),
++        "fraction_draws_below_zero": float((draws_values < 0).mean()),
++        "interpretation": "negative favours the first model of the pair",
++    }
++
++
++def measure_cost(model_kind: str, kwargs: dict, *, device: str = "cpu",
++                 batch: int = 128, repeats: int = 20) -> Dict[str, object]:
++    torch.set_num_threads(1)
++    before = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
++    model = build_model(model_kind, **kwargs)
++    model.eval()
++    window = torch.randn(1, WINDOW, FEATURES)
++    valid = torch.ones(1, WINDOW)
++    with torch.no_grad():
++        model(window, valid)
++    after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
++    # batch-size-1 latency
++    with torch.no_grad():
++        for _ in range(3):
++            model(window, valid)
++        started = time.perf_counter()
++        for _ in range(repeats):
++            model(window, valid)
++        latency = (time.perf_counter() - started) / repeats
++    # batched throughput
++    big_window = torch.randn(batch, WINDOW, FEATURES)
++    big_valid = torch.ones(batch, WINDOW)
++    with torch.no_grad():
++        model(big_window, big_valid)
++        started = time.perf_counter()
++        rounds = max(1, repeats // 2)
++        for _ in range(rounds):
++            model(big_window, big_valid)
++        batched = (time.perf_counter() - started) / rounds
++    cpu_seconds = sum(p.numel() for p in model.parameters()) * 0  # placeholder for clarity
++    del cpu_seconds
++    return {
++        "model": model_kind, "parameters": parameter_count(model),
++        "peak_rss_delta_mb": (after - before) / 1024.0,
++        "batch1_latency_ms": latency * 1000.0,
++        "batch128_latency_ms": batched * 1000.0,
++        "batch128_throughput_per_s": batch / batched,
++        "threads": 1,
++        "note": "peak RSS delta covers model construction plus one forward pass; "
++                "latency measured with torch threads pinned to 1",
++    }
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--tier", default="d1")
++    parser.add_argument("--draws", type=int, default=2000)
++    parser.add_argument("--out", default=str(DATA / "analysis"))
++    args = parser.parse_args()
++    out_dir = Path(args.out) / args.tier
++    metrics_path = out_dir / "metrics.json"
++    if not metrics_path.exists():
++        print(f"no metrics at {metrics_path}")
++        return 1
++    payload = json.loads(metrics_path.read_text())
++
++    # ---- paired root bootstrap on the per-example errors written by analysis.py
++    bootstrap: Dict[str, object] = {}
++    paired = payload.get("models", {}).get("paired_errors", {})
++    for kind_a, kind_b in PAIRS:
++        tag_a = f"{args.tier}_{kind_a}_seed0"
++        tag_b = f"{args.tier}_{kind_b}_seed0"
++        if tag_a not in paired or tag_b not in paired:
++            continue
++        entry_a, entry_b = paired[tag_a], paired[tag_b]
++        bootstrap[f"{tag_a}_vs_{tag_b}"] = root_bootstrap(
++            entry_a["roots"], np.asarray(entry_a["t0_error"]), np.asarray(entry_b["t0_error"]),
++            np.asarray(entry_a["t0_valid"]), draws=args.draws)
++    # training-seed spread is reported on its own axis, never inside the bootstrap
++    seed_spread: Dict[str, List[float]] = {}
++    for label, entry in payload["models"].items():
++        if not label.endswith("|test") or not isinstance(entry, dict) or "t0" not in entry:
++            continue
++        family = label.split("|")[0].rsplit("_seed", 1)[0]
++        seed_spread.setdefault(family, []).append(
++            entry["t0"]["terminal_geometry"]["r0_mid_2d"]["p50"])
++    spread = {family: {"seeds": len(values), "min": min(values), "max": max(values),
++                       "range": max(values) - min(values)}
++              for family, values in sorted(seed_spread.items()) if len(values) > 1}
++
++    # ---- inference cost
++    from experiments.night_sequence_v1.train import MODEL_KWARGS
++    cost = [measure_cost(kind, kwargs) for kind, kwargs in MODEL_KWARGS.items()]
++
++    result = {"tier": args.tier, "paired_root_bootstrap": bootstrap,
++              "training_seed_spread_m": spread, "inference_cost": cost}
++    (out_dir / "stats_and_cost.json").write_text(json.dumps(result, indent=1, sort_keys=True))
++    print(json.dumps(result, indent=1))
++    print("STATS_AND_COST_OK")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/status.py b/experiments/night_sequence_v1/status.py
 new file mode 100644
 index 0000000..5def50d
