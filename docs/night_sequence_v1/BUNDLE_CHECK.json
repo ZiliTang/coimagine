@@ -45,7 +45,7 @@
  },
  "review": {
   "bundle": "night_sequence_v1_review.zip",
-  "bytes": 18058300,
+  "bytes": 18060373,
   "checkpoints": [
    "outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt",
    "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt",
@@ -53,7 +53,7 @@
   ],
   "duplicates": 0,
   "entries": 57,
-  "listed": 57,
+  "listed": 56,
   "missing": [],
   "sequences_included": [
    "outputs/night_sequence_v1/sequences/d0_00000.npz",

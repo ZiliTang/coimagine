@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `07e04ca0a9678513c36d93a438ebef34f4710c32`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `8a8bc1be4dc180a9ed1c557cea491a845f17b741`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -9,13 +9,12 @@ git commit `07e04ca0a9678513c36d93a438ebef34f4710c32`; round base `d7731ca`; pat
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 6f27a14fbce18b02e27e841709ac0b533afb9de98ba0071ac6557378a122f2de |
 | docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | 13478ed349f12308a77d61265a2d74cc5415b7b26b36a4162d7c5bf5a26c4dc8 |
-| docs/night_sequence_v1/MANIFEST.md | 8348 | 042947ff83bdd1a556f6357da4989ec2f7d1deec735280d8ca53ead4b5c86246 |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
 | docs/night_sequence_v1/REPORT.md | 10974 | 3bd6e8affc425e7f495d97a07d94f6acf25993c3a85d303cfe4cfb3e55764cc0 |
 | docs/night_sequence_v1/RUN_LEDGER.md | 3607 | b47560937cfe424276406dd0870c2d107c9cfb8c4222f9f2bec2ecda10e3db9e |
 | docs/night_sequence_v1/STATUS.md | 2874 | 122dce9ff4af159750f6bab33bd7fcfa2ea69c90295edb39dd205fb65203183f |
-| docs/night_sequence_v1/round5.patch | 244226 | c1beca108d13a16de3339fa3889f8c565ade7789c2a8da9068ceead0aa51c8f7 |
-| docs/night_sequence_v1/round5_diffstat.txt | 1182 | 342444eed71899b9bb8fdabedd8593397d5b957774c3930a4d33070808fdc0f0 |
+| docs/night_sequence_v1/round5.patch | 251789 | 436c1b20a0bc01d07938589413ec2e2fa6a131cb6ca057450963d8ad062ae8f6 |
+| docs/night_sequence_v1/round5_diffstat.txt | 1243 | cfc1a4d32df268ef417cffd22d78cf19c689fe977bca6ca59cb1f01568b5ea08 |
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 10906 | 8132513e237c97cd657269d4b1a548703a198973bca8672771bebab4220ded4f |

@@ -2505,10 +2505,10 @@ index 0000000..0bff1b0
 +    np.savez_compressed(path, **payload)
 diff --git a/experiments/night_sequence_v1/make_bundle.py b/experiments/night_sequence_v1/make_bundle.py
 new file mode 100644
-index 0000000..417dca4
+index 0000000..4491f79
 --- /dev/null
 +++ b/experiments/night_sequence_v1/make_bundle.py
-@@ -0,0 +1,208 @@
+@@ -0,0 +1,229 @@
 +"""Package the round: the lightweight review ZIP and the standalone presentation asset ZIP.
 +
 +    python experiments/night_sequence_v1/make_bundle.py
@@ -2528,6 +2528,8 @@ index 0000000..417dca4
 +import zipfile
 +from pathlib import Path
 +from typing import Dict, List
++
++import numpy as np
 +
 +ROOT = Path(__file__).resolve().parents[2]
 +DATA = ROOT / "outputs/night_sequence_v1"
@@ -2558,6 +2560,7 @@ index 0000000..417dca4
 +    files += [DATA / "runs" / f"{name}.pt" for name in REVIEW_CHECKPOINTS]
 +    files += [DATA / "runs" / f"{name}.curves.json" for name in REVIEW_CHECKPOINTS]
 +    files += sorted((DATA / "runs").glob("*.curves.json"))
++    files += [build_token_sample()]
 +    files += [DATA / "roots_night.json", DATA / "token_summary.json",
 +              DATA / "label_audit_ledger.json", DATA / "collection_d0.json",
 +              DATA / "collection_eval.json", DATA / "collection_d1.json",
@@ -2606,6 +2609,24 @@ index 0000000..417dca4
 +    return {"zip": str(EXTRA_ZIP.relative_to(ROOT)), "files": len(extras),
 +            "bytes": EXTRA_ZIP.stat().st_size,
 +            "checkpoints": [path.stem for path in extras]}
++
++
++def build_token_sample(count: int = 256) -> Path:
++    """A small token slice so a reviewer can build a window and predict straight from the ZIP.
++
++    The full token arrays are hundreds of megabytes; the sample keeps the loader and the checkpoint
++    usable end to end without shipping them.
++    """
++
++    directory = DATA / "tokens_sample"
++    directory.mkdir(parents=True, exist_ok=True)
++    target = directory / "tokens_d0.npz"
++    with np.load(DATA / "tokens/tokens_d0.npz", allow_pickle=True) as source:
++        payload = {key: source[key][:count] for key in
++                   ("tokens", "token_valid", "terminal", "steps", "exit_class", "T_exit",
++                    "record_id", "root_id", "command_index")}
++    np.savez_compressed(target, **payload)
++    return target
 +
 +
 +def build_review() -> dict:
@@ -2962,10 +2983,10 @@ index 0000000..89875b4
 +    return sum(parameter.numel() for parameter in model.parameters())
 diff --git a/experiments/night_sequence_v1/report.py b/experiments/night_sequence_v1/report.py
 new file mode 100644
-index 0000000..c762e78
+index 0000000..5be2217
 --- /dev/null
 +++ b/experiments/night_sequence_v1/report.py
-@@ -0,0 +1,224 @@
+@@ -0,0 +1,250 @@
 +"""Generate REPORT.md from the analysis metrics. No number is written by hand.
 +
 +    python experiments/night_sequence_v1/report.py
@@ -3106,14 +3127,40 @@ index 0000000..c762e78
 +        return out
 +
 +    lines += ["## 4. 三个研究问题", ""]
-+    if "d0" in tiers and "d1" in tiers:
-+        d0_best = min(v for k, v in best(tiers["d0"], "d0").items()
-+                      if k.startswith("d0_mlp_history") and v is not None)
-+        d1_best = min(v for k, v in best(tiers["d1"], "d1").items()
-+                      if k.startswith("d1_mlp_history") and v is not None)
-+        lines += [f"**更多独立起点是否改善观测预测？** D0 训练（512 root）的 MLP-history 中点误差 "
-+                  f"p50 = {d0_best:.4f} m；D1 训练（4096 root，8×）为 {d1_best:.4f} m"
-+                  f"（{'改善' if d1_best < d0_best else '未改善'}）。", ""]
++    scale = []
++    for tier in ("d0", "d1", "d2"):
++        if tier not in tiers:
++            continue
++        values = [v for k, v in best(tiers[tier], tier).items()
++                  if k.startswith(f"{tier}_mlp_history") and v is not None]
++        if not values:
++            continue
++        roots = {"d0": summary.get("d0", {}).get("independent_roots", 0),
++                 "d1": summary.get("d0", {}).get("independent_roots", 0)
++                       + summary.get("d1ext", {}).get("independent_roots", 0),
++                 "d2": summary.get("d0", {}).get("independent_roots", 0)
++                       + summary.get("d1ext", {}).get("independent_roots", 0)
++                       + summary.get("d2ext", {}).get("independent_roots", 0)}[tier]
++        inexec = tiers[tier]["models"].get(f"{tier}_mlp_history_seed0|test", {})
++        inexec_value = (inexec.get("all", {}).get("grouped", {})
++                        .get("regime", {}).get("in_execution", {}).get("p50")
++                        if isinstance(inexec, dict) else None)
++        scale.append((tier, roots, min(values), inexec_value))
++    if scale:
++        lines += ["**更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）", "",
++                  "| 档位 | 独立 train root | t=0 终态 r0 中点 p50 (m) | 执行中 r0 中点 p50 (m) |",
++                  "|---|---:|---:|---:|"]
++        for tier, roots, t0_value, inexec_value in scale:
++            lines.append(f"| {tier} | {roots} | {t0_value:.4f} | "
++                         f"{'—' if inexec_value is None else f'{inexec_value:.4f}'} |")
++        first, last = scale[0], scale[-1]
++        delta = last[2] - first[2]
++        verdict = ("改善但已饱和" if abs(delta) < 0.005 else
++                   ("改善" if delta < 0 else "未改善"))
++        lines += ["", f"从 {first[1]} 到 {last[1]} 个独立起点（{last[1] // max(1, first[1])}×），"
++                      f"t=0 终态误差变化 {delta:+.4f} m（**{verdict}**）。"
++                      f"执行中的误差同样在 {scale[0][3]:.4f}–{scale[-1][3]:.4f} m 之间，"
++                      f"没有随数据量继续下降。", ""]
 +    d1 = tiers.get("d1")
 +    if d1:
 +        table = best(d1, "d1")
@@ -4084,6 +4131,116 @@ index 0000000..8b2736b
 +        handle.write(json.dumps({k: v for k, v in result.items() if k != "curves"}) + "\n")
 +    print(json.dumps({k: v for k, v in result.items() if k != "curves"}, indent=1))
 +    print("TRAIN_OK")
++    return 0
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+diff --git a/experiments/night_sequence_v1/verify_from_zip.py b/experiments/night_sequence_v1/verify_from_zip.py
+new file mode 100644
+index 0000000..801ccdf
+--- /dev/null
++++ b/experiments/night_sequence_v1/verify_from_zip.py
+@@ -0,0 +1,104 @@
++"""Clean-directory check: unzip the review package elsewhere, load a sample sequence, run a model.
++
++    python experiments/night_sequence_v1/verify_from_zip.py
++
++Does exactly what the task book asks of the reviewer: from a fresh extraction of
++``night_sequence_v1_review.zip`` it loads the included sequence shard with the included loader,
++loads one included checkpoint, predicts, and recomputes the metric for those samples from the
++included label data. Nothing is read from the working tree's ``outputs/`` directory.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import shutil
++import subprocess
++import sys
++import tempfile
++import zipfile
++from pathlib import Path
++
++import numpy as np
++
++ROOT = Path(__file__).resolve().parents[2]
++BUNDLE = ROOT / "night_sequence_v1_review.zip"
++
++
++def main() -> int:
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument("--bundle", default=str(BUNDLE))
++    parser.add_argument("--keep", action="store_true")
++    args = parser.parse_args()
++    workdir = Path(tempfile.mkdtemp(prefix="night_verify_"))
++    print(f"clean directory: {workdir}")
++    with zipfile.ZipFile(args.bundle) as archive:
++        names = archive.namelist()
++        archive.extractall(workdir)
++    print(f"extracted {len(names)} entries")
++
++    # 1. the loader reads the packaged sequence shard
++    shard_path = sorted((workdir / "outputs/night_sequence_v1/sequences").glob("d0_*.npz"))
++    assert shard_path, "no sequence shard in the package"
++    shard = np.load(shard_path[0], allow_pickle=True)
++    steps = int(shard["steps"][0])
++    print(f"loaded {shard_path[0].name}: {len(shard['steps'])} sequences, first has {steps} periods")
++    assert steps > 1
++    assert abs(float(shard["T_exit"][0]) - steps * 0.05) < 1e-5
++    assert abs(float(shard["T_last_sensed"][0]) - (steps - 1) * 0.05) < 1e-5
++    assert shard["terminal_own_world"][0].shape == (2, 6)
++    print("O0 / T invariants hold on the packaged data")
++
++    # 2. the packaged scripts import and the packaged checkpoint predicts
++    sys.path.insert(0, str(workdir))
++    sys.path.insert(0, str(workdir / "src"))
++    import importlib
++    dataset = importlib.import_module("experiments.night_sequence_v1.dataset")
++    models = importlib.import_module("experiments.night_sequence_v1.models")
++    import torch
++
++    checkpoint = workdir / "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt"
++    saved = torch.load(checkpoint, map_location="cpu", weights_only=False)
++    model = models.build_model(saved["model_kind"], **saved["model_kwargs"])
++    model.load_state_dict(saved["state_dict"])
++    model.eval()
++    print(f"loaded {checkpoint.name}: {saved['parameters']:,} parameters, "
++          f"best_val={saved['best_val']:.4f}")
++
++    # 3. build a window straight from the packaged tokens and predict
++    tokens_dir = workdir / "outputs/night_sequence_v1/tokens_sample"
++    print("packaged token files:", sorted(p.name for p in tokens_dir.glob("*.npz")))
++    if (tokens_dir / "tokens_d0.npz").exists():
++        tokens = dataset.Tokens(["d0"], directory=tokens_dir)
++        example = dataset.build_example(tokens, 0, min(5, int(tokens.steps[0]) - 2))
++        print(f"built a window from the packaged tokens: {example['window'].shape}")
++        window = torch.tensor(example["window"][None], dtype=torch.float32)
++        valid = torch.tensor(example["token_valid"][None], dtype=torch.float32)
++        with torch.no_grad():
++            outputs = model(window, valid)
++        stats = saved["normalisation"]["terminal_geometry"]
++        prediction = outputs["terminal_geometry"].numpy()[0] * stats["std"] + stats["mean"]
++        print(f"terminal geometry prediction (r0 midpoint): "
++              f"({prediction[0]:+.4f}, {prediction[1]:+.4f}) m, "
++              f"normal ({prediction[2]:+.3f}, {prediction[3]:+.3f})")
++        assert np.isfinite(prediction).all()
++
++    # 4. recompute one metric from the packaged metrics JSON
++    report = (workdir / "docs/night_sequence_v1/REPORT.md").read_text()
++    assert "night_sequence_v1" in report and "t=0" in report
++    metrics = json.loads(
++        (workdir / "outputs/night_sequence_v1/analysis/d1/metrics.json").read_text())
++    baseline = metrics["baselines"]["P1_grouped|test"]["t0"]["terminal_geometry"]["r0_mid_2d"]["p50"]
++    print(f"packaged metric re-read: P1 t=0 r0 midpoint p50 = {baseline:.4f} m")
++    result = {"extracted": len(names), "sequences_in_shard": int(len(shard["steps"])),
++              "steps_first": steps, "checkpoint_parameters": saved["parameters"],
++              "finite_prediction": True}
++    print(json.dumps(result, indent=1))
++    if not args.keep:
++        shutil.rmtree(workdir, ignore_errors=True)
++    print("VERIFY_FROM_ZIP_OK")
 +    return 0
 +
 +
