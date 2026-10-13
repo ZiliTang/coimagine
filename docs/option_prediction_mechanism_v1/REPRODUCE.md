@@ -45,6 +45,11 @@ $PY experiments/option_prediction_mechanism_v1/phase_b/collect_b.py --out-dir $B
 cat $B/phase_b_tier2/executions_{train,val,test}.jsonl > $B/phase_b_tier2/records_tier2.jsonl
 $PY experiments/option_prediction_mechanism_v1/phase_b/train_b.py \
     --data $B/phase_b_tier2/records_tier2.jsonl --out $B/phase_b_tier2 --tier 2 --epochs 200
+
+# 评审后补做：动作差值误差与排序一致性（含置换对照）
+$PY experiments/option_prediction_mechanism_v1/phase_b/action_sensitivity.py \
+    --data $B/phase_b_tier2/records_tier2.jsonl \
+    --checkpoints $B/phase_b_tier2/checkpoints --out $B/phase_b_tier2
 ```
 
 B 的两档合计约 100 s 采集 + 约 4 min 训练（6 个网络 × 3 种子 + 2 个基线）。
@@ -58,6 +63,15 @@ $PY experiments/option_prediction_mechanism_v1/phase_c/belief_reference.py      
 $PY experiments/option_prediction_mechanism_v1/verify_c_positive.py              # 独立复核
 ```
 详细入口见 `experiments/option_prediction_mechanism_v1/phase_c/README.md` 与 `C_ambiguity.md`。
+
+**注意**：`phase_c/` 是第一版，其正例结论**已撤回**（特权控制器通路 + 越权协议改动）。
+修正后的冻结协议重做在 `phase_c_frozen/`：
+
+```bash
+$PY experiments/option_prediction_mechanism_v1/phase_c_frozen/run_frozen_c.py
+# -> outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json（负结果）
+```
+说明见 `C_frozen_negative.md` 与 `errata_review.md`。
 
 ## 动画
 

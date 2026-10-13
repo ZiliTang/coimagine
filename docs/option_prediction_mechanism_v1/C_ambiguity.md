@@ -1,5 +1,13 @@
 # C. 精确仿真的信息歧义机制实验
 
+> **⚠ 本轮修正：本文档的正例结论已撤回。**
+> `PushContact` 用真实物体位姿解算接触点，底层控制器因此读到了隐藏真值；命令字符串相同
+> 不代表控制器没有使用特权信息。本文档还改动了授权外的前提（360°→±60° 视场、2 s→6 s 技能窗、
+> 执行接口）。**这里的 18 个正例与 C4 数值不再作为支持研究主线的证据**，仅作历史记录保留。
+> 冻结协议下的重做见 `C_frozen_negative.md`（负结果），逐条说明见 `errata_review.md`。
+
+
+
 脚本：`experiments/option_prediction_mechanism_v1/phase_c/{mechanism_scene.py,perception.py,actions.py,run_phase_c.py,belief_reference.py}`
 原始表：`outputs/option_prediction_mechanism_v1/phase_c/phase_c_records.json`、
 `phase_c_table.md`、`phase_c_belief_reference.json`。

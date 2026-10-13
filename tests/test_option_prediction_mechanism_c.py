@@ -92,3 +92,53 @@ def test_belief_reference_respects_the_legal_branching_constraint():
             f"{pair_id}: a planner that may branch where the observations differ can always "
             f"imitate the common plan, so legal >= common must hold")
         assert all_knowing >= legal - 1e-9, f"{pair_id}: all-knowing must be an upper bound"
+
+
+# ---------------------------------------------------------------------------
+# the frozen-protocol redo: the low-level controller must not inject hidden truth
+# ---------------------------------------------------------------------------
+
+FROZEN = (ROOT / "outputs/option_prediction_mechanism_v1/phase_c_frozen/frozen_c_result.json")
+
+
+def test_frozen_case_has_identical_observation_and_first_control_period():
+    """The correction's core check: identical observations => identical first reference/force."""
+
+    if not FROZEN.exists():
+        pytest.skip("frozen phase-C case not run on this machine")
+    payload = json.loads(FROZEN.read_text())
+    assert payload["candidates"], "the declared case should have been run"
+    for name, entry in payload["candidates"].items():
+        assert entry["observation_identity"]["identical"] is True, (
+            f"{name}: the two worlds' whitelist observations must be identical")
+        assert entry["observation_identity"]["max_abs_difference"] == 0.0
+        assert entry["first_period_identity"]["identical"] is True, (
+            f"{name}: with identical observations and controller state the first control period's "
+            "reference and applied force must be identical; a difference would mean the frozen "
+            "controller is reading hidden truth")
+        assert entry["first_period_identity"]["max_abs_difference_across_all_commands"] == 0.0
+        # and the worlds really are different, otherwise the check would be vacuous
+        truth_a = entry["truth_differs"]["object_pose_A"]
+        truth_b = entry["truth_differs"]["object_pose_B"]
+        assert truth_a != truth_b
+
+
+def test_frozen_case_is_recorded_as_a_negative_or_meets_the_full_criterion():
+    """Do not let a later edit turn a non-positive into a "positive" without both conditions."""
+
+    if not FROZEN.exists():
+        pytest.skip("frozen phase-C case not run on this machine")
+    payload = json.loads(FROZEN.read_text())
+    delta = payload["delta"]
+    for name, entry in payload["candidates"].items():
+        analysis = entry["analysis"]
+        disjoint = analysis["near_optimal_disjoint"]
+        regret_ok = analysis["mutual_regret"] > delta
+        assert analysis["positive"] == (disjoint and regret_ok), (
+            f"{name}: 'positive' must mean disjoint near-optimal sets AND regret > delta")
+        if analysis["positive"]:
+            assert disjoint and regret_ok
+        else:
+            assert (not disjoint) or (not regret_ok), (
+                f"{name} is recorded negative but satisfies the criterion")
+
