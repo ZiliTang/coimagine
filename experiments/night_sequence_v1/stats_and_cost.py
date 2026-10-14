@@ -37,7 +37,10 @@ from experiments.night_sequence_v1.windows import FEATURES, WINDOW  # noqa: E402
 DATA = ROOT / "outputs/night_sequence_v1"
 TIER_SPLITS = {"d0": ["d0", "val", "test"], "d1": ["d0", "d1ext", "val", "test"],
                "d2": ["d0", "d1ext", "d2ext", "val", "test"]}
-PAIRS = [("mlp_history", "transformer_history")]
+#: both questions the review flagged: the architecture pair and the history-versus-single-frame pair.
+#: Round 5 trained MLP-current only on D1, so that pair is registered per tier and skipped when a
+#: checkpoint is absent.
+PAIRS = [("mlp_history", "transformer_history"), ("mlp_current", "mlp_history")]
 
 
 def root_bootstrap(roots: Sequence[str], error_a: np.ndarray, error_b: np.ndarray,
@@ -135,10 +138,18 @@ def main() -> int:
         tag_b = f"{args.tier}_{kind_b}_seed0"
         if tag_a not in paired or tag_b not in paired:
             continue
+        if not all((DATA / "runs" / f"{tag}.pt").exists() for tag in (tag_a, tag_b)):
+            continue
         entry_a, entry_b = paired[tag_a], paired[tag_b]
-        bootstrap[f"{tag_a}_vs_{tag_b}"] = root_bootstrap(
-            entry_a["roots"], np.asarray(entry_a["t0_error"]), np.asarray(entry_b["t0_error"]),
+        bootstrap[f"{tag_a}_vs_{tag_b}|t0"] = root_bootstrap(
+            entry_a.get("t0_roots", entry_a["roots"]),
+            np.asarray(entry_a["t0_error"]), np.asarray(entry_b["t0_error"]),
             np.asarray(entry_a["t0_valid"]), draws=args.draws)
+        if "exec_valid" in entry_a:
+            bootstrap[f"{tag_a}_vs_{tag_b}|in_execution"] = root_bootstrap(
+                entry_a["roots"], np.asarray(entry_a["exec_error"]),
+                np.asarray(entry_b["exec_error"]), np.asarray(entry_a["exec_valid"]),
+                draws=args.draws)
     # training-seed spread is reported on its own axis, never inside the bootstrap
     seed_spread: Dict[str, List[float]] = {}
     for label, entry in payload["models"].items():

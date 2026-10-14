@@ -93,6 +93,43 @@ def fast_targets(tokens: Tokens, index: np.ndarray, end: np.ndarray) -> Dict[str
     }
 
 
+def fast_masks(tokens: Tokens, index: np.ndarray, end: np.ndarray) -> Dict[str, np.ndarray]:
+    """Per-column supervision masks for a batch of (sequence, instant) pairs.
+
+    The grouped baseline must respect exactly the same masks as the models: a slot whose patch is not
+    visible has a zero-filled geometry target, and letting those zeros into a median silently drags
+    the whole statistic toward zero.
+    """
+
+    split_of = tokens.split_of[index]
+    local = index - np.asarray([tokens.offsets[s] for s in split_of])
+    nxt = np.stack([tokens.token_arrays[s][l, e + 1]
+                    for s, l, e in zip(split_of, local, end)]).astype(np.float32)
+    terminal = np.stack([tokens.terminal_arrays[s][l]
+                         for s, l in zip(split_of, local)]).astype(np.float32)
+    ones8 = np.ones((len(index), 8), dtype=np.float32)
+    geometry_process = np.concatenate(
+        [np.repeat(nxt[:, 6:7], 4, axis=1), np.repeat(nxt[:, 24:25], 4, axis=1)], axis=1)
+    geometry_terminal = np.concatenate(
+        [np.repeat(terminal[:, 6:7], 4, axis=1), np.repeat(terminal[:, 24:25], 4, axis=1)], axis=1)
+    return {
+        "process_geometry": geometry_process,
+        "terminal_geometry": geometry_terminal,
+        "process_pose": np.ones((len(index), 6), dtype=np.float32),
+        "terminal_pose": np.ones((len(index), 6), dtype=np.float32),
+        "process_velocity": np.ones((len(index), 6), dtype=np.float32),
+        "terminal_velocity": np.ones((len(index), 6), dtype=np.float32),
+        "process_validity": np.ones((len(index), 4), dtype=np.float32),
+        "terminal_validity": np.ones((len(index), 4), dtype=np.float32),
+        "terminal_remaining": np.ones((len(index), 1), dtype=np.float32),
+        "terminal_exit_class": np.ones(len(index), dtype=np.float32),
+        "process_exit": np.ones((len(index), 1), dtype=np.float32),
+        "_process_geometry_flat": geometry_process,
+        "_terminal_geometry_flat": geometry_terminal,
+        "_ones8": ones8,
+    }
+
+
 def command_signature(shard_command: Dict[str, float]) -> str:
     return "a0={}|a1={}|v0={}|v1={}|m={}".format(
         shard_command.get("alpha0"), shard_command.get("alpha1"),
@@ -235,6 +272,8 @@ class GroupedStatistics:
         ends = (generator.random(count) * np.maximum(1, steps - 1)).astype(np.int64)
         ends = np.minimum(ends, np.maximum(0, steps - 2))
         targets = fast_targets(tokens, chosen_rows, ends)
+        masks = fast_masks(tokens, chosen_rows, ends)
+        self.masks = masks
         signature = self._signatures(tokens, chosen_rows)
         bins = (ends * 0.05 / ELAPSED_BIN).astype(np.int64)
         levels = {
@@ -254,8 +293,9 @@ class GroupedStatistics:
                 key = str(sorted_keys[start_index])
                 selection = order[start_index:stop_index]
                 counts[key] = int(len(selection))
-                table[key] = self._summarise({name: value[selection]
-                                              for name, value in targets.items()})
+                table[key] = self._summarise(
+                    {name: value[selection] for name, value in targets.items()},
+                    {name: value[selection] for name, value in masks.items()})
             self.tables[level] = table
             self.counts[level] = counts
 
@@ -269,21 +309,47 @@ class GroupedStatistics:
                            f"{round(float(c[2]), 6)}|{round(float(c[3]), 6)}|{int(c[4] > 0.5)}"
                            for c in command])
 
-    def _summarise(self, targets: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+    def _summarise(self, targets: Dict[str, np.ndarray],
+                   masks: Dict[str, np.ndarray]) -> Dict[str, np.ndarray]:
+        """Group statistics **under the same supervision masks as the models** (round-6 fix).
+
+        Continuous columns take the median of the rows where that column is supervised; a completely
+        unsupervised column falls back to the global median rather than to zero.
+        """
+
         out: Dict[str, np.ndarray] = {}
         for name, width, kind in GROUPS:
             stacked = np.asarray(targets[name], dtype=np.float64)
+            column_mask = np.asarray(masks.get(name, np.ones_like(targets[name], dtype=np.float64)),
+                                     dtype=np.float64)
             if kind == "continuous":
-                summary = np.median(stacked, axis=0)
+                if column_mask.ndim == 1:
+                    column_mask = column_mask[:, None]
+                summary = np.zeros(stacked.shape[1], dtype=np.float64)
+                for column in range(stacked.shape[1]):
+                    keep = column_mask[:, column] > 0
+                    summary[column] = (float(np.median(stacked[keep, column])) if keep.any()
+                                       else float(np.median(stacked[:, column])))
             elif kind == "binary":
-                summary = (stacked.mean(axis=0) >= 0.5).astype(np.float32)
+                keep = column_mask > 0
+                summary = np.asarray(
+                    [float(stacked[keep[:, c], c].mean()) if keep[:, c].any() else 0.0
+                     for c in range(stacked.shape[1])], dtype=np.float64)
+                summary = (summary >= 0.5).astype(np.float32)
             else:
                 values, counts = np.unique(stacked.astype(np.int64), return_counts=True)
                 summary = np.asarray([values[np.argmax(counts)]])
             out[name] = np.asarray(summary, dtype=np.float64)
+        # the surface normal is averaged as a unit vector over the supervised entries only
         for name in ("process_geometry", "terminal_geometry"):
+            geometry_mask = np.asarray(masks[name], dtype=np.float64)
             for sin_index, cos_index in ((2, 3), (6, 7)):
-                vector = np.array([out[name][sin_index], out[name][cos_index]])
+                both = (geometry_mask[:, sin_index] > 0) & (geometry_mask[:, cos_index] > 0)
+                if both.any():
+                    vector = np.array([float(np.mean(targets[name][both, sin_index])),
+                                       float(np.mean(targets[name][both, cos_index]))])
+                else:
+                    vector = np.array([out[name][sin_index], out[name][cos_index]])
                 norm = float(np.hypot(*vector))
                 out[name][sin_index] = vector[0] / norm if norm > 1e-6 else 0.0
                 out[name][cos_index] = vector[1] / norm if norm > 1e-6 else 1.0

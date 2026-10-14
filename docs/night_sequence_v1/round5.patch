@@ -237,10 +237,10 @@ index 0000000..525f55a
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/assets.py b/experiments/night_sequence_v1/assets.py
 new file mode 100644
-index 0000000..6ccbd32
+index 0000000..3255208
 --- /dev/null
 +++ b/experiments/night_sequence_v1/assets.py
-@@ -0,0 +1,1351 @@
+@@ -0,0 +1,1354 @@
 +"""Round-5 presentation assets: F01..F08 figures, data tables, videos and the index.
 +
 +    python experiments/night_sequence_v1/assets.py
@@ -1579,6 +1579,9 @@ index 0000000..6ccbd32
 +              "", "本轮结果"],
 +             ["闭环收益", "预测→决策", "", "", "未评估"]]
 +    write_csv("progress_facts.csv", facts[0], facts[1:])
++    # the task book places progress_facts.csv at the package root, alongside INDEX.md and overview.png
++    (ASSETS / "progress_facts.csv").write_text(
++        "\n".join(",".join("" if v is None else str(v) for v in row) for row in facts) + "\n")
 +    summary = {"font": font, "scripts": scripts,
 +               "figures": {k: v.get("figure") for k, v in figures.items()},
 +               "skipped": skipped, "videos": videos, "overview": overview, "index": index,

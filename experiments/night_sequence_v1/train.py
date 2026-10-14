@@ -80,13 +80,19 @@ def composite_loss(outputs, targets, masks) -> Tuple[torch.Tensor, Dict[str, flo
 
 
 def evaluate_loss(model, tokens: Tokens, normalisation, split: str, count: int,
-                  generator: np.random.Generator,
-                  root_sampler: Optional[RootSampler] = None) -> Dict[str, float]:
+                  generator: Optional[np.random.Generator] = None,
+                  root_sampler: Optional[RootSampler] = None,
+                  fixed: Optional[Tuple[np.ndarray, np.ndarray]] = None) -> Dict[str, float]:
+    """Validation loss on a **fixed** set of windows unless a caller explicitly asks for a fresh draw."""
+
     rows = np.where(tokens.split_of == split)[0]
-    if root_sampler is None:
-        root_sampler = RootSampler(tokens.steps[rows], tokens.roots[rows])
-    indices, ends = root_sampler.sample(count, generator)
-    indices = rows[indices]
+    if fixed is not None:
+        indices, ends = rows[fixed[0]], fixed[1]
+    else:
+        if root_sampler is None:
+            root_sampler = RootSampler(tokens.steps[rows], tokens.roots[rows])
+        indices, ends = root_sampler.sample(count, generator)
+        indices = rows[indices]
     model.eval()
     totals: Dict[str, List[float]] = {}
     with torch.no_grad():
@@ -104,6 +110,7 @@ def evaluate_loss(model, tokens: Tokens, normalisation, split: str, count: int,
 
 
 def train_one(tier: str, model_kind: str, seed: int, updates: int, *, batch: int = 128,
+              subset_roots: int = 0,
               lr: float = 3e-4, weight_decay: float = 1e-4, clip: float = 1.0,
               min_lr: float = 3e-5, warmup_fraction: float = 0.05, validate_every: int = 200,
               val_examples: int = 1024, out_dir: Path = RUNS, log: bool = True) -> dict:
@@ -111,10 +118,21 @@ def train_one(tier: str, model_kind: str, seed: int, updates: int, *, batch: int
     tokens = Tokens(splits)
     # the train pool is the tier's train roots only; val/test are never sampled for training
     train_rows = np.where(np.isin(tokens.split_of, ["d0", "d1ext", "d2ext"]))[0]
+    if subset_roots:
+        # small-data check mode: keep the first N hash-sorted train roots, leave val/test untouched
+        unique = sorted(set(tokens.roots[train_rows].tolist()))[:subset_roots]
+        keep = set(unique)
+        train_rows = np.asarray([row for row in train_rows if tokens.roots[row] in keep])
     train_sampler = RootSampler(tokens.steps[train_rows], tokens.roots[train_rows])
     validation_rows = np.where(tokens.split_of == "val")[0]
     validation_sampler = RootSampler(tokens.steps[validation_rows],
                                      tokens.roots[validation_rows])
+    # round-6 fix: the validation subset is drawn **once** and reused for every validation pass.
+    # Reseeding per update (10_000 + update) resampled it each time, so the checkpoint selection was
+    # comparing different data at different updates.
+    validation_generator = np.random.default_rng(20261014)
+    validation_indices, validation_ends = validation_sampler.sample(val_examples,
+                                                                    validation_generator)
     normalisation = fit_normalisation(tokens)
     torch.manual_seed(seed)
     generator = np.random.default_rng(seed)
@@ -139,8 +157,7 @@ def train_one(tier: str, model_kind: str, seed: int, updates: int, *, batch: int
         schedule.step()
         if update % validate_every == 0 or update == updates:
             validation = evaluate_loss(model, tokens, normalisation, "val", val_examples,
-                                       np.random.default_rng(10_000 + update),
-                                       root_sampler=validation_sampler)
+                                       fixed=(validation_indices, validation_ends))
             curves.append({"update": update, "train_total": float(total.detach()),
                            "lr": float(schedule.get_last_lr()[0]), **{
                                f"val_{k}": v for k, v in validation.items()}})
@@ -154,7 +171,7 @@ def train_one(tier: str, model_kind: str, seed: int, updates: int, *, batch: int
     if best["state"] is not None:
         model.load_state_dict(best["state"])
     out_dir.mkdir(parents=True, exist_ok=True)
-    tag = f"{tier}_{model_kind}_seed{seed}"
+    tag = f"{tier}_{model_kind}_seed{seed}" + (f"_r{subset_roots}" if subset_roots else "")
     path = out_dir / f"{tag}.pt"
     torch.save({"state_dict": model.state_dict(), "model_kind": model_kind,
                 "model_kwargs": MODEL_KWARGS[model_kind], "tier": tier, "seed": seed,
@@ -163,10 +180,13 @@ def train_one(tier: str, model_kind: str, seed: int, updates: int, *, batch: int
                 "groups": [{"name": n, "width": w, "kind": k} for n, w, k in GROUPS],
                 "parameters": parameter_count(model)}, path)
     (out_dir / f"{tag}.curves.json").write_text(json.dumps(curves, indent=1))
+    # keep the reported path relative to the repository so the ledger is portable
     return {"tag": tag, "tier": tier, "model": model_kind, "seed": seed, "updates": updates,
+            "subset_roots": subset_roots,
             "parameters": parameter_count(model), "best_val": best["loss"],
             "best_update": best["update"], "seconds": time.perf_counter() - started,
-            "checkpoint": str(path.relative_to(ROOT)), "curves": curves,
+            "checkpoint": (str(path.relative_to(ROOT)) if str(path).startswith(str(ROOT))
+                           else str(path)), "curves": curves,
             "train_roots": int(len(set(tokens.roots[train_rows]))),
             "train_sequences": int(len(train_rows))}
 
@@ -190,10 +210,12 @@ def main() -> int:
     parser.add_argument("--out", default=str(RUNS))
     parser.add_argument("--ledger", default=str(DATA / "run_ledger.jsonl"))
     parser.add_argument("--threads", type=int, default=0)
+    parser.add_argument("--subset-roots", type=int, default=0,
+                        help="small-data check: restrict the train pool to this many roots")
     args = parser.parse_args()
     if args.threads:
         torch.set_num_threads(args.threads)
-    out_dir = Path(args.out)
+    out_dir = Path(args.out).resolve()
     if args.calibrate:
         for kind in ("mlp_history", "transformer_history"):
             started = time.perf_counter()
@@ -202,7 +224,8 @@ def main() -> int:
                               round(time.perf_counter() - started, 2),
                               "params": result["parameters"]}))
         return 0
-    result = train_one(args.tier, args.model, args.seed, args.updates, out_dir=out_dir)
+    result = train_one(args.tier, args.model, args.seed, args.updates, out_dir=out_dir,
+                       subset_roots=args.subset_roots)
     with open(args.ledger, "a") as handle:
         handle.write(json.dumps({k: v for k, v in result.items() if k != "curves"}) + "\n")
     print(json.dumps({k: v for k, v in result.items() if k != "curves"}, indent=1))

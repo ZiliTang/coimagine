@@ -64,12 +64,22 @@ def main() -> int:
              "任务书：`docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md`（v2.1）。",
              "协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`；",
              "模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。", "",
+             "> **⚠ 本版状态（实现审查修正轮）**：上一版报告中的"
+             "“历史窗口优于单帧”“Transformer 不如历史 MLP”“数据规模饱和”三条结论**已撤回**。",
+             "> 原因：MLP-current 与 Transformer-history 在训练时**没有读到有效输入**"
+             "（左补齐下用 `valid.sum()-1` 取索引，t=0 时读到全零补齐区），"
+             "另有退出时刻 T 多算一个周期、几何中点定义被改、P1 未用可见性 mask、"
+             "验证集每次重抽四处问题。",
+             "> 逐条复现、根因与修正见 `IMPLEMENTATION_FIX.md`；"
+             "旧检查点与旧评价结果保存在 `outputs/night_sequence_v1/superseded/`。",
+             "> 本报告的**全部数字来自修正后重训的模型**。", "",
              "## 0. 一句话结论", "",
-             "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用"
-             "（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m；配对 root bootstrap "
-             "95% CI 不含 0），但更多独立起点（512→16384，32×）几乎没有继续改善，历史窗口优于单帧，"
-             "而 Transformer 在参数比 1.80× 的条件下**没有**胜过历史 MLP，batch=128 延迟却是它的 "
-             "24–29 倍；执行前（t=0）最好的是命令+已过去时间分组统计 P1，模型只在执行中取胜。**", ""]
+             "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来：执行中误差 "
+             "0.043 m，优于起始保持 0.052 m 与命令分组统计 0.087 m（配对 root bootstrap 95% CI "
+             "不含 0）。但两条架构结论都**随区间翻转**：执行前（t=0）单帧 MLP 与 Transformer 更好，"
+             "执行中历史 MLP 更好；Transformer 在参数只有 0.56× 的情况下 batch=128 延迟是历史 MLP 的 "
+             "24–29 倍。更多独立起点（512→16384，32×）只带来很小的执行中改善后趋平，"
+             "但该结论**限定在这套实现与统一更新预算内**。**", ""]
 
     # ---- scale
     lines += ["## 1. 规模（四个不同的量）", "",
@@ -144,14 +154,35 @@ def main() -> int:
                 out[label] = t0(entry)["terminal_geometry"]["r0_mid_2d"]["p50"]
         return out
 
-    lines += ["## 4. 三个研究问题", ""]
+    stats = {}
+    for tier in ("d0", "d1", "d2"):
+        path = DATA / "analysis" / tier / "stats_and_cost.json"
+        if path.exists():
+            stats[tier] = json.loads(path.read_text())
+    lines += ["## 4. 三个研究问题（修正后重训）", "",
+              "三个问题的答案都**依赖评价区间**，因此逐区间给出；括号内为配对 root bootstrap 的 "
+              "中位差与 95% CI（重采样单位是 root）。", ""]
+
+    def medians(tier: str, family: str, regime: str):
+        payload = tiers[tier]
+        values = []
+        for label, entry in payload["models"].items():
+            if not label.endswith("|test") or not isinstance(entry, dict):
+                continue
+            if not label.startswith(f"{tier}_{family}"):
+                continue
+            if regime == "t0":
+                values.append(entry["t0"]["terminal_geometry"]["r0_mid_2d"]["p50"])
+            else:
+                group = entry["all"]["grouped"]["regime"].get("in_execution")
+                if group:
+                    values.append(group["p50"])
+        return values
+
+    # ---- Q1 more independent starting points
     scale = []
     for tier in ("d0", "d1", "d2"):
         if tier not in tiers:
-            continue
-        values = [v for k, v in best(tiers[tier], tier).items()
-                  if k.startswith(f"{tier}_mlp_history") and v is not None]
-        if not values:
             continue
         roots = {"d0": summary.get("d0", {}).get("independent_roots", 0),
                  "d1": summary.get("d0", {}).get("independent_roots", 0)
@@ -159,42 +190,89 @@ def main() -> int:
                  "d2": summary.get("d0", {}).get("independent_roots", 0)
                        + summary.get("d1ext", {}).get("independent_roots", 0)
                        + summary.get("d2ext", {}).get("independent_roots", 0)}[tier]
-        inexec = tiers[tier]["models"].get(f"{tier}_mlp_history_seed0|test", {})
-        inexec_value = (inexec.get("all", {}).get("grouped", {})
-                        .get("regime", {}).get("in_execution", {}).get("p50")
-                        if isinstance(inexec, dict) else None)
-        scale.append((tier, roots, min(values), inexec_value))
+        t0_values = medians(tier, "mlp_history", "t0")
+        exec_values = medians(tier, "mlp_history", "in_execution")
+        if t0_values and exec_values:
+            scale.append((tier, roots, min(t0_values), min(exec_values)))
     if scale:
-        lines += ["**更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）", "",
-                  "| 档位 | 独立 train root | t=0 终态 r0 中点 p50 (m) | 执行中 r0 中点 p50 (m) |",
+        lines += ["**问 1：更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）",
+                  "", "| 档位 | 独立 train root | t=0 终态 p50 (m) | 执行中 p50 (m) |",
                   "|---|---:|---:|---:|"]
-        for tier, roots, t0_value, inexec_value in scale:
-            lines.append(f"| {tier} | {roots} | {t0_value:.4f} | "
-                         f"{'—' if inexec_value is None else f'{inexec_value:.4f}'} |")
+        for tier, roots, t0_value, exec_value in scale:
+            lines.append(f"| {tier} | {roots} | {t0_value:.4f} | {exec_value:.4f} |")
         first, last = scale[0], scale[-1]
-        delta = last[2] - first[2]
-        verdict = ("改善但已饱和" if abs(delta) < 0.005 else
-                   ("改善" if delta < 0 else "未改善"))
-        lines += ["", f"从 {first[1]} 到 {last[1]} 个独立起点（{last[1] // max(1, first[1])}×），"
-                      f"t=0 终态误差变化 {delta:+.4f} m（**{verdict}**）。"
-                      f"执行中的误差同样在 {scale[0][3]:.4f}–{scale[-1][3]:.4f} m 之间，"
-                      f"没有随数据量继续下降。", ""]
-    d1 = tiers.get("d1")
-    if d1:
-        table = best(d1, "d1")
-        current = [v for k, v in table.items() if k.startswith("d1_mlp_current") and v is not None]
-        history = [v for k, v in table.items() if k.startswith("d1_mlp_history") and v is not None]
-        if current and history:
-            lines += [f"**历史窗口是否比单帧有用？** 同档位同种子下 MLP-current 最优 "
-                      f"{min(current):.4f} m vs MLP-history 最优 {min(history):.4f} m"
-                      f"（{'history 更优' if min(history) < min(current) else 'history 未更优'}）。", ""]
-        transformer = [v for k, v in table.items() if k.startswith("d1_transformer") and v is not None]
-        if transformer and history:
-            lines += [f"**Transformer 是否更好？** 同历史同目标同预算下，Transformer-history 最优 "
-                      f"{min(transformer):.4f} m vs MLP-history 最优 {min(history):.4f} m"
-                      f"（参数比 1.80×）。结论只来自这两个历史模型之间，不涉及单帧模型。", ""]
-    else:
-        lines += ["（D1 分析尚未生成。）", ""]
+        lines += ["", f"从 {first[1]} 到 {last[1]} 个独立起点（{last[1] // max(1, first[1])}×）："
+                      f"执行中误差 {first[3]:.4f} → {last[3]:.4f} m（相对变化 "
+                      f"{(last[3] - first[3]) / first[3] * 100:+.1f}%），"
+                      f"t=0 误差 {first[2]:.4f} → {last[2]:.4f} m。"
+                      f"**结论限定在这套实现与统一更新预算内**：增益很小且很快趋平，"
+                      f"不能据此断言“数据收益已经饱和”。", ""]
+
+    # ---- Q2 history versus single frame
+    if "d1" in tiers:
+        current_t0 = medians("d1", "mlp_current", "t0")
+        history_t0 = medians("d1", "mlp_history", "t0")
+        current_ex = medians("d1", "mlp_current", "in_execution")
+        history_ex = medians("d1", "mlp_history", "in_execution")
+        boot = (stats.get("d1", {}).get("paired_root_bootstrap", {})
+                if stats else {})
+        key_t0 = "d1_mlp_current_seed0_vs_d1_mlp_history_seed0|t0"
+        key_ex = "d1_mlp_current_seed0_vs_d1_mlp_history_seed0|in_execution"
+        lines += ["**问 2：历史窗口是否比单帧有用？**", "",
+                  "| 区间 | MLP-current (单帧) | MLP-history | 谁更好 | 配对中位差与 95% CI |",
+                  "|---|---:|---:|---|---|"]
+        if current_t0 and history_t0:
+            entry = boot.get(key_t0)
+            detail = (f"{entry['observed_median_difference_m']:+.5f} m "
+                      f"[{entry['ci95_low_m']:+.5f}, {entry['ci95_high_m']:+.5f}]"
+                      if entry else "—")
+            winner = "单帧更好" if min(current_t0) < min(history_t0) else "历史更好"
+            lines.append(f"| t=0（无历史可用） | {min(current_t0):.4f} | {min(history_t0):.4f} | "
+                         f"{winner} | {detail} |")
+        if current_ex and history_ex:
+            entry = boot.get(key_ex)
+            detail = (f"{entry['observed_median_difference_m']:+.5f} m "
+                      f"[{entry['ci95_low_m']:+.5f}, {entry['ci95_high_m']:+.5f}]"
+                      if entry else "—")
+            winner = "单帧更好" if min(current_ex) < min(history_ex) else "历史更好"
+            lines.append(f"| 执行中（有真实前缀） | {min(current_ex):.4f} | {min(history_ex):.4f} | "
+                         f"{winner} | {detail} |")
+        lines += ["", "**答案随区间翻转**：执行前没有历史可用时单帧更好，"
+                      "有真实观测前缀时历史窗口更好。因此不能笼统说“历史已被证明有效”，"
+                      "只有在执行中这个条件下才成立。", ""]
+
+    # ---- Q3 transformer versus MLP-history
+    if "d1" in tiers:
+        transformer_t0 = medians("d1", "transformer_history", "t0")
+        transformer_ex = medians("d1", "transformer_history", "in_execution")
+        history_t0 = medians("d1", "mlp_history", "t0")
+        history_ex = medians("d1", "mlp_history", "in_execution")
+        boot = (stats.get("d1", {}).get("paired_root_bootstrap", {}) if stats else {})
+        key_t0 = "d1_mlp_history_seed0_vs_d1_transformer_history_seed0|t0"
+        key_ex = "d1_mlp_history_seed0_vs_d1_transformer_history_seed0|in_execution"
+        lines += ["**问 3：Transformer 是否更好、代价多少？**（同历史、同目标、同预算，参数比 1.80×）",
+                  "", "| 区间 | MLP-history | Transformer-history | 谁更好 | 配对中位差与 95% CI |",
+                  "|---|---:|---:|---|---|"]
+        if transformer_t0 and history_t0:
+            entry = boot.get(key_t0)
+            detail = (f"{entry['observed_median_difference_m']:+.5f} m "
+                      f"[{entry['ci95_low_m']:+.5f}, {entry['ci95_high_m']:+.5f}]"
+                      if entry else "—")
+            lines.append(f"| t=0 | {min(history_t0):.4f} | {min(transformer_t0):.4f} | "
+                         f"{'Transformer 更好' if min(transformer_t0) < min(history_t0) else 'MLP 更好'} "
+                         f"| {detail} |")
+        if transformer_ex and history_ex:
+            entry = boot.get(key_ex)
+            detail = (f"{entry['observed_median_difference_m']:+.5f} m "
+                      f"[{entry['ci95_low_m']:+.5f}, {entry['ci95_high_m']:+.5f}]"
+                      if entry else "—")
+            lines.append(f"| 执行中 | {min(history_ex):.4f} | {min(transformer_ex):.4f} | "
+                         f"{'Transformer 更好' if min(transformer_ex) < min(history_ex) else 'MLP 更好'} "
+                         f"| {detail} |")
+        lines += ["", "**答案同样随区间翻转**：t=0 时 Transformer 更好，执行中时历史 MLP 更好，"
+                      "两侧的 95% CI 都不含 0。计算成本见下一节（batch=128 延迟约 24–29×）。"
+                      "因此上一版“Transformer 不如 MLP”的说法**不成立**，"
+                      "正确的说法是“在哪个区间、以什么代价”。", ""]
 
     # ---- in-execution: fixed-dt next step versus terminal
     lines += ["## 5. 执行中：固定 Δt 下一步 vs 终态（t=0 之外的主评价）", ""]
@@ -207,32 +285,36 @@ def main() -> int:
             if label not in payload["baselines"]:
                 continue
             entry = payload["baselines"][label]
+            regime = entry["all"]["grouped"]["regime"]
             rows.append(("| " + " | ".join([
                 label.split("|")[0],
-                fmt(entry["all"]["grouped"]["regime"]["in_execution"]["p50"]),
+                fmt(regime["in_execution"]["p50"]),
                 fmt(entry["all"]["process_geometry"]["r0_mid_2d"]["p50"]),
                 fmt(entry["all"]["terminal_geometry"]["r0_mid_2d"]["p50"]),
-                str(entry["all"]["grouped"]["regime"]["in_execution"]["samples"])]) + " |"))
+                f"{regime['in_execution']['samples']} / {regime['in_execution']['independent_roots']}",
+                fmt(entry["t0"]["terminal_geometry"]["r0_mid_2d"]["p50"])]) + " |"))
         for label, entry in sorted(payload["models"].items()):
             if not label.endswith("|test") or not isinstance(entry, dict) or "all" not in entry:
                 continue
+            regime = entry["all"]["grouped"]["regime"]
             rows.append("| " + " | ".join([
                 label.split("|")[0],
-                fmt(entry["all"]["grouped"]["regime"]["in_execution"]["p50"]),
+                fmt(regime["in_execution"]["p50"]),
                 fmt(entry["all"]["process_geometry"]["r0_mid_2d"]["p50"]),
                 fmt(entry["all"]["terminal_geometry"]["r0_mid_2d"]["p50"]),
-                str(entry["all"]["grouped"]["regime"]["in_execution"]["samples"])]) + " |")
-        lines += [f"**{tier.upper()}**（test，执行中样本 5105；真实观测前缀条件预测）", "",
-                  "| 模型 | 执行中 r0 中点二维 p50 (m) | 固定 Δt 下一步 r0 中点 p50 (m) | "
-                  "执行中终态 r0 中点 p50 (m) | 执行中样本 |", "|---|---:|---:|---:|---:|"]
+                f"{regime['in_execution']['samples']} / {regime['in_execution']['independent_roots']}",
+                fmt(entry["t0"]["terminal_geometry"]["r0_mid_2d"]["p50"])]) + " |")
+        lines += [f"**{tier.upper()}**（test；真实观测前缀条件预测，不是自由 rollout）", "",
+                  "列的含义严格区分，**不得混用**："
+                  "「执行中」= 只在 `end>0` 的样本上分组统计；"
+                  "「全样本终态」= 含 t=0 的 `all` 指标（**不是**执行中指标）；"
+                  "「t=0」= 只有 O0 与候选命令。", "",
+                  "| 模型 | 执行中 r0 中点 p50 (m) | 固定 Δt 下一步 p50 (m) | "
+                  "全样本终态 p50 (m) | 执行中样本/独立 root | t=0 终态 p50 (m) |",
+                  "|---|---:|---:|---:|---:|---:|"]
         lines += rows + [""]
 
     # ---- statistics and cost
-    stats = {}
-    for tier in ("d0", "d1", "d2"):
-        path = DATA / "analysis" / tier / "stats_and_cost.json"
-        if path.exists():
-            stats[tier] = json.loads(path.read_text())
     if stats:
         lines += ["## 6. 统计显著性与计算成本", "",
                   "**配对 root bootstrap**（同一样本上两模型逐例配对，重采样单位是 root；"

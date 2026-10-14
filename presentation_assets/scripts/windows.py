@@ -41,6 +41,9 @@ from experiments.night_sequence_v1.sequences import EXIT_CODES  # noqa: E402
 
 DATA = ROOT / "outputs/night_sequence_v1"
 FEATURES = 57
+#: column names for the geometric target, with the definition pinned: the midpoint of the two
+#: endpoints of the **fitted segment**, not the mean of the raw scan points
+MIDPOINT_DEFINITION = "midpoint of the fitted segment's two endpoints, expressed in R_i0"
 WINDOW = 33
 HISTORY = 32
 DT = 0.05
@@ -122,8 +125,16 @@ def _sequence_tokens(shard: Dict[str, np.ndarray], row: int) -> Tuple[np.ndarray
         tokens[:, base + 3:base + 6] = np.concatenate(
             [velocity, own[:, robot_id, 5:6]], axis=1)
         tokens[:, base + 6] = valid[:, robot_id]
-        # the stored midpoint is in the robot frame at t; bring it to the world, then to R_i0
-        rotated = rot(own[:, robot_id, 2], midpoint[:, robot_id])
+        # **round-6 fix**: the labelled midpoint is the midpoint of the two endpoints of the *fitted
+        # segment*, which is what round 4 used and what the contract's "可见拟合线段两端点中点"
+        # means. Round 5 used the mean of the scan points instead, an undeclared target change of a
+        # few millimetres (up to ~1.3 cm). The raw point mean is kept as a separate diagnostic field
+        # below so the two can never be confused again.
+        segment = shard["patch_segment_robot"][row, :steps]        # (steps, 2, 2, 2)
+        endpoint_mid = 0.5 * (segment[:, robot_id, 0, :] + segment[:, robot_id, 1, :])
+        valid_segment = (valid[:, robot_id] > 0) & np.isfinite(endpoint_mid).all(axis=1)
+        use = np.where(valid_segment[:, None], endpoint_mid, midpoint[:, robot_id])
+        rotated = rot(own[:, robot_id, 2], use)
         world_mid = rotated + own[:, robot_id, :2]
         local_mid = to_frame(world_mid, anchor)
         tokens[:, base + 7:base + 9] = local_mid
@@ -168,6 +179,7 @@ def _terminal_token(shard: Dict[str, np.ndarray], row: int, anchors, command) ->
     distance = shard["terminal_patch_distance"][row]
     confidence = shard["terminal_patch_confidence"][row]
     midpoint = shard["terminal_patch_midpoint_robot"][row]
+    terminal_segment = shard["terminal_patch_segment_robot"][row]
     normal = shard["terminal_patch_normal_world"][row]
     contacting = shard["terminal_contacting"][row]
     teammate = shard["terminal_teammate_world"][row]
@@ -180,7 +192,12 @@ def _terminal_token(shard: Dict[str, np.ndarray], row: int, anchors, command) ->
         velocity = rot(-anchor[2], own[robot_id, 3:5])
         token[base + 3:base + 6] = np.array([velocity[0], velocity[1], own[robot_id, 5]])
         token[base + 6] = valid[robot_id]
-        rotated = rot(own[robot_id, 2], midpoint[robot_id]) + own[robot_id, :2]
+        # same definition as a normal token: fitted-segment endpoint midpoint
+        if valid[robot_id] and np.isfinite(terminal_segment[robot_id]).all():
+            chosen = 0.5 * (terminal_segment[robot_id][0] + terminal_segment[robot_id][1])
+        else:
+            chosen = midpoint[robot_id]
+        rotated = rot(own[robot_id, 2], chosen) + own[robot_id, :2]
         token[base + 7:base + 9] = to_frame(rotated, anchor)
         token[base + 9:base + 11] = _normal_sin_cos(
             unit_normal_world_to_frame(anchor[2], normal[robot_id]))

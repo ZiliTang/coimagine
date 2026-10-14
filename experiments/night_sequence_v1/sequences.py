@@ -275,11 +275,18 @@ def run_sequence(root, command: Dict[str, object], *, record_truth: bool = True)
         "locally_settled": bool(result.locally_settled),
         "settled_observed": bool(result.settled_observed),
         "settled_after_abort": bool(result.settled_after_abort),
-        "duration_seconds": float(steps) * float(config.physics.control_dt),
-        #: the physical exit instant: the last period plus one control period
-        "T_exit": float(steps) * float(config.physics.control_dt),
-        #: the timestamp of the last sensed period inside the option (T_exit - dt)
+        #: round-6 fix: the option's real elapsed physical time. The stage machine can break before
+        #: the force call, so a period may be sensed without the world advancing; counting periods
+        #: (which include O0) over-counted the duration by exactly one control period.
+        "duration_seconds": float(result.physics_steps) * float(config.physics.control_dt),
+        #: the physical exit instant = physics steps actually taken x dt
+        "T_exit": float(result.physics_steps) * float(config.physics.control_dt),
+        #: the timestamp of the last sensed period inside the option
         "T_last_sensed": float(trajectory[-1][0].time),
+        #: how many log rows exist: exactly the number of stepped periods
+        "truth_steps": len(rows),
+        #: invariance check, asserted per record by the collector
+        "physics_steps_match_rows": bool(result.physics_steps == len(rows)),
         "terminal_at_T_patch_valid": [int(arrays["terminal_patch_valid"][r]) for r in (0, 1)],
         "wall_clock_steps": int(result.wall_clock_steps),
         "terminal_object": list(result.terminal_object),
@@ -331,6 +338,10 @@ class ShardWriter:
             [item["T_exit"] for item in self.buffer], dtype=np.float32)
         payload["T_last_sensed"] = np.asarray(
             [item["T_last_sensed"] for item in self.buffer], dtype=np.float32)
+        payload["truth_steps"] = np.asarray(
+            [item["truth_steps"] for item in self.buffer], dtype=np.int32)
+        payload["physics_steps_match_rows"] = np.asarray(
+            [1 if item["physics_steps_match_rows"] else 0 for item in self.buffer], dtype=np.int8)
         payload["terminal_object"] = np.asarray(
             [item["terminal_object"] for item in self.buffer], dtype=np.float32)
         payload["terminal_robots"] = np.asarray(

@@ -196,6 +196,7 @@ def main() -> int:
             print(f"{tag}|{split} done", flush=True)
             # t=0 same-root eight-action counterfactual on the terminal midpoint
             zero_index = sets[split]["zero_index"]
+            zero_end = sets[split]["zero_end"]
             terminal = {k: v[zero] for k, v in targets.items()}
             terminal_masks = {k: v[zero] for k, v in masks.items()}
             zero_predictions = {k: v[zero] for k, v in predictions.items()}
@@ -216,9 +217,21 @@ def main() -> int:
             # per-example midpoint error, keyed by root, for the paired bootstrap
             error = np.hypot(predicted[:, 0] - truth[:, 0], predicted[:, 1] - truth[:, 1])
             valid_mask = geometry_mask[:, 0] > 0
+            # both regimes are stored: the prefix-conditioned and the pre-execution one now rank the
+            # architectures differently, so a single number would hide the finding
+            exec_mask = (zero_end > 0) & valid_mask
+            # the in-execution paired errors come from the full evaluation set restricted to end>0
+            roots_all = tokens.roots[index_all]
+            exec_all = (end_all > 0) & (masks["terminal_geometry"][:, 0] > 0)
+            error_all = np.hypot(predictions["terminal_geometry"][:, 0]
+                                 - targets["terminal_geometry"][:, 0],
+                                 predictions["terminal_geometry"][:, 1]
+                                 - targets["terminal_geometry"][:, 1])
             payload["models"].setdefault("paired_errors", {})[tag] = {
-                "roots": [str(r) for r in roots], "t0_error": error.tolist(),
-                "t0_valid": valid_mask.tolist()}
+                "roots": [str(r) for r in roots_all], "t0_error": error.tolist(),
+                "t0_valid": valid_mask.tolist(),
+                "exec_error": error_all.tolist(), "exec_valid": exec_all.tolist(),
+                "t0_roots": [str(r) for r in roots]}
     (out_dir / "metrics.json").write_text(json.dumps(payload, indent=1, sort_keys=True, default=float))
     print("ANALYSIS_OK")
     return 0

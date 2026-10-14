@@ -1,12 +1,12 @@
 # STATUS — night_sequence_v1
 
-生成时间：2026-10-14 05:10 (Asia/Shanghai)
+生成时间：2026-10-14 09:47 (Asia/Shanghai)
 
 ## 起点与工作区
 
-- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`e27b6ee553c02b63bdb2b67770e55cdbbc0cbc0e`。
+- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`b75e747d7fbadad24532628470c2e5ed436771a6`。
 - 起点工作区差异：仅新增任务书 `docs/tasks/20261014_0205_...md`（未跟踪），未改动任何已冻结配置。
-- 生成时未提交改动条数：22。
+- 生成时未提交改动条数：33。
 
 ## 环境
 
@@ -36,23 +36,23 @@
 
 | run | 模型 | 档位 | seed | 参数量 | 更新 | 最优更新 | 最优验证损失 |
 |---|---|---|---:|---:|---:|---:|---:|
-| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 3200 | 2400 | 0.1137 |
-| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 3200 | 2400 | 0.1119 |
-| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 3200 | 2400 | 0.1138 |
-| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 3200 | 2800 | 0.2028 |
-| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 3200 | 2800 | 0.2133 |
-| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 3200 | 2800 | 0.2128 |
-| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 3200 | 2800 | 0.2135 |
-| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 3200 | 2800 | 0.2122 |
-| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 3200 | 2800 | 0.2140 |
-| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 3200 | 2400 | 0.1117 |
-| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 3200 | 2400 | 0.1124 |
-| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 3200 | 2400 | 0.1136 |
-| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 3200 | 2800 | 0.2010 |
-| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 2800 | 0.2076 |
-| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 2800 | 0.2085 |
-| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 2400 | 0.1138 |
-| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 2800 | 0.2006 |
+| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 3200 | 3000 | 0.1136 |
+| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 3200 | 3200 | 0.1126 |
+| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 3200 | 3200 | 0.1130 |
+| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 3200 | 3000 | 0.1008 |
+| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 3200 | 3000 | 0.1070 |
+| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 3200 | 3200 | 0.1064 |
+| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 3200 | 3200 | 0.1212 |
+| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 3200 | 3200 | 0.1241 |
+| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 3200 | 3200 | 0.1212 |
+| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 3200 | 3200 | 0.1141 |
+| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 3200 | 3200 | 0.1111 |
+| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 3200 | 3200 | 0.1148 |
+| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 3200 | 3200 | 0.0987 |
+| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 3200 | 0.1015 |
+| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 3000 | 0.1033 |
+| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 3000 | 0.1147 |
+| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 3200 | 0.0994 |
 
 合计 17 次正式训练。全部 run 使用统一更新预算 3200（标定见 CONTRACT §4）。
 

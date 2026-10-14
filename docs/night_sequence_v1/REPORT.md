@@ -4,9 +4,14 @@
 协议：`CONTRACT.md`；数据：`DATA_INDEX.md`；状态与全部 run：`STATUS.md`、`RUN_LEDGER.md`；
 模型卡：`MODEL_CARDS.md`；汇报素材：`presentation_assets/INDEX.md`。
 
+> **⚠ 本版状态（实现审查修正轮）**：上一版报告中的“历史窗口优于单帧”“Transformer 不如历史 MLP”“数据规模饱和”三条结论**已撤回**。
+> 原因：MLP-current 与 Transformer-history 在训练时**没有读到有效输入**（左补齐下用 `valid.sum()-1` 取索引，t=0 时读到全零补齐区），另有退出时刻 T 多算一个周期、几何中点定义被改、P1 未用可见性 mask、验证集每次重抽四处问题。
+> 逐条复现、根因与修正见 `IMPLEMENTATION_FIX.md`；旧检查点与旧评价结果保存在 `outputs/night_sequence_v1/superseded/`。
+> 本报告的**全部数字来自修正后重训的模型**。
+
 ## 0. 一句话结论
 
-**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来，真实观测前缀确实有用（执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.084 m；配对 root bootstrap 95% CI 不含 0），但更多独立起点（512→16384，32×）几乎没有继续改善，历史窗口优于单帧，而 Transformer 在参数比 1.80× 的条件下**没有**胜过历史 MLP，batch=128 延迟却是它的 24–29 倍；执行前（t=0）最好的是命令+已过去时间分组统计 P1，模型只在执行中取胜。**
+**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来：执行中误差 0.043 m，优于起始保持 0.052 m 与命令分组统计 0.087 m（配对 root bootstrap 95% CI 不含 0）。但两条架构结论都**随区间翻转**：执行前（t=0）单帧 MLP 与 Transformer 更好，执行中历史 MLP 更好；Transformer 在参数只有 0.56× 的情况下 batch=128 延迟是历史 MLP 的 24–29 倍。更多独立起点（512→16384，32×）只带来很小的执行中改善后趋平，但该结论**限定在这套实现与统一更新预算内**。**
 
 ## 1. 规模（四个不同的量）
 
@@ -25,23 +30,23 @@
 
 | run | 模型 | 档位 | seed | 参数量 | 最优验证损失 | 最优更新 |
 |---|---|---|---:|---:|---:|---:|
-| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 0.1137 | 2400 |
-| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 0.1119 | 2400 |
-| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 0.1138 | 2400 |
-| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 0.2028 | 2800 |
-| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 0.2133 | 2800 |
-| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 0.2128 | 2800 |
-| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 0.2135 | 2800 |
-| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 0.2122 | 2800 |
-| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 0.2140 | 2800 |
-| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 0.1117 | 2400 |
-| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 0.1124 | 2400 |
-| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 0.1136 | 2400 |
-| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 0.2010 | 2800 |
-| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 0.2076 | 2800 |
-| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 0.2085 | 2800 |
-| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 0.1138 | 2400 |
-| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 0.2006 | 2800 |
+| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 0.1136 | 3000 |
+| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 0.1126 | 3200 |
+| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 0.1130 | 3200 |
+| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 0.1008 | 3000 |
+| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 0.1070 | 3000 |
+| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 0.1064 | 3200 |
+| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 0.1212 | 3200 |
+| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 0.1241 | 3200 |
+| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 0.1212 | 3200 |
+| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 0.1141 | 3200 |
+| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 0.1111 | 3200 |
+| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 0.1148 | 3200 |
+| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 0.0987 | 3200 |
+| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 0.1015 | 3200 |
+| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 0.1033 | 3000 |
+| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 0.1147 | 3000 |
+| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 0.0994 | 3200 |
 
 共 17 / 17 次正式训练（主对照 15 次 + D2 成对 2 次）。每次 run 的更新预算统一为 3200（标定见 `CONTRACT.md` §4）。
 
@@ -49,127 +54,149 @@
 
 | 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | 位姿各列合并 p50 | 剩余时长 p50 (s) | 退出准确率 |
 |---|---:|---:|---:|---:|---:|---:|
-| P0_hold | 0.1505 | 0.3550 | 4.7892 | 0.0452 | 0.300 | 0.915 |
-| P1_grouped | 0.0879 | 0.1983 | 3.3106 | 0.0134 | 0.650 | 0.915 |
-| d0_mlp_history_seed0 | 0.1121 | 0.2217 | 4.4648 | 0.0273 | 0.283 | 0.915 |
-| d0_mlp_history_seed1 | 0.1066 | 0.2132 | 4.3809 | 0.0272 | 0.288 | 0.915 |
-| d0_mlp_history_seed2 | 0.1104 | 0.2190 | 4.3282 | 0.0287 | 0.286 | 0.915 |
-| d0_transformer_history_seed0 | 0.1255 | 0.2534 | 4.7934 | 0.0512 | 0.312 | 0.915 |
-| d0_transformer_history_seed1 | 0.1251 | 0.2536 | 4.7914 | 0.0512 | 0.308 | 0.915 |
-| d0_transformer_history_seed2 | 0.1257 | 0.2535 | 4.7989 | 0.0511 | 0.317 | 0.915 |
+| P0_hold | 0.1517 | 0.3552 | 4.7892 | 0.0452 | 0.300 | 0.915 |
+| P1_grouped | 0.0922 | 0.1994 | 3.9636 | 0.0134 | 0.650 | 0.915 |
+| d0_mlp_history_seed0 | 0.1124 | 0.2171 | 4.4136 | 0.0265 | 0.278 | 0.915 |
+| d0_mlp_history_seed1 | 0.1091 | 0.2113 | 4.1008 | 0.0264 | 0.265 | 0.915 |
+| d0_mlp_history_seed2 | 0.1085 | 0.2091 | 4.2422 | 0.0271 | 0.264 | 0.915 |
+| d0_transformer_history_seed0 | 0.0959 | 0.1846 | 4.1976 | 0.0205 | 0.238 | 0.923 |
+| d0_transformer_history_seed1 | 0.0929 | 0.1785 | 4.3210 | 0.0209 | 0.242 | 0.926 |
+| d0_transformer_history_seed2 | 0.0950 | 0.1801 | 4.2996 | 0.0210 | 0.250 | 0.927 |
 
 t=0 同 root 八动作终态差值 / 秩相关（r0 中点 x；置换对照≈0）：
 
 | run | 动作差值 p50 (m) | Spearman ρ | 有效 root |
 |---|---:|---:|---:|
-| d0_mlp_history_seed0 | 0.10559 | 0.714 | 511/511 |
-| d0_mlp_history_seed1 | 0.10389 | 0.711 | 511/511 |
-| d0_mlp_history_seed2 | 0.10465 | 0.710 | 511/511 |
-| d0_transformer_history_seed0 | 0.11572 | — | 0/511 |
-| d0_transformer_history_seed1 | 0.11572 | — | 0/511 |
-| d0_transformer_history_seed2 | 0.11572 | — | 0/511 |
+| d0_mlp_history_seed0 | 0.10439 | 0.725 | 511/511 |
+| d0_mlp_history_seed1 | 0.10322 | 0.724 | 511/511 |
+| d0_mlp_history_seed2 | 0.10279 | 0.731 | 511/511 |
+| d0_transformer_history_seed0 | 0.06612 | 0.702 | 511/511 |
+| d0_transformer_history_seed1 | 0.06613 | 0.697 | 511/511 |
+| d0_transformer_history_seed2 | 0.06872 | 0.692 | 511/511 |
 
 ## 3 D1 主对照（test，t=0 终态）
 
 | 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | 位姿各列合并 p50 | 剩余时长 p50 (s) | 退出准确率 |
 |---|---:|---:|---:|---:|---:|---:|
-| P0_hold | 0.1505 | 0.3550 | 4.7892 | 0.0452 | 0.300 | 0.915 |
-| P1_grouped | 0.0902 | 0.1979 | 3.2748 | 0.0128 | 0.300 | 0.915 |
-| d1_mlp_current_seed0 | 0.1258 | 0.2537 | 4.7765 | 0.0513 | 0.307 | 0.915 |
-| d1_mlp_current_seed1 | 0.1241 | 0.2540 | 4.7421 | 0.0517 | 0.306 | 0.915 |
-| d1_mlp_current_seed2 | 0.1244 | 0.2541 | 4.7688 | 0.0506 | 0.314 | 0.915 |
-| d1_mlp_history_seed0 | 0.1063 | 0.2167 | 4.4040 | 0.0265 | 0.280 | 0.915 |
-| d1_mlp_history_seed1 | 0.1086 | 0.2157 | 4.3272 | 0.0273 | 0.283 | 0.915 |
-| d1_mlp_history_seed2 | 0.1094 | 0.2161 | 4.3033 | 0.0279 | 0.282 | 0.915 |
-| d1_transformer_history_seed0 | 0.1242 | 0.2542 | 4.7443 | 0.0515 | 0.301 | 0.915 |
-| d1_transformer_history_seed1 | 0.1238 | 0.2541 | 4.7385 | 0.0515 | 0.298 | 0.915 |
-| d1_transformer_history_seed2 | 0.1240 | 0.2541 | 4.7571 | 0.0512 | 0.304 | 0.915 |
+| P0_hold | 0.1517 | 0.3552 | 4.7892 | 0.0452 | 0.300 | 0.915 |
+| P1_grouped | 0.0944 | 0.1983 | 4.0656 | 0.0128 | 0.300 | 0.915 |
+| d1_mlp_current_seed0 | 0.0867 | 0.1763 | 3.6019 | 0.0210 | 0.206 | 0.915 |
+| d1_mlp_current_seed1 | 0.0922 | 0.1851 | 3.8038 | 0.0216 | 0.215 | 0.915 |
+| d1_mlp_current_seed2 | 0.0897 | 0.1787 | 3.7344 | 0.0210 | 0.215 | 0.915 |
+| d1_mlp_history_seed0 | 0.1084 | 0.2109 | 4.5310 | 0.0273 | 0.272 | 0.915 |
+| d1_mlp_history_seed1 | 0.1082 | 0.2093 | 4.1814 | 0.0260 | 0.267 | 0.915 |
+| d1_mlp_history_seed2 | 0.1076 | 0.2105 | 4.2622 | 0.0283 | 0.276 | 0.915 |
+| d1_transformer_history_seed0 | 0.0925 | 0.1782 | 4.1603 | 0.0201 | 0.245 | 0.926 |
+| d1_transformer_history_seed1 | 0.0941 | 0.1754 | 4.1285 | 0.0211 | 0.228 | 0.925 |
+| d1_transformer_history_seed2 | 0.0945 | 0.1775 | 4.2716 | 0.0214 | 0.254 | 0.928 |
 
 t=0 同 root 八动作终态差值 / 秩相关（r0 中点 x；置换对照≈0）：
 
 | run | 动作差值 p50 (m) | Spearman ρ | 有效 root |
 |---|---:|---:|---:|
-| d1_mlp_current_seed0 | 0.11572 | — | 0/511 |
-| d1_mlp_current_seed1 | 0.11572 | — | 0/511 |
-| d1_mlp_current_seed2 | 0.11572 | — | 0/511 |
-| d1_mlp_history_seed0 | 0.10498 | 0.706 | 511/511 |
-| d1_mlp_history_seed1 | 0.10530 | 0.716 | 511/511 |
-| d1_mlp_history_seed2 | 0.10668 | 0.658 | 511/511 |
-| d1_transformer_history_seed0 | 0.11572 | — | 0/511 |
-| d1_transformer_history_seed1 | 0.11572 | — | 0/511 |
-| d1_transformer_history_seed2 | 0.11572 | — | 0/511 |
+| d1_mlp_current_seed0 | 0.08018 | 0.732 | 511/511 |
+| d1_mlp_current_seed1 | 0.08249 | 0.713 | 511/511 |
+| d1_mlp_current_seed2 | 0.08334 | 0.740 | 511/511 |
+| d1_mlp_history_seed0 | 0.10380 | 0.725 | 511/511 |
+| d1_mlp_history_seed1 | 0.10386 | 0.724 | 511/511 |
+| d1_mlp_history_seed2 | 0.10542 | 0.712 | 511/511 |
+| d1_transformer_history_seed0 | 0.06513 | 0.690 | 511/511 |
+| d1_transformer_history_seed1 | 0.06448 | 0.709 | 511/511 |
+| d1_transformer_history_seed2 | 0.06830 | 0.705 | 511/511 |
 
 ## 3 D2 主对照（test，t=0 终态）
 
 | 模型 | r0 中点二维 p50 (m) | p90 (m) | r0 法向角 p50 (°) | 位姿各列合并 p50 | 剩余时长 p50 (s) | 退出准确率 |
 |---|---:|---:|---:|---:|---:|---:|
-| P0_hold | 0.1505 | 0.3550 | 4.7892 | 0.0452 | 0.300 | 0.915 |
-| P1_grouped | 0.0897 | 0.1944 | 3.3843 | 0.0127 | 0.300 | 0.915 |
-| d2_mlp_history_seed0 | 0.1086 | 0.2161 | 4.4923 | 0.0266 | 0.290 | 0.915 |
-| d2_transformer_history_seed0 | 0.1244 | 0.2541 | 4.7899 | 0.0514 | 0.299 | 0.915 |
+| P0_hold | 0.1517 | 0.3552 | 4.7892 | 0.0452 | 0.300 | 0.915 |
+| P1_grouped | 0.0923 | 0.1965 | 3.9884 | 0.0127 | 0.300 | 0.915 |
+| d2_mlp_history_seed0 | 0.1088 | 0.2151 | 4.3960 | 0.0267 | 0.280 | 0.915 |
+| d2_transformer_history_seed0 | 0.0935 | 0.1767 | 4.1308 | 0.0202 | 0.253 | 0.922 |
 
 t=0 同 root 八动作终态差值 / 秩相关（r0 中点 x；置换对照≈0）：
 
 | run | 动作差值 p50 (m) | Spearman ρ | 有效 root |
 |---|---:|---:|---:|
-| d2_mlp_history_seed0 | 0.10579 | 0.716 | 511/511 |
-| d2_transformer_history_seed0 | 0.11572 | — | 0/511 |
+| d2_mlp_history_seed0 | 0.10549 | 0.711 | 511/511 |
+| d2_transformer_history_seed0 | 0.06941 | 0.738 | 511/511 |
 
-## 4. 三个研究问题
+## 4. 三个研究问题（修正后重训）
 
-**更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）
+三个问题的答案都**依赖评价区间**，因此逐区间给出；括号内为配对 root bootstrap 的 中位差与 95% CI（重采样单位是 root）。
 
-| 档位 | 独立 train root | t=0 终态 r0 中点 p50 (m) | 执行中 r0 中点 p50 (m) |
+**问 1：更多独立起点是否改善观测预测？**（同一模型 MLP-history、同一目标、同一预算）
+
+| 档位 | 独立 train root | t=0 终态 p50 (m) | 执行中 p50 (m) |
 |---|---:|---:|---:|
-| d0 | 512 | 0.1066 | 0.0444 |
-| d1 | 4096 | 0.1063 | 0.0434 |
-| d2 | 16384 | 0.1086 | 0.0440 |
+| d0 | 512 | 0.1085 | 0.0442 |
+| d1 | 4096 | 0.1076 | 0.0428 |
+| d2 | 16384 | 0.1088 | 0.0426 |
 
-从 512 到 16384 个独立起点（32×），t=0 终态误差变化 +0.0020 m（**改善但已饱和**）。执行中的误差同样在 0.0444–0.0440 m 之间，没有随数据量继续下降。
+从 512 到 16384 个独立起点（32×）：执行中误差 0.0442 → 0.0426 m（相对变化 -3.6%），t=0 误差 0.1085 → 0.1088 m。**结论限定在这套实现与统一更新预算内**：增益很小且很快趋平，不能据此断言“数据收益已经饱和”。
 
-**历史窗口是否比单帧有用？** 同档位同种子下 MLP-current 最优 0.1241 m vs MLP-history 最优 0.1063 m（history 更优）。
+**问 2：历史窗口是否比单帧有用？**
 
-**Transformer 是否更好？** 同历史同目标同预算下，Transformer-history 最优 0.1238 m vs MLP-history 最优 0.1063 m（参数比 1.80×）。结论只来自这两个历史模型之间，不涉及单帧模型。
+| 区间 | MLP-current (单帧) | MLP-history | 谁更好 | 配对中位差与 95% CI |
+|---|---:|---:|---|---|
+| t=0（无历史可用） | 0.0867 | 0.1076 | 单帧更好 | -0.02173 m [-0.02347, -0.01998] |
+| 执行中（有真实前缀） | 0.0523 | 0.0428 | 历史更好 | +0.00581 m [+0.00493, +0.00698] |
+
+**答案随区间翻转**：执行前没有历史可用时单帧更好，有真实观测前缀时历史窗口更好。因此不能笼统说“历史已被证明有效”，只有在执行中这个条件下才成立。
+
+**问 3：Transformer 是否更好、代价多少？**（同历史、同目标、同预算，参数比 1.80×）
+
+| 区间 | MLP-history | Transformer-history | 谁更好 | 配对中位差与 95% CI |
+|---|---:|---:|---|---|
+| t=0 | 0.1076 | 0.0925 | Transformer 更好 | +0.00780 m [+0.00539, +0.00991] |
+| 执行中 | 0.0428 | 0.0574 | MLP 更好 | -0.01176 m [-0.01368, -0.01008] |
+
+**答案同样随区间翻转**：t=0 时 Transformer 更好，执行中时历史 MLP 更好，两侧的 95% CI 都不含 0。计算成本见下一节（batch=128 延迟约 24–29×）。因此上一版“Transformer 不如 MLP”的说法**不成立**，正确的说法是“在哪个区间、以什么代价”。
 
 ## 5. 执行中：固定 Δt 下一步 vs 终态（t=0 之外的主评价）
 
-**D0**（test，执行中样本 5105；真实观测前缀条件预测）
+**D0**（test；真实观测前缀条件预测，不是自由 rollout）
 
-| 模型 | 执行中 r0 中点二维 p50 (m) | 固定 Δt 下一步 r0 中点 p50 (m) | 执行中终态 r0 中点 p50 (m) | 执行中样本 |
-|---|---:|---:|---:|---:|
-| P0_hold | 0.0517 | 0.0002 | 0.1107 | 5105 |
-| P1_grouped | 0.0974 | 0.0702 | 0.0935 | 5105 |
-| d0_mlp_history_seed0 | 0.0444 | 0.0430 | 0.0681 | 5105 |
-| d0_mlp_history_seed1 | 0.0467 | 0.0409 | 0.0685 | 5105 |
-| d0_mlp_history_seed2 | 0.0470 | 0.0422 | 0.0688 | 5105 |
-| d0_transformer_history_seed0 | 0.0616 | 0.0531 | 0.0884 | 5105 |
-| d0_transformer_history_seed1 | 0.0592 | 0.0510 | 0.0880 | 5105 |
-| d0_transformer_history_seed2 | 0.0619 | 0.0498 | 0.0896 | 5105 |
+列的含义严格区分，**不得混用**：「执行中」= 只在 `end>0` 的样本上分组统计；「全样本终态」= 含 t=0 的 `all` 指标（**不是**执行中指标）；「t=0」= 只有 O0 与候选命令。
 
-**D1**（test，执行中样本 5105；真实观测前缀条件预测）
+| 模型 | 执行中 r0 中点 p50 (m) | 固定 Δt 下一步 p50 (m) | 全样本终态 p50 (m) | 执行中样本/独立 root | t=0 终态 p50 (m) |
+|---|---:|---:|---:|---:|---:|
+| P0_hold | 0.0525 | 0.0003 | 0.1106 | 5105 / 511 | 0.1517 |
+| P1_grouped | 0.0990 | 0.0743 | 0.0954 | 5105 / 511 | 0.0922 |
+| d0_mlp_history_seed0 | 0.0442 | 0.0437 | 0.0670 | 5105 / 511 | 0.1124 |
+| d0_mlp_history_seed1 | 0.0444 | 0.0412 | 0.0664 | 5105 / 511 | 0.1091 |
+| d0_mlp_history_seed2 | 0.0445 | 0.0407 | 0.0660 | 5105 / 511 | 0.1085 |
+| d0_transformer_history_seed0 | 0.0600 | 0.0477 | 0.0734 | 5105 / 511 | 0.0959 |
+| d0_transformer_history_seed1 | 0.0606 | 0.0448 | 0.0734 | 5105 / 511 | 0.0929 |
+| d0_transformer_history_seed2 | 0.0611 | 0.0421 | 0.0747 | 5105 / 511 | 0.0950 |
 
-| 模型 | 执行中 r0 中点二维 p50 (m) | 固定 Δt 下一步 r0 中点 p50 (m) | 执行中终态 r0 中点 p50 (m) | 执行中样本 |
-|---|---:|---:|---:|---:|
-| P0_hold | 0.0517 | 0.0002 | 0.1107 | 5105 |
-| P1_grouped | 0.0837 | 0.0601 | 0.0871 | 5105 |
-| d1_mlp_current_seed0 | 0.0543 | 0.0467 | 0.0807 | 5105 |
-| d1_mlp_current_seed1 | 0.0590 | 0.0491 | 0.0831 | 5105 |
-| d1_mlp_current_seed2 | 0.0597 | 0.0493 | 0.0826 | 5105 |
-| d1_mlp_history_seed0 | 0.0434 | 0.0370 | 0.0669 | 5105 |
-| d1_mlp_history_seed1 | 0.0437 | 0.0376 | 0.0669 | 5105 |
-| d1_mlp_history_seed2 | 0.0426 | 0.0373 | 0.0668 | 5105 |
-| d1_transformer_history_seed0 | 0.0616 | 0.0529 | 0.0884 | 5105 |
-| d1_transformer_history_seed1 | 0.0598 | 0.0527 | 0.0879 | 5105 |
-| d1_transformer_history_seed2 | 0.0611 | 0.0521 | 0.0889 | 5105 |
+**D1**（test；真实观测前缀条件预测，不是自由 rollout）
 
-**D2**（test，执行中样本 5105；真实观测前缀条件预测）
+列的含义严格区分，**不得混用**：「执行中」= 只在 `end>0` 的样本上分组统计；「全样本终态」= 含 t=0 的 `all` 指标（**不是**执行中指标）；「t=0」= 只有 O0 与候选命令。
 
-| 模型 | 执行中 r0 中点二维 p50 (m) | 固定 Δt 下一步 r0 中点 p50 (m) | 执行中终态 r0 中点 p50 (m) | 执行中样本 |
-|---|---:|---:|---:|---:|
-| P0_hold | 0.0517 | 0.0002 | 0.1107 | 5105 |
-| P1_grouped | 0.0848 | 0.0601 | 0.0876 | 5105 |
-| d2_mlp_history_seed0 | 0.0440 | 0.0385 | 0.0696 | 5105 |
-| d2_transformer_history_seed0 | 0.0611 | 0.0552 | 0.0885 | 5105 |
+| 模型 | 执行中 r0 中点 p50 (m) | 固定 Δt 下一步 p50 (m) | 全样本终态 p50 (m) | 执行中样本/独立 root | t=0 终态 p50 (m) |
+|---|---:|---:|---:|---:|---:|
+| P0_hold | 0.0525 | 0.0003 | 0.1106 | 5105 / 511 | 0.1517 |
+| P1_grouped | 0.0867 | 0.0620 | 0.0905 | 5105 / 511 | 0.0944 |
+| d1_mlp_current_seed0 | 0.0523 | 0.0440 | 0.0650 | 5105 / 511 | 0.0867 |
+| d1_mlp_current_seed1 | 0.0528 | 0.0439 | 0.0670 | 5105 / 511 | 0.0922 |
+| d1_mlp_current_seed2 | 0.0569 | 0.0443 | 0.0690 | 5105 / 511 | 0.0897 |
+| d1_mlp_history_seed0 | 0.0428 | 0.0389 | 0.0674 | 5105 / 511 | 0.1084 |
+| d1_mlp_history_seed1 | 0.0444 | 0.0394 | 0.0672 | 5105 / 511 | 0.1082 |
+| d1_mlp_history_seed2 | 0.0449 | 0.0401 | 0.0683 | 5105 / 511 | 0.1076 |
+| d1_transformer_history_seed0 | 0.0594 | 0.0414 | 0.0708 | 5105 / 511 | 0.0925 |
+| d1_transformer_history_seed1 | 0.0574 | 0.0413 | 0.0725 | 5105 / 511 | 0.0941 |
+| d1_transformer_history_seed2 | 0.0623 | 0.0441 | 0.0753 | 5105 / 511 | 0.0945 |
+
+**D2**（test；真实观测前缀条件预测，不是自由 rollout）
+
+列的含义严格区分，**不得混用**：「执行中」= 只在 `end>0` 的样本上分组统计；「全样本终态」= 含 t=0 的 `all` 指标（**不是**执行中指标）；「t=0」= 只有 O0 与候选命令。
+
+| 模型 | 执行中 r0 中点 p50 (m) | 固定 Δt 下一步 p50 (m) | 全样本终态 p50 (m) | 执行中样本/独立 root | t=0 终态 p50 (m) |
+|---|---:|---:|---:|---:|---:|
+| P0_hold | 0.0525 | 0.0003 | 0.1106 | 5105 / 511 | 0.1517 |
+| P1_grouped | 0.0886 | 0.0616 | 0.0905 | 5105 / 511 | 0.0923 |
+| d2_mlp_history_seed0 | 0.0426 | 0.0386 | 0.0661 | 5105 / 511 | 0.1088 |
+| d2_transformer_history_seed0 | 0.0566 | 0.0429 | 0.0709 | 5105 / 511 | 0.0935 |
 
 ## 6. 统计显著性与计算成本
 
@@ -177,27 +204,32 @@ t=0 同 root 八动作终态差值 / 秩相关（r0 中点 x；置换对照≈0�
 
 | 档位 | 比较 | 中位差 (m) | 95% CI | 有效 root | P(前者更好) |
 |---|---|---:|---|---:|---:|
-| d0 | d0_mlp_history vs d0_transformer_history | -0.01526 | [-0.01737, -0.01357] | 511 | 1.000 |
-| d1 | d1_mlp_history vs d1_transformer_history | -0.01902 | [-0.02291, -0.01404] | 511 | 1.000 |
-| d2 | d2_mlp_history vs d2_transformer_history | -0.01581 | [-0.01943, -0.01270] | 511 | 1.000 |
+| d0 | d0_mlp_history vs d0_transformer_history|in_execution | -0.01188 | [-0.01438, -0.00923] | 511 | 1.000 |
+| d0 | d0_mlp_history vs d0_transformer_history|t0 | +0.00627 | [+0.00378, +0.00856] | 511 | 0.000 |
+| d1 | d1_mlp_current vs d1_mlp_history|in_execution | +0.00581 | [+0.00493, +0.00698] | 511 | 0.000 |
+| d1 | d1_mlp_current vs d1_mlp_history|t0 | -0.02173 | [-0.02347, -0.01998] | 511 | 1.000 |
+| d1 | d1_mlp_history vs d1_transformer_history|in_execution | -0.01176 | [-0.01368, -0.01008] | 511 | 1.000 |
+| d1 | d1_mlp_history vs d1_transformer_history|t0 | +0.00780 | [+0.00539, +0.00991] | 511 | 0.000 |
+| d2 | d2_mlp_history vs d2_transformer_history|in_execution | -0.00983 | [-0.01242, -0.00763] | 511 | 1.000 |
+| d2 | d2_mlp_history vs d2_transformer_history|t0 | +0.01102 | [+0.00852, +0.01445] | 511 | 0.000 |
 
 训练 seed 波动（与 bootstrap 分开报告，未并入区间）：
 
 | 模型族 | seeds | 极差 (m) |
 |---|---:|---:|
-| d0_mlp_history | 3 | 0.00551 |
-| d0_transformer_history | 3 | 0.00057 |
-| d1_mlp_current | 3 | 0.00167 |
-| d1_mlp_history | 3 | 0.00312 |
-| d1_transformer_history | 3 | 0.00038 |
+| d0_mlp_history | 3 | 0.00393 |
+| d0_transformer_history | 3 | 0.00303 |
+| d1_mlp_current | 3 | 0.00551 |
+| d1_mlp_history | 3 | 0.00088 |
+| d1_transformer_history | 3 | 0.00209 |
 
 **推理成本**（torch 线程固定为 1；峰值内存为“建模 + 一次前向”的进程 RSS 增量）：
 
 | 模型 | 参数量 | 峰值 RSS 增量 | batch=1 延迟 | batch=128 延迟 | 吞吐 |
 |---|---:|---:|---:|---:|---:|
-| mlp_current | 686,913 | 11.1 MB | 0.21 ms | 1.48 ms | 86302 /s |
-| mlp_history | 1,608,513 | 3.8 MB | 0.23 ms | 3.19 ms | 40120 /s |
-| transformer_history | 895,937 | 4.0 MB | 1.21 ms | 76.64 ms | 1670 /s |
+| mlp_current | 686,913 | 7.5 MB | 0.29 ms | 1.67 ms | 76778 /s |
+| mlp_history | 1,608,513 | 3.6 MB | 0.23 ms | 4.57 ms | 27985 /s |
+| transformer_history | 895,937 | 7.3 MB | 1.44 ms | 108.14 ms | 1184 /s |
 
 相同更新数**不等于**相同 FLOPs：Transformer-history 的 batch=128 延迟约为 MLP-history 的 24–29 倍，参数却更少。这是研究问题 3 里“代价多少”的答案，因此架构结论必须与计算成本一起读。
 

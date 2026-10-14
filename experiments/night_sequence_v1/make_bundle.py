@@ -59,6 +59,10 @@ def collect_review() -> List[Path]:
             path = DATA / "analysis" / tier / name
             if path.exists():
                 files.append(path)
+    # the rendered figures travel **inside** the review ZIP as well: a package that only carries the
+    # plotting script cannot be checked without re-running it
+    files += sorted((ASSETS / "figures").glob("*.png"))
+    files += [ASSETS / "INDEX.md", ASSETS / "progress_facts.csv", ASSETS / "overview.png"]
     # a complete small sample of real sequences, so the loader can be exercised from the ZIP alone
     for split in ("d0", "val", "test"):
         shards = sorted((DATA / "sequences").glob(f"{split}_*.npz"))

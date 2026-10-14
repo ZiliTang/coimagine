@@ -4,23 +4,23 @@
 
 | run | model | tier | seed | params | updates | best_update | best_val | checkpoint |
 |---|---|---|---:|---:|---:|---:|---:|---|
-| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 3200 | 2400 | 0.1137 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt` |
-| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 3200 | 2400 | 0.1119 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt` |
-| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 3200 | 2400 | 0.1138 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt` |
-| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 3200 | 2800 | 0.2028 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt` |
-| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 3200 | 2800 | 0.2133 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt` |
-| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 3200 | 2800 | 0.2128 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt` |
-| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 3200 | 2800 | 0.2135 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt` |
-| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 3200 | 2800 | 0.2122 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt` |
-| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 3200 | 2800 | 0.2140 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt` |
-| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 3200 | 2400 | 0.1117 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt` |
-| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 3200 | 2400 | 0.1124 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt` |
-| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 3200 | 2400 | 0.1136 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt` |
-| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 3200 | 2800 | 0.2010 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt` |
-| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 2800 | 0.2076 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt` |
-| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 2800 | 0.2085 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt` |
-| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 2400 | 0.1138 | `outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt` |
-| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 2800 | 0.2006 | `outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt` |
+| d0_mlp_history_seed0 | mlp_history | d0 | 0 | 1,608,513 | 3200 | 3000 | 0.1136 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt` |
+| d0_mlp_history_seed1 | mlp_history | d0 | 1 | 1,608,513 | 3200 | 3200 | 0.1126 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt` |
+| d0_mlp_history_seed2 | mlp_history | d0 | 2 | 1,608,513 | 3200 | 3200 | 0.1130 | `outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt` |
+| d0_transformer_history_seed0 | transformer_history | d0 | 0 | 895,937 | 3200 | 3000 | 0.1008 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt` |
+| d0_transformer_history_seed1 | transformer_history | d0 | 1 | 895,937 | 3200 | 3000 | 0.1070 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt` |
+| d0_transformer_history_seed2 | transformer_history | d0 | 2 | 895,937 | 3200 | 3200 | 0.1064 | `outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt` |
+| d1_mlp_current_seed0 | mlp_current | d1 | 0 | 686,913 | 3200 | 3200 | 0.1212 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt` |
+| d1_mlp_current_seed1 | mlp_current | d1 | 1 | 686,913 | 3200 | 3200 | 0.1241 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt` |
+| d1_mlp_current_seed2 | mlp_current | d1 | 2 | 686,913 | 3200 | 3200 | 0.1212 | `outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt` |
+| d1_mlp_history_seed0 | mlp_history | d1 | 0 | 1,608,513 | 3200 | 3200 | 0.1141 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt` |
+| d1_mlp_history_seed1 | mlp_history | d1 | 1 | 1,608,513 | 3200 | 3200 | 0.1111 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt` |
+| d1_mlp_history_seed2 | mlp_history | d1 | 2 | 1,608,513 | 3200 | 3200 | 0.1148 | `outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt` |
+| d1_transformer_history_seed0 | transformer_history | d1 | 0 | 895,937 | 3200 | 3200 | 0.0987 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt` |
+| d1_transformer_history_seed1 | transformer_history | d1 | 1 | 895,937 | 3200 | 3200 | 0.1015 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt` |
+| d1_transformer_history_seed2 | transformer_history | d1 | 2 | 895,937 | 3200 | 3000 | 0.1033 | `outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt` |
+| d2_mlp_history_seed0 | mlp_history | d2 | 0 | 1,608,513 | 3200 | 3000 | 0.1147 | `outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt` |
+| d2_transformer_history_seed0 | transformer_history | d2 | 0 | 895,937 | 3200 | 3200 | 0.0994 | `outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt` |
 
 ## 失败记录
 

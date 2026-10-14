@@ -44,8 +44,11 @@ def main() -> int:
     steps = int(shard["steps"][0])
     print(f"loaded {shard_path[0].name}: {len(shard['steps'])} sequences, first has {steps} periods")
     assert steps > 1
-    assert abs(float(shard["T_exit"][0]) - steps * 0.05) < 1e-5
+    # round-6 fix: the exiting period does not advance physics, so T is (steps - 1) * dt
+    assert abs(float(shard["T_exit"][0]) - (steps - 1) * 0.05) < 1e-5
     assert abs(float(shard["T_last_sensed"][0]) - (steps - 1) * 0.05) < 1e-5
+    assert int(shard["truth_steps"][0]) == steps - 1
+    assert int(shard["physics_steps_match_rows"][0]) == 1
     assert shard["terminal_own_world"][0].shape == (2, 6)
     print("O0 / T invariants hold on the packaged data")
 

@@ -138,6 +138,9 @@ class ExecutionResult:
     #: sensing the *same* pipeline produced for that period; nothing is stepped or re-sensed after
     #: the loop exits, so this is the observation at T rather than at the last logged period.
     terminal_observations: Optional[Dict[int, object]] = None
+    #: round-6 fix: how many control periods actually advanced the world. ``physics_steps * dt`` is
+    #: the physical exit instant, which is what the duration and remaining-time labels must use.
+    physics_steps: int = 0
     #: round-5: every period's observation set in execution order (``record_trajectory=True``).
     #: Index 0 is the observation taken **before** the first control force -- the true O0.
     trajectory: Optional[List[Dict[int, object]]] = None
@@ -387,6 +390,11 @@ class OptionExecutor:
         #: the option's **exit instant T** -- the moment the recorded terminal state was captured.
         #: It is a plain reference to a dict that is rebuilt each period and never mutated later.
         terminal_observations: Dict[int, LocalContactObservation] = {}
+        #: round-6 fix: the number of times ``env.step_control`` actually ran. The stage machine can
+        #: break **before** the force call, so a period can be sensed without the world advancing.
+        #: The physical exit instant is ``physics_steps * dt``; inferring it from the number of sensed
+        #: periods (which includes O0) over-counts by one control period.
+        physics_steps = 0
         #: round-5: the full per-period observation set, in order, when the caller asks for it.
         #: Each entry is the (never-mutated) dict that period's controller actually consumed.
         trajectory: List[Dict[int, LocalContactObservation]] = []
@@ -445,6 +453,7 @@ class OptionExecutor:
                 # the stage machine does not advance on information that has not arrived: the
                 # world keeps stepping under a zero command and the period is logged as such
                 env.step_control(((0.0, 0.0), (0.0, 0.0)))
+                physics_steps += 1
                 rows.append(self._unavailable_row(
                     env, step, stage, sorted(observation_missing), dt, force_source, protocol))
                 step += 1
@@ -731,6 +740,7 @@ class OptionExecutor:
                     runtimes[robot_id].active_contact += dt
 
             env.step_control((joint_force[0], joint_force[1]))
+            physics_steps += 1
             if env.termination is not None:
                 exit_reason = Exit.ENVIRONMENT_TERMINATION.value
                 aborted_by = f"environment:{env.termination}"
@@ -774,6 +784,7 @@ class OptionExecutor:
             effective_push_seconds=effective,
             terminal_observations=dict(terminal_observations) if terminal_observations else None,
             trajectory=trajectory if record_trajectory else None,
+            physics_steps=physics_steps,
             settle_evidence_span=settle_span if locally_settled else None,
             settle_evidence_lag=settle_lag if locally_settled else None,
             delay_stats={str(robot_id): delay_queues[robot_id].stats() for robot_id in (0, 1)},

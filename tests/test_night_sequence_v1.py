@@ -100,8 +100,13 @@ def test_O0_is_the_pre_action_observation_and_T_is_the_exit_instant():
                 assert own[robot_id, 1] == pytest.approx(root.robot_poses[robot_id].y, abs=1e-9)
                 assert own[robot_id, 2] == pytest.approx(root.robot_poses[robot_id].angle, abs=1e-9)
             steps = int(block["steps"][row])
-            assert block["T_exit"][row] == pytest.approx(steps * 0.05)
+            # round-6 fix: the exiting period does not step, so the physical exit instant is
+            # (steps - 1) * dt, equal to the last sensed instant, not steps * dt
+            assert block["T_exit"][row] == pytest.approx((steps - 1) * 0.05)
             assert block["T_last_sensed"][row] == pytest.approx((steps - 1) * 0.05)
+            assert block["duration_seconds"][row] == pytest.approx((steps - 1) * 0.05)
+            assert int(block["truth_steps"][row]) == steps - 1
+            assert int(block["physics_steps_match_rows"][row]) == 1
             # the terminal observation is a real sensing at T, not a copy of a stored period
             assert block["terminal_own_world"][row].shape == (2, 6)
             checked += 1
@@ -178,6 +183,112 @@ def test_transformer_ignores_padding_content():
         second = model(noisy, valid)["terminal_pose"]
     assert torch.allclose(first, second, atol=1e-6), (
         "causal + padding-masked attention must not read padding content")
+
+
+# ---------------------------------------------------------------------------
+# 3b. the readout must actually read the real tokens (round-6 fix)
+# ---------------------------------------------------------------------------
+
+
+def test_last_and_first_valid_index_follow_the_left_padded_layout():
+    """Windows are right-aligned, so slot 0 is padding and slot -1 is the newest observation."""
+
+    from experiments.night_sequence_v1.models import first_valid_index, last_valid_index
+    from experiments.night_sequence_v1.windows import WINDOW
+    import torch as _torch
+
+    valid = _torch.zeros(3, WINDOW)
+    valid[0, WINDOW - 1] = 1.0            # only O0 is known
+    valid[1, WINDOW - 6:] = 1.0           # six observations
+    valid[2, :] = 1.0                     # full window
+    assert last_valid_index(valid).tolist() == [WINDOW - 1, WINDOW - 1, WINDOW - 1]
+    assert first_valid_index(valid).tolist() == [WINDOW - 1, WINDOW - 6, 0]
+
+
+def test_changing_a_real_observation_or_the_command_changes_the_output():
+    """The check the review asked for: perturbing *real* content, not padding, must move the output.
+
+    Before the fix, MLP-current and Transformer-history read slot 0 (padding) at t=0, so every one of
+    the eight actions of a root produced byte-identical predictions and the architecture comparison
+    was meaningless.
+    """
+
+    from experiments.night_sequence_v1.dataset import Tokens, build_example
+    from experiments.night_sequence_v1.models import build_model, parameter_count  # noqa: F401
+
+    tokens = Tokens(["d0", "d1ext", "test"])
+    test_rows = np.where(tokens.split_of == "test")[0]
+    index = int(test_rows[0])
+    example = build_example(tokens, index, 0)
+    base = torch.tensor(example["window"][None], dtype=torch.float32)
+    valid = torch.tensor(example["token_valid"][None], dtype=torch.float32)
+    last = int(np.flatnonzero(example["token_valid"] > 0)[-1])
+    assert last == base.shape[1] - 1, "the newest observation must sit in the last slot"
+
+    for kind, kwargs in (("mlp_current", {"hidden": 64, "layers": 2, "dropout": 0.0}),
+                         ("mlp_history", {"hidden": 64, "layers": 2, "dropout": 0.0}),
+                         ("transformer_history", {"d_model": 32, "heads": 2, "layers": 1,
+                                                  "ffn": 32, "dropout": 0.0})):
+        model = build_model(kind, **kwargs)
+        model.eval()
+        with torch.no_grad():
+            reference = model(base, valid)["terminal_geometry"]
+            # 1. change the *command* in the last real token
+            command_changed = base.clone()
+            command_changed[0, last, 51:57] += 0.5
+            after_command = model(command_changed, valid)["terminal_geometry"]
+            assert not torch.allclose(reference, after_command, atol=1e-6), (
+                f"{kind}: changing the command must be able to change the output")
+            # 2. change the *observed geometry* in the last real token
+            observation_changed = base.clone()
+            observation_changed[0, last, 7:11] += 0.25
+            after_observation = model(observation_changed, valid)["terminal_geometry"]
+            assert not torch.allclose(reference, after_observation, atol=1e-6), (
+                f"{kind}: changing the observed geometry must be able to change the output")
+            # 3. padding content still must not matter
+            padding_changed = base.clone()
+            padding = valid[0] < 0.5
+            padding_changed[0, padding, :] = 5.0
+            after_padding = model(padding_changed, valid)["terminal_geometry"]
+            if kind == "transformer_history":
+                assert torch.allclose(reference, after_padding, atol=1e-6), (
+                    f"{kind}: padding content must not matter")
+
+
+def test_trained_checkpoints_respond_to_the_command_at_t0():
+    """On the packaged checkpoints the same root's eight actions must not collapse to one value."""
+
+    from experiments.night_sequence_v1.dataset import Tokens, build_example
+    from experiments.night_sequence_v1.models import build_model
+    import collections
+
+    tokens = Tokens(["d0", "d1ext", "test"])
+    by_root = collections.defaultdict(list)
+    for position, root in enumerate(tokens.roots):
+        if tokens.split_of[position] == "test":
+            by_root[root].append(position)
+    root = sorted(by_root)[0]
+    actions = sorted(by_root[root])[:8]
+    for kind in ("mlp_current", "transformer_history"):
+        path = DATA / "runs" / f"d1_{kind}_seed0.pt"
+        if not path.exists():
+            pytest.skip(f"{path.name} not available")
+        saved = torch.load(path, map_location="cpu", weights_only=False)
+        model = build_model(saved["model_kind"], **saved["model_kwargs"])
+        model.load_state_dict(saved["state_dict"])
+        model.eval()
+        stats = saved["normalisation"]["terminal_geometry"]
+        values = []
+        for position in actions:
+            example = build_example(tokens, position, 0)
+            window = torch.tensor(example["window"][None], dtype=torch.float32)
+            valid = torch.tensor(example["token_valid"][None], dtype=torch.float32)
+            with torch.no_grad():
+                raw = model(window, valid)["terminal_geometry"].numpy()[0]
+            values.append(round(float(raw[0] * np.atleast_1d(stats["std"])[0]
+                                      + np.atleast_1d(stats["mean"])[0]), 6))
+        assert len(set(values)) > 1, (
+            f"{kind}: all eight actions collapsed to {values[0]} at t=0 -- the readout is broken")
 
 
 # ---------------------------------------------------------------------------

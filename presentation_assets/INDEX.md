@@ -1,5 +1,9 @@
 # INDEX — 导师汇报素材索引
 
+> **⚠ 实现审查修正轮**：`F06`/`F07` 与报告中的“历史窗口优于单帧”“Transformer 不如历史 MLP”“数据规模饱和”三条结论**已撤回**。
+> 原因是 MLP-current 与 Transformer-history 训练时未读到有效输入（左补齐下索引取错，t=0 读到全零补齐区），另有退出时刻 T、几何中点定义、P1 可见性 mask、验证集抽样四处问题。详见 `docs/night_sequence_v1/IMPLEMENTATION_FIX.md`。
+> **本轮素材已全部按修正后的重训模型重新渲染。**
+
 所有主图与数据均已生成；本文件只做索引与图注，不是完整报告。
 
 统一约定：模型颜色固定（MLP-current 蓝、MLP-history 绿、Transformer 红），机器人颜色固定（robot0 蓝、robot1 橙），真值用灰/黑，预测用模型色。
@@ -46,15 +50,15 @@
 - 能说明什么：真实前缀与预测未来分色；t=0 没有尚未发生的历史。
 - 不能说明什么：本轮不含自由 latent 递推或完整规划器。
 
-## F06 学习过程与规模效应
+## F06 学习过程与规模效应（修正后重训）
 
 - 图片：`presentation_assets/figures/F06_learning_curves.png`（矢量版 `presentation_assets/figures/F06_learning_curves.pdf`）
 - 数据：`presentation_assets/data/F06_run_summary.csv`, `presentation_assets/data/F06_data_scale_to_error.csv`, `presentation_assets/data/F06_inference_cost.csv`
 - 建议用途：三种模型在同一更新轴上的验证曲线与分项损失，另表给出参数量、最优更新与耗时。
-- 能说明什么：曲线按同一更新数对齐，计算成本另报。
-- 不能说明什么：未完成或预算不同的 run 明确标注；单 seed 不画置信区间。
+- 能说明什么：曲线按同一更新数对齐，计算成本另报；独立 root 数与误差的关系在同一模型、同一目标、同一预算下比较。
+- 不能说明什么：未完成或预算不同的 run 明确标注；单 seed 不画置信区间。数据规模一栏只在修正后的实现下成立，**不能**升级为“数据收益已饱和”的普遍结论。
 
-## F07 拟合与预测性能
+## F07 拟合与预测性能（修正后重训）
 
 - 图片：`presentation_assets/figures/F07_prediction_performance.png`（矢量版 `presentation_assets/figures/F07_prediction_performance.pdf`）
 - 数据：`p`, `r`, `e`, `s`, `e`, `n`, `t`, `a`, `t`, `i`, `o`, `n`, `_`, `a`, `s`, `s`, `e`, `t`, `s`, `/`, `d`, `a`, `t`, `a`, `/`, `F`, `0`, `7`, `_`, `m`, `e`, `t`, `r`, `i`, `c`, `s`, `_`, `t`, `0`, `.`, `c`, `s`, `v`

@@ -29,186 +29,186 @@
 ## d0_mlp_history_seed0
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d0，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.1137（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1136（第 3000 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_mlp_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1121 m；执行中 p50：0.0444 m
+- test t=0 终态 r0 中点二维 p50：0.1124 m；执行中 p50：0.0442 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d0_mlp_history_seed1
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d0，seed 1
-- 训练：3200 次优化更新，最优验证损失 0.1119（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1126（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_mlp_history_seed1.pt`
-- test t=0 终态 r0 中点二维 p50：0.1066 m；执行中 p50：0.0467 m
+- test t=0 终态 r0 中点二维 p50：0.1091 m；执行中 p50：0.0444 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d0_mlp_history_seed2
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d0，seed 2
-- 训练：3200 次优化更新，最优验证损失 0.1138（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1130（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_mlp_history_seed2.pt`
-- test t=0 终态 r0 中点二维 p50：0.1104 m；执行中 p50：0.0470 m
+- test t=0 终态 r0 中点二维 p50：0.1085 m；执行中 p50：0.0445 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d0_transformer_history_seed0
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d0，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.2028（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1008（第 3000 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_transformer_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1255 m；执行中 p50：0.0616 m
+- test t=0 终态 r0 中点二维 p50：0.0959 m；执行中 p50：0.0600 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d0_transformer_history_seed1
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d0，seed 1
-- 训练：3200 次优化更新，最优验证损失 0.2133（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1070（第 3000 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_transformer_history_seed1.pt`
-- test t=0 终态 r0 中点二维 p50：0.1251 m；执行中 p50：0.0592 m
+- test t=0 终态 r0 中点二维 p50：0.0929 m；执行中 p50：0.0606 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d0_transformer_history_seed2
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d0，seed 2
-- 训练：3200 次优化更新，最优验证损失 0.2128（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1064（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d0_transformer_history_seed2.pt`
-- test t=0 终态 r0 中点二维 p50：0.1257 m；执行中 p50：0.0619 m
+- test t=0 终态 r0 中点二维 p50：0.0950 m；执行中 p50：0.0611 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_current_seed0
 
 - 架构：`mlp_current`，参数 686,913；训练档位 d1，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.2135（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1212（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1258 m；执行中 p50：0.0543 m
+- test t=0 终态 r0 中点二维 p50：0.0867 m；执行中 p50：0.0523 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_current_seed1
 
 - 架构：`mlp_current`，参数 686,913；训练档位 d1，seed 1
-- 训练：3200 次优化更新，最优验证损失 0.2122（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1241（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_current_seed1.pt`
-- test t=0 终态 r0 中点二维 p50：0.1241 m；执行中 p50：0.0590 m
+- test t=0 终态 r0 中点二维 p50：0.0922 m；执行中 p50：0.0528 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_current_seed2
 
 - 架构：`mlp_current`，参数 686,913；训练档位 d1，seed 2
-- 训练：3200 次优化更新，最优验证损失 0.2140（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1212（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_current_seed2.pt`
-- test t=0 终态 r0 中点二维 p50：0.1244 m；执行中 p50：0.0597 m
+- test t=0 终态 r0 中点二维 p50：0.0897 m；执行中 p50：0.0569 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_history_seed0
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d1，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.1117（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1141（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1063 m；执行中 p50：0.0434 m
+- test t=0 终态 r0 中点二维 p50：0.1084 m；执行中 p50：0.0428 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_history_seed1
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d1，seed 1
-- 训练：3200 次优化更新，最优验证损失 0.1124（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1111（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_history_seed1.pt`
-- test t=0 终态 r0 中点二维 p50：0.1086 m；执行中 p50：0.0437 m
+- test t=0 终态 r0 中点二维 p50：0.1082 m；执行中 p50：0.0444 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_mlp_history_seed2
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d1，seed 2
-- 训练：3200 次优化更新，最优验证损失 0.1136（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1148（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_mlp_history_seed2.pt`
-- test t=0 终态 r0 中点二维 p50：0.1094 m；执行中 p50：0.0426 m
+- test t=0 终态 r0 中点二维 p50：0.1076 m；执行中 p50：0.0449 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_transformer_history_seed0
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d1，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.2010（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.0987（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1242 m；执行中 p50：0.0616 m
+- test t=0 终态 r0 中点二维 p50：0.0925 m；执行中 p50：0.0594 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_transformer_history_seed1
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d1，seed 1
-- 训练：3200 次优化更新，最优验证损失 0.2076（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1015（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_transformer_history_seed1.pt`
-- test t=0 终态 r0 中点二维 p50：0.1238 m；执行中 p50：0.0598 m
+- test t=0 终态 r0 中点二维 p50：0.0941 m；执行中 p50：0.0574 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d1_transformer_history_seed2
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d1，seed 2
-- 训练：3200 次优化更新，最优验证损失 0.2085（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1033（第 3000 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d1_transformer_history_seed2.pt`
-- test t=0 终态 r0 中点二维 p50：0.1240 m；执行中 p50：0.0611 m
+- test t=0 终态 r0 中点二维 p50：0.0945 m；执行中 p50：0.0623 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d2_mlp_history_seed0
 
 - 架构：`mlp_history`，参数 1,608,513；训练档位 d2，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.1138（第 2400 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.1147（第 3000 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d2_mlp_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1086 m；执行中 p50：0.0440 m
+- test t=0 终态 r0 中点二维 p50：0.1088 m；执行中 p50：0.0426 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积
 
 ## d2_transformer_history_seed0
 
 - 架构：`transformer_history`，参数 895,937；训练档位 d2，seed 0
-- 训练：3200 次优化更新，最优验证损失 0.2006（第 2800 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
+- 训练：3200 次优化更新，最优验证损失 0.0994（第 3200 次更新），AdamW lr 3e-4 / wd 1e-4 / clip 1.0
 - 输入：≤33 token × 57 维窗口（MLP-current 只用锚点与最新 token）
 - 输出头：固定 Δt 过程头 5 组 + option 终态头 6 组，均为原始单位
 - 检查点：`outputs/night_sequence_v1/runs/d2_transformer_history_seed0.pt`
-- test t=0 终态 r0 中点二维 p50：0.1244 m；执行中 p50：0.0611 m
+- test t=0 终态 r0 中点二维 p50：0.0935 m；执行中 p50：0.0566 m
 - 用途：预测技能结束时的可观测终态；**不用于**闭环规划、不用于自由 rollout
 - 已知限制：归一化是按组单标量（非逐列）；几何标签仅在真实可见 mask 上评价；闭式前缀条件预测，未验证递推误差累积

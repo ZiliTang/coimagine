@@ -25,6 +25,30 @@ import torch.nn as nn
 from experiments.night_sequence_v1.sequences import EXIT_CODES
 from experiments.night_sequence_v1.windows import FEATURES, WINDOW
 
+
+def last_valid_index(valid: torch.Tensor) -> torch.Tensor:
+    """Index of the last real token, i.e. the most recent observation in the window.
+
+    Windows are built by placing the real tokens at the **right** end (left padding), so the most
+    recent observation is always the last slot. Deriving the index from ``valid.sum() - 1`` is only
+    correct for right padding, and under left padding it points into the padded zeros -- at t=0 it
+    points at slot 0, which is padding, so the whole input became zeros and the output stopped
+    depending on the command at all. The index is taken from the mask itself instead.
+    """
+
+    positions = torch.arange(valid.shape[1], device=valid.device).unsqueeze(0)
+    masked = torch.where(valid > 0.5, positions, torch.full_like(positions, -1))
+    return masked.max(dim=1).values.clamp(min=0)
+
+
+def first_valid_index(valid: torch.Tensor) -> torch.Tensor:
+    """Index of the first real token, i.e. the O0 anchor slot."""
+
+    positions = torch.arange(valid.shape[1], device=valid.device).unsqueeze(0)
+    masked = torch.where(valid > 0.5, positions,
+                         torch.full_like(positions, valid.shape[1]))
+    return masked.min(dim=1).values.clamp(max=valid.shape[1] - 1)
+
 # head output widths
 PROCESS_GEOMETRY = 8
 PROCESS_POSE = 6
@@ -94,10 +118,10 @@ class MLPCurrent(ModelBase):
         self.heads = Heads(hidden, dropout)
 
     def forward(self, window: torch.Tensor, valid: torch.Tensor) -> Dict[str, torch.Tensor]:
-        anchor = window[:, 0, :]
-        # the last real token of the window
-        lengths = valid.sum(dim=1).clamp(min=1).long() - 1
-        current = window[torch.arange(window.shape[0]), lengths, :]
+        batch = window.shape[0]
+        rows = torch.arange(batch, device=window.device)
+        anchor = window[rows, first_valid_index(valid), :]      # the O0 slot, not slot 0
+        current = window[rows, last_valid_index(valid), :]      # the most recent real token
         features = self.trunk(torch.cat([anchor, current], dim=-1))
         return {name: getattr(self.heads, name)(features) for name in GROUP_NAMES}
 
@@ -218,8 +242,8 @@ class TransformerHistory(ModelBase):
             x = block(x, allow)
             x = x * valid.unsqueeze(-1)
         x = self.final_norm(x) * valid.unsqueeze(-1)
-        indices = valid.sum(dim=1).clamp(min=1).long() - 1
-        features = x[torch.arange(x.shape[0]), indices, :]
+        indices = last_valid_index(valid)
+        features = x[torch.arange(x.shape[0], device=x.device), indices, :]
         return {name: getattr(self.heads, name)(features) for name in GROUP_NAMES}
 
 
