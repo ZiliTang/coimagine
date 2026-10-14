@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `21c95a7098061d1ce4c75ea47d8c094f1db1f00c`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `c715893b185d9e18148207f62ffd571127a6c7f1`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -8,29 +8,31 @@ git commit `21c95a7098061d1ce4c75ea47d8c094f1db1f00c`; round base `d7731ca`; pat
 |---|---:|---|
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 3208d48096675c5c48b5e4917eb34d491fad46902cf67f1ec21daa427c7c1e3e |
+| docs/night_sequence_v1/FIT_DIAGNOSTIC.md | 6055 | f23a1dd8225ef4f31e1adb909524439ad32d25c45461ba83902896f7bbb2ac60 |
 | docs/night_sequence_v1/IMPLEMENTATION_FIX.md | 6728 | f76c63acfdcc45fd13e929238ff16f70d64cde82edea1eb19a14c3339a2e6239 |
 | docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | 37792867095024219376ad182b170419f70d4e2c1f80e3bb0769bbabd6ff7fae |
 | docs/night_sequence_v1/MODEL_CARDS.md | 14872 | d3d5be3527b5791fffaefaab638bb48790a889db07a174769f382b1d4998e8de |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
-| docs/night_sequence_v1/REPORT.md | 18510 | 828f7ebab5c66f1e3fe07912060e631e4af8b76ccf6011db1457da7af19e66ed |
+| docs/night_sequence_v1/REPORT.md | 21236 | ad47ea888eb9b989c2daa209ba3eafa0ec97bf4bc2ad1376abe7ab3c0804cf11 |
 | docs/night_sequence_v1/RUN_LEDGER.md | 3607 | dee859cc9b726ce8f1c90213866b72fc903746b22b3cf8a3ec2bb2c48aadeb7d |
-| docs/night_sequence_v1/STATUS.md | 2875 | 8ea9874b25ba4964c26e20874cfa335daf42b8a67305255997ee4fca8dd28b23 |
-| docs/night_sequence_v1/round5.patch | 319283 | dedb4d64788f30599467d67b0ee998e886a2e82af1e6908856defdf3e953fa3e |
-| docs/night_sequence_v1/round5_diffstat.txt | 1493 | 03f0757446d5aed2470deab79012d03f26bc77b4010c83226b4d19239bc300a1 |
+| docs/night_sequence_v1/STATUS.md | 2875 | 6f71a4a771391ed5a9b17f5ed8e23d20db68f182d0a0cc70638148c39f134cf9 |
+| docs/night_sequence_v1/round5.patch | 351588 | 6f2e318d0e41f8625bc1d520e64e4f8b09ece968b1d545242d315b7e9e937550 |
+| docs/night_sequence_v1/round5_diffstat.txt | 1559 | beb240925523c952197facbd4c837e3c51615f16ddafb78ba27e11b6ceb133d5 |
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 13717 | cad569eb8bf2aed4e6de4bb3376ed1c1cab802b7bca0cef8e43339b5bdfa38a5 |
-| experiments/night_sequence_v1/assets.py | 72767 | 0669ccae95668c3007c52403456acfecc1b13e0651f18b1c3a457edc776c7cf3 |
+| experiments/night_sequence_v1/assets.py | 76194 | 086d6fb545336126bac95a705e8ea328bbe41dc37f84631898feabf391de7157 |
 | experiments/night_sequence_v1/collect.py | 9938 | 5ec09658a336a677690995b8078ceb61de806e7169aa2a843f4e174279fd9401 |
 | experiments/night_sequence_v1/data_index.py | 5543 | 590c6669cb34849952efc4afdc506b1045ff090838785152fddadd2861e1370d |
 | experiments/night_sequence_v1/dataset.py | 12105 | 836961959a753d9ff09a7b715e0238bd826ba9af0b2c97ae2293f3a2c65768d1 |
 | experiments/night_sequence_v1/evaluate.py | 28113 | 42c7676438231738d7deedd5cc70547eb4b5d4e66a7d4a913fc33be6309e3e40 |
+| experiments/night_sequence_v1/fit_diagnostic.py | 22849 | 4e388f0c9b9d327e5f2cf16eb8861b0f0cb9419ef0aa8d7fd6f3e0ac0cc65240 |
 | experiments/night_sequence_v1/fix_time_labels.py | 3135 | 9257e1254ba2a70f1ceb219733918a96302174fd67d0f13336907f4ed3f3d2f3 |
-| experiments/night_sequence_v1/make_bundle.py | 11097 | 95ce6afe0aae168e708433d728d4dd2d621fe39332ad117166dea775c370427a |
+| experiments/night_sequence_v1/make_bundle.py | 11190 | be6ad7c10ccfdeafc0481d3d3a8981da24b229d04431ccf4e44a115bbd91e6aa |
 | experiments/night_sequence_v1/model_cards.py | 4019 | 97be3aed45fa7932d177cdb3ad2ba4b2acbb0aa95e9f4979f8f65377cd6b034c |
 | experiments/night_sequence_v1/models.py | 11786 | a0ce0a99d17c984d3bfd3271b0dd647ccf04543c3729185fc5ed56d94d0162af |
 | experiments/night_sequence_v1/predict.py | 8257 | d9940e98956fc098114fcd0e895fdda5a8308266e413ef464f94745e8d720302 |
-| experiments/night_sequence_v1/report.py | 25096 | 88d3be6235d3bd913fdeab8aac87e2ed438ec78b75bb0eba55a3b2e4b4626dee |
+| experiments/night_sequence_v1/report.py | 30246 | a84344e4a2d3576e7d67d624e43cfbde6bfdf2a8904b4138703042028e5479d2 |
 | experiments/night_sequence_v1/run_matrix.py | 3568 | 78d5136bc3c1c7b2d6f40ad251b6dd2c06d291c5973568821c5fb33edad87423 |
 | experiments/night_sequence_v1/sequence_metrics.py | 3525 | 1326d491b9f5bafe79dd618cf2a1415dbc8f3446d5f461b601157606a401020f |
 | experiments/night_sequence_v1/sequences.py | 19341 | f16ace278bc65c3c4780b98145f94cfbe2f7a508e4523aaaddf6f9a0ce73209c |
@@ -48,6 +50,12 @@ git commit `21c95a7098061d1ce4c75ea47d8c094f1db1f00c`; round base `d7731ca`; pat
 | outputs/night_sequence_v1/collection_d0.json | 19686 | 5afba4f6d3ce257bcec52887134cbeefae21133313ad2ef7c8ce41c890b8efbf |
 | outputs/night_sequence_v1/collection_d1.json | 142566 | 81750af8e35bea30e50f73f0b1312a79c47f746821c451e4c79228b80561f386 |
 | outputs/night_sequence_v1/collection_eval.json | 30119 | 7d10005fcaa624a0b5918a18a1419561bc1749bb7eda3bdd8c509092e690babd |
+| outputs/night_sequence_v1/fit_diagnostic/all_d1.json | 1061 | dedc44b53230f264b67b3630c9988dfbb433a09336b52bd3e0bbfd89b16aab73 |
+| outputs/night_sequence_v1/fit_diagnostic/protocol_d1.json | 1874 | d1949ac25b3118f3ce5dd02500ea19b20bf94e2f5580f6179f03bbf8543ce91c |
+| outputs/night_sequence_v1/fit_diagnostic/single_d1.json | 999 | adaa399094231ee9e4461cf32420df49f94f76ccf2f624d75862c296ae28059c |
+| outputs/night_sequence_v1/fit_diagnostic/single_next_d1.json | 1013 | 1421a24212f3a0a89f549dbb25d49b162a1bfe9a0bf38891115cc3596a6f4f19 |
+| outputs/night_sequence_v1/fit_diagnostic/single_terminal_d1.json | 1009 | e121dd7e462017cf36383b82948612374fe180b23855f48d523ce92e196ed8d9 |
+| outputs/night_sequence_v1/fit_diagnostic/tiny_d1.json | 2008 | cd9c4acde9020d0db915d27dd727aabe939e2f55eefca8e6f2447156b73e9108 |
 | outputs/night_sequence_v1/roots_night.json | 77660896 | 296fc573911b61dd26fb85011a3df7a3703f382d5faba026cdc0725150a64b00 |
 | outputs/night_sequence_v1/run_ledger.jsonl | 12311 | 68efc31cc7bc3f956762ebdd182fabb7640b0fa1cb6c7cd77ab63a41abde1dde |
 | outputs/night_sequence_v1/runs/d0_mlp_history_seed0.curves.json | 10265 | 23a1129bcc3a806459939626e804091baffcf43a90463a74749bfb5167948df9 |
@@ -75,16 +83,16 @@ git commit `21c95a7098061d1ce4c75ea47d8c094f1db1f00c`; round base `d7731ca`; pat
 | outputs/night_sequence_v1/sequences/val_00000.npz | 248400 | d970638a353cb2d1071f3f38522c3cbc77fe963492f4aaba1e528d7156abf918 |
 | outputs/night_sequence_v1/token_summary.json | 1484 | 5d01df57fd3e893f373ef1d5d119352c20aac638fa077089c3dd8acdcca454e3 |
 | outputs/night_sequence_v1/tokens_sample/tokens_d0.npz | 543695 | 8088c9c309ba4642d65e8e41cb84debed7b11c6857fa3f8959e9e65d6be04ccf |
-| presentation_assets/INDEX.md | 8160 | 98909a3dfea5e91b6fd9aef76304d184a6c2ce1ef26ee05b51de4efb9ee805c8 |
+| presentation_assets/INDEX.md | 8439 | ebb2634fc5ea99cb4f939323b467a1ece9b649a6f879415a5faceda7d6fa1283 |
 | presentation_assets/figures/F01_motivation_and_mainline.png | 243187 | 47ad1db52809809ba6f7edbeba95ebb25d8c0aff3602947a06fe992659900dc9 |
 | presentation_assets/figures/F02_environment_and_scenes.png | 91094 | c3f1fc5d7d15b8e259bffbdcab57fa0e89dd5cb8b4fffc3deb1ef0a208544c79 |
 | presentation_assets/figures/F03_option_execution.png | 207764 | 5e3004e7d381917da1f7cbf37dc4b05659981bdb212032699d8af456f0d2e315 |
 | presentation_assets/figures/F04_data_coverage.png | 278479 | 0de8d78ee9201971ca41dc75ce6c482e36601ffd3c3d2b18c6b7c197e5314cea |
 | presentation_assets/figures/F05_models_and_task.png | 257360 | fbdcb696f117b588f2dedaca1a49081eddb12c77a5248ad9d5aedcc4c611a828 |
-| presentation_assets/figures/F06_learning_curves.png | 331726 | d5a14c3161dd4fc686c60ef7af921b6898a3cfef8b750450d46ea39dab855774 |
+| presentation_assets/figures/F06_learning_curves.png | 374701 | 738f9eba7f96c4f8205505ce38ea809d987aec4371231c4f65fecee9a0abea30 |
 | presentation_assets/figures/F07_prediction_performance.png | 365980 | 1caa59df3d45afe1353d71510601f1a80f7e95c327472701ef86a797611d41a9 |
 | presentation_assets/figures/F08_closed_loop_implications.png | 207440 | aff5d389bd1dd864e24907e3e5d51baf95f3e97c18df6317e7f336e6d959b567 |
-| presentation_assets/overview.png | 762142 | 3f91ac044818a6dfcef53e3faec2bc3e6bac3781443222f7a610c427950e42ee |
+| presentation_assets/overview.png | 767912 | 8755be00dfbca3e0f36383c6061a579207eed78b7abbf64f30de495a66dd5b61 |
 | presentation_assets/progress_facts.csv | 698 | 5230c925bdc8fc4e47d0d11924a5cc3ef8506871943c39c59f7f38b7eea86a2f |
 | tests/test_night_sequence_v1.py | 26225 | 12a97b148cd8bd9ec4124f25574bae1cfcc80caf496fb2583a826da01296694c |
 

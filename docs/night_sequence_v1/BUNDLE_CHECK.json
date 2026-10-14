@@ -1,6 +1,6 @@
 {
  "assets": {
-  "bytes": 3501375,
+  "bytes": 3556905,
   "figures": [
    "presentation_assets/figures/F01_motivation_and_mainline.png",
    "presentation_assets/figures/F02_environment_and_scenes.png",
@@ -12,10 +12,10 @@
    "presentation_assets/figures/F08_closed_loop_implications.png",
    "presentation_assets/overview.png"
   ],
-  "files": 43,
+  "files": 44,
   "index_present": true,
   "progress_facts": true,
-  "uncompressed": 4253901,
+  "uncompressed": 4321964,
   "videos": [
    "presentation_assets/videos/execution_failure.mp4",
    "presentation_assets/videos/execution_success.mp4"
@@ -45,15 +45,15 @@
  },
  "review": {
   "bundle": "night_sequence_v1_review.zip",
-  "bytes": 23404585,
+  "bytes": 23471745,
   "checkpoints": [
    "outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt",
    "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt",
    "outputs/night_sequence_v1/runs/d1_transformer_history_seed0.pt"
   ],
   "duplicates": 0,
-  "entries": 82,
-  "listed": 81,
+  "entries": 90,
+  "listed": 89,
   "missing": [],
   "sequences_included": [
    "outputs/night_sequence_v1/sequences/d0_00000.npz",
