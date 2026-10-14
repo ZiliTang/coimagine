@@ -23,6 +23,7 @@ import torch.nn as nn
 from experiments.night_sequence_v1.models import (  # noqa: E402
     CausalBlock,
     PositionalEncoding,
+    last_valid_index,
 )
 from experiments.night_sequence_v1.windows import FEATURES, WINDOW  # noqa: E402
 from experiments.transformer_scale_latent_v1.data import OBSERVATION_WIDTH  # noqa: E402
@@ -61,9 +62,19 @@ class Encoder(nn.Module):
 
 
 def last_real(hidden: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
+    """The hidden state of the most recent **real** token.
+
+    Windows are left-padded, so the newest observation sits at the last slot and the *first* slot is
+    padding whenever fewer than ``WINDOW`` tokens exist. ``valid.sum() - 1`` is only correct for
+    right padding: it returns the position counting from the left, which for a short history lands
+    inside the zero padding (at t=0 it returns slot 0, whose encoder row is zeroed), so the summary
+    became a constant independent of the input. The index is taken from the mask itself through the
+    shared helper, and there is deliberately only one implementation of this rule.
+    """
+
+    index = last_valid_index(valid)
     rows = torch.arange(hidden.shape[0], device=hidden.device)
-    lengths = valid.sum(dim=1).clamp(min=1).long() - 1
-    return hidden[rows, lengths, :]
+    return hidden[rows, index, :]
 
 
 def horizon_encoding(horizon: int, dim: int, device) -> torch.Tensor:
@@ -160,11 +171,19 @@ class LatentAutoregressive(nn.Module):
         latents: List[torch.Tensor] = []
         for step in range(horizon):
             if freeze_latent:
-                latent = summary                     # ablation: no recurrence at all
-            latents.append(latent)
+                # The ablation decodes the *initial* encoding at every future instant, so the
+                # readout for t+(k+1)dt uses z0 rather than z_(k+1).
+                latents.append(summary)
+                continue
+            # ``z_(k+1) = z_k + Transition(z_k, command, clock, dt)`` and the readout for
+            # t+(k+1)dt is ``Decoder(z_(k+1))``: the transition is applied *before* the latent is
+            # handed to the decoder. The previous version appended first and therefore decoded the
+            # un-advanced z0 at k=1, which made the ablation identical to the normal path at the
+            # first step by construction.
             clock = torch.stack([elapsed + step * 0.05, torch.full_like(elapsed, 0.05)], dim=-1)
             delta = self.transition(torch.cat([latent, command, clock], dim=-1))
             latent = latent + delta
+            latents.append(latent)
         codes = self.code_table[:horizon].to(window.device)
         stacked = torch.stack(latents, dim=1)
         batch = window.shape[0]

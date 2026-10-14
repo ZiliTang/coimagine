@@ -53,7 +53,7 @@ def score(checkpoint: Path, tokens: Tokens, panel: Dict[str, np.ndarray],
     batch = RD.build_batch(tokens, panel["index"], panel["end"])
     truth, mask, reference = batch.next_mid, batch.next_mask, batch.reference
     end = panel["end"]
-    out: Dict[str, object] = {"checkpoint": str(checkpoint.relative_to(ROOT)),
+    out: Dict[str, object] = {"checkpoint": str(checkpoint.relative_to(ROOT)) if str(checkpoint).startswith(str(ROOT)) else str(checkpoint),
                               "parameters": parameter_count(model),
                               "model_kwargs": saved["model_kwargs"],
                               "best_val": saved.get("best_val")}

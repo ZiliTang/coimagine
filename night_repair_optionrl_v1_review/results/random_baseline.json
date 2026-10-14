@@ -1,0 +1,18 @@
+{
+ "validation": {
+  "episodes": 64,
+  "successes": 9,
+  "success_rate": 0.140625,
+  "mean_net_progress_m": 0.37614318127982316,
+  "median_skills": 12.0,
+  "mean_return": -0.7874287465757555
+ },
+ "test": {
+  "episodes": 64,
+  "successes": 23,
+  "success_rate": 0.359375,
+  "mean_net_progress_m": -0.041860412457884175,
+  "median_skills": 12.0,
+  "mean_return": 1.85796992872353
+ }
+}

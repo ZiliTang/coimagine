@@ -200,3 +200,82 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# ---------------------------------------------------------------------------
+# fresh-prefix sampling (repair 2.3)
+# ---------------------------------------------------------------------------
+
+
+class RootRecordIndex:
+    """Structure-only index: which records belong to which root.
+
+    Building this once is a legitimate cache of the *corpus layout*. What must not be cached is the
+    **sample**: the previous harness drew 4096 windows once at start-up and replayed them for every
+    epoch, and because the balanced sampler took the first record of each root it never saw the other
+    command variants or time points. Each epoch now draws: a root (balanced), a random skill record
+    inside that root, and a random legal end instant inside that record.
+    """
+
+    def __init__(self, tokens: Tokens, splits: Sequence[str]):
+        self.tokens = tokens
+        rows = np.where(np.isin(tokens.split_of, list(splits)))[0]
+        self.rows = rows
+        self.by_root: Dict[str, List[int]] = {}
+        for row in rows:
+            self.by_root.setdefault(str(tokens.roots[row]), []).append(int(row))
+        self.roots = sorted(self.by_root)
+        self.records_per_root = float(np.mean([len(v) for v in self.by_root.values()])) \
+            if self.by_root else 0.0
+
+    def draw(self, count: int, rng: np.random.Generator, *, horizon: int = 8,
+             min_future: int = 1, t0_fraction: float = 0.25) -> Tuple[np.ndarray, np.ndarray]:
+        index: List[int] = []
+        ends: List[int] = []
+        order = rng.permutation(len(self.roots))
+        while len(index) < count:
+            progressed = False
+            for position in order:
+                if len(index) >= count:
+                    break
+                root = self.roots[position]
+                pool = self.by_root[root]
+                if not pool:
+                    continue
+                row = int(pool[rng.integers(0, len(pool))])
+                steps = int(self.tokens.steps[row])
+                upper = steps - 1 - min(min_future, max(0, steps - 2))
+                upper = max(1, upper)
+                if t0_fraction > 0.0 and rng.random() < t0_fraction:
+                    ends.append(0)
+                else:
+                    ends.append(int(rng.integers(0, upper)))
+                index.append(row)
+                progressed = True
+            if not progressed:
+                break
+        return np.asarray(index, dtype=np.int64), np.asarray(ends, dtype=np.int64)
+
+
+def sample_statistics(tokens: Tokens, index: np.ndarray, ends: np.ndarray,
+                      horizon: int) -> Dict[str, object]:
+    """What a sample actually covered, so a fixed pool cannot be passed off as full coverage."""
+
+    roots = [str(tokens.roots[i]) for i in index]
+    records = [str(tokens.records[i]) for i in index]
+    pairs = {f"{r}@{int(e)}" for r, e in zip(records, ends)}
+    commands = []
+    future_frames = 0
+    for i, end in zip(index, ends):
+        split = tokens.split_of[i]
+        local = int(i) - tokens.offsets[split]
+        token = tokens.token_arrays[split][local, int(end)]
+        commands.append(tuple(np.round(token[51:57].astype(float), 3).tolist())
+                        + (int(token[55] > 0.5), int(token[56] > 0.5)))
+        future_frames += max(0, min(horizon, int(tokens.steps[i]) - 1 - int(end)))
+    return {"windows": int(len(index)), "unique_roots": len(set(roots)),
+            "unique_records": len(set(records)), "unique_record_prefix_pairs": len(pairs),
+            "unique_command_signatures": len(set(commands)),
+            "t0_windows": int((ends == 0).sum()), "t_gt_0_windows": int((ends > 0).sum()),
+            "t0_fraction": float((ends == 0).mean()) if len(ends) else 0.0,
+            "valid_future_frames": int(future_frames)}

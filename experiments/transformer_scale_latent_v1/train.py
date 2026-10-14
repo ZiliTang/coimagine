@@ -291,38 +291,70 @@ def _geometry_output(model, kind: str, batch: D.MultiStepBatch, horizon: int,
     return output["steps"]["geometry"].cpu().numpy().astype(np.float64)
 
 
-def train(kind: str, config: Dict[str, object], seed: int, *, horizon: int = 8,
+def train(kind: str, config: Dict[str, object], seed: int, *, min_future_default: int = 1,
+          horizon: int = 8,
           updates: int = 3200, batch_size: int = 128, lr: float = 3e-4,
           validate_every: int = 200, threads: int = 0, out_dir: Path = OUT,
           tier: str = "d1", tag: str = None, log: bool = True) -> dict:
     if threads:
         torch.set_num_threads(threads)
+    out_dir = Path(out_dir).resolve()
     set_all_seeds(seed)
     device = torch.device("cpu")
     tokens = Tokens(D.TIER_SPLITS[tier])
-    train_index, train_ends = D.sample_windows(tokens, ["d0", "d1ext"], 4096, seed=seed + 1,
-                                               horizon=horizon, min_future=horizon)
+    # repair 2.3: the corpus **layout** is indexed once, but the sample is drawn fresh. The previous
+    # harness fixed 4096 windows at start-up and replayed them for every epoch, and the balanced
+    # sampler took the first record of each root, so seven of eight command variants per root were
+    # never seen.
+    training_index = D.RootRecordIndex(tokens, ["d0", "d1ext"])
+    index, ends = training_index.draw(4096, np.random.default_rng(seed + 1), horizon=horizon,
+                                      min_future=min(min_future_default, horizon))
     val_index, val_ends = D.sample_windows(tokens, ["val"], 1024, seed=seed + 2,
                                            horizon=horizon, min_future=1)
-    stats = fit_statistics(tokens, train_index, train_ends, horizon)
-    # materialise both panels once: rebuilding every window on every update dominated the step time
-    train_panel = C.build_multistep_cache(tokens, train_index, train_ends, horizon)
+    # the transform statistics come from a large fixed draw so they do not wobble epoch to epoch
+    fit_index, fit_ends = D.sample_windows(tokens, ["d0", "d1ext"], 8192, seed=seed + 7,
+                                           horizon=horizon, min_future=1)
+    stats = fit_statistics(tokens, fit_index, fit_ends, horizon)
+    train_panel = C.build_multistep_cache(tokens, index, ends, horizon)
     val_panel = C.build_multistep_cache(tokens, val_index, val_ends, horizon)
+    coverage = {"epochs": [], "cumulative_windows": 0, "cumulative_unique_roots": 0,
+                "cumulative_unique_records": 0, "cumulative_unique_record_prefix_pairs": 0}
+    seen_roots: set = set()
+    seen_records: set = set()
+    seen_pairs: set = set()
+    # record the initial draw too, so coverage is not understated by one epoch
+    coverage["epochs"].append(D.sample_statistics(tokens, index, ends, horizon))
+    coverage["cumulative_windows"] += int(len(index))
+    seen_roots.update(str(tokens.roots[i]) for i in index)
+    seen_records.update(str(tokens.records[i]) for i in index)
+    seen_pairs.update(f"{tokens.records[i]}@{int(e)}" for i, e in zip(index, ends))
     model = build_model(kind, config).to(device)
     optimiser = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=updates,
                                                           eta_min=lr * 0.05)
     generator = np.random.default_rng(seed)
-    order = generator.permutation(len(train_index))
+    order = generator.permutation(len(index))
     curves: List[dict] = []
     best = {"loss": float("inf"), "update": -1, "state": None}
+    checkpoint_path = out_dir / "checkpoints" / f"{(tag or kind)}.pt"
+    checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     started = time.perf_counter()
     cursor = 0
     model.train()
     for update in range(1, updates + 1):
         if cursor + batch_size > len(order):
+            # a new epoch: draw a **new** sample of prefixes, not a reshuffle of the same windows
             cursor = 0
-            order = generator.permutation(len(order))
+            index, ends = training_index.draw(4096, generator, horizon=horizon,
+                                              min_future=min(min_future_default, horizon))
+            train_panel = C.build_multistep_cache(tokens, index, ends, horizon)
+            order = generator.permutation(len(index))
+            epoch_stats = D.sample_statistics(tokens, index, ends, horizon)
+            coverage["epochs"].append(epoch_stats)
+            coverage["cumulative_windows"] += epoch_stats["windows"]
+            seen_roots.update(str(tokens.roots[i]) for i in index)
+            seen_records.update(str(tokens.records[i]) for i in index)
+            seen_pairs.update(f"{tokens.records[i]}@{int(e)}" for i, e in zip(index, ends))
         rows = order[cursor:cursor + batch_size]
         cursor += batch_size
         batch = _take_multistep(train_panel, rows)
@@ -332,6 +364,26 @@ def train(kind: str, config: Dict[str, object], seed: int, *, horizon: int = 8,
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         optimiser.step()
         schedule.step()
+        if update % 400 == 0 or update == updates:
+            # atomic periodic write: an interrupted run must not lose the whole night
+            temporary = checkpoint_path.with_suffix(".tmp")
+            torch.save({"state_dict": model.state_dict(), "kind": kind, "config": config,
+                        "stats": {k: (v.tolist() if isinstance(v, np.ndarray) else v)
+                                  for k, v in stats.items()},
+                        "seed": seed, "horizon": horizon, "updates": updates, "lr": lr,
+                        "tier": tier, "parameters": parameter_breakdown(model),
+                        "update": update, "optimiser": optimiser.state_dict(),
+                        "scheduler": schedule.state_dict(),
+                        "rng_numpy": generator.bit_generator.state,
+                        "torch_rng": torch.get_rng_state(),
+                        "sampler": "RootRecordIndex.draw per epoch",
+                        "coverage": {**{k: v for k, v in coverage.items() if k != "epochs"},
+                                     "epochs": len(coverage["epochs"]),
+                                     "unique_roots_seen": len(seen_roots),
+                                     "unique_records_seen": len(seen_records),
+                                     "unique_record_prefix_seen": len(seen_pairs)},
+                        "resume_kind": "optimiser + scheduler + rng + sampler state"}, temporary)
+            temporary.replace(checkpoint_path)
         if update % validate_every == 0 or update == updates:
             report = evaluate(model, kind, tokens, val_panel, stats, horizon, device)
             curves.append({"update": update, "train_total": float(loss.detach()),
@@ -355,12 +407,24 @@ def train(kind: str, config: Dict[str, object], seed: int, *, horizon: int = 8,
                 "seed": seed, "horizon": horizon, "updates": updates, "lr": lr,
                 "tier": tier, "parameters": parameter_breakdown(model),
                 "best_val": best["loss"], "best_update": best["update"],
-                "train_windows": int(len(train_index)), "val_windows": int(len(val_index))}, path)
+                "train_windows": int(len(index)), "val_windows": int(len(val_index)),
+                "coverage": {**{k: v for k, v in coverage.items() if k != "epochs"},
+                             "epochs": len(coverage["epochs"]),
+                             "unique_roots_seen": len(seen_roots),
+                             "unique_records_seen": len(seen_records),
+                             "unique_record_prefix_seen": len(seen_pairs)}}, path)
     return {"name": name, "kind": kind, "seed": seed, "horizon": horizon, "updates": updates,
             "lr": lr, "parameters": parameter_breakdown(model), "best_val": best["loss"],
             "best_update": best["update"], "seconds": time.perf_counter() - started,
-            "curves": curves, "checkpoint": str(path.relative_to(ROOT)),
-            "config": config}
+            "curves": curves,
+            "checkpoint": str(path.relative_to(ROOT)) if str(path).startswith(str(ROOT))
+            else str(path),
+            "config": config,
+            "coverage": {**{k: v for k, v in coverage.items() if k != "epochs"},
+                         "epochs": len(coverage["epochs"]),
+                         "unique_roots_seen": len(seen_roots),
+                         "unique_records_seen": len(seen_records),
+                         "unique_record_prefix_seen": len(seen_pairs)}}
 
 
 def main() -> int:

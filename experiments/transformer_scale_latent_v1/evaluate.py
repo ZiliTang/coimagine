@@ -175,78 +175,150 @@ def hold_baseline(anchor: np.ndarray, truth: np.ndarray, geometry_mask: np.ndarr
     return np.where(keep, error, np.nan)
 
 
-def command_signature(panel_row_command: np.ndarray) -> str:
-    """The command key for P1. Both robots' active flags are included, as the task book requires."""
+#: 0.5 s of executed time per bin; expressed in whole 0.05 s steps so the fit and the lookup use
+#: integer arithmetic and cannot disagree on a float32 boundary
+ELAPSED_STEPS_PER_BIN = 10
 
-    c = np.asarray(panel_row_command, dtype=np.float64)
-    return f"{c[0]:.3f}|{c[1]:.3f}|{c[2]:.3f}|{c[3]:.3f}|{int(c[4] > 0.5)}|{int(c[5] > 0.5)}"
+
+def command_signature(command: np.ndarray) -> str:
+    """The P1 key. Both robots' commands **and** both active flags are included."""
+
+    c = np.asarray(command, dtype=np.float64)
+    return (f"{c[0]:.3f}|{c[1]:.3f}|{c[2]:.3f}|{c[3]:.3f}|"
+            f"{int(c[4] > 0.5)}|{int(c[5] > 0.5)}")
+
+
+def elapsed_bin(end: int) -> int:
+    """The executed-time bin, from the integer step index; identical in fit and lookup."""
+
+    return min(int(end) // ELAPSED_STEPS_PER_BIN, 60)
+
+
+def _group_key(command: np.ndarray, end: int) -> str:
+    return f"{command_signature(command)}|{elapsed_bin(end)}"
 
 
 def fit_p1(tokens: Tokens, index: np.ndarray, ends: np.ndarray, horizon: int,
            min_group: int = 8) -> Dict[str, object]:
-    """P1 fitted **on the training split only**: median residual displacement per
-    (command signature, elapsed bin, step). Falls back to the all-data median per step."""
+    """P1 fitted on the **training split only**, per robot, on truly visible labels.
+
+    For every (command, elapsed bin, step, robot) group this stores the median residual
+    displacement of the **visible** labels. A group with fewer than ``min_group`` labels is dropped
+    and the lookup falls back to that robot's global median for that step, so a thin group cannot
+    silently produce a confident number. The within-group spread is computed **inside** each group
+    and then aggregated twice: equally over groups, and weighted by group size, with the rule named
+    in the output.
+    """
 
     cache = C.build_multistep_cache(tokens, index, ends, horizon)
     command = cache.command.numpy()
-    elapsed = cache.elapsed.numpy()
-    keep = cache.step_mask > 0
-    table: Dict[str, Dict[int, np.ndarray]] = {}
-    global_table: Dict[int, List[np.ndarray]] = {step: [] for step in range(horizon)}
+    keep_step = cache.step_mask > 0
+    tables: Dict[int, Dict[str, Dict[int, List[np.ndarray]]]] = {0: {}, 1: {}}
+    global_values: Dict[int, Dict[int, List[np.ndarray]]] = {0: {}, 1: {}}
+    counts: Dict[int, Dict[int, int]] = {0: {}, 1: {}}
     for row in range(len(index)):
-        signature = command_signature(command[row])
-        bin_index = min(int(elapsed[row] // 0.5), 60)
-        key = f"{signature}|{bin_index}"
+        key = _group_key(command[row], int(ends[row]))
         for step in range(horizon):
-            if not keep[row, step]:
+            if not keep_step[row, step]:
                 continue
-            delta = cache.future["geometry"][row, step, MIDPOINTS] - cache.anchor[row]
-            table.setdefault(key, {}).setdefault(step, []).append(delta)
-            global_table[step].append(delta)
-    frozen = {key: {step: np.median(np.stack(values), axis=0)
-                    for step, values in steps.items() if len(values) >= min_group}
-              for key, steps in table.items()}
-    global_median = {step: np.median(np.stack(values), axis=0) for step, values in global_table.items()
-                     if values}
-    # how deterministic is the target given the public key? The within-group spread is the floor a
-    # perfectly informed lookup could reach, and it matters for reading every model number below.
-    spreads = {}
-    for step, values in global_table.items():
-        if not values:
-            continue
-        stacked = np.stack(values)
-        spreads[step] = float(np.median(np.hypot(stacked[:, 0] - np.median(stacked[:, 0]),
-                                                 stacked[:, 1] - np.median(stacked[:, 1]))) * 100)
+            for robot in (0, 1):
+                first = 0 if robot == 0 else 4
+                if cache.geometry_mask[row, step, first] <= 0:
+                    continue                       # an invisible label never enters a statistic
+                columns = [0, 1] if robot == 0 else [4, 5]
+                anchor_columns = [0, 1] if robot == 0 else [2, 3]
+                delta = cache.future["geometry"][row, step, columns] \
+                    - cache.anchor[row, anchor_columns]
+                tables[robot].setdefault(key, {}).setdefault(step, []).append(delta)
+                global_values[robot].setdefault(step, []).append(delta)
+                counts[robot][step] = counts[robot].get(step, 0) + 1
+    frozen: Dict[int, Dict[str, Dict[int, np.ndarray]]] = {0: {}, 1: {}}
+    spreads: Dict[int, Dict[str, Dict[str, float]]] = {0: {}, 1: {}}
+    for robot in (0, 1):
+        for key, steps in tables[robot].items():
+            for step, values in steps.items():
+                if len(values) < min_group:
+                    continue
+                stacked = np.stack(values)
+                frozen[robot].setdefault(key, {})[step] = np.median(stacked, axis=0)
+                centre = np.median(stacked, axis=0)
+                spreads[robot].setdefault(key, {})[step] = float(
+                    np.median(np.hypot(stacked[:, 0] - centre[0], stacked[:, 1] - centre[1])))
+    global_median: Dict[int, Dict[int, np.ndarray]] = {0: {}, 1: {}}
+    for robot in (0, 1):
+        for step, values in global_values[robot].items():
+            if values:
+                global_median[robot][step] = np.median(np.stack(values), axis=0)
+    # two named aggregations of the within-group spread; equal-weight is the headline because a
+    # large group should not dominate a statement about "how deterministic is one group"
+    equal_weight: Dict[int, Dict[int, float]] = {0: {}, 1: {}}
+    size_weight: Dict[int, Dict[int, float]] = {0: {}, 1: {}}
+    group_sizes: Dict[int, Dict[int, List[int]]] = {0: {}, 1: {}}
+    for robot in (0, 1):
+        for key, steps in spreads[robot].items():
+            for step, value in steps.items():
+                equal_weight[robot].setdefault(step, []).append(value)
+                size = len(tables[robot][key][step])
+                size_weight[robot].setdefault(step, []).append((value, size))
+                group_sizes[robot].setdefault(step, []).append(size)
+    summary = {}
+    for robot in (0, 1):
+        summary[f"r{robot}"] = {}
+        for step in range(horizon):
+            equal = equal_weight[robot].get(step, [])
+            weighted = size_weight[robot].get(step, [])
+            total = sum(size for _v, size in weighted)
+            summary[f"r{robot}"][f"step{step + 1}"] = {
+                "groups": len(equal),
+                "within_group_spread_cm_equal_weight":
+                    float(np.median(equal) * 100) if equal else None,
+                "within_group_spread_cm_size_weight":
+                    float(sum(v * s for v, s in weighted) / total * 100) if total else None,
+                "median_group_size": float(np.median(group_sizes[robot][step]))
+                if group_sizes[robot].get(step) else None,
+                "visible_labels": int(counts[robot].get(step, 0))}
     return {"table": frozen, "global": global_median, "min_group": min_group,
-            "groups": len(frozen), "within_group_spread_cm": spreads,
-            "note": "the global median displacement uses no grouping at all; it is the floor any "
-                    "learned model has to beat before a representation claim is meaningful"}
+            "groups": sum(len(frozen[r]) for r in (0, 1)),
+            "groups_per_robot": {f"r{r}": len(frozen[r]) for r in (0, 1)},
+            "within_group_spread": summary,
+            "time_binning": f"integer step index // {ELAPSED_STEPS_PER_BIN} (0.5 s per bin)",
+            "label_filter": "only labels whose own geometric visibility is true for that robot",
+            "fallback": f"a group with fewer than {min_group} visible labels is dropped; the "
+                        f"lookup then uses that robot's global median for the same step",
+            "note": "this replaces the previous 'within-group spread', which pooled every group and "
+                    "therefore measured the global spread; the 0.0517 cm figure is withdrawn"}
 
 
 def p1_predict(p1: Dict[str, object], tokens: Tokens, panel: Dict[str, np.ndarray],
                horizon: int) -> np.ndarray:
-    """P1's predicted physical geometry at every step, using the same residual reference."""
+    """P1's prediction, recording whether a real group statistic was actually used."""
 
     predictions = np.zeros((len(panel["index"]), horizon, 8))
-    hits = 0
+    used_group = np.zeros((len(panel["index"]), horizon), dtype=bool)
     for position, (i, end) in enumerate(zip(panel["index"], panel["end"])):
         split = tokens.split_of[i]
         local = int(i) - tokens.offsets[split]
         token = tokens.token_arrays[split][local, int(end)]
-        signature = command_signature(token[51:57])
-        bin_index = min(int(float(end) * 0.05 // 0.5), 60)
-        key = f"{signature}|{bin_index}"
-        anchor = np.asarray([token[7], token[8], token[25], token[26]])
-        hit = key in p1["table"]
-        hits += int(hit)
-        for step in range(horizon):
-            delta = p1["table"].get(key, {}).get(step)
-            if delta is None:
-                delta = p1["global"].get(step)
-            if delta is None:
-                delta = np.zeros(4)
-            predictions[position, step, MIDPOINTS] = anchor + np.asarray(delta)
-    p1["group_hit_rate"] = hits / max(1, len(panel["index"]))
+        key = _group_key(token[51:57], int(end))
+        for robot in (0, 1):
+            anchor_columns = [0, 1] if robot == 0 else [2, 3]
+            columns = [0, 1] if robot == 0 else [4, 5]
+            anchor = np.asarray([token[7], token[8]]) if robot == 0 \
+                else np.asarray([token[25], token[26]])
+            for step in range(horizon):
+                delta = p1["table"][robot].get(key, {}).get(step)
+                if delta is not None:
+                    used_group[position, step] = True
+                else:
+                    delta = p1["global"][robot].get(step)
+                if delta is None:
+                    delta = np.zeros(2)
+                predictions[position, step, columns] = anchor + np.asarray(delta)
+        del anchor_columns
+    used = used_group.any(axis=1)
+    p1["group_used_windows"] = int(used.sum())
+    p1["group_hit_rate"] = float(used.mean()) if len(used) else 0.0
+    p1["group_used_step_fraction"] = float(used_group.mean())
     return predictions
 
 
@@ -336,8 +408,10 @@ def main() -> int:
     parser.add_argument("--models", nargs="+", default=None)
     parser.add_argument("--horizon", type=int, default=16)
     parser.add_argument("--out", default=str(OUT))
+    parser.add_argument("--checkpoint-dir", default=None)
     args = parser.parse_args()
     out_dir = Path(args.out)
+    checkpoint_dir = Path(args.checkpoint_dir) if args.checkpoint_dir else out_dir / "checkpoints"
     panel = P.load(args.panel)
     tokens = Tokens(D.TIER_SPLITS["d1"])
     truth = truth_and_masks(tokens, panel["index"], panel["end"], args.horizon)
@@ -347,14 +421,19 @@ def main() -> int:
                                                t0_fraction=0.25)
     p1 = fit_p1(tokens, train_index, train_ends, args.horizon)
     p1_geometry = p1_predict(p1, tokens, panel, args.horizon)
-    paths = [out_dir / "checkpoints" / f"{name}.pt" for name in args.models] \
-        if args.models else sorted((out_dir / "checkpoints").glob("*.pt"))
+    paths = [checkpoint_dir / f"{name}.pt" for name in args.models] \
+        if args.models else sorted(checkpoint_dir.glob("*.pt"))
     result: Dict[str, object] = {"panel": args.panel, "horizon": args.horizon,
                                  "windows": int(len(panel["index"])),
                                  "roots": int(len(set(panel["root"].tolist()))),
                                  "p1_groups": p1["groups"],
+                                 "p1_groups_per_robot": p1["groups_per_robot"],
                                  "p1_group_hit_rate": p1.get("group_hit_rate"),
-                                 "p1_within_group_spread_cm": p1["within_group_spread_cm"],
+                                 "p1_group_used_step_fraction": p1.get("group_used_step_fraction"),
+                                 "p1_within_group_spread": p1["within_group_spread"],
+                                 "p1_time_binning": p1["time_binning"],
+                                 "p1_label_filter": p1["label_filter"],
+                                 "p1_fallback": p1["fallback"],
                                  "models": {}}
     # P1 is reported like any other predictor, under the same masks
     # a second baseline with no grouping at all: it isolates how much the (command, elapsed) key
@@ -364,10 +443,15 @@ def main() -> int:
         split = tokens.split_of[i]
         local = int(i) - tokens.offsets[split]
         token = tokens.token_arrays[split][local, int(end)]
-        anchor = np.asarray([token[7], token[8], token[25], token[26]])
-        for step in range(args.horizon):
-            delta = p1["global"].get(step, np.zeros(4))
-            global_geometry[position, step, MIDPOINTS] = anchor + np.asarray(delta)
+        for robot in (0, 1):
+            columns = [0, 1] if robot == 0 else [4, 5]
+            anchor = np.asarray([token[7], token[8]]) if robot == 0 \
+                else np.asarray([token[25], token[26]])
+            for step in range(args.horizon):
+                delta = p1["global"][robot].get(step)
+                if delta is None:
+                    delta = np.zeros(2)
+                global_geometry[position, step, columns] = anchor + np.asarray(delta)
     for label, geometry in (("P1_grouped", p1_geometry),
                             ("P1_global", global_geometry),
                             ("P0_hold", None)):
@@ -400,7 +484,7 @@ def main() -> int:
             continue
         started = time.perf_counter()
         predicted = predict_steps(saved, model, tokens, panel["index"], panel["end"], args.horizon)
-        entry: Dict[str, object] = {"checkpoint": str(path.relative_to(ROOT)),
+        entry: Dict[str, object] = {"checkpoint": str(path.relative_to(ROOT)) if str(path).startswith(str(ROOT)) else str(path),
                                     "parameters": saved.get("parameters",
                                                             parameter_breakdown(model)),
                                     "kind": saved["kind"], "seed": saved.get("seed"),
