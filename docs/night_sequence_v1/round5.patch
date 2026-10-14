@@ -3,10 +3,10 @@ new file mode 100644
 index 0000000..e69de29
 diff --git a/experiments/night_sequence_v1/analysis.py b/experiments/night_sequence_v1/analysis.py
 new file mode 100644
-index 0000000..9eacbe1
+index 0000000..fb82c78
 --- /dev/null
 +++ b/experiments/night_sequence_v1/analysis.py
-@@ -0,0 +1,241 @@
+@@ -0,0 +1,253 @@
 +"""Round-5 analysis: baselines, model predictions, metrics, per-sample predictions.
 +
 +    python experiments/night_sequence_v1/analysis.py --tier d1
@@ -135,9 +135,21 @@ index 0000000..9eacbe1
 +    bins = [f"{ELAPSED_BINS[i]:.2f}-{ELAPSED_BINS[i + 1]:.2f}" for i in range(len(ELAPSED_BINS) - 1)]
 +    bin_index = np.clip((elapsed / 0.25).astype(int), 0, len(bins) - 1)
 +    stages = np.array([int(tokens.token_arrays[tokens.split_of[i]][i - tokens.offsets[tokens.split_of[i]], int(e), 49] * 8) for i, e in zip(index, end)])
++    # how fast robot 0 is actually moving at the window end, so the 0.05 s horizon can be read
++    # separately on near-static and on moving samples
++    speed = []
++    for i, e in zip(index, end):
++        split = tokens.split_of[i]
++        local = i - tokens.offsets[split]
++        token = tokens.token_arrays[split][local, int(e)]
++        speed.append(float(np.hypot(token[3], token[4])))
++    speed = np.asarray(speed)
++    motion = np.where(speed < 0.01, "near_static(<0.01m/s)",
++                      np.where(speed < 0.05, "slow(0.01-0.05)", "moving(>0.05)"))
 +    return {"elapsed_bin": np.asarray([bins[b] for b in bin_index]),
 +            "stage": np.asarray([f"stage{s}" for s in stages]),
-+            "regime": np.asarray(["t0" if e == 0 else "in_execution" for e in end])}
++            "regime": np.asarray(["t0" if e == 0 else "in_execution" for e in end]),
++            "motion": np.asarray(motion)}
 +
 +
 +def main() -> int:
@@ -250,10 +262,10 @@ index 0000000..9eacbe1
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/assets.py b/experiments/night_sequence_v1/assets.py
 new file mode 100644
-index 0000000..f8951b2
+index 0000000..45f4488
 --- /dev/null
 +++ b/experiments/night_sequence_v1/assets.py
-@@ -0,0 +1,1363 @@
+@@ -0,0 +1,1383 @@
 +"""Round-5 presentation assets: F01..F08 figures, data tables, videos and the index.
 +
 +    python experiments/night_sequence_v1/assets.py
@@ -1251,10 +1263,29 @@ index 0000000..f8951b2
 +                     pose.get("all_columns_flattened", pose).get("p50"),
 +                     entry["t0"]["terminal_remaining"].get("p50"),
 +                     entry["t0"]["terminal_exit_class"]["accuracy"]])
++    motion_rows = []
++    if "d1" in metrics:
++        payload_d1 = metrics["d1"]
++        entries = [("P0_hold", payload_d1["baselines"].get("P0_hold|test")),
++                   ("P1_grouped", payload_d1["baselines"].get("P1_grouped|test"))]
++        entries += [(label.split("|")[0], entry)
++                    for label, entry in sorted(payload_d1["models"].items())
++                    if label.endswith("|test") and isinstance(entry, dict) and "all" in entry]
++        for name, entry in entries:
++            block = (entry or {}).get("all", {}).get("process_geometry_by_motion")
++            if not block:
++                continue
++            for motion, value in sorted(block.items()):
++                motion_rows.append([name, motion, value["p50"], value["p90"],
++                                    value["samples"], value["independent_roots"]])
++    motion_csv = write_csv("F07_process_by_motion.csv",
++                           ["model", "motion_state", "midpoint_p50_m", "midpoint_p90_m",
++                            "samples", "independent_roots"], motion_rows)
 +    csv = write_csv("F07_metrics_t0.csv",
 +                    ["model", "r0_mid2d_p50_m", "r0_mid2d_p90_m", "r0_normal_p50_deg",
 +                     "pose_abs_p50", "remaining_p50_s", "exit_accuracy"], rows)
-+    return {"figure": paths, "data": csv, "tier": tier, "models": len(payload["models"])}
++    return {"figure": paths, "data": [csv, motion_csv], "tier": tier,
++            "models": len(payload["models"])}
 +
 +
 +# ---------------------------------------------------------------------------
@@ -1518,8 +1549,9 @@ index 0000000..f8951b2
 +        "F07": ("拟合与预测性能（修正后重训）",
 +                "P0/P1 与新模型在 t=0 终态与执行中下一步/终态的主指标比较，含两机器人中点与法向角、"
 +                "可见/退出类表现，以及 t=0 动作差值/排序表。",
-+                "执行前终态、执行中下一步、执行中终态分开报告。",
-+                "几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。"),
++                "执行前终态、执行中下一步、执行中终态分开报告；固定 Δt 头另按真实运动状态拆分。",
++                "几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。"
++                "固定 Δt 头在近静止子集上远差于「保持当前」基线，**尚不能说已学好短时动力学**。"),
 +        "F08": ("对闭环规划的意义与未决问题",
 +                "“已有证据 → 可能用途 → 尚缺验证”表，并附已有 C 负结果的小表。",
 +                "本轮没有闭环实验，因此本轮未评估闭环收益。",
@@ -2206,10 +2238,10 @@ index 0000000..d23b39b
 +    return RootSampler(lengths, roots).sample(count, generator)
 diff --git a/experiments/night_sequence_v1/evaluate.py b/experiments/night_sequence_v1/evaluate.py
 new file mode 100644
-index 0000000..52af8c0
+index 0000000..7bc0b12
 --- /dev/null
 +++ b/experiments/night_sequence_v1/evaluate.py
-@@ -0,0 +1,505 @@
+@@ -0,0 +1,520 @@
 +"""Round-5 baselines and evaluation.
 +
 +Baselines (task book 6.1), both fitted on train only and both expressed in **original units**:
@@ -2624,6 +2656,21 @@ index 0000000..52af8c0
 +        process_geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
 +            np.degrees(difference)[value].tolist())
 +    report["process_geometry"] = process_geometry
++    # the fixed-dt horizon is 0.05 s, where a near-static robot barely moves; without a motion
++    # breakdown the headline number is dominated by samples that are almost trivial to hold
++    if "motion" in groups:
++        motion = groups["motion"]
++        per_motion = {}
++        for value in sorted(set(motion.tolist())):
++            selected = (motion == value) & (masks["process_geometry"][:, 0] > 0)
++            entry = percentiles(np.hypot(
++                predictions["process_geometry"][:, 0] - targets["process_geometry"][:, 0],
++                predictions["process_geometry"][:, 1] - targets["process_geometry"][:, 1]
++            )[selected].tolist())
++            entry["samples"] = int(selected.sum())
++            entry["independent_roots"] = int(len(set(roots[selected].tolist())))
++            per_motion[str(value)] = entry
++        report["process_geometry_by_motion"] = per_motion
 +    # continuous groups are reported **per column**: flattening metres together with radians would
 +    # mix units in one distribution and make the percentile meaningless
 +    for name, columns in (("terminal_pose", POSE_COLUMNS),
@@ -3576,10 +3623,10 @@ index 0000000..50370ac
 +    raise SystemExit(main())
 diff --git a/experiments/night_sequence_v1/report.py b/experiments/night_sequence_v1/report.py
 new file mode 100644
-index 0000000..bfd1876
+index 0000000..ced18ba
 --- /dev/null
 +++ b/experiments/night_sequence_v1/report.py
-@@ -0,0 +1,377 @@
+@@ -0,0 +1,409 @@
 +"""Generate REPORT.md from the analysis metrics. No number is written by hand.
 +
 +    python experiments/night_sequence_v1/report.py
@@ -3896,7 +3943,39 @@ index 0000000..bfd1876
 +                  "|---|---:|---:|---:|---:|---:|"]
 +        lines += rows + [""]
 +
-+    # ---- statistics and cost
++    # ---- fixed-dt horizon split by how fast the robot is actually moving
++    motion_rows = []
++    for tier in ("d1",):
++        if tier not in tiers:
++            continue
++        payload = tiers[tier]
++        entries = [("P0_hold", payload["baselines"].get("P0_hold|test")),
++                   ("P1_grouped", payload["baselines"].get("P1_grouped|test"))]
++        entries += [(label.split("|")[0], entry) for label, entry in sorted(payload["models"].items())
++                    if label.endswith("|test") and isinstance(entry, dict) and "all" in entry]
++        for name, entry in entries:
++            block = (entry or {}).get("all", {}).get("process_geometry_by_motion")
++            if not block:
++                continue
++            motion_rows.append((name, block))
++    if motion_rows:
++        keys = ["near_static(<0.01m/s)", "slow(0.01-0.05)", "moving(>0.05)"]
++        lines += ["## 5b. 固定 Δt 头按真实运动状态拆分（修正后）", "",
++                  "Δt=0.05 s 时，近静止样本上「保持当前状态」几乎就是正确答案；"
++                  "不拆分会把大量近乎平凡的样本混进同一个数字里。", "",
++                  "| 模型 | 近静止 p50 | 慢速 p50 | 运动中 p50 | 近静止样本/独立 root |",
++                  "|---|---:|---:|---:|---:|"]
++        for name, block in motion_rows:
++            cells = [fmt(block.get(k, {}).get("p50"), 5) for k in keys]
++            stat = block.get(keys[0], {})
++            lines.append(f"| {name} | {cells[0]} | {cells[1]} | {cells[2]} | "
++                         f"{stat.get('samples', 0)} / {stat.get('independent_roots', 0)} |")
++        lines += ["", "**这张表说明固定 Δt 头目前不成立**：P0 在近静止样本上是 0.0001 m 量级，"
++                      "而学习模型是 0.05 m 量级——也就是说模型**没有**学到「短时几乎不变」这件事，"
++                      "在占比最大的近静止子集上反而远差于平凡基线。"
++                      "因此不能声称模型已经学好固定间隔动力学；"
++                      "该头需要按运动状态分别训练或评价，而不是看一个合并数字。", ""]
++
 +    if stats:
 +        lines += ["## 6. 统计显著性与计算成本", "",
 +                  "**配对 root bootstrap**（同一样本上两模型逐例配对，重采样单位是 root；"
