@@ -1,6 +1,6 @@
 # MANIFEST — night_sequence_v1
 
-git commit `b75e747d7fbadad24532628470c2e5ed436771a6`; round base `d7731ca`; patch limited to `src experiments tests`.
+git commit `e5c8d01e9a7ead31688b9e909bcb93d4e1323e13`; round base `d7731ca`; patch limited to `src experiments tests`.
 
 ## Included
 
@@ -9,14 +9,14 @@ git commit `b75e747d7fbadad24532628470c2e5ed436771a6`; round base `d7731ca`; pat
 | docs/night_sequence_v1/CONTRACT.md | 6947 | bada35f400ee2c2cd9d3227bccabfe9ac22bdcf155a186cfd16e556971eba59f |
 | docs/night_sequence_v1/DATA_INDEX.md | 569615 | 3208d48096675c5c48b5e4917eb34d491fad46902cf67f1ec21daa427c7c1e3e |
 | docs/night_sequence_v1/IMPLEMENTATION_FIX.md | 6728 | f76c63acfdcc45fd13e929238ff16f70d64cde82edea1eb19a14c3339a2e6239 |
-| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | a1fe072f4455680eb5a0520e7a5c5b3ced4195e8b9d2f92409e4a9206f0eb1e1 |
+| docs/night_sequence_v1/LARGE_ARTIFACTS.md | 568149 | 37792867095024219376ad182b170419f70d4e2c1f80e3bb0769bbabd6ff7fae |
 | docs/night_sequence_v1/MODEL_CARDS.md | 14872 | d3d5be3527b5791fffaefaab638bb48790a889db07a174769f382b1d4998e8de |
 | docs/night_sequence_v1/PLAN.md | 1978 | bcc1599f9a6e4b0bf7374ddb137358026e598d6ddbba58e1342923250ecb7901 |
 | docs/night_sequence_v1/REPORT.md | 17010 | 33832db30ed5a645c06f182c91ac176514d9d49fb7334e12be2da0d34d1e2240 |
 | docs/night_sequence_v1/RUN_LEDGER.md | 3607 | dee859cc9b726ce8f1c90213866b72fc903746b22b3cf8a3ec2bb2c48aadeb7d |
 | docs/night_sequence_v1/STATUS.md | 2875 | c0612a246c49496dfe5eb274b4a0769e178253d79c23f155d463266dd606a861 |
-| docs/night_sequence_v1/round5.patch | 285634 | caccf2bfbdf2de93c9d259cd831c89a776e7382143ab9c0b5fbd9b82e88feabf |
-| docs/night_sequence_v1/round5_diffstat.txt | 1429 | 1fb4423ffde9155e4a28ca9c256ae97a0ad94f28ebefca72ee513d72669df2d5 |
+| docs/night_sequence_v1/round5.patch | 314279 | 349a436c5bfdc6b03532f5319d1ec51559abaab084d9276ec7c7ecc9606e6d9f |
+| docs/night_sequence_v1/round5_diffstat.txt | 1493 | a3632ac5fc0c98df7f45bad5566f761e1e48ef594c0a9c84cc215464d0e4d124 |
 | docs/tasks/20261014_0205_CoImagine_夜间资源积累与受控扩展任务书.md | 32139 | 5d1439941a21c155f2fdadec0f8d4acdde644645d8289c86736675ecbfb94363 |
 | experiments/night_sequence_v1/__init__.py | 0 | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 |
 | experiments/night_sequence_v1/analysis.py | 13112 | cb5eea5cac6f461b3089896d8ed361478421a210e5486a4fc9b397903409acff |
@@ -37,7 +37,7 @@ git commit `b75e747d7fbadad24532628470c2e5ed436771a6`; round base `d7731ca`; pat
 | experiments/night_sequence_v1/stats_and_cost.py | 8204 | d9553b29d1536c04ae5f1a88465e6c72cdb212812122fca0951b9b415780746e |
 | experiments/night_sequence_v1/status.py | 6159 | 15abb83cd1a34a2347f71f5dac98627d919f112ecbfb6dd611ef6cace8c1c225 |
 | experiments/night_sequence_v1/train.py | 11802 | c2b6493b43f80dda1eab2353e5cbf6d7266a1ea72689dff229f42e04c9e64fd8 |
-| experiments/night_sequence_v1/verify_from_zip.py | 4779 | 3c0af976ffe6d44a3fbc2e5f35e38f8d5bfec8ff2f3bc0ccc33584c12a745084 |
+| experiments/night_sequence_v1/verify_from_zip.py | 4985 | 578953e1e4de4f85375e8182cb7f404404140ee7aa8daf42c39eb0b9f8f82036 |
 | experiments/night_sequence_v1/windows.py | 13873 | f12922f19aadfc86849dba2005c1fb3ce5fa019df82bbfa3aee6a3ebff5ff407 |
 | outputs/night_sequence_v1/analysis/d0/metrics.json | 6790718 | 0acfecf506396d468c0d8b8723799eb3ce0762144c5846532231777d8549aac0 |
 | outputs/night_sequence_v1/analysis/d0/stats_and_cost.json | 2431 | 911dabc39d18bf23455541a8cb979e337260775e4fb55a0af6a0d469b4b8e23e |

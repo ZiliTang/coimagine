@@ -45,7 +45,7 @@
  },
  "review": {
   "bundle": "night_sequence_v1_review.zip",
-  "bytes": 23376645,
+  "bytes": 23384276,
   "checkpoints": [
    "outputs/night_sequence_v1/runs/d1_mlp_current_seed0.pt",
    "outputs/night_sequence_v1/runs/d1_mlp_history_seed0.pt",

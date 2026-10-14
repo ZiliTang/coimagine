@@ -1,23 +1,24 @@
  experiments/night_sequence_v1/__init__.py         |    0
- experiments/night_sequence_v1/analysis.py         |  228 ++++
- experiments/night_sequence_v1/assets.py           | 1354 +++++++++++++++++++++
+ experiments/night_sequence_v1/analysis.py         |  241 ++++
+ experiments/night_sequence_v1/assets.py           | 1363 +++++++++++++++++++++
  experiments/night_sequence_v1/collect.py          |  227 ++++
  experiments/night_sequence_v1/data_index.py       |   90 ++
  experiments/night_sequence_v1/dataset.py          |  252 ++++
- experiments/night_sequence_v1/evaluate.py         |  439 +++++++
- experiments/night_sequence_v1/make_bundle.py      |  230 ++++
+ experiments/night_sequence_v1/evaluate.py         |  505 ++++++++
+ experiments/night_sequence_v1/fix_time_labels.py  |   79 ++
+ experiments/night_sequence_v1/make_bundle.py      |  234 ++++
  experiments/night_sequence_v1/model_cards.py      |   74 ++
- experiments/night_sequence_v1/models.py           |  237 ++++
+ experiments/night_sequence_v1/models.py           |  261 ++++
  experiments/night_sequence_v1/predict.py          |  181 +++
- experiments/night_sequence_v1/report.py           |  295 +++++
+ experiments/night_sequence_v1/report.py           |  377 ++++++
  experiments/night_sequence_v1/run_matrix.py       |   89 ++
  experiments/night_sequence_v1/sequence_metrics.py |   81 ++
- experiments/night_sequence_v1/sequences.py        |  377 ++++++
- experiments/night_sequence_v1/stats_and_cost.py   |  167 +++
+ experiments/night_sequence_v1/sequences.py        |  388 ++++++
+ experiments/night_sequence_v1/stats_and_cost.py   |  178 +++
  experiments/night_sequence_v1/status.py           |  108 ++
- experiments/night_sequence_v1/train.py            |  214 ++++
- experiments/night_sequence_v1/verify_from_zip.py  |  104 ++
- experiments/night_sequence_v1/windows.py          |  275 +++++
- src/coimagine/local_contact_option/option.py      |   12 +
- tests/test_night_sequence_v1.py                   |  428 +++++++
- 22 files changed, 5462 insertions(+)
+ experiments/night_sequence_v1/train.py            |  237 ++++
+ experiments/night_sequence_v1/verify_from_zip.py  |  107 ++
+ experiments/night_sequence_v1/windows.py          |  292 +++++
+ src/coimagine/local_contact_option/option.py      |   23 +
+ tests/test_night_sequence_v1.py                   |  539 ++++++++
+ 23 files changed, 5926 insertions(+)
