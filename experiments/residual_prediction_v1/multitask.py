@@ -38,6 +38,7 @@ from experiments.night_sequence_v1.models import (  # noqa: E402
 )
 from experiments.night_sequence_v1.train import MODEL_KWARGS  # noqa: E402
 from experiments.residual_prediction_v1 import data as D  # noqa: E402
+from experiments.transformer_scale_latent_v1 import cache as C  # noqa: E402
 from experiments.residual_prediction_v1.targets import (  # noqa: E402
     GeometryTransform,
     TransformSpec,
@@ -98,7 +99,7 @@ def fit_transforms(tokens: Tokens, panel: Dict[str, np.ndarray], *, parameterisa
     return transform, normalisation_stats
 
 
-def encode_all(batch: D.Batch, transform: GeometryTransform,
+def encode_all(batch, transform: GeometryTransform,
                stats: Dict[str, Dict[str, float]]) -> Dict[str, torch.Tensor]:
     """Encode every continuous group; the discrete heads are passed through."""
 
@@ -159,21 +160,28 @@ def apply_geometry_hold_bias(model, transform: GeometryTransform) -> None:
 def train_multitask(tokens: Tokens, tier: str, kind: str, seed: int, *, updates: int = 3200,
                     batch: int = 128, lr: float = 3e-4, parameterisation: str = "residual",
                     normalisation: str = "per_group", refresh_every: int = 64,
-                    validate_every: int = 200, out_dir: Path = OUT, log: bool = True) -> dict:
+                    validate_every: int = 200, out_dir: Path = OUT, log: bool = True,
+                    model_kwargs: Dict[str, object] = None, tag: str = None,
+                    panel_dir: Path = None) -> dict:
     """One full run. Reference windows are materialised in chunks; targets are reused within a chunk."""
 
     set_all_seeds(seed)
-    panel = {name: D.load_panel(tier, name, out_dir) for name in ("train", "val")}
+    panel_dir = panel_dir or out_dir
+    panel = {name: D.load_panel(tier, name, panel_dir) for name in ("train", "val")}
     transform, stats = fit_transforms(tokens, panel["train"], parameterisation=parameterisation,
                                       normalisation=normalisation)
-    model = build_multitask(kind, **MODEL_KWARGS[kind])
+    # a size override lets the same protocol produce the capacity curve instead of a second,
+    # subtly different training script
+    model = build_multitask(kind, **(model_kwargs or MODEL_KWARGS[kind]))
     apply_geometry_hold_bias(model, transform)
     optimiser = torch.optim.AdamW(model.parameters(), lr=lr, weight_decay=1e-4)
     schedule = torch.optim.lr_scheduler.CosineAnnealingLR(optimiser, T_max=updates,
                                                           eta_min=3e-5)
     generator = np.random.default_rng(seed)
     order = generator.permutation(len(panel["train"]["index"]))
-    # the validation panel is fixed once and reused for every validation pass
+    # materialise both panels once; rebuilding every window on every update cost more than the
+    # forward and backward passes combined
+    train_cache = C.build_cached(tokens, panel["train"]["index"], panel["train"]["end"])
     validation = _materialise(tokens, panel["val"])
     curves: List[dict] = []
     best = {"loss": float("inf"), "update": -1, "state": None}
@@ -186,8 +194,7 @@ def train_multitask(tokens: Tokens, tier: str, kind: str, seed: int, *, updates:
             order = generator.permutation(len(order))
         rows = order[cursor:cursor + batch]
         cursor += batch
-        panel_rows = {"index": panel["train"]["index"][rows], "end": panel["train"]["end"][rows]}
-        data_batch = D.build_batch(tokens, panel_rows["index"], panel_rows["end"])
+        data_batch = train_cache.take(rows)
         targets = encode_all(data_batch, transform, stats)
         masks = {name: data_batch.masks[name] for name, _w, _k in GROUPS}
         outputs = model(data_batch.window, data_batch.token_valid)
@@ -211,11 +218,11 @@ def train_multitask(tokens: Tokens, tier: str, kind: str, seed: int, *, updates:
     if best["state"] is not None:
         model.load_state_dict(best["state"])
     out_dir.mkdir(parents=True, exist_ok=True)
-    tag = f"{kind}_{parameterisation}_{normalisation}_seed{seed}"
+    tag = tag or f"{kind}_{parameterisation}_{normalisation}_seed{seed}"
     path = out_dir / "checkpoints" / f"{tag}.pt"
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save({"state_dict": model.state_dict(), "model_kind": kind,
-                "model_kwargs": MODEL_KWARGS[kind], "spec": transform.descriptor(),
+                "model_kwargs": model_kwargs or MODEL_KWARGS[kind], "spec": transform.descriptor(),
                 "geometry_transform": transform.descriptor(),
                 "normalisation": stats, "tier": tier, "seed": seed,
                 "parameterisation": parameterisation, "normalisation_mode": normalisation,
@@ -232,10 +239,10 @@ def train_multitask(tokens: Tokens, tier: str, kind: str, seed: int, *, updates:
 
 def _materialise(tokens: Tokens, panel: Dict[str, np.ndarray],
                  chunk: int = 512) -> Dict[str, np.ndarray]:
-    batches = []
-    for start in range(0, len(panel["index"]), chunk):
-        stop = min(start + chunk, len(panel["index"]))
-        batches.append(D.build_batch(tokens, panel["index"][start:stop], panel["end"][start:stop]))
+    # one cached panel for the whole validation set, sliced per chunk
+    cached = C.build_cached(tokens, panel["index"], panel["end"])
+    batches = [cached.take(np.arange(start, min(start + chunk, len(cached))))
+               for start in range(0, len(cached), chunk)]
     return {"batches": batches, "panel": panel}
 
 

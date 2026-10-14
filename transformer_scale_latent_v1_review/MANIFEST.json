@@ -1,0 +1,141 @@
+{
+ "count": 27,
+ "files": [
+  {
+   "bytes": 5931437,
+   "path": "checkpoints/direct_multistep_h8_lr0.0003_seed0.pt",
+   "sha256": "378e34a4f9a41811de101e1fa5b1727f7ac7078e4a95f6f6ce5ba3e82d116ff8"
+  },
+  {
+   "bytes": 5900026,
+   "path": "checkpoints/latent_autoregressive_h8_lr0.0003_seed0.pt",
+   "sha256": "419d8ad8f8485a914461b7d968c9193b4b3e83e18dc50d3e465428510150e6a5"
+  },
+  {
+   "bytes": 13097,
+   "path": "code/audit.py",
+   "sha256": "8f6bcfb9b9376a9b4fd3b4dc6ba9497ff97d50d22c74387520b93e9a7b029be0"
+  },
+  {
+   "bytes": 5893,
+   "path": "code/cache.py",
+   "sha256": "9c72713e2c547baf2e583418abf474281240270c3f311f6628ada172ff1c783c"
+  },
+  {
+   "bytes": 4852,
+   "path": "code/configs.py",
+   "sha256": "662de75c7870fcb2a7f578f7568961923d924303b2da4f827acb35101ffbeb2e"
+  },
+  {
+   "bytes": 9474,
+   "path": "code/data.py",
+   "sha256": "c669b99590db6dd8ba14579165ce143831211521bd11f29c221f89f523f99e60"
+  },
+  {
+   "bytes": 25366,
+   "path": "code/evaluate.py",
+   "sha256": "eb20d892e449a2cbb96e6fe9df7c7c9583aacea7bcdf68686e20619a97af1542"
+  },
+  {
+   "bytes": 9374,
+   "path": "code/models.py",
+   "sha256": "d12cab96d91f6788aa1ef1536dcfe078a4fb26cd75bd5db4cc8b38b08c884661"
+  },
+  {
+   "bytes": 3987,
+   "path": "code/panels.py",
+   "sha256": "9c8ac09bfbe815784033a8e1c5656ff73a7e5d0d92c33dce336114a6862db80f"
+  },
+  {
+   "bytes": 19119,
+   "path": "code/train.py",
+   "sha256": "cba64143efac5a5218d828b5dd9334a7c9a1afdc8d339d515433939840e03a03"
+  },
+  {
+   "bytes": 5523,
+   "path": "docs/AUDIT.md",
+   "sha256": "87287173b896ed2e91aa3fc0e860681404b2133bbf9e194bef6b34fb5389edfd"
+  },
+  {
+   "bytes": 3761,
+   "path": "docs/CONTRACT.md",
+   "sha256": "de4af8c857867d8364b6dc6b4120d940c2849377051401a78aad0cbddcd3dbf7"
+  },
+  {
+   "bytes": 8987,
+   "path": "docs/RESULTS.md",
+   "sha256": "04dcd8c73ad8ea9194462f2c6cdd21286c769d5d07f7492f095428a1b7deee73"
+  },
+  {
+   "bytes": 4521,
+   "path": "docs/REVIEW_FIXES.md",
+   "sha256": "92bd97c21ec706a31f7cbdb5b00ddf6a3c69372cc7754113cfb06608b425c4e7"
+  },
+  {
+   "bytes": 95444,
+   "path": "figures/F1_capacity_and_cost.png",
+   "sha256": "87e5667660f501c65626c81665ee9ff32f672007e0925d3815b23e94770d67e0"
+  },
+  {
+   "bytes": 64296,
+   "path": "figures/F2_same_protocol_curves.png",
+   "sha256": "95607a0d66f62ec7a6422fffcd2018699ad76fe1cfda229ce891e76b21c0e6a0"
+  },
+  {
+   "bytes": 206193,
+   "path": "figures/F3_horizon_error.png",
+   "sha256": "d7d331b4fb5243414a896f195787a1c0d9dc103b054a6aff9870a9d81d06233e"
+  },
+  {
+   "bytes": 136146,
+   "path": "figures/F4_terminal_and_rollout.png",
+   "sha256": "19390eaa9f23d7a6d05d9e176fa1b22c4760bf0ba1aeede63072265b21fe4fd6"
+  },
+  {
+   "bytes": 110631,
+   "path": "figures/F5_trajectories.png",
+   "sha256": "7a9a618a173470eb872a368b308591d137b15ae71fe1e6fd746d943b67d453d0"
+  },
+  {
+   "bytes": 2733,
+   "path": "reference/expected_metrics.json",
+   "sha256": "4cbf3a3fa0ad914a460d908681b6c0263857f76666b45e1ff10e04a289fe9994"
+  },
+  {
+   "bytes": 3494,
+   "path": "results/RUN_LEDGER.jsonl",
+   "sha256": "1703420a2821a7a14c2eeaf68c77043246d6d55b57c78dd53c8099a8d7d8b750"
+  },
+  {
+   "bytes": 5374,
+   "path": "results/audit.json",
+   "sha256": "5f6d34be140187f2b7e258245b1941ca1ed4c3bb4b388a32f47a8b29fbacded2"
+  },
+  {
+   "bytes": 63719,
+   "path": "results/multi_step_results_test_multistep.json",
+   "sha256": "f2c7ed1d8758b9a90a43ea41faa6050ab981489074349d79117a424c48bdfaec"
+  },
+  {
+   "bytes": 4185,
+   "path": "results/pair_comparison_test_multistep.json",
+   "sha256": "46152d05f160e6e20bb12ddc83e5ba234e6740c196327721248ec9c9e287139e"
+  },
+  {
+   "bytes": 512,
+   "path": "results/panel_test_multistep.json",
+   "sha256": "d83cb3e36f706e5a24fc058f3effc4c4dd600bafb37562fab579cd5b17595f8b"
+  },
+  {
+   "bytes": 627240,
+   "path": "samples/windows_test_multistep.npz",
+   "sha256": "29aaa692eea5b69629a56f9a71dcf9cdcae089e5f4832d77a1e57e9f548d9c14"
+  },
+  {
+   "bytes": 10964,
+   "path": "verify_package.py",
+   "sha256": "def15a88b84ce53975aef393256534000925865eda238d59fea0ce303427e972"
+  }
+ ],
+ "note": "sizes and hashes of the packaged files only; this validates the archive, not any experimental conclusion"
+}

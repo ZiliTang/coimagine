@@ -1,0 +1,22 @@
+{
+ "future_ge_16": 1764,
+ "future_ge_8": 1908,
+ "hash": "cb437d6910971730b05c6c02d55d9d25a8a0d89649b083d939bcae9f40427f0e",
+ "name": "test_multistep",
+ "path": "outputs/transformer_scale_latent_v1/panel_test_multistep.npz",
+ "records": 2048,
+ "roots": 512,
+ "scene_counts": {
+  "constrained": 340,
+  "dual_rotate": 340,
+  "dual_same_side": 340,
+  "incompatible": 340,
+  "solo_central": 344,
+  "solo_offset": 344
+ },
+ "split": "test",
+ "t0_windows": 559,
+ "t_gt_0_windows": 1489,
+ "tier": "d1",
+ "windows": 2048
+}

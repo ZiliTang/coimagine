@@ -1,0 +1,180 @@
+{
+ "baseline_regression": {
+  "metric": "median 2-D midpoint error of robot 0 at t>0 under the true visibility mask, cm",
+  "models": {
+   "mlp_history_residual_per_group_seed0": {
+    "absolute_difference_cm": 0.0,
+    "checkpoint": "outputs/residual_prediction_v1/checkpoints/mlp_history_residual_per_group_seed0.pt",
+    "checkpoint_bytes": 6455665,
+    "checkpoint_sha256": "23df8cd1e31889868482f8383bcaf9128ae1a2b58a5965f60e16ab2db9416f80",
+    "earlier_run_saved_cm": 0.13869085261663394,
+    "recomputed_now_cm": 0.13869085261663394,
+    "stored_predictions_sha256": "fdde2bb51663fc03ca11f8a421ebd67d1808ffcc910d3f16fe6f20ae4c9f0767",
+    "verdict": "exact reproduction on identical inputs",
+    "windows": 1515
+   },
+   "transformer_history_residual_per_group_seed0": {
+    "absolute_difference_cm": 0.0,
+    "checkpoint": "outputs/residual_prediction_v1/checkpoints/transformer_history_residual_per_group_seed0.pt",
+    "checkpoint_bytes": 3645155,
+    "checkpoint_sha256": "adcdd4d6bda981a205b0189d8d9ae337a907be9ba10af1c001e8fe96dbef960a",
+    "earlier_run_saved_cm": 0.19536165670314037,
+    "recomputed_now_cm": 0.19536165670314037,
+    "stored_predictions_sha256": "2e7ac70e1dc5b70d995d620990141a528a238848f2ece826e3d01cb8a99f45e4",
+    "verdict": "exact reproduction on identical inputs",
+    "windows": 1515
+   }
+  },
+  "note": "A range across seeds is not a reproduction target. This compares one checkpoint, one panel hash and one metric against the value that run itself produced.",
+  "panel": "outputs/residual_prediction_v1/panel_eval_val_d1.npz",
+  "panel_hash_matches": true,
+  "panel_hash_recomputed": "bd662eb213fa586a312368b9622a63c8f64c5fc7403466f7413bce7693308174",
+  "panel_hash_recorded": "bd662eb213fa586a312368b9622a63c8f64c5fc7403466f7413bce7693308174"
+ },
+ "environment": {
+  "baseline_commit": "0f965faf9871222ad862839caa483bdd5f6ba457",
+  "cpu_count": 24,
+  "data_root": "/home/tzl/repo/coimagine/outputs/night_sequence_v1",
+  "device": "cpu",
+  "numpy": "2.2.6",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "python": "3.10.12",
+  "threads_default": 12,
+  "torch": "2.14.1+cpu"
+ },
+ "leakage_audit": {
+  "T_exit_location": "token slot 48 of the **terminal** token only; the terminal token is a target and is never concatenated into the window",
+  "column_48": "elapsed time of each *history* frame; a past clock value, allowed",
+  "column_49": "controller stage of each *history* frame; a past value, allowed",
+  "column_51_56": "the candidate command, public",
+  "columns_present_in_window": [
+   0,
+   1,
+   3,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   24,
+   25,
+   26,
+   27,
+   28,
+   29,
+   30,
+   31,
+   36,
+   37,
+   39,
+   42,
+   43,
+   44,
+   48,
+   50,
+   52,
+   53,
+   54,
+   55
+  ],
+  "future_fields_absent": [
+   "future real observation",
+   "future controller stage",
+   "future contact result",
+   "future true pose",
+   "object truth",
+   "actual remaining time",
+   "true exit time"
+  ],
+  "input_width": 57,
+  "note": "the audit recomputes which columns are non-zero in a real window; slot 48 is the frame's own elapsed time, so it is a past value even for the newest frame",
+  "seconds": 0.41377848699630704,
+  "terminal_token_not_an_input": true,
+  "verdict": "no future field reaches the input window",
+  "window": 33
+ },
+ "numeric_checks": {
+  "angle_periodicity_max_error_rad": 2.720753458420489,
+  "first_last_positions": {
+   "1": {
+    "first": 32,
+    "last": 32
+   },
+   "16": {
+    "first": 17,
+    "last": 32
+   },
+   "17": {
+    "first": 16,
+    "last": 32
+   },
+   "32": {
+    "first": 1,
+    "last": 32
+   },
+   "33": {
+    "first": 0,
+    "last": 32
+   },
+   "6": {
+    "first": 27,
+    "last": 32
+   }
+  },
+  "geometry_round_trip_max_error": 4.440892098500626e-16,
+  "note": "the flattened-MLP family consumes padding slots, so padding is contractually zero rather than invariant; the contract is recorded in CONTRACT.md",
+  "padding_is_zero": true,
+  "residual_round_trip_max_error": 4.440892098500626e-16,
+  "seconds": 0.0013360000011743978
+ },
+ "sampling_coverage": {
+  "missing_roots": 0,
+  "normalisation_source": "the training panel only (fit_statistics over train windows)",
+  "note": "one balanced pass over the pool touches each root about once; later epochs resample the same root pool, which is what 'D1 coverage' means here",
+  "root_disjoint_across_splits": true,
+  "sampled_roots": 4096,
+  "seconds": 1.6918818109988933,
+  "t0_windows": 1029,
+  "t_gt_0_windows": 3067,
+  "test_roots": 512,
+  "train_frames": 2516673,
+  "train_records": 32768,
+  "train_roots": 4096,
+  "val_roots": 256
+ },
+ "timing_100_updates": {
+  "direct_multistep": {
+   "batch": 128,
+   "parameters": {
+    "decoder": 168984,
+    "encoder": 1246880,
+    "heads": 54088,
+    "total": 1469952
+   },
+   "peak_rss_mb": 1498.80859375,
+   "rss_delta_mb": 389.8984375,
+   "seconds_per_update": 0.7626795611790026,
+   "threads": 4,
+   "updates_per_minute": 78.66999858662511
+  },
+  "latent_autoregressive": {
+   "batch": 128,
+   "parameters": {
+    "decoder": 76824,
+    "encoder": 1246880,
+    "heads": 32456,
+    "total": 1461600,
+    "transition": 105440
+   },
+   "peak_rss_mb": 1839.2734375,
+   "rss_delta_mb": 340.46484375,
+   "seconds_per_update": 1.4309470975158833,
+   "threads": 4,
+   "updates_per_minute": 41.9302712896652
+  },
+  "seconds": 223.40821821299323
+ }
+}

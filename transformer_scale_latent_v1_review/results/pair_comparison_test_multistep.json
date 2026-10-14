@@ -1,0 +1,154 @@
+{
+ "step16_r0": {
+  "bootstrap": {
+   "ci95_high_cm": 0.3518126556011494,
+   "ci95_low_cm": 0.183430641239761,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.2439445006564323,
+   "note": "negative favours the first model",
+   "roots": 512,
+   "unit": "root",
+   "windows": 1756
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.2561289353605927,
+   "median_of_differences_cm": 0.2439445006564323,
+   "note": "negative favours the first model",
+   "windows": 1756
+  }
+ },
+ "step16_r1": {
+  "bootstrap": {
+   "ci95_high_cm": -0.034216799830120104,
+   "ci95_low_cm": -0.19680822891456426,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.999,
+   "median_of_differences_cm": -0.10370788557597516,
+   "note": "negative favours the first model",
+   "roots": 423,
+   "unit": "root",
+   "windows": 1353
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.15675733875313638,
+   "median_of_differences_cm": -0.10370788557597516,
+   "note": "negative favours the first model",
+   "windows": 1353
+  }
+ },
+ "step1_r0": {
+  "bootstrap": {
+   "ci95_high_cm": 0.11390964529171228,
+   "ci95_low_cm": 0.07729465091736781,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.09128148569789576,
+   "note": "negative favours the first model",
+   "roots": 512,
+   "unit": "root",
+   "windows": 2045
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.1704353728664725,
+   "median_of_differences_cm": 0.09128148569789576,
+   "note": "negative favours the first model",
+   "windows": 2045
+  }
+ },
+ "step1_r1": {
+  "bootstrap": {
+   "ci95_high_cm": 0.1799749556888126,
+   "ci95_low_cm": 0.0891416026832681,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.13014030957686756,
+   "note": "negative favours the first model",
+   "roots": 418,
+   "unit": "root",
+   "windows": 1566
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.24275985692104193,
+   "median_of_differences_cm": 0.13014030957686756,
+   "note": "negative favours the first model",
+   "windows": 1566
+  }
+ },
+ "step4_r0": {
+  "bootstrap": {
+   "ci95_high_cm": 0.016222436651812083,
+   "ci95_low_cm": 0.008446203736670767,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.011640150702272884,
+   "note": "negative favours the first model",
+   "roots": 512,
+   "unit": "root",
+   "windows": 2001
+  },
+  "statistics": {
+   "difference_of_medians_cm": -0.028322986101784672,
+   "median_of_differences_cm": 0.011640150702272884,
+   "note": "negative favours the first model",
+   "windows": 2001
+  }
+ },
+ "step4_r1": {
+  "bootstrap": {
+   "ci95_high_cm": 0.00357528812719699,
+   "ci95_low_cm": -0.004952098408169867,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.5915,
+   "median_of_differences_cm": -0.0003867508950444027,
+   "note": "negative favours the first model",
+   "roots": 420,
+   "unit": "root",
+   "windows": 1541
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.005718190876194407,
+   "median_of_differences_cm": -0.0003867508950444027,
+   "note": "negative favours the first model",
+   "windows": 1541
+  }
+ },
+ "step8_r0": {
+  "bootstrap": {
+   "ci95_high_cm": 0.19112117225033773,
+   "ci95_low_cm": 0.14524170400385064,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.1698551553188779,
+   "note": "negative favours the first model",
+   "roots": 512,
+   "unit": "root",
+   "windows": 1901
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.04421798956807457,
+   "median_of_differences_cm": 0.1698551553188779,
+   "note": "negative favours the first model",
+   "windows": 1901
+  }
+ },
+ "step8_r1": {
+  "bootstrap": {
+   "ci95_high_cm": 0.10188054726697816,
+   "ci95_low_cm": 0.07505355015766625,
+   "draws": 2000,
+   "fraction_draws_below_zero": 0.0,
+   "median_of_differences_cm": 0.0896181462280897,
+   "note": "negative favours the first model",
+   "roots": 420,
+   "unit": "root",
+   "windows": 1461
+  },
+  "statistics": {
+   "difference_of_medians_cm": 0.017703519039293306,
+   "median_of_differences_cm": 0.0896181462280897,
+   "note": "negative favours the first model",
+   "windows": 1461
+  }
+ }
+}
