@@ -71,6 +71,27 @@ def main() -> int:
         markdown.append(f"| {name} | {entry['parameters']:,} | {entry['t>0_r0']['p50_cm']:.3f} | "
                         f"{entry['t>0_r0']['p90_cm']:.3f} | {entry['t=0_r0']['p50_cm']:.3f} | "
                         f"{entry['batch1_latency_ms']:.2f} | {entry['batch128_latency_ms']:.2f} |")
+    # seed spread: three seeds per family, reported separately, never pooled as extra independent
+    # roots; the spread is what tells us whether a difference is larger than run-to-run variation
+    spread: Dict[str, Dict[str, List[float]]] = {}
+    for name, entry in models.items():
+        if not isinstance(entry.get("parameters"), dict):
+            continue
+        family = "直接多步" if entry["kind"] == "direct_multistep" else "latent 自回归"
+        for step in STEPS:
+            cell = entry.get("r0", {}).get("by_regime", {}).get("t>0", {}).get(
+                f"step{step}", {}).get("p50_cm")
+            if cell is not None:
+                spread.setdefault(family, {}).setdefault(f"step{step}", []).append(cell)
+    if spread:
+        markdown += ["", "| 模型族 | 跨度 | seed0 | seed1 | seed2 | 极差 cm |",
+                     "|---|---|---:|---:|---:|---:|"]
+        for family, steps in sorted(spread.items()):
+            for step, values in sorted(steps.items(), key=lambda kv: int(kv[0][4:])):
+                values = sorted(values)
+                markdown.append(f"| {family} | {step} | " +
+                                " | ".join(f"{v:.3f}" for v in values) +
+                                f" | {max(values) - min(values):.3f} |")
     comparison = OUT / "pair_comparison_test_multistep.json"
     if comparison.exists():
         data = json.loads(comparison.read_text())
