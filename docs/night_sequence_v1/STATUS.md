@@ -1,12 +1,12 @@
 # STATUS — night_sequence_v1
 
-生成时间：2026-10-14 09:58 (Asia/Shanghai)
+生成时间：2026-10-14 12:21 (Asia/Shanghai)
 
 ## 起点与工作区
 
-- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`a6c8bf0934d17dea5989e0209d822a66172d006f`。
+- 本轮实际起点 HEAD：`d7731ca`（observation_terminal_v1 评价修正版）；生成时 HEAD：`e09ee0e4ed271a742547371c6e92f74698a60016`。
 - 起点工作区差异：仅新增任务书 `docs/tasks/20261014_0205_...md`（未跟踪），未改动任何已冻结配置。
-- 生成时未提交改动条数：17。
+- 生成时未提交改动条数：18。
 
 ## 环境
 

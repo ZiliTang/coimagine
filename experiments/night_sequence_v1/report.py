@@ -74,6 +74,15 @@ def main() -> int:
              "旧检查点与旧评价结果保存在 `outputs/night_sequence_v1/superseded/`。",
              "> 本报告的**全部数字来自修正后重训的模型**。", "",
              "## 0. 一句话结论", "",
+             "**模型目前是欠拟合，而且瓶颈已被定位到训练方式（输出参数化与共享尺度），"
+             "不是容量、不是数据量、也不是实现崩坏。** 同口径（eval 模式、同一批固定样本）测量下，"
+             "训练与验证误差几乎重合（差 ≤0.3 cm），**没有过拟合**；但模型在**自己见过的数据上**"
+             "（下一步 2.7–3.7 cm）就远差于「保持当前中点」这个平凡基线（0.23 cm）。"
+             "单条序列的终态能压到 0.04 cm，说明实现可以拟合；而下一步头即使只拟合 1 条序列也压不下去。"
+             "把几何目标从「直接预测位置」改成「当前位置＋预测位移」后，下一步训练误差降 **19×**、"
+             "验证降 **16×**，并首次超过基线。详见 `FIT_DIAGNOSTIC.md`。", "",
+             "**因此本轮不主张“网络太小”，也不主张“数据不够”；下一轮应先把几何头改成残差参数化"
+             "并把归一化改为逐列，再重跑主对照。**", "",
              "**在固定技能、相同输入与相同更新预算下，观测终态可以被训练出来：执行中误差 "
              "0.043 m，优于起始保持 0.052 m 与命令分组统计 0.087 m（配对 root bootstrap 95% CI "
              "不含 0）。但两条架构结论都**随区间翻转**：执行前（t=0）单帧 MLP 与 Transformer 更好，"
@@ -331,6 +340,63 @@ def main() -> int:
             motion_rows.append((name, block))
     if motion_rows:
         keys = ["near_static(<0.01m/s)", "slow(0.01-0.05)", "moving(>0.05)"]
+        # ---- fitting diagnostic (same protocol, tiny set, parameterisation)
+    diagnostic = {}
+    for name in ("protocol", "tiny", "single_next", "single_terminal"):
+        path = DATA / "fit_diagnostic" / f"{name}_d1.json"
+        if path.exists():
+            diagnostic[name] = json.loads(path.read_text())
+    if diagnostic:
+        lines += ["## 5c. 拟合诊断：瓶颈在输出参数化，不在容量或数据", "",
+                  "**同口径训练/验证误差**（eval 模式、同一批固定样本，单位 cm）：", "",
+                  "| 模型 | 训练 下一步 | 验证 下一步 | 训练 终态 | 验证 终态 |",
+                  "|---|---:|---:|---:|---:|"]
+        for kind, entry in diagnostic.get("protocol", {}).get("targets", {}).items():
+            lines.append(f"| {kind} | {entry['train']['next_step_midpoint_p50_cm']:.2f} | "
+                         f"{entry['val']['next_step_midpoint_p50_cm']:.2f} | "
+                         f"{entry['train']['terminal_midpoint_p50_cm']:.2f} | "
+                         f"{entry['val']['terminal_midpoint_p50_cm']:.2f} |")
+        hold = (diagnostic.get("protocol", {}).get("targets", {})
+                .get("mlp_history", {}).get("val", {}))
+        if hold:
+            lines.append(f"| **保持当前中点基线** | "
+                         f"{hold['hold_baseline_next_step_p50_cm']:.3f} | "
+                         f"{hold['hold_baseline_next_step_p50_cm']:.3f} | "
+                         f"{hold['hold_baseline_terminal_p50_cm']:.2f} | "
+                         f"{hold['hold_baseline_terminal_p50_cm']:.2f} |")
+        tiny = diagnostic.get("tiny", {}).get("targets", {})
+        if tiny:
+            lines += ["", "**只拟合极少数固定序列**（完整目标，3000 步）：", "",
+                      "| 固定序列数 | 训练 下一步 p50 | 训练 终态 p50 | 保持当前基线 |",
+                      "|---:|---:|---:|---:|"]
+            for key, entry in sorted(tiny.items(), key=lambda kv: kv[1]["sequences"]):
+                lines.append(f"| {entry['sequences']} | "
+                             f"{entry['train_next_step_midpoint_p50_cm']:.2f} | "
+                             f"{entry['train_terminal_midpoint_p50_cm']:.2f} | "
+                             f"{entry['train_hold_next_step_p50_cm']:.3f} |")
+        singles = []
+        for key in ("single_next", "single_terminal"):
+            for name, entry in (diagnostic.get(key, {}).get("targets", {}) or {}).items():
+                singles.append((diagnostic[key]["target"], name, entry))
+        if singles:
+            lines += ["", "**单头对照：直接预测位置 vs 当前位置＋预测位移**"
+                          "（同一批固定样本，3000 步）：", "",
+                      "| 目标 | 参数化 | 训练 p50 | 验证 p50 | 保持当前基线 | 目标标准差 |",
+                      "|---|---|---:|---:|---:|---:|"]
+            for target, name, entry in singles:
+                lines.append(f"| {target} | {name} | {entry['train_next_step_p50_cm']:.3f} | "
+                             f"{entry['val_next_step_p50_cm']:.3f} | "
+                             f"{entry['val_hold_baseline_p50_cm']:.3f} | "
+                             f"{entry['target_scale_std_m']:.4f} m |")
+        lines += ["", "**定位**：训练与验证误差几乎重合（差 ≤0.3 cm），**没有过拟合**；"
+                      "但模型在**自己见过的数据上**也远差于「保持当前」这个平凡基线，是**欠拟合**。"
+                      "单条序列的终态可以压到 0.04 cm，说明实现可以拟合；"
+                      "而下一步头即使只拟合 1 条序列也压不下去。"
+                      "改成残差参数化后，下一步训练误差降 **19×**、验证降 **16×**，"
+                      "并**首次超过基线**。因此瓶颈是**输出参数化与共享尺度**，"
+                      "不是容量、不是数据量。详见 `FIT_DIAGNOSTIC.md`。", ""]
+
+    if motion_rows:
         lines += ["## 5b. 固定 Δt 头按真实运动状态拆分（修正后）", "",
                   "Δt=0.05 s 时，近静止样本上「保持当前状态」几乎就是正确答案；"
                   "不拆分会把大量近乎平凡的样本混进同一个数字里。", "",

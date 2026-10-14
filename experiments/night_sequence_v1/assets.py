@@ -708,7 +708,8 @@ def f06(store: Store) -> dict:
         entries = curve_from_log(name)
         if entries:
             curves[name] = entries
-    fig, axes = plt.subplots(1, 3, figsize=(19, 5))
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    axes = axes.ravel()
     ax = axes[0]
     ax.set_title("(a) 验证合成损失（同一根横轴＝优化更新数）", fontsize=10.5)
     plotted = 0
@@ -730,32 +731,37 @@ def f06(store: Store) -> dict:
             fontsize=8)
 
     ax = axes[1]
-    ax.set_title("(b) 分项验证损失（各任务子组，最终 checkpoint）", fontsize=10.5)
-    groups = []
-    labels = []
-    for name, entries in sorted(curves.items()):
-        final = entries[-1]
-        values = [final.get(f"val_{key}") for key in
-                  ("terminal_geometry", "terminal_pose", "terminal_velocity", "terminal_validity",
-                   "terminal_remaining", "terminal_exit_class")]
-        if any(v is None for v in values):
-            continue
-        labels.append(name)
-        groups.append(values)
-    if groups:
-        matrix = np.asarray(groups, dtype=float)
-        image = ax.imshow(matrix, aspect="auto", cmap="viridis")
-        ax.set_yticks(range(len(labels)))
-        ax.set_yticklabels(labels, fontsize=6.5)
-        ax.set_xticks(range(6))
-        ax.set_xticklabels(["geomm", "posem", "velm", "valid", "remain", "exit"], fontsize=8)
-        fig.colorbar(image, ax=ax, fraction=0.03)
+    ax.set_title("(b) 同口径训练/验证误差（eval 模式、固定样本）", fontsize=10.5)
+    diagnostic = {}
+    for key in ("protocol", "tiny", "single_next", "single_terminal"):
+        path = DATA / "fit_diagnostic" / f"{key}_d1.json"
+        if path.exists():
+            diagnostic[key] = json.loads(path.read_text())
+    protocol = diagnostic.get("protocol", {}).get("targets", {})
+    if protocol:
+        names = list(protocol)
+        train_next = [protocol[n]["train"]["next_step_midpoint_p50_cm"] for n in names]
+        val_next = [protocol[n]["val"]["next_step_midpoint_p50_cm"] for n in names]
+        hold = protocol[names[0]]["val"]["hold_baseline_next_step_p50_cm"]
+        x = np.arange(len(names))
+        ax.bar(x - 0.2, train_next, width=0.4, label="train", color="#1f4e79")
+        ax.bar(x + 0.2, val_next, width=0.4, label="validation", color="#7fb3d5")
+        ax.axhline(hold, color="#b03030", linestyle="--", linewidth=1.2,
+                   label="hold current midpoint")
+        ax.set_xticks(x)
+        ax.set_xticklabels([short_label(n) if "_" in n else n for n in names], fontsize=8)
+        ax.set_ylabel("next-step midpoint p50 (cm)", fontsize=9)
+        ax.legend(fontsize=8)
+        ax.grid(alpha=0.25, axis="y")
+        ax.text(0.02, 0.05, "训练与验证几乎重合 → 没有过拟合；\n"
+                            "训练本身就远差于平凡基线 → 欠拟合",
+                transform=ax.transAxes, fontsize=8)
     else:
-        ax.text(0.5, 0.5, "训练曲线尚未生成", ha="center")
+        ax.text(0.5, 0.5, "诊断尚未生成", ha="center")
 
-    # (c) independent roots versus error, for the same model and target
+    # (c) tiny-set fit and (d) direct vs residual
     ax = axes[2]
-    ax.set_title("(c) 独立 root 数 vs 同目标误差（MLP-history, seed0）", fontsize=10.5)
+    ax.set_title("(c) 独立 root 数 vs 同目标误差；及极小集合拟合", fontsize=10.5)
     scale = {}
     summary = store.summary
     for tier, splits in (("d0", ["d0"]), ("d1", ["d0", "d1ext"]),
@@ -790,13 +796,55 @@ def f06(store: Store) -> dict:
                 transform=ax.transAxes, fontsize=8)
     else:
         ax.text(0.5, 0.5, "分析结果尚未生成", ha="center")
-    fig.suptitle("F06 学习过程与规模效应：曲线对齐同一更新轴；独立 root 数与误差的关系另图",
-                 fontsize=12)
+    # (d) direct versus residual parameterisation
+    ax = axes[3]
+    ax.set_title("(d) 直接预测位置 vs 当前位置＋预测位移", fontsize=10.5)
+    rows_single = []
+    for key, target in (("single_next", "next step"), ("single_terminal", "terminal")):
+        for name, entry in (diagnostic.get(key, {}).get("targets", {}) or {}).items():
+            rows_single.append((target, name, entry))
+    if rows_single:
+        labels = [f"{t}\n{p}" for t, p, _e in rows_single]
+        train = [e["train_next_step_p50_cm"] for _t, _p, e in rows_single]
+        val = [e["val_next_step_p50_cm"] for _t, _p, e in rows_single]
+        x = np.arange(len(rows_single))
+        ax.bar(x - 0.2, train, width=0.4, label="train", color="#2ca02c")
+        ax.bar(x + 0.2, val, width=0.4, label="validation", color="#98df8a")
+        ax.set_xticks(x)
+        ax.set_xticklabels(labels, fontsize=8)
+        ax.set_ylabel("midpoint p50 (cm)", fontsize=9)
+        ax.legend(fontsize=8)
+        ax.grid(alpha=0.25, axis="y")
+        ax.text(0.02, 0.05, "残差参数化把下一步训练误差降 19×\n并首次超过「保持当前」基线",
+                transform=ax.transAxes, fontsize=8)
+    else:
+        ax.text(0.5, 0.5, "单头对照尚未生成", ha="center")
+    fig.suptitle("F06 学习过程、规模效应与拟合诊断：曲线对齐同一更新轴；"
+                 "同口径训练/验证 + 极小集合 + 参数化对照", fontsize=12)
     paths = save(fig, "F06_learning_curves")
     rows = []
     for name, entry in sorted(store.runs.items()):
         rows.append([name, entry["kind"], entry["tier"], entry["seed"], entry["params"],
                      entry["best_val"], entry["best_update"]])
+    diagnostic_rows = []
+    for target, name, entry in rows_single:
+        diagnostic_rows.append([target, name, entry["train_next_step_p50_cm"],
+                                entry["val_next_step_p50_cm"],
+                                entry.get("val_hold_baseline_p50_cm"),
+                                entry["target_scale_std_m"]])
+    for name, entry in protocol.items():
+        diagnostic_rows.append(["train_vs_val", name,
+                                entry["train"]["next_step_midpoint_p50_cm"],
+                                entry["val"]["next_step_midpoint_p50_cm"],
+                                entry["val"]["hold_baseline_next_step_p50_cm"], None])
+    for key, entry in sorted(diagnostic.get("tiny", {}).get("targets", {}).items(),
+                             key=lambda kv: kv[1]["sequences"]):
+        diagnostic_rows.append([f"tiny_{entry['sequences']}_sequences", entry["model"],
+                                entry["train_next_step_midpoint_p50_cm"], None,
+                                entry["train_hold_next_step_p50_cm"], None])
+    diagnostic_csv = write_csv("F06_fit_diagnostic.csv",
+                               ["block", "variant", "train_p50_cm", "val_p50_cm",
+                                "hold_baseline_p50_cm", "target_std_m"], diagnostic_rows)
     csv = write_csv("F06_run_summary.csv",
                     ["run", "model", "tier", "seed", "parameters", "best_val", "best_update"], rows)
     cost_rows = []
@@ -822,7 +870,8 @@ def f06(store: Store) -> dict:
                            "in_execution_mid2d_p50_m"],
                           [[tier, scale[tier][0], scale[tier][1], scale[tier][2]]
                            for tier in sorted(scale)])
-    return {"figure": paths, "data": [csv, scale_csv, cost_csv], "runs": len(rows),
+    return {"figure": paths, "data": [csv, scale_csv, cost_csv, diagnostic_csv],
+            "runs": len(rows),
             "curves_available": len(curves), "scale": {t: v[0] for t, v in scale.items()}}
 
 
@@ -1272,12 +1321,14 @@ def build_index(figures: Dict[str, dict], extra: dict) -> str:
                 "两组预测头；另给出实际参数量。",
                 "真实前缀与预测未来分色；t=0 没有尚未发生的历史。",
                 "本轮不含自由 latent 递推或完整规划器。"),
-        "F06": ("学习过程与规模效应（修正后重训）",
-                "三种模型在同一更新轴上的验证曲线与分项损失，另表给出参数量、最优更新与耗时。",
-                "曲线按同一更新数对齐，计算成本另报；独立 root 数与误差的关系在同一模型、"
-                "同一目标、同一预算下比较。",
-                "未完成或预算不同的 run 明确标注；单 seed 不画置信区间。"
-                "数据规模一栏只在修正后的实现下成立，**不能**升级为“数据收益已饱和”的普遍结论。"),
+        "F06": ("学习过程、规模效应与拟合诊断",
+                "四格：(a) 同一更新轴上的验证曲线；(b) 同口径训练/验证误差与「保持当前」基线；"
+                "(c) 独立 root 数与误差的关系；(d) 直接预测位置 vs 当前位置＋预测位移。",
+                "训练与验证几乎重合说明没有过拟合；训练本身就远差于平凡基线说明欠拟合；"
+                "残差参数化把下一步误差降 19× 并首次超过基线，把瓶颈定位到训练方式。",
+                "未完成或预算不同的 run 明确标注；单 seed 不画置信区间；"
+                "数据规模一栏只在修正后的实现下成立，**不能**升级为“数据收益已饱和”的普遍结论；"
+                "残差结论来自单头小规模对照，尚未在完整六头模型上验证。"),
         "F07": ("拟合与预测性能（修正后重训）",
                 "P0/P1 与新模型在 t=0 终态与执行中下一步/终态的主指标比较，含两机器人中点与法向角、"
                 "可见/退出类表现，以及 t=0 动作差值/排序表。",

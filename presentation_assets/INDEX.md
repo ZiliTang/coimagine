@@ -50,13 +50,13 @@
 - 能说明什么：真实前缀与预测未来分色；t=0 没有尚未发生的历史。
 - 不能说明什么：本轮不含自由 latent 递推或完整规划器。
 
-## F06 学习过程与规模效应（修正后重训）
+## F06 学习过程、规模效应与拟合诊断
 
 - 图片：`presentation_assets/figures/F06_learning_curves.png`（矢量版 `presentation_assets/figures/F06_learning_curves.pdf`）
-- 数据：`presentation_assets/data/F06_run_summary.csv`, `presentation_assets/data/F06_data_scale_to_error.csv`, `presentation_assets/data/F06_inference_cost.csv`
-- 建议用途：三种模型在同一更新轴上的验证曲线与分项损失，另表给出参数量、最优更新与耗时。
-- 能说明什么：曲线按同一更新数对齐，计算成本另报；独立 root 数与误差的关系在同一模型、同一目标、同一预算下比较。
-- 不能说明什么：未完成或预算不同的 run 明确标注；单 seed 不画置信区间。数据规模一栏只在修正后的实现下成立，**不能**升级为“数据收益已饱和”的普遍结论。
+- 数据：`presentation_assets/data/F06_run_summary.csv`, `presentation_assets/data/F06_data_scale_to_error.csv`, `presentation_assets/data/F06_inference_cost.csv`, `presentation_assets/data/F06_fit_diagnostic.csv`
+- 建议用途：四格：(a) 同一更新轴上的验证曲线；(b) 同口径训练/验证误差与「保持当前」基线；(c) 独立 root 数与误差的关系；(d) 直接预测位置 vs 当前位置＋预测位移。
+- 能说明什么：训练与验证几乎重合说明没有过拟合；训练本身就远差于平凡基线说明欠拟合；残差参数化把下一步误差降 19× 并首次超过基线，把瓶颈定位到训练方式。
+- 不能说明什么：未完成或预算不同的 run 明确标注；单 seed 不画置信区间；数据规模一栏只在修正后的实现下成立，**不能**升级为“数据收益已饱和”的普遍结论；残差结论来自单头小规模对照，尚未在完整六头模型上验证。
 
 ## F07 拟合与预测性能（修正后重训）
 

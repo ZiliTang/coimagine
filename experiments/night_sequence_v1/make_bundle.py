@@ -59,6 +59,8 @@ def collect_review() -> List[Path]:
             path = DATA / "analysis" / tier / name
             if path.exists():
                 files.append(path)
+    for path in sorted((DATA / "fit_diagnostic").glob("*.json")):
+        files.append(path)
     # the rendered figures travel **inside** the review ZIP as well: a package that only carries the
     # plotting script cannot be checked without re-running it
     files += sorted((ASSETS / "figures").glob("*.png"))

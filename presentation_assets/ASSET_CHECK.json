@@ -262,6 +262,7 @@
   "presentation_assets/data/F06_run_summary.csv",
   "presentation_assets/data/F06_data_scale_to_error.csv",
   "presentation_assets/data/F06_inference_cost.csv",
+  "presentation_assets/data/F06_fit_diagnostic.csv",
   "presentation_assets/data/F07_metrics_t0.csv",
   "presentation_assets/data/F07_process_by_motion.csv",
   "p",
