@@ -1,0 +1,41 @@
+{
+ "disjoint_check": {
+  "diagnostic_vs_val_roots_shared": 0,
+  "eval_test_t0_windows": 503,
+  "eval_test_vs_train_records_shared": 0,
+  "eval_val_t0_windows": 533,
+  "eval_val_vs_train_records_shared": 0,
+  "train_vs_val_records_shared": 0,
+  "train_vs_val_roots_shared": 0
+ },
+ "eval_test": {
+  "hash": "ea9ef15694c3074e72aa1905f3deb66f120565759cc06d9ab6baa05a29925f7a",
+  "records": 2048,
+  "roots": 512,
+  "windows": 2048
+ },
+ "eval_val": {
+  "hash": "bd662eb213fa586a312368b9622a63c8f64c5fc7403466f7413bce7693308174",
+  "records": 2048,
+  "roots": 256,
+  "windows": 2048
+ },
+ "train": {
+  "hash": "b931431ddccfe22330b4da578adcd63c377e28c49826735b4bbfed875cc17785",
+  "records": 2048,
+  "roots": 1536,
+  "windows": 2048
+ },
+ "train_diagnostic": {
+  "hash": "4c90b57c72756747f666c31742a49a6684b0c28a0bc3da3105a86717bb6d7bb6",
+  "records": 2048,
+  "roots": 512,
+  "windows": 2048
+ },
+ "val": {
+  "hash": "c8bfe225f1918662d8db055b45fc91c28c1b0ad8b71beff7c00c21d17e77c888",
+  "records": 2048,
+  "roots": 256,
+  "windows": 2048
+ }
+}

@@ -1,0 +1,191 @@
+{
+ "frozen_checkpoint": "mlp_history_residual_per_group_seed0.pt",
+ "full_panel_values_from_main_results": {
+  "hold_next_t_gt_0_r0": {
+   "by_motion": {
+    "moving(>=0.05)": {
+     "p50_cm": 0.4712625805559882,
+     "p90_cm": 1.178741455078125,
+     "rmse_cm": 0.7305400119350907,
+     "roots": 405,
+     "windows": 737
+    },
+    "near_static(<0.01)": {
+     "p50_cm": 0.0654573595544484,
+     "p90_cm": 0.2580834314849354,
+     "rmse_cm": 2.446854122236406,
+     "roots": 224,
+     "windows": 267
+    },
+    "slow(0.01-0.05)": {
+     "p50_cm": 0.19255251048148986,
+     "p90_cm": 0.408544382169743,
+     "rmse_cm": 0.38683435272855776,
+     "roots": 348,
+     "windows": 534
+    }
+   },
+   "by_visibility": {
+    "became_invisible": {
+     "p50_cm": null,
+     "p90_cm": null,
+     "rmse_cm": null,
+     "roots": 0,
+     "windows": 0
+    },
+    "became_visible": {
+     "p50_cm": 39.51240278737106,
+     "p90_cm": 39.51240278737106,
+     "rmse_cm": 39.51240278737106,
+     "roots": 1,
+     "windows": 1
+    },
+    "sustained_invisible": {
+     "p50_cm": null,
+     "p90_cm": null,
+     "rmse_cm": null,
+     "roots": 0,
+     "windows": 0
+    },
+    "sustained_visible": {
+     "p50_cm": 0.23868301985235135,
+     "p90_cm": 0.830885550548908,
+     "rmse_cm": 0.576350887470075,
+     "roots": 509,
+     "windows": 1537
+    }
+   },
+   "p50_cm": 0.23933663099434424,
+   "p90_cm": 0.8309729638221778,
+   "rmse_cm": 1.1606327488887729,
+   "roots": 509,
+   "windows": 1538
+  },
+  "next_t_gt_0_r0": {
+   "by_motion": {
+    "moving(>=0.05)": {
+     "p50_cm": 0.18033551914138718,
+     "p90_cm": 1.2133547475777429,
+     "rmse_cm": 0.6128049049005194,
+     "roots": 405,
+     "windows": 737
+    },
+    "near_static(<0.01)": {
+     "p50_cm": 0.08765874508418049,
+     "p90_cm": 0.3375566698573882,
+     "rmse_cm": 2.358280977580818,
+     "roots": 224,
+     "windows": 267
+    },
+    "slow(0.01-0.05)": {
+     "p50_cm": 0.11703518102685541,
+     "p90_cm": 0.5435348630443931,
+     "rmse_cm": 0.39614706367734376,
+     "roots": 348,
+     "windows": 534
+    }
+   },
+   "by_visibility": {
+    "became_invisible": {
+     "p50_cm": null,
+     "p90_cm": null,
+     "rmse_cm": null,
+     "roots": 0,
+     "windows": 0
+    },
+    "became_visible": {
+     "p50_cm": 37.89823090675545,
+     "p90_cm": 37.89823090675545,
+     "rmse_cm": 37.89823090675545,
+     "roots": 1,
+     "windows": 1
+    },
+    "sustained_invisible": {
+     "p50_cm": null,
+     "p90_cm": null,
+     "rmse_cm": null,
+     "roots": 0,
+     "windows": 0
+    },
+    "sustained_visible": {
+     "p50_cm": 0.13927355303024214,
+     "p90_cm": 0.6202997920604261,
+     "rmse_cm": 0.5159834088141116,
+     "roots": 509,
+     "windows": 1537
+    }
+   },
+   "p50_cm": 0.1393969817755123,
+   "p90_cm": 0.6258252194578316,
+   "rmse_cm": 1.0954110039741232,
+   "roots": 509,
+   "windows": 1538
+  },
+  "source": "main_results_eval_test.json (full 2048-window panel)"
+ },
+ "hold": {
+  "r0_t_gt_0": {
+   "p50_cm": 0.244885730906441,
+   "p90_cm": 0.8302396450122821,
+   "windows": 380
+  },
+  "r1_t_gt_0": {
+   "p50_cm": 0.20132351687586234,
+   "p90_cm": 0.9280444927375545,
+   "windows": 297
+  }
+ },
+ "model": {
+  "r0_t_gt_0": {
+   "p50_cm": 0.13387720350573254,
+   "p90_cm": 0.6212513962977803,
+   "windows": 380
+  },
+  "r1_t_gt_0": {
+   "p50_cm": 0.173690161326281,
+   "p90_cm": 1.0260234101828434,
+   "windows": 297
+  }
+ },
+ "panel": "ea9ef15694c3074e72aa1905f3deb66f120565759cc06d9ab6baa05a29925f7a",
+ "samples": 512,
+ "transform": {
+  "midpoint": {
+   "columns": [
+    "r0_mid_x",
+    "r0_mid_y",
+    "r1_mid_x",
+    "r1_mid_y"
+   ],
+   "default_column_sigma": 1.0,
+   "hash": "16620bdfc3963ccc33744d24ce703c3d9541f15d2ece5d3c81048d50a03b855c",
+   "lower_clamped_columns": [],
+   "mean": [
+    0.0007388985226301483
+   ],
+   "min_column_sigma": 0.001,
+   "missing_columns": [],
+   "name": "process_residual_per_group",
+   "normalisation": "per_group",
+   "parameterisation": "residual",
+   "reference": "current_visible_midpoint",
+   "std": [
+    0.011915292662882299
+   ],
+   "version": "residual-prediction-v1/targets-1"
+  },
+  "midpoint_columns": [
+   "r0_mid_x",
+   "r0_mid_y",
+   "r1_mid_x",
+   "r1_mid_y"
+  ],
+  "normal_mean": [
+   0.2632725121133254
+  ],
+  "normal_std": [
+   0.4631308434924373
+  ],
+  "version": "residual-prediction-v1/targets-1"
+ }
+}

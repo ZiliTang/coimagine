@@ -1,0 +1,116 @@
+{
+ "count": 22,
+ "files": [
+  {
+   "bytes": 4985329,
+   "path": "checkpoints/diagnostic_single_head.pt",
+   "sha256": "a1a7e6cb0b098b5a19027eaaceaf45593b063e2193b3d2509eb2ab94407add4f"
+  },
+  {
+   "bytes": 2769265,
+   "path": "checkpoints/mlp_current_residual_per_group_seed0.pt",
+   "sha256": "fbd63a5683da3c55e65e7789d54c4d2388b112088e6383ef0916c99e6af16e89"
+  },
+  {
+   "bytes": 6455493,
+   "path": "checkpoints/mlp_history_direct_per_group_seed0.pt",
+   "sha256": "0eee6a9e75c22fcbb4c110cd9f53b8dcd05baaac866fefe3035b587ddc72157b"
+  },
+  {
+   "bytes": 6455665,
+   "path": "checkpoints/mlp_history_residual_per_group_seed0.pt",
+   "sha256": "23df8cd1e31889868482f8383bcaf9128ae1a2b58a5965f60e16ab2db9416f80"
+  },
+  {
+   "bytes": 3645155,
+   "path": "checkpoints/transformer_history_residual_per_group_seed0.pt",
+   "sha256": "adcdd4d6bda981a205b0189d8d9ae337a907be9ba10af1c001e8fe96dbef960a"
+  },
+  {
+   "bytes": 2627,
+   "path": "docs/CHECKPOINT_INTERFACE.md",
+   "sha256": "79284976ba64c5b1435ed4b7a4f4142d7e42a5cc9a2a82c21136d42b329d1f98"
+  },
+  {
+   "bytes": 4559,
+   "path": "docs/CONTRACT.md",
+   "sha256": "e6efe15a0aec417c86d834fb2af7546d79660aabb8cc093ec50056006c53e57a"
+  },
+  {
+   "bytes": 79600,
+   "path": "docs/F1_single_head_diagnostic.png",
+   "sha256": "9a2405fb4267806f984e267a19bc538dec4b499f08b336e5916333e89789a5b9"
+  },
+  {
+   "bytes": 109738,
+   "path": "docs/F2_tiny_set_fit.png",
+   "sha256": "00bc6c100b46ac1b0b33eca6f754900931ecb7c07d14a6c05e88102fd5b02cfb"
+  },
+  {
+   "bytes": 97436,
+   "path": "docs/F3_main_migration.png",
+   "sha256": "f42578e74f15d090ffa7a5dfb0227caa4358555cc903602a3280b03955a1ece0"
+  },
+  {
+   "bytes": 7222,
+   "path": "docs/RESULTS.md",
+   "sha256": "7ab010c51b58ac7dc9d130e21e8107c0a45c75b7244ffc607054368ef3ad01be"
+  },
+  {
+   "bytes": 5515,
+   "path": "docs/REVIEW_FIXES.md",
+   "sha256": "8b670ade99d4b4eeccd07e2fee491d56e98023bc3ef0724801786b9b7e1f7327"
+  },
+  {
+   "bytes": 14286,
+   "path": "reference/RUN_LEDGER.jsonl",
+   "sha256": "fea4acc5ecdd0ec477d34d52ae2896b76d3899eda76fb3e81c0c5c4c70d3189b"
+  },
+  {
+   "bytes": 8932,
+   "path": "reference/comparisons_eval_test.json",
+   "sha256": "cc6ea662df36d3e0ac1e833af3ab566d88ab20e5701c8c316d80206c105f5866"
+  },
+  {
+   "bytes": 4302,
+   "path": "reference/expected_metrics.json",
+   "sha256": "53edae97f00822516a8740df289a85fd650df04f94be9b1eb67cfa272f858499"
+  },
+  {
+   "bytes": 287739,
+   "path": "reference/main_results_eval_test.json",
+   "sha256": "a2d67a70a1f1e1f681b252f7b42c64aa68dcab3d15f3d84fbcb71f6b53642058"
+  },
+  {
+   "bytes": 286632,
+   "path": "reference/main_results_eval_val.json",
+   "sha256": "be5ce9a8b388e336704d7cfb2549aee6ae2a50ce4a873999596fe9baf324b138"
+  },
+  {
+   "bytes": 1031,
+   "path": "reference/panels_d1.json",
+   "sha256": "870c760bcb36a4837e3bc61819e6ced06341b864cc664e499293f9634feae945"
+  },
+  {
+   "bytes": 59975,
+   "path": "reference/single_head_diagnostic_d1.json",
+   "sha256": "1f9b02d03d5b672aa3785d662fd693d5ff40f77e35530f164fbd27512f238303"
+  },
+  {
+   "bytes": 6535,
+   "path": "reference/tiny_fit_d1.json",
+   "sha256": "e61ef67ce666b90dcdf1b6811a0963a9c12959376d3bf46ec0d3da14b53d17f0"
+  },
+  {
+   "bytes": 580989,
+   "path": "samples/windows_eval_test.npz",
+   "sha256": "1746f3f84d4e564b49def01830f396eac69697294ec6fff882b7d0519ed5113d"
+  },
+  {
+   "bytes": 5514,
+   "path": "verify_package.py",
+   "sha256": "a85d981273b00d061df25ec45175ae0b826c84ebced5ce2c2df5fb233c86295f"
+  }
+ ],
+ "note": "sizes and hashes of the packaged files; this does not by itself validate any experimental conclusion"
+}

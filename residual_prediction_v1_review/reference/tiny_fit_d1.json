@@ -1,0 +1,193 @@
+{
+ "lr": 0.003,
+ "spec": {
+  "columns": [
+   "r0_mid_x",
+   "r0_mid_y",
+   "r1_mid_x",
+   "r1_mid_y"
+  ],
+  "default_column_sigma": 1.0,
+  "hash": "3d3e3cbdbcea09fb8446e451b3a4d568808348a4de67485ecabdd3e38b76c18c",
+  "lower_clamped_columns": [],
+  "mean": [
+   0.0024041801954275024,
+   2.3728614934410267e-05,
+   0.0005732266865079365,
+   -0.00032484410301087394
+  ],
+  "min_column_sigma": 0.001,
+  "missing_columns": [],
+  "name": "residual_per_column",
+  "normalisation": "per_column",
+  "parameterisation": "residual",
+  "reference": "current_visible_midpoint",
+  "std": [
+   0.009755945591663748,
+   0.004666489163256873,
+   0.020457824385855528,
+   0.00872360566072455
+  ],
+  "version": "residual-prediction-v1/targets-1"
+ },
+ "tasks": {
+  "n1": {
+   "distinct_roots": 1,
+   "evaluation_windows": 68,
+   "multi_command_per_root": false,
+   "multi_seconds": 52.27727855699777,
+   "multi_task_geometry": {
+    "hold_p50_cm": 0.31421931261291414,
+    "note": "the multi-task model keeps the round-6 direct per-group standardisation; this is the transfer-loss reference, not the residual predictor",
+    "p50_cm": 0.5305234208304119,
+    "supervised_r0": 68,
+    "windows": 68
+   },
+   "sequence_ids": [
+    "night/d1ext/incompatible/02806#cmd0"
+   ],
+   "sequences": 1,
+   "single_seconds": 26.89332669400028,
+   "single_task": {
+    "hold_p50_cm": 0.31421931261291414,
+    "p50_cm": 0.026970764419589097,
+    "p90_cm": 0.04421300173017456,
+    "rmse_cm": 0.0311281823629144,
+    "supervised_r0": 68,
+    "windows": 68
+   }
+  },
+  "n16": {
+   "distinct_roots": 16,
+   "evaluation_windows": 1215,
+   "multi_command_per_root": false,
+   "multi_seconds": 53.91999733400007,
+   "multi_task_geometry": {
+    "hold_p50_cm": 0.23321500457205566,
+    "note": "the multi-task model keeps the round-6 direct per-group standardisation; this is the transfer-loss reference, not the residual predictor",
+    "p50_cm": 1.7289221349806883,
+    "supervised_r0": 1201,
+    "windows": 1215
+   },
+   "sequence_ids": [
+    "night/d1ext/incompatible/02806#cmd0",
+    "night/d1ext/dual_rotate/01984#cmd7",
+    "night/d1ext/dual_rotate/02019#cmd3",
+    "night/d1ext/dual_same_side/01689#cmd5",
+    "night/d1ext/dual_same_side/01493#cmd7",
+    "night/d1ext/dual_rotate/02277#cmd5",
+    "night/d1ext/solo_offset/01142#cmd0",
+    "night/d1ext/solo_offset/01107#cmd2",
+    "night/d1ext/incompatible/02430#cmd4",
+    "night/d1ext/constrained/03271#cmd3",
+    "night/d1ext/dual_same_side/01279#cmd7",
+    "night/d1ext/dual_same_side/01533#cmd2",
+    "night/d1ext/incompatible/02781#cmd7",
+    "night/d1ext/solo_offset/01177#cmd3",
+    "night/d1ext/dual_rotate/02301#cmd4",
+    "phase_b/train/dual_same_side/0006#cmd7"
+   ],
+   "sequences": 16,
+   "single_seconds": 28.271535113002756,
+   "single_task": {
+    "hold_p50_cm": 0.23321500457205566,
+    "p50_cm": 0.11155470134082118,
+    "p90_cm": 0.47138115589363955,
+    "rmse_cm": 0.5196864430350526,
+    "supervised_r0": 1201,
+    "windows": 1215
+   }
+  },
+  "n64": {
+   "distinct_roots": 64,
+   "evaluation_windows": 4955,
+   "multi_command_per_root": false,
+   "multi_seconds": 34.09239629599324,
+   "multi_task_geometry": {
+    "hold_p50_cm": 0.2240257903329288,
+    "note": "the multi-task model keeps the round-6 direct per-group standardisation; this is the transfer-loss reference, not the residual predictor",
+    "p50_cm": 2.687175262897113,
+    "supervised_r0": 4857,
+    "windows": 4955
+   },
+   "sequence_ids": [
+    "night/d1ext/incompatible/02806#cmd0",
+    "night/d1ext/dual_rotate/01984#cmd7",
+    "night/d1ext/dual_rotate/02019#cmd3",
+    "night/d1ext/dual_same_side/01689#cmd5",
+    "night/d1ext/dual_same_side/01493#cmd7",
+    "night/d1ext/dual_rotate/02277#cmd5",
+    "night/d1ext/solo_offset/01142#cmd0",
+    "night/d1ext/solo_offset/01107#cmd2",
+    "night/d1ext/incompatible/02430#cmd4",
+    "night/d1ext/constrained/03271#cmd3",
+    "night/d1ext/dual_same_side/01279#cmd7",
+    "night/d1ext/dual_same_side/01533#cmd2",
+    "night/d1ext/incompatible/02781#cmd7",
+    "night/d1ext/solo_offset/01177#cmd3",
+    "night/d1ext/dual_rotate/02301#cmd4",
+    "phase_b/train/dual_same_side/0006#cmd7",
+    "night/d1ext/dual_same_side/01604#cmd5",
+    "night/d1ext/dual_rotate/02351#cmd6",
+    "night/d1ext/incompatible/02747#cmd3",
+    "night/d1ext/dual_rotate/02028#cmd0",
+    "night/d1ext/dual_rotate/01861#cmd5",
+    "night/d1ext/dual_same_side/01406#cmd0",
+    "night/d1ext/solo_central/00046#cmd0",
+    "night/d1ext/dual_rotate/01923#cmd3",
+    "night/d1ext/constrained/03257#cmd7",
+    "night/d1ext/dual_rotate/01838#cmd7",
+    "night/d1ext/solo_central/00409#cmd2",
+    "phase_b/train/incompatible/0002#cmd0",
+    "phase_b/train/incompatible/0079#cmd4",
+    "night/d1ext/dual_same_side/01783#cmd0",
+    "night/d1ext/solo_central/00504#cmd4",
+    "night/d1ext/dual_same_side/01460#cmd7",
+    "night/d1ext/dual_same_side/01697#cmd3",
+    "night/d1ext/solo_central/00276#cmd3",
+    "night/d1ext/incompatible/02910#cmd2",
+    "night/d1ext/solo_offset/01190#cmd3",
+    "night/d1ext/solo_offset/00741#cmd1",
+    "night/d1ext/constrained/03403#cmd1",
+    "night/d1ext/incompatible/02532#cmd4",
+    "night/d1ext/solo_central/00405#cmd5",
+    "night/d1ext/constrained/03452#cmd7",
+    "night/d1ext/solo_offset/01174#cmd5",
+    "phase_b/train/solo_offset/0081#cmd5",
+    "night/d1ext/dual_same_side/01567#cmd5",
+    "night/d1ext/incompatible/02642#cmd1",
+    "night/d1ext/solo_central/00074#cmd2",
+    "night/d1ext/solo_central/00243#cmd1",
+    "night/d1ext/dual_same_side/01262#cmd2",
+    "night/d1ext/constrained/03357#cmd2",
+    "phase_b/train/solo_offset/0074#cmd4",
+    "night/d1ext/incompatible/02654#cmd3",
+    "night/d1ext/incompatible/02577#cmd1",
+    "night/d1ext/incompatible/02735#cmd6",
+    "night/d1ext/dual_same_side/01459#cmd7",
+    "night/d1ext/dual_same_side/01515#cmd3",
+    "night/d1ext/constrained/03128#cmd2",
+    "phase_b/train/dual_rotate/0015#cmd2",
+    "night/d1ext/incompatible/02706#cmd0",
+    "night/d1ext/constrained/03345#cmd0",
+    "night/d1ext/dual_same_side/01551#cmd0",
+    "night/d1ext/incompatible/02970#cmd7",
+    "phase_b/train/dual_same_side/0001#cmd5",
+    "night/d1ext/solo_central/00009#cmd0",
+    "night/d1ext/dual_rotate/01808#cmd7"
+   ],
+   "sequences": 64,
+   "single_seconds": 25.756388758993126,
+   "single_task": {
+    "hold_p50_cm": 0.2240257903329288,
+    "p50_cm": 0.14284319867604492,
+    "p90_cm": 0.5490931699766578,
+    "rmse_cm": 1.054040684005218,
+    "supervised_r0": 4857,
+    "windows": 4955
+   }
+  }
+ },
+ "tier": "d1",
+ "updates": 3000
+}

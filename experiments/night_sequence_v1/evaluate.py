@@ -305,8 +305,12 @@ class GroupedStatistics:
         local = index - np.asarray([tokens.offsets[s] for s in split_of])
         command = np.stack([tokens.token_arrays[s][l, 0, 51:57]
                             for s, l in zip(split_of, local)]).astype(np.float32)
+        # round-8 fix (task book 7.6): BOTH robots' active flags belong in the signature. The old
+        # form kept only robot 0's, so two commands differing only in robot 1's participation shared
+        # a lookup group.
         return np.asarray([f"{round(float(c[0]), 6)}|{round(float(c[1]), 6)}|"
-                           f"{round(float(c[2]), 6)}|{round(float(c[3]), 6)}|{int(c[4] > 0.5)}"
+                           f"{round(float(c[2]), 6)}|{round(float(c[3]), 6)}|"
+                           f"{int(c[4] > 0.5)}|{int(c[5] > 0.5)}"
                            for c in command])
 
     def _summarise(self, targets: Dict[str, np.ndarray],
