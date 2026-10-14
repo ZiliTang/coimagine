@@ -1,5 +1,5 @@
 {
- "count": 22,
+ "count": 26,
  "files": [
   {
    "bytes": 4985329,
@@ -25,6 +25,26 @@
    "bytes": 3645155,
    "path": "checkpoints/transformer_history_residual_per_group_seed0.pt",
    "sha256": "adcdd4d6bda981a205b0189d8d9ae337a907be9ba10af1c001e8fe96dbef960a"
+  },
+  {
+   "bytes": 13201,
+   "path": "code/data.py",
+   "sha256": "31a68d25219f80c8c7ac4173bebf58533401150cfc651f29a26bb831f18fcc6f"
+  },
+  {
+   "bytes": 12899,
+   "path": "code/evaluate.py",
+   "sha256": "f0cdb279f685e815f6c94e6d5db2d60530693a9af0eb3464fdc23aef75404ab0"
+  },
+  {
+   "bytes": 14102,
+   "path": "code/single_head.py",
+   "sha256": "22b19cb301ade520f64dae4c54b8618023cff175d572144f8ad57a7f021cca64"
+  },
+  {
+   "bytes": 16327,
+   "path": "code/targets.py",
+   "sha256": "ac93944349b614bc8a2f949dbccb8f42119b8459eb5b4867b64625f94314a558"
   },
   {
    "bytes": 2627,
@@ -62,9 +82,9 @@
    "sha256": "8b670ade99d4b4eeccd07e2fee491d56e98023bc3ef0724801786b9b7e1f7327"
   },
   {
-   "bytes": 14286,
+   "bytes": 13191,
    "path": "reference/RUN_LEDGER.jsonl",
-   "sha256": "fea4acc5ecdd0ec477d34d52ae2896b76d3899eda76fb3e81c0c5c4c70d3189b"
+   "sha256": "93c0b34fcc796ca4d1e18d2c3a80f358d9f1de1ac83aca8bd1d8195bd21a764f"
   },
   {
    "bytes": 8932,

@@ -136,6 +136,12 @@ def main() -> int:
         shutil.copy2(ledger, package / "reference" / ledger.name)
     shutil.copy2(ROOT / "experiments/residual_prediction_v1/verify_package.py",
                  package / "verify_package.py")
+    # the transform module itself, for inspection: the verifier re-implements the arithmetic on
+    # purpose, so shipping the original lets a reviewer compare the two side by side
+    code = package / "code"
+    code.mkdir(exist_ok=True)
+    for name in ("targets.py", "data.py", "single_head.py", "evaluate.py"):
+        shutil.copy2(ROOT / "experiments/residual_prediction_v1" / name, code / name)
 
     manifest = []
     for path in sorted(package.rglob("*")):
