@@ -81,8 +81,17 @@ def main() -> int:
         source = BASE / "collection" / name
         if source.exists():
             shutil.copy2(source, package / "data" / name)
-    shards = sorted((BASE / "collection").rglob("episode_*.npz"))[:24]
-    for shard in shards:
+    for name in ("TRIAL_SUMMARY.json", "DATA_CARD.md", "DATACARD.json"):
+        source = BASE / "collection_expanded" / name
+        if source.exists():
+            shutil.copy2(source, package / "data" / f"expanded_{name}")
+    # a small representative slice of each source, kept out of the archive's size budget
+    shards = []
+    for source_name in ("collection", "collection_expanded"):
+        for directory in sorted((BASE / source_name).iterdir()):
+            if directory.is_dir():
+                shards.extend(sorted(directory.glob("episode_*.npz"))[:6])
+    for shard in shards[:24]:
         shutil.copy2(shard, package / "data" / shard.name)
     clips = sorted((BASE / "report/clips").glob("*.*")) if (BASE / "report/clips").exists() else []
     for clip in clips[:8]:
@@ -150,7 +159,7 @@ def main() -> int:
     print(json.dumps({"archive": archive.name, "bytes": archive.stat().st_size,
                       "entries": len(names), "duplicates": len(names) - len(set(names)),
                       "sha256": sha256(archive), "checkpoints": len(checkpoints),
-                      "shards": len(shards), "clips": len(clips)}, indent=1))
+                      "shards": len(shards[:24]), "clips": len(clips)}, indent=1))
     print("PACKAGE_OK")
     return 0
 

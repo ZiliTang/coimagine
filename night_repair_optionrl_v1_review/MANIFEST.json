@@ -171,6 +171,96 @@
    "sha256": "47b518ef5c60f7948f87bccd4f6c2b0634700bb2dd9852fd25efb055a03555f5"
   },
   {
+   "path": "data/episode_000000.npz",
+   "bytes": 331886,
+   "sha256": "f345779bdb685877265ab4c52d2797b3c427f3a4c5d077258e655e7e2569b213"
+  },
+  {
+   "path": "data/episode_000001.npz",
+   "bytes": 230548,
+   "sha256": "619ce7fb457e781c9de703004fcd2e53470551dbc4c81806b2f9148f7639fead"
+  },
+  {
+   "path": "data/episode_000002.npz",
+   "bytes": 77103,
+   "sha256": "c50a7965869e9eda167d939b08405380a395cd05c0e8f440494822058d7dfdcc"
+  },
+  {
+   "path": "data/episode_000003.npz",
+   "bytes": 121363,
+   "sha256": "9f693c287553555bfba41d32fb767a7f1c150d146a5263419bb4f3de88c48874"
+  },
+  {
+   "path": "data/episode_000004.npz",
+   "bytes": 38278,
+   "sha256": "405da993160debc6c37a0c2f4c9af8d1bc123f236f313b9e598229e085717505"
+  },
+  {
+   "path": "data/episode_000005.npz",
+   "bytes": 260561,
+   "sha256": "da0236b125d4f912f18d842091ac7fa91e2dff9d5e41c8f75733679db1cbc835"
+  },
+  {
+   "path": "data/episode_000020.npz",
+   "bytes": 59824,
+   "sha256": "def46e9cd33fb292abb7c0c277d73022d8b26d80529bb7eaf43975ed9661a17c"
+  },
+  {
+   "path": "data/episode_000021.npz",
+   "bytes": 231860,
+   "sha256": "2bef8a72facb773210a9a9a19d26ceb3e7b8b64946009ce23ebacbac0013bd94"
+  },
+  {
+   "path": "data/episode_000022.npz",
+   "bytes": 125084,
+   "sha256": "3d3a797d15571b2a27184c9edfe1c923d8b2c79c6ebcc9f235c4390d378eeb4f"
+  },
+  {
+   "path": "data/episode_000023.npz",
+   "bytes": 217314,
+   "sha256": "5a1e7246179817c24590a2d684c3b266ec5da6c9d573b378e26a8aa8b6583ecb"
+  },
+  {
+   "path": "data/episode_000024.npz",
+   "bytes": 383755,
+   "sha256": "e17170f2bca57be3eef84b5b96fd7beca98375e5519f22fa12199ffc9f6c8978"
+  },
+  {
+   "path": "data/episode_000025.npz",
+   "bytes": 380427,
+   "sha256": "a98014ee8dbfc6919d350f23963258437a5cef6bae5fd5bbce04329a1a5a0966"
+  },
+  {
+   "path": "data/episode_000040.npz",
+   "bytes": 509275,
+   "sha256": "bb95f11c72e8d5505d82f9cd25185ee5af64c1237029d6a4365919eb6c1289e1"
+  },
+  {
+   "path": "data/episode_000041.npz",
+   "bytes": 396970,
+   "sha256": "45ccb24702a30e7be8d39a39542667ed43435fdd61f9dfb82316316f09b80b1e"
+  },
+  {
+   "path": "data/episode_000042.npz",
+   "bytes": 261333,
+   "sha256": "424d1aeb0c972511e8fc8fead6bfff30fad2b331b149a7072a3dfca52d7005df"
+  },
+  {
+   "path": "data/episode_000043.npz",
+   "bytes": 235702,
+   "sha256": "eeee06079b659193c65042a02fb3935ff54308a3247a315fbd0b033a1abb9a3b"
+  },
+  {
+   "path": "data/episode_000044.npz",
+   "bytes": 239516,
+   "sha256": "2b2637f3eaf7576e42b552062764e811c9b80cb4d18e4c5156bbc9ec155b7d25"
+  },
+  {
+   "path": "data/episode_000045.npz",
+   "bytes": 354573,
+   "sha256": "1b2e77521dcfd336e483bb2f5cc0965a31e6cfcb87f68639fb569d15baf5b85d"
+  },
+  {
    "path": "data/episode_000060.npz",
    "bytes": 20377,
    "sha256": "8fcc9f837ef22b0dab91ce8ab4ad5b61a58d28410015723092f93fe20f3fecec"
@@ -201,94 +291,19 @@
    "sha256": "e0bd86ed2db47f666219f7d2029383ebc2bbff0740e33cf34567fea11a6137f8"
   },
   {
-   "path": "data/episode_000066.npz",
-   "bytes": 24498,
-   "sha256": "7081be12b4e43f0a01f49a9fb1efd43f585c50bf97cd84872394c60ac8797f3b"
+   "path": "data/expanded_DATACARD.json",
+   "bytes": 3549,
+   "sha256": "67594c9cf18939e6bd91b9b3b85ae9c8210faffc62fae9e14c47a91b4943e2f3"
   },
   {
-   "path": "data/episode_000067.npz",
-   "bytes": 24418,
-   "sha256": "021bc71cc93d92e14b3c0f26b2286cde50d44936b65360f601551ba64be1cba5"
+   "path": "data/expanded_DATA_CARD.md",
+   "bytes": 2508,
+   "sha256": "947b0f67d3c07ddc5482537ddf3568da76d7f0996f44a913005b60fb1f3f8958"
   },
   {
-   "path": "data/episode_000068.npz",
-   "bytes": 23520,
-   "sha256": "695547074b49adfb40641467e18d8c9c88f8c63019153a26310a635a0c44558d"
-  },
-  {
-   "path": "data/episode_000069.npz",
-   "bytes": 16498,
-   "sha256": "8798c64cbc9e066f435671f329b5db8066e04e6f93b7606e4fbc565f33edba2a"
-  },
-  {
-   "path": "data/episode_000070.npz",
-   "bytes": 16502,
-   "sha256": "58533d712c34a0512f79e672e9bdbe2ff32af7a21a18c8dc4ff9609e1ddf4837"
-  },
-  {
-   "path": "data/episode_000071.npz",
-   "bytes": 23343,
-   "sha256": "23d02fe63e73c7d765c4155499e9c517f8d431cb44e5f34dd05e2eaeada97779"
-  },
-  {
-   "path": "data/episode_000072.npz",
-   "bytes": 17124,
-   "sha256": "5891ba43a072df20e096fad406eccc3b06a9cc8a4dbcc6e34dcdcddb36d2a4c9"
-  },
-  {
-   "path": "data/episode_000073.npz",
-   "bytes": 17126,
-   "sha256": "7a67c7117b5297cc52acb27ebd03a7a89bd1eb06f1937ecbcb13f271e7589c5b"
-  },
-  {
-   "path": "data/episode_000074.npz",
-   "bytes": 17026,
-   "sha256": "22462959af2ee287069e93f8fa348dfa31f5da7cb3d96c48c0d012fc820c0869"
-  },
-  {
-   "path": "data/episode_000075.npz",
-   "bytes": 16378,
-   "sha256": "3505ba686d627da819ced549a15322528303c85f87bd3c400e1db04e59b9e16f"
-  },
-  {
-   "path": "data/episode_000076.npz",
-   "bytes": 16610,
-   "sha256": "13695cf17538407d70c910de535c86b138e6ed581874c4c7eae07fc7448d7ade"
-  },
-  {
-   "path": "data/episode_000077.npz",
-   "bytes": 17443,
-   "sha256": "063aa78e252316ba2034edddbf3b192a9b6b52dc30802542d833931150499979"
-  },
-  {
-   "path": "data/episode_000078.npz",
-   "bytes": 16680,
-   "sha256": "6bcec356e2d03da85d9aa411cb61317ffb34a071df48449f214c8e3b7c148c75"
-  },
-  {
-   "path": "data/episode_000079.npz",
-   "bytes": 17168,
-   "sha256": "5e914c00139c787a875a977a01dab4c213c139edc3315acf1690b7b978851fe0"
-  },
-  {
-   "path": "data/episode_000080.npz",
-   "bytes": 20212,
-   "sha256": "ade3d5002842ca8bfd5f2058d5c30683ff0c9e6c4e3414f7405ca2dfa58bd176"
-  },
-  {
-   "path": "data/episode_000081.npz",
-   "bytes": 20841,
-   "sha256": "49d8c02debbf0f231dc84fbeceba0a8de6f841c1b4d59f53651834c519885efb"
-  },
-  {
-   "path": "data/episode_000082.npz",
-   "bytes": 20249,
-   "sha256": "765e8b5e97c10ae4de08b6407b25507a337493a99a3ef992f9f3c3d951e299d7"
-  },
-  {
-   "path": "data/episode_000083.npz",
-   "bytes": 19463,
-   "sha256": "5a86e33ff43ddfb57c3a9bf6dae492ce1607daec5c13cded0c17a7bc3b0bf50a"
+   "path": "data/expanded_TRIAL_SUMMARY.json",
+   "bytes": 2139,
+   "sha256": "8e29f11380c57cbf7e9267066a06af8c23545c513a98f96b78a963ca4182bb1e"
   },
   {
    "path": "docs/CALIBRATION.md",
@@ -297,8 +312,8 @@
   },
   {
    "path": "docs/MORNING_REPORT.md",
-   "bytes": 13536,
-   "sha256": "669a73eb22459d52c70ff712f18e52472f218520be7609dc533ecb6caa4bce32"
+   "bytes": 14312,
+   "sha256": "f24c1b0460b5df3c11b3a27c7bd7e9b46ace21b00d29251304d784522cfcbdba"
   },
   {
    "path": "docs/REPAIR_EVIDENCE.md",
@@ -366,7 +381,7 @@
    "sha256": "eb43c5d95f7e06ee2bfd80f977463d2123a143befba6ca271666e3a09ef53c34"
   }
  ],
- "count": 73,
+ "count": 76,
  "scope": "the packaged sample is reproduced by verify_package.py; the full panel is not re-run here",
  "note": "hashes validate the archive, not the experimental conclusions"
 }
