@@ -61,10 +61,10 @@
 ## F07 拟合与预测性能（修正后重训）
 
 - 图片：`presentation_assets/figures/F07_prediction_performance.png`（矢量版 `presentation_assets/figures/F07_prediction_performance.pdf`）
-- 数据：`p`, `r`, `e`, `s`, `e`, `n`, `t`, `a`, `t`, `i`, `o`, `n`, `_`, `a`, `s`, `s`, `e`, `t`, `s`, `/`, `d`, `a`, `t`, `a`, `/`, `F`, `0`, `7`, `_`, `m`, `e`, `t`, `r`, `i`, `c`, `s`, `_`, `t`, `0`, `.`, `c`, `s`, `v`
+- 数据：`presentation_assets/data/F07_metrics_t0.csv`, `presentation_assets/data/F07_process_by_motion.csv`
 - 建议用途：P0/P1 与新模型在 t=0 终态与执行中下一步/终态的主指标比较，含两机器人中点与法向角、可见/退出类表现，以及 t=0 动作差值/排序表。
-- 能说明什么：执行前终态、执行中下一步、执行中终态分开报告。
-- 不能说明什么：几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。
+- 能说明什么：执行前终态、执行中下一步、执行中终态分开报告；固定 Δt 头另按真实运动状态拆分。
+- 不能说明什么：几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。固定 Δt 头在近静止子集上远差于「保持当前」基线，**尚不能说已学好短时动力学**。
 
 ## F08 对闭环规划的意义与未决问题
 

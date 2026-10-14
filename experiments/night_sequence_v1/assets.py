@@ -995,10 +995,29 @@ def f07(store: Store) -> dict:
                      pose.get("all_columns_flattened", pose).get("p50"),
                      entry["t0"]["terminal_remaining"].get("p50"),
                      entry["t0"]["terminal_exit_class"]["accuracy"]])
+    motion_rows = []
+    if "d1" in metrics:
+        payload_d1 = metrics["d1"]
+        entries = [("P0_hold", payload_d1["baselines"].get("P0_hold|test")),
+                   ("P1_grouped", payload_d1["baselines"].get("P1_grouped|test"))]
+        entries += [(label.split("|")[0], entry)
+                    for label, entry in sorted(payload_d1["models"].items())
+                    if label.endswith("|test") and isinstance(entry, dict) and "all" in entry]
+        for name, entry in entries:
+            block = (entry or {}).get("all", {}).get("process_geometry_by_motion")
+            if not block:
+                continue
+            for motion, value in sorted(block.items()):
+                motion_rows.append([name, motion, value["p50"], value["p90"],
+                                    value["samples"], value["independent_roots"]])
+    motion_csv = write_csv("F07_process_by_motion.csv",
+                           ["model", "motion_state", "midpoint_p50_m", "midpoint_p90_m",
+                            "samples", "independent_roots"], motion_rows)
     csv = write_csv("F07_metrics_t0.csv",
                     ["model", "r0_mid2d_p50_m", "r0_mid2d_p90_m", "r0_normal_p50_deg",
                      "pose_abs_p50", "remaining_p50_s", "exit_accuracy"], rows)
-    return {"figure": paths, "data": csv, "tier": tier, "models": len(payload["models"])}
+    return {"figure": paths, "data": [csv, motion_csv], "tier": tier,
+            "models": len(payload["models"])}
 
 
 # ---------------------------------------------------------------------------
@@ -1262,8 +1281,9 @@ def build_index(figures: Dict[str, dict], extra: dict) -> str:
         "F07": ("拟合与预测性能（修正后重训）",
                 "P0/P1 与新模型在 t=0 终态与执行中下一步/终态的主指标比较，含两机器人中点与法向角、"
                 "可见/退出类表现，以及 t=0 动作差值/排序表。",
-                "执行前终态、执行中下一步、执行中终态分开报告。",
-                "几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。"),
+                "执行前终态、执行中下一步、执行中终态分开报告；固定 Δt 头另按真实运动状态拆分。",
+                "几何排序不等于任务收益排序；真实前缀条件下的预测不是自由 rollout。"
+                "固定 Δt 头在近静止子集上远差于「保持当前」基线，**尚不能说已学好短时动力学**。"),
         "F08": ("对闭环规划的意义与未决问题",
                 "“已有证据 → 可能用途 → 尚缺验证”表，并附已有 C 负结果的小表。",
                 "本轮没有闭环实验，因此本轮未评估闭环收益。",

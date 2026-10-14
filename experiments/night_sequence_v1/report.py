@@ -314,7 +314,39 @@ def main() -> int:
                   "|---|---:|---:|---:|---:|---:|"]
         lines += rows + [""]
 
-    # ---- statistics and cost
+    # ---- fixed-dt horizon split by how fast the robot is actually moving
+    motion_rows = []
+    for tier in ("d1",):
+        if tier not in tiers:
+            continue
+        payload = tiers[tier]
+        entries = [("P0_hold", payload["baselines"].get("P0_hold|test")),
+                   ("P1_grouped", payload["baselines"].get("P1_grouped|test"))]
+        entries += [(label.split("|")[0], entry) for label, entry in sorted(payload["models"].items())
+                    if label.endswith("|test") and isinstance(entry, dict) and "all" in entry]
+        for name, entry in entries:
+            block = (entry or {}).get("all", {}).get("process_geometry_by_motion")
+            if not block:
+                continue
+            motion_rows.append((name, block))
+    if motion_rows:
+        keys = ["near_static(<0.01m/s)", "slow(0.01-0.05)", "moving(>0.05)"]
+        lines += ["## 5b. 固定 Δt 头按真实运动状态拆分（修正后）", "",
+                  "Δt=0.05 s 时，近静止样本上「保持当前状态」几乎就是正确答案；"
+                  "不拆分会把大量近乎平凡的样本混进同一个数字里。", "",
+                  "| 模型 | 近静止 p50 | 慢速 p50 | 运动中 p50 | 近静止样本/独立 root |",
+                  "|---|---:|---:|---:|---:|"]
+        for name, block in motion_rows:
+            cells = [fmt(block.get(k, {}).get("p50"), 5) for k in keys]
+            stat = block.get(keys[0], {})
+            lines.append(f"| {name} | {cells[0]} | {cells[1]} | {cells[2]} | "
+                         f"{stat.get('samples', 0)} / {stat.get('independent_roots', 0)} |")
+        lines += ["", "**这张表说明固定 Δt 头目前不成立**：P0 在近静止样本上是 0.0001 m 量级，"
+                      "而学习模型是 0.05 m 量级——也就是说模型**没有**学到「短时几乎不变」这件事，"
+                      "在占比最大的近静止子集上反而远差于平凡基线。"
+                      "因此不能声称模型已经学好固定间隔动力学；"
+                      "该头需要按运动状态分别训练或评价，而不是看一个合并数字。", ""]
+
     if stats:
         lines += ["## 6. 统计显著性与计算成本", "",
                   "**配对 root bootstrap**（同一样本上两模型逐例配对，重采样单位是 root；"

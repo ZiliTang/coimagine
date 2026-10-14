@@ -412,6 +412,21 @@ def evaluate_predictions(targets: Dict[str, np.ndarray], masks: Dict[str, np.nda
         process_geometry[f"r{robot_id}_normal_angle_deg"] = percentiles(
             np.degrees(difference)[value].tolist())
     report["process_geometry"] = process_geometry
+    # the fixed-dt horizon is 0.05 s, where a near-static robot barely moves; without a motion
+    # breakdown the headline number is dominated by samples that are almost trivial to hold
+    if "motion" in groups:
+        motion = groups["motion"]
+        per_motion = {}
+        for value in sorted(set(motion.tolist())):
+            selected = (motion == value) & (masks["process_geometry"][:, 0] > 0)
+            entry = percentiles(np.hypot(
+                predictions["process_geometry"][:, 0] - targets["process_geometry"][:, 0],
+                predictions["process_geometry"][:, 1] - targets["process_geometry"][:, 1]
+            )[selected].tolist())
+            entry["samples"] = int(selected.sum())
+            entry["independent_roots"] = int(len(set(roots[selected].tolist())))
+            per_motion[str(value)] = entry
+        report["process_geometry_by_motion"] = per_motion
     # continuous groups are reported **per column**: flattening metres together with radians would
     # mix units in one distribution and make the percentile meaningless
     for name, columns in (("terminal_pose", POSE_COLUMNS),

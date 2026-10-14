@@ -126,9 +126,21 @@ def grouped_keys(tokens: Tokens, index: np.ndarray, end: np.ndarray) -> Dict[str
     bins = [f"{ELAPSED_BINS[i]:.2f}-{ELAPSED_BINS[i + 1]:.2f}" for i in range(len(ELAPSED_BINS) - 1)]
     bin_index = np.clip((elapsed / 0.25).astype(int), 0, len(bins) - 1)
     stages = np.array([int(tokens.token_arrays[tokens.split_of[i]][i - tokens.offsets[tokens.split_of[i]], int(e), 49] * 8) for i, e in zip(index, end)])
+    # how fast robot 0 is actually moving at the window end, so the 0.05 s horizon can be read
+    # separately on near-static and on moving samples
+    speed = []
+    for i, e in zip(index, end):
+        split = tokens.split_of[i]
+        local = i - tokens.offsets[split]
+        token = tokens.token_arrays[split][local, int(e)]
+        speed.append(float(np.hypot(token[3], token[4])))
+    speed = np.asarray(speed)
+    motion = np.where(speed < 0.01, "near_static(<0.01m/s)",
+                      np.where(speed < 0.05, "slow(0.01-0.05)", "moving(>0.05)"))
     return {"elapsed_bin": np.asarray([bins[b] for b in bin_index]),
             "stage": np.asarray([f"stage{s}" for s in stages]),
-            "regime": np.asarray(["t0" if e == 0 else "in_execution" for e in end])}
+            "regime": np.asarray(["t0" if e == 0 else "in_execution" for e in end]),
+            "motion": np.asarray(motion)}
 
 
 def main() -> int:
