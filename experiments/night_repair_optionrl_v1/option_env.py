@@ -345,10 +345,20 @@ class OptionRLEnv:
                 # the caller must be able to tell "the task's own budget ran out" from "the sampler
                 # stopped early"; only the latter bootstraps
                 "task_budget_expired": bool(self._task_budget_expired()),
-                "goal_reached": bool(self._goal_reached())}
+                "goal_reached": bool(self._goal_reached()),
+                # ``task_event`` is the only task-reward information the learner needs; the shaping
+                # and the time cost are aggregated by the learner from the state trace so that the
+                # success bonus can never be silently dropped
+                "task_event": ("success" if success else
+                               ("budget_exhausted" if (truncated and self._task_budget_expired())
+                                else None)),
+                "physics_steps": steps,
+                "object_pose_after": self.privileged_object()[:2].tolist(),
+                "elapsed_steps_before": int(self.steps - steps)}
         return StepResult(observation=self._observation(), reward=float(reward),
                           terminated=terminated, truncated=truncated, info=info,
-                          inner_observations=self._inner_observations(result.rows),
+                          inner_observations=self._inner_observations(
+                              result.rows, float(self.steps - steps) * 0.05),
                           skill_steps=steps,
                           trace=self._privileged_trace(result.rows))
 
@@ -364,7 +374,8 @@ class OptionRLEnv:
                         "skill_index": self.skills_used, "stage": str(row.get("stage", ""))})
         return out
 
-    def _inner_observations(self, rows: Sequence[Dict[str, object]]) -> np.ndarray:
+    def _inner_observations(self, rows: Sequence[Dict[str, object]],
+                            elapsed_offset_seconds: float = 0.0) -> np.ndarray:
         """The legal joint observation at every logged 0.05 s period of the executed skill.
 
         Built only from the ``observed`` block (each robot's own whitelist sensing) and the public
@@ -398,7 +409,10 @@ class OptionRLEnv:
                        float(np.hypot(self.goal[0] - robot0[0], self.goal[1] - robot0[1]))]
             # the inner block has the same width as the boundary block: 11 + 11 + 3 + 3 + 2
             values += [float((observed.get("0", {}) or {}).get("patch_distance") or 0.0), 0.0]
-            values += self._clock_features(float(row.get("time", 0.0)))
+            # ``row['time']`` is the skill-local clock; the offset makes the stored clock the
+            # episode's physical time, which is what the task book's time axis means
+            values += self._clock_features(elapsed_offset_seconds
+                                           + float(row.get("time", 0.0)))
             array = np.asarray(values, dtype=np.float32)
             if array.shape[0] != self.spec.width:
                 raise RuntimeError(f"inner observation width {array.shape[0]} != {self.spec.width}")

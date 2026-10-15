@@ -61,6 +61,53 @@ def collect(policy: RecurrentPolicy, roots: Sequence[RootSpec], goal_distance: f
     return episodes
 
 
+def per_root(episodes: Sequence[Episode]) -> List[Dict[str, object]]:
+    """One row per root, so a paired comparison with the random policy is possible.
+
+    The review pointed out that the two policies are evaluated on the *same* initial states, which
+    makes the comparison paired; two independent proportions discard that pairing.
+    """
+
+    return [{"root_id": e.root_id, "scene": e.scene, "success": bool(e.success),
+             "outcome": e.outcome, "end_distance_m": float(e.end_distance),
+             "progress_towards_goal_m": float(e.net_progress_towards_goal),
+             "skills": len(e.decisions)} for e in episodes]
+
+
+def paired_comparison(trained: Sequence[Episode], random: Sequence[Episode]) -> Dict[str, object]:
+    """McNemar on the paired outcomes plus a paired bootstrap on the progress difference."""
+
+    a = {e.root_id: e for e in trained}
+    b = {e.root_id: e for e in random}
+    shared = sorted(set(a) & set(b))
+    only_trained = sum(1 for r in shared if a[r].success and not b[r].success)
+    only_random = sum(1 for r in shared if b[r].success and not a[r].success)
+    discordant = only_trained + only_random
+    # exact McNemar (two-sided binomial on the discordant pairs)
+    if discordant == 0:
+        p_value = 1.0
+    else:
+        from math import comb
+        k = min(only_trained, only_random)
+        tail = sum(comb(discordant, i) for i in range(0, k + 1)) / (2 ** discordant)
+        p_value = float(min(1.0, 2 * tail))
+    differences = np.asarray([a[r].net_progress_towards_goal - b[r].net_progress_towards_goal
+                              for r in shared])
+    generator = np.random.default_rng(0)
+    draws = np.empty(2000)
+    for index in range(2000):
+        pick = generator.integers(0, len(shared), size=len(shared))
+        draws[index] = float(np.mean(differences[pick]))
+    return {"shared_roots": len(shared),
+            "trained_only_successes": only_trained,
+            "random_only_successes": only_random,
+            "mcnemar_exact_p": p_value,
+            "mean_progress_difference_m": float(np.mean(differences)) if len(shared) else None,
+            "progress_ci95": [float(np.quantile(draws, 0.025)), float(np.quantile(draws, 0.975))]
+            if len(shared) else None,
+            "note": "paired by root; the trained and random arms see the same initial states"}
+
+
 def summarise(episodes: Sequence[Episode]) -> Dict[str, object]:
     """Every quantity the task book asks for, including both signs of the distance change."""
 
@@ -171,7 +218,7 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
           dev_roots: int = 24, val_roots: int = 64, test_roots: int = 64, max_skills: int = 12,
           validate_every: int = 5, out_dir: Path = OUT, budget_seconds: Optional[float] = None,
           log: bool = True, resume_from: Optional[Path] = None,
-          fail_after: Optional[int] = None) -> Dict[str, object]:
+          fail_after: Optional[int] = None, save_every: int = 10) -> Dict[str, object]:
     """``fail_after`` deliberately aborts the run so a resume can be tested for real."""
 
     torch.manual_seed(seed)
@@ -183,10 +230,13 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
     assert not ({r.root_id for r in validation} & {r.root_id for r in test})
     policy = RecurrentPolicy(ObservationSpec().width, len(MENU), hidden=hidden)
     optimiser = torch.optim.AdamW(policy.parameters(), lr=lr, weight_decay=0.0)
+    # the policy BEFORE any update, so an initialisation effect can be told apart from learning
+    initial_state = {k: v.detach().clone() for k, v in policy.state_dict().items()}
     history: List[Dict[str, object]] = []
     best = {"success": -1.0, "state": None, "iteration": -1}
     start_iteration = 1
     resumed = False
+    completed_iteration = 0
     if resume_from is not None and Path(resume_from).exists():
         saved = torch.load(resume_from, map_location="cpu", weights_only=False)
         policy.load_state_dict(saved["state_dict"])
@@ -195,13 +245,38 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
         if "torch_rng" in saved:
             torch.set_rng_state(saved["torch_rng"])
         history = list(saved.get("history", []))
+        # the best-model selection state has to survive an interruption, otherwise a resumed run
+        # silently forgets the checkpoint it had already selected
+        previous_best = saved.get("best") or {}
+        if previous_best.get("state") is not None:
+            best = {"success": previous_best.get("success", -1.0),
+                    "iteration": previous_best.get("iteration", -1),
+                    "state": previous_best["state"]}
         start_iteration = int(saved.get("iteration", 0)) + 1
         resumed = True
         if log:
             print(f"  resumed from {Path(resume_from).name} at iteration {start_iteration}",
                   flush=True)
+    def save_resumable(iteration: int) -> Path:
+        """Write the full resumable state. Called periodically and at the end."""
+
+        path = out_dir / f"policy_resumable_seed{seed}.pt"
+        torch.save({"state_dict": policy.state_dict(), "optimiser": optimiser.state_dict(),
+                    "observation_width": ObservationSpec().width, "action_count": len(MENU),
+                    "hidden": hidden, "seed": seed,
+                    # the *optimisation* iteration, not the number of validation log lines
+                    "iteration": int(iteration),
+                    "torch_rng": torch.get_rng_state(),
+                    "best": {"success": best["success"], "iteration": best["iteration"],
+                             "state": best["state"]},
+                    "goal_distance": goal_distance, "max_skills": max_skills,
+                    "history": history, "resume_kind": "optimiser + iteration + torch rng",
+                    "menu": [action.label() for action in MENU]}, path)
+        return path
+
     started = time.time()
     for iteration in range(start_iteration, iterations + 1):
+        completed_iteration = iteration
         episodes = collect(policy, dev, goal_distance, seed=seed + iteration,
                            count=episodes_per_iteration, max_skills=max_skills)
         stats = ppo_update(policy, optimiser, episodes, seed=seed + iteration)
@@ -227,17 +302,12 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
                       f"ratio={entry['mean_ratio_before_update']:.6f} "
                       f"max|r-1|={entry['max_abs_ratio_minus_one']:.2e} "
                       f"kl={entry['kl']:+.4f} ({entry['seconds']:.0f}s)", flush=True)
+        if iteration % save_every == 0:
+            save_resumable(iteration)
         if fail_after is not None and iteration >= fail_after:
             # an intentional interruption: the resumable checkpoint has already been written by the
             # normal path only at the end, so write it here exactly as a real crash-survivor would
-            torch.save({"state_dict": policy.state_dict(), "optimiser": optimiser.state_dict(),
-                        "observation_width": ObservationSpec().width, "action_count": len(MENU),
-                        "hidden": hidden, "seed": seed, "iteration": iteration,
-                        "torch_rng": torch.get_rng_state(), "goal_distance": goal_distance,
-                        "max_skills": max_skills, "history": history,
-                        "resume_kind": "optimiser + iteration + torch rng",
-                        "menu": [action.label() for action in MENU]},
-                       out_dir / f"policy_resumable_seed{seed}.pt")
+            save_resumable(iteration)
             raise KeyboardInterrupt(f"intentional interruption after iteration {iteration}")
         if budget_seconds and time.time() - started > budget_seconds:
             break
@@ -249,22 +319,23 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
                 "selected_on": "highest validation success rate",
                 "best_iteration": best["iteration"],
                 "menu": [action.label() for action in MENU]}, inference_path)
-    resumable_path = out_dir / f"policy_resumable_seed{seed}.pt"
-    torch.save({"state_dict": policy.state_dict(), "optimiser": optimiser.state_dict(),
-                "observation_width": ObservationSpec().width, "action_count": len(MENU),
-                "hidden": hidden, "seed": seed, "iteration": len(history),
-                "torch_rng": torch.get_rng_state(),
-                "goal_distance": goal_distance, "max_skills": max_skills,
-                "history": history, "resume_kind": "optimiser + iteration + torch rng",
-                "menu": [action.label() for action in MENU]}, resumable_path)
-    validation_report = summarise(collect(policy, validation, goal_distance, seed=seed + 7,
-                                          deterministic=True, max_skills=max_skills))
-    test_report = summarise(collect(policy, test, goal_distance, seed=seed + 8,
-                                    deterministic=True, max_skills=max_skills))
-    random_validation = summarise(collect(None, validation, goal_distance, seed=seed + 7,
-                                          max_skills=max_skills))
-    random_test = summarise(collect(None, test, goal_distance, seed=seed + 8,
-                                    max_skills=max_skills))
+    resumable_path = save_resumable(completed_iteration)
+    trained_validation = collect(policy, validation, goal_distance, seed=seed + 7,
+                                 deterministic=True, max_skills=max_skills)
+    trained_test = collect(policy, test, goal_distance, seed=seed + 8, deterministic=True,
+                           max_skills=max_skills)
+    random_validation = collect(None, validation, goal_distance, seed=seed + 7,
+                                max_skills=max_skills)
+    random_test = collect(None, test, goal_distance, seed=seed + 8, max_skills=max_skills)
+    initial_policy = RecurrentPolicy(ObservationSpec().width, len(MENU), hidden=hidden)
+    initial_policy.load_state_dict(initial_state)
+    initial_policy.eval()
+    initial_validation = collect(initial_policy, validation, goal_distance, seed=seed + 7,
+                                 deterministic=True, max_skills=max_skills)
+    initial_test = collect(initial_policy, test, goal_distance, seed=seed + 8, deterministic=True,
+                           max_skills=max_skills)
+    validation_report = summarise(trained_validation)
+    test_report = summarise(trained_test)
     return {"seed": seed, "iterations": len(history), "history": history,
             "resumed": resumed, "start_iteration": start_iteration,
             "seconds": time.time() - started,
@@ -274,7 +345,21 @@ def train(*, iterations: int = 60, episodes_per_iteration: int = 8, hidden: int 
             if str(resumable_path).startswith(str(ROOT)) else str(resumable_path),
             "dev_roots": len(dev), "val_roots": len(validation), "test_roots": len(test),
             "trained": {"validation": validation_report, "test": test_report},
-            "random": {"validation": random_validation, "test": random_test}}
+            "random": {"validation": summarise(random_validation),
+                       "test": summarise(random_test)},
+            "initial_policy": {"validation": summarise(initial_validation),
+                               "test": summarise(initial_test),
+                               "note": "parameters before any update, to separate initialisation "
+                                       "from learning"},
+            "paired": {"validation": paired_comparison(trained_validation, random_validation),
+                       "test": paired_comparison(trained_test, random_test),
+                       "initial_vs_random_validation": paired_comparison(initial_validation,
+                                                                        random_validation)},
+            "per_root": {"trained_validation": per_root(trained_validation),
+                         "random_validation": per_root(random_validation),
+                         "trained_test": per_root(trained_test),
+                         "random_test": per_root(random_test),
+                         "initial_validation": per_root(initial_validation)}}
 
 
 def main() -> int:

@@ -4,29 +4,14 @@
    "passed": true,
    "detail": {
     "decisions": 12,
-    "mean_ratio": 1.0,
-    "max_abs_ratio_minus_one": 0.0,
-    "decisions_detail": [
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0,
-     1.0
-    ]
+    "max_abs_ratio_minus_one": 0.0
    },
-   "fixes": "sampling and replay now share one advance/mask path (previously ~0.05)"
+   "fixes": "sampling and replay share one advance/mask path"
   },
   "ppo_ratio_before_update_is_one": {
    "passed": true,
    "detail": {
-    "mean_ratio_before_update": 1.0000000198682149,
+    "mean_ratio_before_update": 1.00000003973643,
     "max_abs_ratio_minus_one": 2.384185791015625e-07
    },
    "fixes": "the update recomputes probabilities through the same masked distribution"
@@ -37,129 +22,210 @@
     "legal_actions": 9,
     "total_actions": 180,
     "stored_policy_logprob": -2.1490628719329834,
-    "recomputed_masked_logprob": -2.1490628719329834,
-    "recomputed_unmasked_logprob": -5.134608268737793
+    "recomputed_masked": -2.1490628719329834,
+    "recomputed_unmasked": -5.134608268737793
    },
-   "fixes": "the update softmaxes over the mask, not over all 180 actions"
+   "fixes": "the update softmaxes over the mask, not over all actions"
   },
-  "behaviour_probability_is_mixture": {
+  "exploration_rate_matches_label": {
    "passed": true,
    "detail": {
-    "epsilon": 1.0,
-    "legal_actions": 9,
-    "expected_uniform": 0.1111111111111111,
-    "behaviour_logprob_first3": [
-     0.111111,
-     0.111111,
-     0.111111
+    "uniform_share_at_eps0.3": 0.3000001609325409,
+    "measured": {
+     "eps=0.0": {
+      "empirical_mass_on_legal": 1.0,
+      "analytic_mass_on_legal": 0.0
+     },
+     "eps=0.1": {
+      "empirical_mass_on_legal": 1.0,
+      "analytic_mass_on_legal": 0.1
+     },
+     "eps=0.3": {
+      "empirical_mass_on_legal": 1.0,
+      "analytic_mass_on_legal": 0.3
+     },
+     "eps=0.5": {
+      "empirical_mass_on_legal": 1.0,
+      "analytic_mass_on_legal": 0.5
+     },
+     "eps=1.0": {
+      "empirical_mass_on_legal": 1.0,
+      "analytic_mass_on_legal": 1.0
+     }
+    },
+    "note": "there is no second random branch; the sampler draws from the mixture itself"
+   },
+   "fixes": "one sampling mechanism, so the effective exploration rate equals the label"
+  },
+  "reward_recomputed_from_recorded_state": {
+   "passed": true,
+   "detail": {
+    "max_error": 0.0,
+    "skills": 4,
+    "task_events": [
+     null,
+     null,
+     null,
+     null
     ],
-    "policy_logprob_first3": [
-     0.111043,
-     0.115437,
-     0.114386
-    ]
+    "note": "uses object positions, step counts and events only, never the reward itself"
    },
-   "fixes": "with epsilon=1 the recorded probability is the uniform mixture, not the policy's"
+   "fixes": "shaping - time cost + one-off task event, checked against recorded state"
   },
-  "time_axis_matches_physics_steps": {
+  "success_bonus_enters_the_reward": {
    "passed": true,
    "detail": {
-    "frames": 760,
-    "physics_steps": 759,
-    "implied_seconds": 37.95
+    "outcome": "success",
+    "success_skills": 1,
+    "terminal_component": 7.839851260833201,
+    "expected": 7.839851260833201,
+    "success_bonus_config": 10.0
    },
-   "fixes": "the boundary observation is the last inner frame; no extra period per skill"
+   "fixes": "the environment's one-off success reward reaches the training reward"
+  },
+  "clock_is_cumulative_across_skills": {
+   "passed": true,
+   "detail": {
+    "skills": 6,
+    "clock_resets": 0,
+    "clock_range": [
+     0.0,
+     0.4729166626930237
+    ],
+    "implied_seconds": 22.699999809265137,
+    "physical_seconds_of_last_frame": 22.700000000000003,
+    "frames": 456,
+    "physics_steps": 455,
+    "identity_holds": true
+   },
+   "fixes": "the stored clock is the episode's physical time, not the skill-local time"
   },
   "observation_fields_same_meaning": {
    "passed": true,
    "detail": {
     "boundary_col28": 0.20000000298023224,
     "inner_first_col28": 0.20000000298023224,
-    "inner_last_col28": 0.19188733398914337,
     "boundary_col30": 0.0,
-    "inner_first_col30": 0.0,
     "inner_last_col30": 0.07916666567325592,
     "clock_monotone": true
    },
    "fixes": "column 28 is the sensed distance in both; column 30 is the shared clock"
   },
-  "branch_executes_candidate_and_snapshot": {
+  "branch_keeps_prefix_counters_and_marks_intervention": {
    "passed": true,
    "detail": {
     "candidate_match_rate": 1.0,
     "branch_episodes": 6,
-    "success_rate": 0.0
-   },
-   "fixes": "the candidate is forced and the snapshot is restored after the reset"
-  },
-  "skill_reward_matches_hand_calculation": {
-   "passed": true,
-   "detail": {
-    "max_error": 5.551115123125783e-17,
-    "gamma": 0.997,
-    "cost_per_period": 0.002,
-    "discounts": [
-     0.781633,
-     0.767669
+    "prefix_frames": [
+     618,
+     618,
+     634,
+     634,
+     207,
+     207
+    ],
+    "counters": [
+     {
+      "skills_used": 11,
+      "hold": 0,
+      "physics_steps": 617
+     },
+     {
+      "skills_used": 11,
+      "hold": 0,
+      "physics_steps": 617
+     },
+     {
+      "skills_used": 11,
+      "hold": 0,
+      "physics_steps": 633
+     },
+     {
+      "skills_used": 11,
+      "hold": 0,
+      "physics_steps": 633
+     },
+     {
+      "skills_used": 3,
+      "hold": 0,
+      "physics_steps": 206
+     },
+     {
+      "skills_used": 3,
+      "hold": 0,
+      "physics_steps": 206
+     }
+    ],
+    "forced_flag": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
     ]
    },
-   "fixes": "gamma**n * Phi(next) - Phi(now) - c * sum_j gamma**j, per-period time cost"
+   "fixes": "the parent trajectory is stored and the forced action is marked as an intervention"
   },
-  "bootstrap_only_on_sampling_cut": {
+  "time_axis_identity_all_episodes": {
    "passed": true,
    "detail": {
-    "truncated_outcome": "sampling_truncation",
-    "last_return_vs_last_reward": [
-     -0.13654185912182637,
-     -0.019054381111074548
-    ],
-    "budget_outcome": "task_budget",
-    "returns_last_equals_reward": true,
-    "final_value_field": -0.14718200266361237
+    "episodes": 5,
+    "frames": 2230,
+    "physics_steps": 1295
    },
-   "fixes": "a task-budget end is a real terminal; only the sampler cut bootstraps"
+   "fixes": "frames == prefix_frames + physics_steps + 1 for every episode, branch included"
   },
-  "progress_sign_documented": {
+  "resumable_iteration_is_the_optimisation_step": {
    "passed": true,
    "detail": {
-    "start_distance": 0.45000000000000007,
-    "end_distance": 0.3263426466677804,
-    "distance_change_end_minus_start": -0.12365735333221967,
-    "progress_towards_goal_start_minus_end": 0.12365735333221967
+    "optimisation_iterations": 12,
+    "validation_log_entries": 4,
+    "saved_iteration": 12,
+    "best_state_saved": true
    },
-   "fixes": "positive distance_change means farther; progress is its negation"
+   "fixes": "the file records the iteration, and the best-model state survives"
   },
-  "interrupt_resume_continues": {
+  "resume_delivered_checkpoint": {
    "passed": true,
    "detail": {
-    "interrupted": true,
+    "delivered_iteration": 60,
     "resumed": true,
-    "start_iteration": 4,
+    "start_iteration": 61,
     "iterations_recorded": [
      1,
-     2,
-     4
+     5,
+     10,
+     15,
+     20,
+     25,
+     30,
+     35,
+     40,
+     45,
+     50,
+     55,
+     60,
+     63
     ]
    },
-   "fixes": "an interrupted run continues from the saved optimiser and iteration counter"
+   "fixes": "the delivered resumable checkpoint continues from its own recorded iteration"
   },
-  "resumable_and_inference_checkpoints_are_separate": {
+  "data_card_matches_the_files": {
    "passed": true,
    "detail": {
-    "resumable_keys": [
-     "history",
-     "iteration",
-     "optimiser",
-     "torch_rng"
+    "declared_but_missing": [],
+    "arrays_present": [
+     "frame_time",
+     "frames",
+     "meta"
     ],
-    "inference_keys": [],
-    "resumable": "policy_resumable_seed99.pt",
-    "inference": "policy_best_seed99.pt"
+    "declares_trace": false
    },
-   "fixes": "the final save no longer strips the optimiser from the resumable file"
+   "fixes": "the card describes the corrected schema and no longer promises a ``trace`` field"
   }
  },
- "passed": 12,
- "total": 12,
+ "passed": 13,
+ "total": 13,
  "all_passed": true
 }

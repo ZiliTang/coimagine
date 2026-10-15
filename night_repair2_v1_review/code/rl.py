@@ -102,6 +102,21 @@ class Decision:
     discount: float
     skill_steps: int
     allowed: Tuple[int, ...]
+    #: the reward broken into independently checkable parts: the potential difference, the time
+    #: cost and the one-off task event. ``reward == shaping - time_cost + terminal`` must hold, and
+    #: the verifier re-adds them from the recorded state rather than from the total.
+    shaping: float = 0.0
+    time_cost: float = 0.0
+    terminal: float = 0.0
+    task_event: Optional[str] = None
+    #: the object's position before and after the skill, so the reward can be re-derived from
+    #: recorded state rather than from the reward itself (the earlier "hand check" substituted the
+    #: reward back into its own formula and would have passed even with the success bonus missing)
+    object_before: Tuple[float, float] = (0.0, 0.0)
+    object_after: Tuple[float, float] = (0.0, 0.0)
+    #: True when the caller forced the action (branch collection). A forced action is an
+    #: intervention, so its probability is not the policy's and must not be used as one.
+    forced: bool = False
 
 
 @dataclass
@@ -119,6 +134,8 @@ class Episode:
     total_reward: float
     exit_reasons: List[str] = field(default_factory=list)
     physics_steps: int = 0
+    #: how many leading buffer frames came from the parent trajectory (branch collection)
+    prefix_length: int = 0
 
     @property
     def net_distance_change(self) -> float:
@@ -157,7 +174,9 @@ def behaviour_probabilities(policy_probs: torch.Tensor, allowed: Sequence[int],
 def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
             goal: np.ndarray, *, rng: np.random.Generator, epsilon: float = 0.0,
             deterministic: bool = False, max_skills: Optional[int] = None,
-            snapshot=None, forced_first_action: Optional[int] = None) -> Episode:
+            snapshot=None, forced_first_action: Optional[int] = None,
+            prefix: Optional[np.ndarray] = None,
+            counters: Optional[Dict[str, int]] = None) -> Episode:
     """One episode on one world. Used for sampling, for validation and for data collection.
 
     ``snapshot`` restores a saved mid-trajectory state **after** the reset has configured the scene,
@@ -168,6 +187,12 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
     """
 
     observation = env.reset(root, goal)
+    if counters:
+        # a branch continues the parent's counters, otherwise the goal-hold and skill accounting
+        # restart and the branch is not a continuation of the same task
+        env.skills_used = int(counters.get("skills_used", 0))
+        env.hold = int(counters.get("hold", 0))
+        env.steps = int(counters.get("physics_steps", 0))
     if snapshot is not None:
         env.env.restore(snapshot, exact=True)
         observation = env._observation()
@@ -175,10 +200,11 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
         pose = env.privileged_object()
         env.initial_object = np.asarray(pose, dtype=np.float64)
         env.start_distance = float(np.hypot(pose[0] - goal[0], pose[1] - goal[1]))
-        env.skills_used = 0
-        env.steps = 0
     allowed = legal_actions(root)
-    buffer: List[np.ndarray] = [observation]
+    # a branch starts from the parent's observation history, so the stored episode carries the
+    # prefix that produced the decision rather than only a family name
+    buffer: List[np.ndarray] = ([np.asarray(frame, dtype=np.float32) for frame in prefix]
+                                if prefix is not None else []) + [observation]
     hidden = policy.initial_hidden(1) if policy is not None else None
     consumed = 0
     decisions: List[Decision] = []
@@ -204,12 +230,14 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
                 masked = masked_logits(logits[0], allowed)
                 policy_probs = torch.softmax(masked, dim=-1)
                 sample_probs = behaviour_probabilities(policy_probs, allowed, epsilon)
-                if forced_first_action is not None and not decisions:
+                # exactly one mechanism: draw from the mixture itself. An extra ``if rng < eps``
+                # branch on top of the mixture would square the exploration rate
+                # (eps=0.1 -> 0.19, eps=0.3 -> 0.51) and make the recorded probability wrong.
+                forced = forced_first_action is not None and not decisions
+                if forced:
                     action = int(forced_first_action)
                 elif deterministic:
                     action = int(torch.argmax(masked))
-                elif epsilon > 0.0 and float(rng.random()) < epsilon:
-                    action = int(allowed[rng.integers(0, len(allowed))])
                 else:
                     action = int(torch.multinomial(sample_probs, 1))
                 behaviour_logprob = float(torch.log(sample_probs[action].clamp(min=1e-12)))
@@ -222,11 +250,13 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
                 action = int(allowed[rng.integers(0, len(allowed))])
             behaviour_logprob = policy_logprob = -math.log(len(allowed))
             value_scalar = 0.0
+            forced = forced_first_action is not None and not decisions
         decisions.append(Decision(buffer_index=len(buffer) - 1, action=action,
                                   behaviour_logprob=behaviour_logprob,
                                   policy_logprob=policy_logprob, value=value_scalar,
                                   reward=0.0, discount=1.0, skill_steps=0,
-                                  allowed=tuple(allowed)))
+                                  allowed=tuple(allowed), forced=bool(forced)))
+        pose_before = env.privileged_object()[:2].copy()
         result = env.step(action)
         inner = result.inner_observations
         # the inner frames already end at the state the skill finished in, so no extra boundary
@@ -238,11 +268,29 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
         steps = max(1, int(result.skill_steps))
         discount = float(gamma ** steps)
         next_phi = potential * _phi(env, goal)
-        reward = discount * next_phi - current_phi - cost * _discount_sum(gamma, steps)
+        shaping = discount * next_phi - current_phi
+        time_cost = cost * _discount_sum(gamma, steps)
+        event = result.info.get("task_event")
+        # the one-off task reward lands on the last period of the skill, so it carries gamma**(n-1)
+        # inside the skill in addition to the cross-skill discount already applied by the return
+        terminal_discount = float(gamma ** (steps - 1))
+        terminal = 0.0
+        if event == "success":
+            terminal = terminal_discount * env.config.success_bonus
+        elif event == "budget_exhausted":
+            terminal = terminal_discount * env.config.failure_penalty
+        reward = shaping - time_cost + terminal
         current_phi = next_phi
         decisions[-1].reward = reward
         decisions[-1].discount = discount
         decisions[-1].skill_steps = steps
+        decisions[-1].shaping = shaping
+        decisions[-1].time_cost = time_cost
+        decisions[-1].terminal = terminal
+        decisions[-1].task_event = event
+        decisions[-1].object_before = (float(pose_before[0]), float(pose_before[1]))
+        decisions[-1].object_after = (float(env.privileged_object()[0]),
+                                      float(env.privileged_object()[1]))
         total += reward
         physics += steps
         exit_reasons.append(str(env.boundaries[-1].get("exit_reason", "")))
@@ -267,6 +315,7 @@ def rollout(env: OptionRLEnv, policy: Optional[RecurrentPolicy], root: RootSpec,
     pose = env.privileged_object()
     end_distance = float(np.hypot(pose[0] - goal[0], pose[1] - goal[1]))
     return Episode(observations=np.stack(buffer), decisions=decisions, final_value=final_value,
+                   prefix_length=(0 if prefix is None else len(prefix)),
                    outcome=outcome, success=success,
                    root_id=str(getattr(root, "root_id", "unknown")),
                    scene=str(getattr(root, "interaction_class", "unknown")),

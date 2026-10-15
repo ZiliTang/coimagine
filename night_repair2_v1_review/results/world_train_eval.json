@@ -1,0 +1,64 @@
+{
+ "note": "both panels are scored in eval mode with the same metric; the random training-batch loss is not a substitute",
+ "train_panel_seed": 10003,
+ "val_panel_seed": 10002,
+ "root_overlap": 0,
+ "models": {
+  "repair_direct_multistep_seed0": {
+   "fixed_train": {
+    "kind": "direct_multistep",
+    "windows": 1024,
+    "roots": 1024,
+    "step1_r0_p50_cm": 0.41422372409052266,
+    "step1_windows": 1021,
+    "step4_r0_p50_cm": 0.5440897201546393,
+    "step4_windows": 998,
+    "step8_r0_p50_cm": 0.8557271451404835,
+    "step8_windows": 949,
+    "step16_r0_p50_cm": 2.0182240913099028,
+    "step16_windows": 866
+   },
+   "validation": {
+    "kind": "direct_multistep",
+    "windows": 1024,
+    "roots": 256,
+    "step1_r0_p50_cm": 0.4157628280651575,
+    "step1_windows": 1020,
+    "step4_r0_p50_cm": 0.5286598782310594,
+    "step4_windows": 1001,
+    "step8_r0_p50_cm": 0.8653765960923414,
+    "step8_windows": 969,
+    "step16_r0_p50_cm": 2.0106332756900316,
+    "step16_windows": 882
+   }
+  },
+  "repair_latent_autoregressive_seed0": {
+   "fixed_train": {
+    "kind": "latent_autoregressive",
+    "windows": 1024,
+    "roots": 1024,
+    "step1_r0_p50_cm": 0.15809006877000656,
+    "step1_windows": 1021,
+    "step4_r0_p50_cm": 0.4318609451782054,
+    "step4_windows": 998,
+    "step8_r0_p50_cm": 0.7535862944369285,
+    "step8_windows": 949,
+    "step16_r0_p50_cm": 1.9349334225050765,
+    "step16_windows": 866
+   },
+   "validation": {
+    "kind": "latent_autoregressive",
+    "windows": 1024,
+    "roots": 256,
+    "step1_r0_p50_cm": 0.1561708179640243,
+    "step1_windows": 1020,
+    "step4_r0_p50_cm": 0.4320990660122574,
+    "step4_windows": 1001,
+    "step8_r0_p50_cm": 0.7931283937670867,
+    "step8_windows": 969,
+    "step16_r0_p50_cm": 1.926048659678218,
+    "step16_windows": 882
+   }
+  }
+ }
+}

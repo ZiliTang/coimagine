@@ -64,7 +64,8 @@ def load_policy(path: Path) -> RecurrentPolicy:
 
 def episode_record(episode: Episode, env: OptionRLEnv, *, source: str, epsilon: float,
                    policy_version: str, root: RootSpec, parent_snapshot_id: Optional[str] = None,
-                   candidate: Optional[int] = None) -> Dict[str, object]:
+                   candidate: Optional[int] = None, parent_episode_id: Optional[str] = None,
+                   parent_counters: Optional[Dict[str, int]] = None) -> Dict[str, object]:
     """The stored payload. Privileged quantities live in their own block, never in ``frames``."""
 
     boundaries = []
@@ -80,6 +81,14 @@ def episode_record(episode: Episode, env: OptionRLEnv, *, source: str, epsilon: 
             "allowed_actions": list(decision.allowed),
             "policy_logprob": float(decision.policy_logprob),
             "behaviour_logprob": float(decision.behaviour_logprob),
+            "forced_intervention": bool(decision.forced),
+            "intervention_note": ("action was chosen by the caller, not sampled; the recorded "
+                                  "probability is the mixture's, not the policy's"
+                                  if decision.forced else None),
+            "reward_components": {"shaping": float(decision.shaping),
+                                  "time_cost": float(decision.time_cost),
+                                  "terminal": float(decision.terminal),
+                                  "task_event": decision.task_event},
             "value_before": float(decision.value),
             "skill_reward": float(decision.reward),
             "cross_skill_discount": float(decision.discount),
@@ -97,8 +106,13 @@ def episode_record(episode: Episode, env: OptionRLEnv, *, source: str, epsilon: 
         "goal": [float(episode.goal[0]), float(episode.goal[1])],
         "control_dt": CONTROL_DT,
         "frames": int(len(episode.observations)),
+        "prefix_frames": int(episode.prefix_length),
+        "episode_frames": int(len(episode.observations) - episode.prefix_length),
         "physics_steps": int(episode.physics_steps),
-        "time_axis_consistent": bool(len(episode.observations) == episode.physics_steps + 1),
+        # a branch carries the parent's frames in front of its own, so the identity is
+        # frames == prefix + physics_steps + 1
+        "time_axis_consistent": bool(len(episode.observations)
+                                     == episode.prefix_length + episode.physics_steps + 1),
         "outcome": episode.outcome, "success": bool(episode.success),
         "bootstraps": bool(episode.outcome in ("sampling_truncation",)),
         "skills": len(episode.decisions),
@@ -109,6 +123,9 @@ def episode_record(episode: Episode, env: OptionRLEnv, *, source: str, epsilon: 
         "total_reward": float(episode.total_reward),
         "boundaries": boundaries,
         "parent_snapshot_id": parent_snapshot_id,
+        "parent_episode_id": parent_episode_id,
+        "parent_prefix_length": int(episode.prefix_length),
+        "parent_counters": parent_counters,
         "candidate_action_index": candidate,
         "candidate_matches_executed": (None if candidate is None
                                        else int(candidate) == int(episode.decisions[0].action)),
@@ -169,22 +186,31 @@ def trial(*, policy_path: Optional[Path] = None, episodes_per_setting: int = 20,
         depth = int(rng.integers(1, max(2, len(warm.decisions))))
         # rebuild the world up to ``depth`` skills and snapshot there
         probe = OptionRLEnv(OptionRLConfig(seed=env.config.seed, max_skills=max_skills))
-        prefix = rollout(probe, policy, root, goal, rng=np.random.default_rng(seed + family),
+        parent = rollout(probe, policy, root, goal, rng=np.random.default_rng(seed + family),
                          epsilon=0.0 if policy else 1.0, max_skills=depth)
-        del prefix
         snapshot = probe.env.export_state()
         parent_id = f"branch_family_{family:03d}"
+        parent_episode_id = f"{parent_id}_prefix"
+        parent_counters = {"skills_used": probe.skills_used, "hold": probe.hold,
+                           "physics_steps": probe.steps}
         allowed = legal_actions(root)
         count = min(branch_candidates, len(allowed))
         picks = [int(allowed[i]) for i in rng.choice(len(allowed), size=count, replace=False)]
         for candidate in picks:
             branch_env = OptionRLEnv(OptionRLConfig(seed=env.config.seed, max_skills=max_skills))
             episode = rollout(branch_env, policy, root, goal, rng=rng, snapshot=snapshot,
-                              forced_first_action=candidate, max_skills=1)
-            payload = episode_record(episode, branch_env, source="branch", epsilon=1.0,
+                              forced_first_action=candidate, max_skills=1,
+                              prefix=parent.observations, counters=parent_counters)
+            payload = episode_record(episode, branch_env, source="branch", epsilon=0.0,
                                      policy_version="trained" if policy else "untrained",
-                                     root=root, parent_snapshot_id=parent_id, candidate=candidate)
+                                     root=root, parent_snapshot_id=parent_id, candidate=candidate,
+                                     parent_episode_id=parent_episode_id,
+                                     parent_counters=parent_counters)
             payload["branch_depth"] = depth
+            payload["branch_intervention"] = True
+            payload["parent_prefix_saved"] = bool(episode.prefix_length == len(parent.observations))
+            payload["parent_prefix_frames"] = int(episode.prefix_length)
+            payload["counters_continued"] = True
             write_shard(directory, payload, episode.observations, index)
             index += 1
             branch_records.append(payload)

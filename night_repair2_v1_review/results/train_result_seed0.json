@@ -1,153 +1,219 @@
 {
  "seed": 0,
- "iterations": 9,
+ "iterations": 13,
  "history": [
   {
    "iteration": 1,
-   "explore_return": -0.35084233299361856,
+   "explore_return": -0.8798284233649369,
    "explore_success": 0.125,
-   "val_success_rate": 0.234375,
-   "val_progress_towards_goal_m": -0.2960206424001707,
-   "val_end_distance_m": 0.7460206424001707,
-   "seconds": 54.46581292152405,
-   "policy_loss": -0.0774561339834084,
-   "value_loss": 0.027912904809151467,
-   "entropy": 4.058145870765051,
-   "kl": 0.00990188339104255,
+   "val_success_rate": 0.203125,
+   "val_progress_towards_goal_m": -0.45151301484247397,
+   "val_end_distance_m": 0.9015130148424739,
+   "seconds": 56.79485607147217,
+   "policy_loss": -0.03994728221247593,
+   "value_loss": 6.371570581880708,
+   "entropy": 4.062094469865163,
+   "kl": -0.012685177537302176,
    "updates": 32,
-   "mean_ratio_before_update": 0.9999999902969183,
+   "mean_ratio_before_update": 1.000000002772309,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
    "iteration": 5,
-   "explore_return": -0.31238944679145053,
+   "explore_return": 1.4607471562423853,
    "explore_success": 0.375,
-   "val_success_rate": 0.234375,
-   "val_progress_towards_goal_m": -0.44893972288083095,
-   "val_end_distance_m": 0.8989397228808309,
-   "seconds": 139.3154492378235,
-   "policy_loss": -0.07210140202854139,
-   "value_loss": 0.018995553589775224,
-   "entropy": 4.008764947454135,
-   "kl": 0.01724679737041394,
+   "val_success_rate": 0.109375,
+   "val_progress_towards_goal_m": -0.5202427437944052,
+   "val_end_distance_m": 0.9702427437944051,
+   "seconds": 145.15951943397522,
+   "policy_loss": -0.026428990066051483,
+   "value_loss": 12.187684234852592,
+   "entropy": 4.030419190724691,
+   "kl": 0.008240583042303722,
    "updates": 32,
-   "mean_ratio_before_update": 1.000000014233945,
+   "mean_ratio_before_update": 0.9999999572981649,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
    "iteration": 10,
-   "explore_return": -0.4727759112628537,
+   "explore_return": -0.9394233949678725,
+   "explore_success": 0.125,
+   "val_success_rate": 0.09375,
+   "val_progress_towards_goal_m": -0.4248207170413715,
+   "val_end_distance_m": 0.8748207170413715,
+   "seconds": 244.53989601135254,
+   "policy_loss": -0.054785226471722126,
+   "value_loss": 4.582557094050573,
+   "entropy": 4.013874992728233,
+   "kl": -0.017356920987367627,
+   "updates": 32,
+   "mean_ratio_before_update": 1.0000000221784724,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 15,
+   "explore_return": 1.3370054178585096,
+   "explore_success": 0.375,
+   "val_success_rate": 0.09375,
+   "val_progress_towards_goal_m": -0.42350307005426013,
+   "val_end_distance_m": 0.8735030700542601,
+   "seconds": 343.11736583709717,
+   "policy_loss": -0.0589459456386976,
+   "value_loss": 5.282083220159015,
+   "entropy": 3.6230206390221915,
+   "kl": -0.015119378454983231,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999893245413,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 20,
+   "explore_return": -2.061917349645967,
    "explore_success": 0.0,
-   "val_success_rate": 0.109375,
-   "val_progress_towards_goal_m": -0.33491076952454013,
-   "val_end_distance_m": 0.7849107695245401,
-   "seconds": 252.45209550857544,
-   "policy_loss": -0.06507474347017705,
-   "value_loss": 0.016715070106632385,
-   "entropy": 3.9299431840578722,
-   "kl": -0.010588944579164187,
+   "val_success_rate": 0.21875,
+   "val_progress_towards_goal_m": -0.28567249099099945,
+   "val_end_distance_m": 0.7356724909909995,
+   "seconds": 440.25204944610596,
+   "policy_loss": -0.05986450659111142,
+   "value_loss": 0.20886264454262948,
+   "entropy": 3.157843406001727,
+   "kl": -0.009461939334869383,
    "updates": 32,
    "mean_ratio_before_update": 0.9999999838570753,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
-   "iteration": 15,
-   "explore_return": -0.24537574268413254,
-   "explore_success": 0.375,
-   "val_success_rate": 0.15625,
-   "val_progress_towards_goal_m": -0.3866200682487593,
-   "val_end_distance_m": 0.8366200682487592,
-   "seconds": 354.1712522506714,
-   "policy_loss": -0.06756141089135781,
-   "value_loss": 0.019986322078087444,
-   "entropy": 3.5585202475388855,
-   "kl": 0.03513104903201262,
-   "updates": 32,
-   "mean_ratio_before_update": 0.9999999929876888,
-   "max_abs_ratio_minus_one": 4.76837158203125e-07
-  },
-  {
-   "iteration": 20,
-   "explore_return": -0.36708026450722775,
-   "explore_success": 0.125,
-   "val_success_rate": 0.0625,
-   "val_progress_towards_goal_m": -0.351153998887623,
-   "val_end_distance_m": 0.8011539988876231,
-   "seconds": 457.0527124404907,
-   "policy_loss": -0.0720935469532075,
-   "value_loss": 0.015354264134657567,
-   "entropy": 3.0890149325132366,
-   "kl": 0.03255351508657138,
-   "updates": 32,
-   "mean_ratio_before_update": 1.0000000110892362,
-   "max_abs_ratio_minus_one": 4.76837158203125e-07
-  },
-  {
    "iteration": 25,
-   "explore_return": -0.4112124234839536,
-   "explore_success": 0.125,
-   "val_success_rate": 0.109375,
-   "val_progress_towards_goal_m": -0.36140324960939,
-   "val_end_distance_m": 0.81140324960939,
-   "seconds": 559.7119951248169,
-   "policy_loss": -0.06541511991720957,
-   "value_loss": 0.018669918960464806,
-   "entropy": 2.9977623522281647,
-   "kl": 0.00514678005129099,
+   "explore_return": -2.1708746906101037,
+   "explore_success": 0.0,
+   "val_success_rate": 0.21875,
+   "val_progress_towards_goal_m": -0.3903370773880639,
+   "val_end_distance_m": 0.8403370773880638,
+   "seconds": 539.8599102497101,
+   "policy_loss": -0.05933666613418609,
+   "value_loss": 0.07339931186288595,
+   "entropy": 3.151153564453125,
+   "kl": -0.0031442139297723774,
    "updates": 32,
-   "mean_ratio_before_update": 0.9999999972595566,
+   "mean_ratio_before_update": 1.0000000099341075,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
    "iteration": 30,
-   "explore_return": -0.345205409203986,
-   "explore_success": 0.0,
-   "val_success_rate": 0.171875,
-   "val_progress_towards_goal_m": -0.30185596636552214,
-   "val_end_distance_m": 0.7518559663655222,
-   "seconds": 656.5776584148407,
-   "policy_loss": -0.05343504428553085,
-   "value_loss": 0.017742001306032762,
-   "entropy": 2.9421769181887316,
-   "kl": 0.009027055154244106,
+   "explore_return": -0.8059174041774642,
+   "explore_success": 0.125,
+   "val_success_rate": 0.125,
+   "val_progress_towards_goal_m": -0.5141321807115641,
+   "val_end_distance_m": 0.9641321807115641,
+   "seconds": 637.1956067085266,
+   "policy_loss": -0.04757282976061106,
+   "value_loss": 3.541222523432225,
+   "entropy": 3.124069948991139,
+   "kl": 0.010351866638908785,
    "updates": 32,
-   "mean_ratio_before_update": 0.9999999913076559,
+   "mean_ratio_before_update": 0.9999999828722285,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
    "iteration": 35,
-   "explore_return": -0.39926168776074733,
+   "explore_return": 0.32274612684627924,
    "explore_success": 0.25,
    "val_success_rate": 0.140625,
-   "val_progress_towards_goal_m": -0.3230126853740543,
-   "val_end_distance_m": 0.7730126853740542,
-   "seconds": 760.792462348938,
-   "policy_loss": -0.06198130684876533,
-   "value_loss": 0.01994583508437217,
-   "entropy": 3.313733908714671,
-   "kl": 0.00773990380041527,
+   "val_progress_towards_goal_m": -0.5072006413775908,
+   "val_end_distance_m": 0.9572006413775908,
+   "seconds": 737.7967076301575,
+   "policy_loss": -0.05643806862644851,
+   "value_loss": 8.614449009376887,
+   "entropy": 3.493523259957632,
+   "kl": -0.022280072482923664,
    "updates": 32,
-   "mean_ratio_before_update": 1.0000000469824848,
+   "mean_ratio_before_update": 1.0000000045849726,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   },
   {
    "iteration": 40,
-   "explore_return": -0.42313094507805504,
+   "explore_return": 1.4486595713851957,
    "explore_success": 0.375,
-   "val_success_rate": 0.09375,
-   "val_progress_towards_goal_m": -0.37003453111443574,
-   "val_end_distance_m": 0.8200345311144357,
-   "seconds": 857.0633842945099,
-   "policy_loss": -0.07398934741245788,
-   "value_loss": 0.010139973155067613,
-   "entropy": 3.0882591000861583,
-   "kl": 0.005843120963416165,
+   "val_success_rate": 0.140625,
+   "val_progress_towards_goal_m": -0.4440763859522505,
+   "val_end_distance_m": 0.8940763859522505,
+   "seconds": 832.2381987571716,
+   "policy_loss": -0.05628494260599837,
+   "value_loss": 8.31350804795511,
+   "entropy": 3.415075813730558,
+   "kl": 0.0009145603204766893,
    "updates": 32,
-   "mean_ratio_before_update": 1.0000000080546818,
+   "mean_ratio_before_update": 0.9999999768698393,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 45,
+   "explore_return": 1.4789148276394142,
+   "explore_success": 0.375,
+   "val_success_rate": 0.15625,
+   "val_progress_towards_goal_m": -0.4566526242798159,
+   "val_end_distance_m": 0.906652624279816,
+   "seconds": 923.8089895248413,
+   "policy_loss": -0.07859461844782345,
+   "value_loss": 2.3838622397355107,
+   "entropy": 4.718154023090997,
+   "kl": 0.08292353401581448,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999789630666,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 50,
+   "explore_return": 0.2039228534426265,
+   "explore_success": 0.25,
+   "val_success_rate": 0.140625,
+   "val_progress_towards_goal_m": -0.45539039366981615,
+   "val_end_distance_m": 0.9053903936698162,
+   "seconds": 1020.7048308849335,
+   "policy_loss": -0.06924528613065678,
+   "value_loss": 6.080274065490813,
+   "entropy": 4.329133182764054,
+   "kl": -0.0011394236547251544,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999993148891,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 55,
+   "explore_return": -1.093869707555233,
+   "explore_success": 0.125,
+   "val_success_rate": 0.171875,
+   "val_progress_towards_goal_m": -0.4827513137596866,
+   "val_end_distance_m": 0.9327513137596866,
+   "seconds": 1115.6865227222443,
+   "policy_loss": -0.03877503705055763,
+   "value_loss": 4.855392058721432,
+   "entropy": 3.4966902931531263,
+   "kl": -0.00046668617675701935,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999961954482,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 60,
+   "explore_return": -0.9978668678570015,
+   "explore_success": 0.125,
+   "val_success_rate": 0.21875,
+   "val_progress_towards_goal_m": -0.40905574794625493,
+   "val_end_distance_m": 0.8590557479462549,
+   "seconds": 1209.3565385341644,
+   "policy_loss": -0.0057190917432308214,
+   "value_loss": 5.275183503826459,
+   "entropy": 2.793135285377502,
+   "kl": -0.019683581932137414,
+   "updates": 32,
+   "mean_ratio_before_update": 1.0000000006773255,
    "max_abs_ratio_minus_one": 4.76837158203125e-07
   }
  ],
- "seconds": 1045.946720123291,
+ "resumed": false,
+ "start_iteration": 1,
+ "seconds": 1471.5659668445587,
  "inference_checkpoint": "outputs/night_repair2_v1/option_rl/policy_best_seed0.pt",
  "resumable_checkpoint": "outputs/night_repair2_v1/option_rl/policy_resumable_seed0.pt",
  "dev_roots": 24,
@@ -156,75 +222,75 @@
  "trained": {
   "validation": {
    "episodes": 64,
-   "success_rate": 0.09375,
-   "mean_end_distance_m": 0.8200345311144357,
+   "success_rate": 0.21875,
+   "mean_end_distance_m": 0.8590557479462549,
    "mean_start_distance_m": 0.45,
-   "mean_progress_towards_goal_m": -0.37003453111443574,
-   "mean_distance_change_m": 0.37003453111443574,
+   "mean_progress_towards_goal_m": -0.40905574794625493,
+   "mean_distance_change_m": 0.40905574794625493,
    "median_skills": 12.0,
-   "mean_return": -0.3973135876587499,
+   "mean_return": 0.12910647524234214,
    "outcomes": {
-    "task_budget": 58,
-    "success": 6
+    "task_budget": 50,
+    "success": 14
    },
    "per_scene": {
     "dual_same_side": {
      "episodes": 16,
-     "success_rate": 0.1875,
-     "mean_progress_towards_goal_m": -0.3492842538274896,
-     "mean_end_distance_m": 0.7992842538274896
+     "success_rate": 0.8125,
+     "mean_progress_towards_goal_m": 0.23476794668856754,
+     "mean_end_distance_m": 0.21523205331143247
     },
     "solo_central": {
      "episodes": 24,
-     "success_rate": 0.08333333333333333,
-     "mean_progress_towards_goal_m": -0.4035050439700251,
-     "mean_end_distance_m": 0.8535050439700251
+     "success_rate": 0.0,
+     "mean_progress_towards_goal_m": -0.7132536412794271,
+     "mean_end_distance_m": 1.163253641279427
     },
     "solo_offset": {
      "episodes": 24,
      "success_rate": 0.041666666666666664,
-     "mean_progress_towards_goal_m": -0.3503975364501437,
-     "mean_end_distance_m": 0.8003975364501438
+     "mean_progress_towards_goal_m": -0.5340736510362978,
+     "mean_end_distance_m": 0.9840736510362977
     }
    }
   },
   "test": {
    "episodes": 64,
-   "success_rate": 0.125,
-   "mean_end_distance_m": 0.898652849464495,
+   "success_rate": 0.46875,
+   "mean_end_distance_m": 0.4320532877493669,
    "mean_start_distance_m": 0.45000000000000007,
-   "mean_progress_towards_goal_m": -0.448652849464495,
-   "mean_distance_change_m": 0.448652849464495,
+   "mean_progress_towards_goal_m": 0.017946712250633108,
+   "mean_distance_change_m": -0.017946712250633108,
    "median_skills": 12.0,
-   "mean_return": -0.2765591958279404,
+   "mean_return": 2.4307741817989137,
    "outcomes": {
-    "task_budget": 56,
-    "success": 8
+    "success": 30,
+    "task_budget": 34
    },
    "per_scene": {
     "constrained": {
      "episodes": 8,
-     "success_rate": 0.25,
-     "mean_progress_towards_goal_m": -0.07012914424494683,
-     "mean_end_distance_m": 0.5201291442449468
+     "success_rate": 0.125,
+     "mean_progress_towards_goal_m": -0.12273724792712994,
+     "mean_end_distance_m": 0.5727372479271299
     },
     "dual_rotate": {
      "episodes": 24,
-     "success_rate": 0.041666666666666664,
-     "mean_progress_towards_goal_m": -0.5368768013406674,
-     "mean_end_distance_m": 0.9868768013406672
+     "success_rate": 0.5416666666666666,
+     "mean_progress_towards_goal_m": 0.05292582690991742,
+     "mean_end_distance_m": 0.39707417309008264
     },
     "dual_same_side": {
      "episodes": 8,
-     "success_rate": 0.25,
-     "mean_progress_towards_goal_m": -0.5282406111432967,
-     "mean_end_distance_m": 0.9782406111432966
+     "success_rate": 0.875,
+     "mean_progress_towards_goal_m": 0.2022801001415595,
+     "mean_end_distance_m": 0.2477198998584405
     },
     "incompatible": {
      "episodes": 24,
-     "success_rate": 0.125,
-     "mean_progress_towards_goal_m": -0.46007421210190474,
-     "mean_end_distance_m": 0.9100742121019048
+     "success_rate": 0.375,
+     "mean_progress_towards_goal_m": -0.031582211646372295,
+     "mean_end_distance_m": 0.4815822116463723
     }
    }
   }
@@ -238,7 +304,7 @@
    "mean_progress_towards_goal_m": -0.35246200291443613,
    "mean_distance_change_m": 0.35246200291443613,
    "median_skills": 12.0,
-   "mean_return": -0.2823797352971814,
+   "mean_return": -0.49839960208586,
    "outcomes": {
     "task_budget": 54,
     "success": 10
@@ -272,7 +338,7 @@
    "mean_progress_towards_goal_m": -0.07946083585008334,
    "mean_distance_change_m": 0.07946083585008334,
    "median_skills": 12.0,
-   "mean_return": -0.3958867413626591,
+   "mean_return": 0.018669749342562048,
    "outcomes": {
     "success": 14,
     "task_budget": 50
@@ -304,5 +370,3012 @@
     }
    }
   }
+ },
+ "initial_policy": {
+  "validation": {
+   "episodes": 64,
+   "success_rate": 0.171875,
+   "mean_end_distance_m": 0.8459757704975488,
+   "mean_start_distance_m": 0.45,
+   "mean_progress_towards_goal_m": -0.3959757704975487,
+   "mean_distance_change_m": 0.3959757704975487,
+   "median_skills": 12.0,
+   "mean_return": -0.35178915230910307,
+   "outcomes": {
+    "task_budget": 53,
+    "success": 11
+   },
+   "per_scene": {
+    "dual_same_side": {
+     "episodes": 16,
+     "success_rate": 0.625,
+     "mean_progress_towards_goal_m": 0.06350416664267283,
+     "mean_end_distance_m": 0.3864958333573272
+    },
+    "solo_central": {
+     "episodes": 24,
+     "success_rate": 0.0,
+     "mean_progress_towards_goal_m": -0.6602457072197789,
+     "mean_end_distance_m": 1.1102457072197789
+    },
+    "solo_offset": {
+     "episodes": 24,
+     "success_rate": 0.041666666666666664,
+     "mean_progress_towards_goal_m": -0.4380257918687995,
+     "mean_end_distance_m": 0.8880257918687994
+    }
+   }
+  },
+  "test": {
+   "episodes": 64,
+   "success_rate": 0.4375,
+   "mean_end_distance_m": 0.45533177597313224,
+   "mean_start_distance_m": 0.45000000000000007,
+   "mean_progress_towards_goal_m": -0.005331775973132214,
+   "mean_distance_change_m": 0.005331775973132214,
+   "median_skills": 12.0,
+   "mean_return": 2.3338457916261284,
+   "outcomes": {
+    "success": 28,
+    "task_budget": 36
+   },
+   "per_scene": {
+    "constrained": {
+     "episodes": 8,
+     "success_rate": 0.0,
+     "mean_progress_towards_goal_m": -0.12548867066475947,
+     "mean_end_distance_m": 0.5754886706647595
+    },
+    "dual_rotate": {
+     "episodes": 24,
+     "success_rate": 0.375,
+     "mean_progress_towards_goal_m": -0.0006427718777525562,
+     "mean_end_distance_m": 0.4506427718777526
+    },
+    "dual_same_side": {
+     "episodes": 8,
+     "success_rate": 0.75,
+     "mean_progress_towards_goal_m": 0.049339080525914555,
+     "mean_end_distance_m": 0.40066091947408544
+    },
+    "incompatible": {
+     "episodes": 24,
+     "success_rate": 0.5416666666666666,
+     "mean_progress_towards_goal_m": 0.011807899329014937,
+     "mean_end_distance_m": 0.4381921006709851
+    }
+   }
+  },
+  "note": "parameters before any update, to separate initialisation from learning"
+ },
+ "paired": {
+  "validation": {
+   "shared_roots": 64,
+   "trained_only_successes": 6,
+   "random_only_successes": 2,
+   "mcnemar_exact_p": 0.2890625,
+   "mean_progress_difference_m": -0.05659374503181876,
+   "progress_ci95": [
+    -0.1614786508020592,
+    0.04890358232317825
+   ],
+   "note": "paired by root; the trained and random arms see the same initial states"
+  },
+  "test": {
+   "shared_roots": 64,
+   "trained_only_successes": 20,
+   "random_only_successes": 4,
+   "mcnemar_exact_p": 0.001543879508972168,
+   "mean_progress_difference_m": 0.0974075481007165,
+   "progress_ci95": [
+    -0.01228122376939647,
+    0.20912089187817592
+   ],
+   "note": "paired by root; the trained and random arms see the same initial states"
+  },
+  "initial_vs_random_validation": {
+   "shared_roots": 64,
+   "trained_only_successes": 5,
+   "random_only_successes": 4,
+   "mcnemar_exact_p": 1.0,
+   "mean_progress_difference_m": -0.04351376758311252,
+   "progress_ci95": [
+    -0.14874133406494539,
+    0.06434697852529173
+   ],
+   "note": "paired by root; the trained and random arms see the same initial states"
+  }
+ },
+ "per_root": {
+  "trained_validation": [
+   {
+    "root_id": "test/solo_central/000",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0511649030654442,
+    "progress_towards_goal_m": -0.6011649030654442,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/001",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8301599530724688,
+    "progress_towards_goal_m": -0.38015995307246875,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/002",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.619774421347159,
+    "progress_towards_goal_m": -1.169774421347159,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/003",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.6125682714817766,
+    "progress_towards_goal_m": -1.1625682714817764,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/004",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5614151721560234,
+    "progress_towards_goal_m": -1.1114151721560233,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/005",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5557082747247041,
+    "progress_towards_goal_m": -0.10570827472470418,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/006",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2395218422251737,
+    "progress_towards_goal_m": -0.7895218422251737,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/007",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7497787791103041,
+    "progress_towards_goal_m": -0.29977877911030415,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/008",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1754836974530942,
+    "progress_towards_goal_m": -0.7254836974530944,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/009",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.396669686263767,
+    "progress_towards_goal_m": -0.9466696862637671,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/010",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3408648466785699,
+    "progress_towards_goal_m": 0.10913515332142992,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/011",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4743363427851461,
+    "progress_towards_goal_m": -1.024336342785146,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/012",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3042925699975707,
+    "progress_towards_goal_m": -0.8542925699975707,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/013",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.6604932147014937,
+    "progress_towards_goal_m": -1.2104932147014937,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/014",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.151994929376963,
+    "progress_towards_goal_m": -0.7019949293769628,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/015",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1062895080410255,
+    "progress_towards_goal_m": -0.6562895080410256,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/016",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6978390538305111,
+    "progress_towards_goal_m": -0.2478390538305112,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/017",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8205383336349966,
+    "progress_towards_goal_m": -0.3705383336349967,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/018",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2980143653006229,
+    "progress_towards_goal_m": -0.8480143653006229,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/019",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8940983907711786,
+    "progress_towards_goal_m": -0.4440983907711786,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/020",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3244647639686606,
+    "progress_towards_goal_m": -0.8744647639686607,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/021",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1837574575965588,
+    "progress_towards_goal_m": -0.7337574575965589,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/022",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 2.1338099250331926,
+    "progress_towards_goal_m": -1.6838099250331924,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/023",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7350486880898426,
+    "progress_towards_goal_m": -0.28504868808984285,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/000",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.738815108956166,
+    "progress_towards_goal_m": -0.28881510895616613,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/001",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.639337152481313,
+    "progress_towards_goal_m": -0.18933715248131278,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/002",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6754707147999897,
+    "progress_towards_goal_m": -0.2254707147999897,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/003",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5849903838692658,
+    "progress_towards_goal_m": -1.1349903838692659,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/004",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.015255644341914,
+    "progress_towards_goal_m": -0.565255644341914,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/005",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 2.062273681079138,
+    "progress_towards_goal_m": -1.6122736810791383,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/006",
+    "scene": "solo_offset",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16723076412700347,
+    "progress_towards_goal_m": 0.2827692358729965,
+    "skills": 6
+   },
+   {
+    "root_id": "test/solo_offset/007",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9315873528870238,
+    "progress_towards_goal_m": -0.48158735288702376,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/008",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3762446858543251,
+    "progress_towards_goal_m": -0.9262446858543252,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/009",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1567883249916373,
+    "progress_towards_goal_m": -0.7067883249916374,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/010",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.30754643200979764,
+    "progress_towards_goal_m": 0.14245356799020237,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/011",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3465013695044876,
+    "progress_towards_goal_m": -0.8965013695044877,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/012",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.556490291432562,
+    "progress_towards_goal_m": -1.106490291432562,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/013",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7530466292582446,
+    "progress_towards_goal_m": -0.3030466292582444,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/014",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5980863311196274,
+    "progress_towards_goal_m": -1.1480863311196274,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/015",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7131331500525981,
+    "progress_towards_goal_m": -0.26313315005259813,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/016",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7953431586489552,
+    "progress_towards_goal_m": -0.34534315864895515,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/017",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5462374420067795,
+    "progress_towards_goal_m": -0.09623744200677936,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/018",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6052632123706034,
+    "progress_towards_goal_m": -0.1552632123706033,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/019",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0800136317643103,
+    "progress_towards_goal_m": -0.6300136317643102,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/020",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.809035583248043,
+    "progress_towards_goal_m": -1.359035583248043,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/021",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3303901668357632,
+    "progress_towards_goal_m": -0.8803901668357632,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/022",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4937131552464962,
+    "progress_towards_goal_m": -0.04371315524649633,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/023",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3349732579851018,
+    "progress_towards_goal_m": 0.11502674201489826,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/000",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.0358849456139859,
+    "progress_towards_goal_m": 0.4141150543860142,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/001",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.11990321836026833,
+    "progress_towards_goal_m": 0.3300967816397317,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/002",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.49397459322764403,
+    "progress_towards_goal_m": -0.043974593227644077,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/003",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9184991520577623,
+    "progress_towards_goal_m": -0.4684991520577623,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/004",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.11736432286175347,
+    "progress_towards_goal_m": 0.3326356771382464,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/005",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.12110194708503418,
+    "progress_towards_goal_m": 0.32889805291496566,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/006",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.19773469918283995,
+    "progress_towards_goal_m": 0.25226530081716014,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/007",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09136378281252903,
+    "progress_towards_goal_m": 0.358636217187471,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/008",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.41595144359583336,
+    "progress_towards_goal_m": 0.03404855640416665,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/009",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.058809078817910324,
+    "progress_towards_goal_m": 0.3911909211820897,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/010",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.185149371026636,
+    "progress_towards_goal_m": 0.2648506289733641,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/011",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.08601154070067552,
+    "progress_towards_goal_m": 0.3639884592993245,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/012",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18837139595296576,
+    "progress_towards_goal_m": 0.26162860404703425,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/013",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09688667129381338,
+    "progress_towards_goal_m": 0.3531133287061867,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/014",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1938597299221481,
+    "progress_towards_goal_m": 0.256140270077852,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/015",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.12284696047111963,
+    "progress_towards_goal_m": 0.3271530395288803,
+    "skills": 3
+   }
+  ],
+  "random_validation": [
+   {
+    "root_id": "test/solo_central/000",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0080046653581862,
+    "progress_towards_goal_m": -0.5580046653581863,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/001",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.45332483549412445,
+    "progress_towards_goal_m": -0.0033248354941243785,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/002",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5553803860651194,
+    "progress_towards_goal_m": -1.1053803860651195,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/003",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3960611641488263,
+    "progress_towards_goal_m": -0.9460611641488262,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/004",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5447977263130304,
+    "progress_towards_goal_m": -1.0947977263130304,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/005",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.569339198359048,
+    "progress_towards_goal_m": -0.1193391983590481,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/006",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7742333612365605,
+    "progress_towards_goal_m": -0.3242333612365605,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/007",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7884349367349142,
+    "progress_towards_goal_m": -0.3384349367349142,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/008",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2046768312968985,
+    "progress_towards_goal_m": -0.7546768312968987,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/009",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.397022405911975,
+    "progress_towards_goal_m": -0.947022405911975,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/010",
+    "scene": "solo_central",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.14230329270035827,
+    "progress_towards_goal_m": 0.3076967072996416,
+    "skills": 2
+   },
+   {
+    "root_id": "test/solo_central/011",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6483833302930553,
+    "progress_towards_goal_m": -0.19838333029305516,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/012",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3035869475416477,
+    "progress_towards_goal_m": -0.8535869475416478,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/013",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6125588953170522,
+    "progress_towards_goal_m": -0.16255889531705225,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/014",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9255276646520575,
+    "progress_towards_goal_m": -0.4755276646520574,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/015",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0995414617639823,
+    "progress_towards_goal_m": -0.6495414617639823,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/016",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6921825865660589,
+    "progress_towards_goal_m": -0.24218258656605895,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/017",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7530387891271622,
+    "progress_towards_goal_m": -0.30303878912716226,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/018",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3734127318552658,
+    "progress_towards_goal_m": -0.9234127318552658,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/019",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8268464627545856,
+    "progress_towards_goal_m": -0.3768464627545856,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/020",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.355967180275422,
+    "progress_towards_goal_m": -0.9059671802754221,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/021",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9248279851617109,
+    "progress_towards_goal_m": -0.474827985161711,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/022",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.8200061667957477,
+    "progress_towards_goal_m": -1.3700061667957475,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/023",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7193128981965345,
+    "progress_towards_goal_m": -0.2693128981965348,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/000",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7085047988301293,
+    "progress_towards_goal_m": -0.25850479883012945,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/001",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6544433167378438,
+    "progress_towards_goal_m": -0.20444331673784366,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/002",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7471171742951737,
+    "progress_towards_goal_m": -0.2971171742951737,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/003",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3507941250145835,
+    "progress_towards_goal_m": 0.0992058749854165,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/004",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9318670874803022,
+    "progress_towards_goal_m": -0.48186708748030216,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/005",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3863150480260564,
+    "progress_towards_goal_m": -0.9363150480260565,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/006",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.30009636121568795,
+    "progress_towards_goal_m": 0.14990363878431207,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/007",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.944853513193545,
+    "progress_towards_goal_m": -0.49485351319354504,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/008",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4393825253485446,
+    "progress_towards_goal_m": -0.9893825253485447,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/009",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.155012549249687,
+    "progress_towards_goal_m": -0.705012549249687,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/010",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.40698817176671614,
+    "progress_towards_goal_m": 0.043011828233283866,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/011",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2104722039746991,
+    "progress_towards_goal_m": -0.7604722039746992,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/012",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6343588749236886,
+    "progress_towards_goal_m": -0.18435887492368858,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/013",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.8624936248557393,
+    "progress_towards_goal_m": -1.4124936248557391,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/014",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6941264739852954,
+    "progress_towards_goal_m": -0.2441264739852954,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/015",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7489558747497812,
+    "progress_towards_goal_m": -0.2989558747497812,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/016",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7472880979754417,
+    "progress_towards_goal_m": -0.29728809797544165,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/017",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5010012743412139,
+    "progress_towards_goal_m": -0.051001274341213765,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/018",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.556066516089979,
+    "progress_towards_goal_m": -0.10606651608997891,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/019",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.147407608765086,
+    "progress_towards_goal_m": -0.6974076087650859,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/020",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4612083607911697,
+    "progress_towards_goal_m": -1.0112083607911697,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/021",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3018174584354023,
+    "progress_towards_goal_m": -0.8518174584354024,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/022",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5677836244981204,
+    "progress_towards_goal_m": -0.11778362449812046,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/023",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.37413797186443626,
+    "progress_towards_goal_m": 0.07586202813556381,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/000",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6782240515074244,
+    "progress_towards_goal_m": -0.22822405150742425,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/001",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4615270694543516,
+    "progress_towards_goal_m": -1.0115270694543517,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/002",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09906325112106511,
+    "progress_towards_goal_m": 0.35093674887893483,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/003",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6400971577496204,
+    "progress_towards_goal_m": -0.19009715774962038,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/004",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0623465402477685,
+    "progress_towards_goal_m": -0.6123465402477687,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/005",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9577956638046512,
+    "progress_towards_goal_m": -0.5077956638046514,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/006",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1997852225316171,
+    "progress_towards_goal_m": 0.25021477746838294,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/007",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.05519184857238756,
+    "progress_towards_goal_m": 0.3948081514276125,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/008",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4357849346125103,
+    "progress_towards_goal_m": 0.014215065387489734,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/009",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1143885856310826,
+    "progress_towards_goal_m": 0.3356114143689174,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/010",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16550977180991167,
+    "progress_towards_goal_m": 0.2844902281900884,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/011",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.025732135349863076,
+    "progress_towards_goal_m": 0.42426786465013694,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/012",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.435196384654479,
+    "progress_towards_goal_m": 0.014803615345520993,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/013",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.08911806809886455,
+    "progress_towards_goal_m": 0.3608819319011356,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/014",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.04280294831454387,
+    "progress_towards_goal_m": 0.40719705168545617,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/015",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17374001273612538,
+    "progress_towards_goal_m": 0.2762599872638746,
+    "skills": 2
+   }
+  ],
+  "trained_test": [
+   {
+    "root_id": "test/dual_same_side/016",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.11242862394960788,
+    "progress_towards_goal_m": 0.3375713760503921,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/017",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1521696983612891,
+    "progress_towards_goal_m": 0.29783030163871094,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/018",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18953889203527757,
+    "progress_towards_goal_m": 0.26046110796472244,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/019",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9734990151096504,
+    "progress_towards_goal_m": -0.5234990151096504,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/020",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.13950918924931696,
+    "progress_towards_goal_m": 0.31049081075068297,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/021",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.15374322090451153,
+    "progress_towards_goal_m": 0.2962567790954886,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/022",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09541746094358039,
+    "progress_towards_goal_m": 0.35458253905641957,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/023",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16545309831429034,
+    "progress_towards_goal_m": 0.28454690168570973,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/000",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9723972619754896,
+    "progress_towards_goal_m": -0.5223972619754896,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/001",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.07897834801551223,
+    "progress_towards_goal_m": 0.37102165198448783,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/002",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.08320896756231486,
+    "progress_towards_goal_m": 0.3667910324376852,
+    "skills": 4
+   },
+   {
+    "root_id": "test/dual_rotate/003",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.45850524568236445,
+    "progress_towards_goal_m": -0.008505245682364382,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/004",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.13787619165599518,
+    "progress_towards_goal_m": 0.3121238083440049,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/005",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.13428669318618952,
+    "progress_towards_goal_m": 0.31571330681381043,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/006",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7155977527372167,
+    "progress_towards_goal_m": -0.2655977527372167,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/007",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8985318965764956,
+    "progress_towards_goal_m": -0.4485318965764956,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/008",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.23624139085180934,
+    "progress_towards_goal_m": 0.21375860914819084,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/009",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.060833417746749156,
+    "progress_towards_goal_m": 0.3891665822532508,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/010",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17373621223448749,
+    "progress_towards_goal_m": 0.2762637877655126,
+    "skills": 10
+   },
+   {
+    "root_id": "test/dual_rotate/011",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.028166291231967,
+    "progress_towards_goal_m": -0.5781662912319667,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/012",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.12477271911313376,
+    "progress_towards_goal_m": 0.3252272808868662,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/013",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4804594503571499,
+    "progress_towards_goal_m": -0.03045945035714992,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/014",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7978778894919019,
+    "progress_towards_goal_m": -0.34787788949190185,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/015",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1473073304330632,
+    "progress_towards_goal_m": 0.3026926695669368,
+    "skills": 4
+   },
+   {
+    "root_id": "test/dual_rotate/016",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.14555990711545855,
+    "progress_towards_goal_m": 0.30444009288454144,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_rotate/017",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.12031142507405101,
+    "progress_towards_goal_m": 0.329688574925949,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/018",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09044069391873276,
+    "progress_towards_goal_m": 0.359559306081267,
+    "skills": 8
+   },
+   {
+    "root_id": "test/dual_rotate/019",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.039391086310677795,
+    "progress_towards_goal_m": 0.41060891368932234,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/020",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7085335309002975,
+    "progress_towards_goal_m": -0.25853353090029746,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/021",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7551161437650861,
+    "progress_towards_goal_m": -0.30511614376508606,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/022",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.128202416888072,
+    "progress_towards_goal_m": -0.6782024168880719,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/023",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.013447891337767297,
+    "progress_towards_goal_m": 0.4365521086622328,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/000",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4418764742175831,
+    "progress_towards_goal_m": 0.008123525782416985,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/001",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.0956376369362207,
+    "progress_towards_goal_m": 0.35436236306377933,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/002",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9232539150304339,
+    "progress_towards_goal_m": -0.47325391503043374,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/003",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17955280543061847,
+    "progress_towards_goal_m": 0.27044719456938177,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/004",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0459731074664074,
+    "progress_towards_goal_m": -0.5959731074664074,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/005",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.158147480777086,
+    "progress_towards_goal_m": -0.708147480777086,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/006",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4899836294108911,
+    "progress_towards_goal_m": -0.039983629410891175,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/007",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5204728564273285,
+    "progress_towards_goal_m": -0.07047285642732859,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/008",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.568699774766593,
+    "progress_towards_goal_m": -0.11869977476659299,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/009",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.05893239647830927,
+    "progress_towards_goal_m": 0.39106760352169084,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/010",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.50334320833449,
+    "progress_towards_goal_m": -0.05334320833448997,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/011",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18719366957765013,
+    "progress_towards_goal_m": 0.2628063304223499,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/012",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.15319059602710208,
+    "progress_towards_goal_m": 0.296809403972898,
+    "skills": 8
+   },
+   {
+    "root_id": "test/incompatible/013",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17955280016259442,
+    "progress_towards_goal_m": 0.2704471998374056,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/014",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.2882181073703404,
+    "progress_towards_goal_m": 0.1617818926296597,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/015",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5186808296560981,
+    "progress_towards_goal_m": -0.06868082965609817,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/016",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.38395171706154896,
+    "progress_towards_goal_m": 0.06604828293845116,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/017",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.058932464897870025,
+    "progress_towards_goal_m": 0.3910675351021301,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/018",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9527264539164487,
+    "progress_towards_goal_m": -0.5027264539164488,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/019",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16103238359187497,
+    "progress_towards_goal_m": 0.28896761640812496,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/020",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1534025722980465,
+    "progress_towards_goal_m": -0.7034025722980466,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/021",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17955280016259711,
+    "progress_towards_goal_m": 0.27044719983740306,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/022",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.45787802141387723,
+    "progress_towards_goal_m": -0.007878021413877168,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/023",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8977873781009259,
+    "progress_towards_goal_m": -0.4477873781009258,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/000",
+    "scene": "constrained",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.19604519183155591,
+    "progress_towards_goal_m": 0.25395480816844407,
+    "skills": 3
+   },
+   {
+    "root_id": "test/constrained/001",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4644136526835724,
+    "progress_towards_goal_m": -0.014413652683572253,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/002",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6139656214060469,
+    "progress_towards_goal_m": -0.16396562140604692,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/003",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5591048369661885,
+    "progress_towards_goal_m": -0.10910483696618856,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/004",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7473017975999214,
+    "progress_towards_goal_m": -0.2973017975999214,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/005",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6720214743699391,
+    "progress_towards_goal_m": -0.22202147436993913,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/006",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6486662361760016,
+    "progress_towards_goal_m": -0.19866623617600154,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/007",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6803791723838136,
+    "progress_towards_goal_m": -0.2303791723838136,
+    "skills": 12
+   }
+  ],
+  "random_test": [
+   {
+    "root_id": "test/dual_same_side/016",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.15828684930458925,
+    "progress_towards_goal_m": 0.29171315069541076,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/017",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.02111799177725987,
+    "progress_towards_goal_m": 0.42888200822274014,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/018",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5456158756794066,
+    "progress_towards_goal_m": -0.0956158756794066,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/019",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.381725781402796,
+    "progress_towards_goal_m": -0.9317257814027959,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/020",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6123583064300312,
+    "progress_towards_goal_m": -0.16235830643003124,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/021",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0129574654837379,
+    "progress_towards_goal_m": -0.5629574654837377,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/022",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16175578185885756,
+    "progress_towards_goal_m": 0.2882442181411424,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/023",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.06696595784089454,
+    "progress_towards_goal_m": 0.3830340421591055,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/000",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.47794613899537086,
+    "progress_towards_goal_m": -0.027946138995370906,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/001",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.34908693572800625,
+    "progress_towards_goal_m": 0.10091306427199381,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/002",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.24868027212634178,
+    "progress_towards_goal_m": 0.20131972787365823,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/003",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5223759749398139,
+    "progress_towards_goal_m": -0.07237597493981385,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/004",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17961825468352968,
+    "progress_towards_goal_m": 0.2703817453164704,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/005",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.2715512430408669,
+    "progress_towards_goal_m": 0.17844875695913304,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/006",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5600285031482367,
+    "progress_towards_goal_m": -0.1100285031482367,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/007",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.637059745307062,
+    "progress_towards_goal_m": -0.18705974530706204,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/008",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7826945024355224,
+    "progress_towards_goal_m": -0.33269450243552223,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/009",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5082430675352787,
+    "progress_towards_goal_m": -0.05824306753527875,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/010",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.28224086990857583,
+    "progress_towards_goal_m": 0.16775913009142424,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/011",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.38877370286419005,
+    "progress_towards_goal_m": 0.06122629713581007,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/012",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18137469808004283,
+    "progress_towards_goal_m": 0.26862530191995715,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/013",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5198602039609346,
+    "progress_towards_goal_m": -0.06986020396093462,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/014",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.1985839209675455,
+    "progress_towards_goal_m": 0.2514160790324545,
+    "skills": 5
+   },
+   {
+    "root_id": "test/dual_rotate/015",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16578365280338123,
+    "progress_towards_goal_m": 0.2842163471966188,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_rotate/016",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7499957428232897,
+    "progress_towards_goal_m": -0.2999957428232897,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/017",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.32086692442965126,
+    "progress_towards_goal_m": 0.12913307557034875,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/018",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5030317427920736,
+    "progress_towards_goal_m": -0.053031742792073844,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/019",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5446196041794918,
+    "progress_towards_goal_m": -0.09461960417949172,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/020",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7895618246325967,
+    "progress_towards_goal_m": -0.3395618246325967,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/021",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5787943503380912,
+    "progress_towards_goal_m": -0.12879435033809122,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/022",
+    "scene": "dual_rotate",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.39110852676323316,
+    "progress_towards_goal_m": 0.05889147323676691,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_rotate/023",
+    "scene": "dual_rotate",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.13091990881210983,
+    "progress_towards_goal_m": 0.31908009118789027,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/000",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7573594691523491,
+    "progress_towards_goal_m": -0.307359469152349,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/001",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.29621307193913887,
+    "progress_towards_goal_m": 0.15378692806086114,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/002",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.29507196879754,
+    "progress_towards_goal_m": 0.15492803120246013,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/003",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9451989958133132,
+    "progress_towards_goal_m": -0.495198995813313,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/004",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7217142351293089,
+    "progress_towards_goal_m": -0.27171423512930887,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/005",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18322767914418567,
+    "progress_towards_goal_m": 0.26677232085581437,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/006",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.46986607874965053,
+    "progress_towards_goal_m": -0.01986607874965063,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/007",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.02943564976100966,
+    "progress_towards_goal_m": 0.4205643502389903,
+    "skills": 3
+   },
+   {
+    "root_id": "test/incompatible/008",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5833125639282652,
+    "progress_towards_goal_m": -0.1333125639282653,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/009",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2775753605536946,
+    "progress_towards_goal_m": -0.8275753605536944,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/010",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.589470470969089,
+    "progress_towards_goal_m": -1.139470470969089,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/011",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1049265202227092,
+    "progress_towards_goal_m": -0.6549265202227093,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/012",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.46611696298594846,
+    "progress_towards_goal_m": -0.016116962985948335,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/013",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09890911920605848,
+    "progress_towards_goal_m": 0.3510908807939416,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/014",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6578633376155495,
+    "progress_towards_goal_m": -0.20786333761554937,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/015",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4315375796631094,
+    "progress_towards_goal_m": 0.018462420336890495,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/016",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.38130555179702985,
+    "progress_towards_goal_m": 0.06869444820297027,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/017",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0643693236191631,
+    "progress_towards_goal_m": -0.614369323619163,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/018",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.30074496352371,
+    "progress_towards_goal_m": -0.8507449635237101,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/019",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1948744146155519,
+    "progress_towards_goal_m": -0.7448744146155519,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/020",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7149334149254709,
+    "progress_towards_goal_m": -0.264933414925471,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/021",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.17633676964868,
+    "progress_towards_goal_m": 0.2736632303513202,
+    "skills": 2
+   },
+   {
+    "root_id": "test/incompatible/022",
+    "scene": "incompatible",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3755105130083346,
+    "progress_towards_goal_m": 0.07448948699166547,
+    "skills": 12
+   },
+   {
+    "root_id": "test/incompatible/023",
+    "scene": "incompatible",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16094513706680763,
+    "progress_towards_goal_m": 0.2890548629331925,
+    "skills": 3
+   },
+   {
+    "root_id": "test/constrained/000",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5514680218087581,
+    "progress_towards_goal_m": -0.10146802180875808,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/001",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.379404694757136,
+    "progress_towards_goal_m": 0.07059530524286411,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/002",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6348631692672917,
+    "progress_towards_goal_m": -0.18486316926729168,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/003",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4675682195471856,
+    "progress_towards_goal_m": -0.017568219547185626,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/004",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7268288587987163,
+    "progress_towards_goal_m": -0.27682885879871627,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/005",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.38400494665627954,
+    "progress_towards_goal_m": 0.06599505334372041,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/006",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6186796119493938,
+    "progress_towards_goal_m": -0.16867961194939374,
+    "skills": 12
+   },
+   {
+    "root_id": "test/constrained/007",
+    "scene": "constrained",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.602272498712099,
+    "progress_towards_goal_m": -0.15227249871209897,
+    "skills": 12
+   }
+  ],
+  "initial_validation": [
+   {
+    "root_id": "test/solo_central/000",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2820637874141871,
+    "progress_towards_goal_m": -0.8320637874141872,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/001",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.4677267862877757,
+    "progress_towards_goal_m": -0.01772678628777563,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/002",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4240327107979265,
+    "progress_towards_goal_m": -0.9740327107979265,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/003",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.8737926651047054,
+    "progress_towards_goal_m": -1.4237926651047053,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/004",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.821050993582229,
+    "progress_towards_goal_m": -1.3710509935822288,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/005",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8300391016279999,
+    "progress_towards_goal_m": -0.380039101628,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/006",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2394704532309861,
+    "progress_towards_goal_m": -0.7894704532309862,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/007",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7424521774111148,
+    "progress_towards_goal_m": -0.29245217741111484,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/008",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.155766140092034,
+    "progress_towards_goal_m": -0.7057661400920342,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/009",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.395871499881085,
+    "progress_towards_goal_m": -0.9458714998810851,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/010",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6799473884318078,
+    "progress_towards_goal_m": -0.22994738843180795,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/011",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.2862045138555796,
+    "progress_towards_goal_m": 0.16379548614442052,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/012",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3031235680535698,
+    "progress_towards_goal_m": -0.8531235680535698,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/013",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.5552807826567283,
+    "progress_towards_goal_m": -1.1052807826567284,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/014",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9583158928576658,
+    "progress_towards_goal_m": -0.5083158928576658,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/015",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0167028365714188,
+    "progress_towards_goal_m": -0.5667028365714188,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/016",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7000882037265537,
+    "progress_towards_goal_m": -0.2500882037265537,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/017",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1461719392191128,
+    "progress_towards_goal_m": -0.6961719392191128,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/018",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2578391966124176,
+    "progress_towards_goal_m": -0.8078391966124177,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/019",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.824402868822206,
+    "progress_towards_goal_m": -0.374402868822206,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/020",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.4193640970348855,
+    "progress_towards_goal_m": -0.9693640970348856,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/021",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.880403844523506,
+    "progress_towards_goal_m": -0.430403844523506,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/022",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.7233752335144064,
+    "progress_towards_goal_m": -1.2733752335144062,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_central/023",
+    "scene": "solo_central",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6624102919647903,
+    "progress_towards_goal_m": -0.21241029196479055,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/000",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.833189628427987,
+    "progress_towards_goal_m": -0.3831896284279872,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/001",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.2023093575669888,
+    "progress_towards_goal_m": -0.7523093575669886,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/002",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9709971931056449,
+    "progress_towards_goal_m": -0.520997193105645,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/003",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3954759239199371,
+    "progress_towards_goal_m": 0.05452407608006293,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/004",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3050226112973204,
+    "progress_towards_goal_m": -0.8550226112973204,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/005",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.7183402901080715,
+    "progress_towards_goal_m": -1.2683402901080716,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/006",
+    "scene": "solo_offset",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18438714163239397,
+    "progress_towards_goal_m": 0.26561285836760606,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/007",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9788440918858632,
+    "progress_towards_goal_m": -0.5288440918858632,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/008",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.456254808625376,
+    "progress_towards_goal_m": -1.006254808625376,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/009",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0388116704035153,
+    "progress_towards_goal_m": -0.5888116704035153,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/010",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5710037274621454,
+    "progress_towards_goal_m": -0.12100372746214544,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/011",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 2.0607389175221966,
+    "progress_towards_goal_m": -1.6107389175221967,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/012",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6698175122442195,
+    "progress_towards_goal_m": -0.21981751224421947,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/013",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.6133987966853087,
+    "progress_towards_goal_m": -0.1633987966853085,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/014",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.27518434201881004,
+    "progress_towards_goal_m": 0.17481565798118992,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/015",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7032912876523957,
+    "progress_towards_goal_m": -0.25329128765239567,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/016",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8294703940615571,
+    "progress_towards_goal_m": -0.379470394061557,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/017",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.44367562233205116,
+    "progress_towards_goal_m": 0.006324377667948966,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/018",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.7040838926378548,
+    "progress_towards_goal_m": -0.25408389263785464,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/019",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1490469449636143,
+    "progress_towards_goal_m": -0.6990469449636142,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/020",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5504825187153679,
+    "progress_towards_goal_m": -0.10048251871536801,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/021",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.3056902832165498,
+    "progress_towards_goal_m": -0.8556902832165498,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/022",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.9997533830354577,
+    "progress_towards_goal_m": -0.5497533830354577,
+    "skills": 12
+   },
+   {
+    "root_id": "test/solo_offset/023",
+    "scene": "solo_offset",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.353348665330561,
+    "progress_towards_goal_m": 0.09665133466943909,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/000",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.3863529634694868,
+    "progress_towards_goal_m": 0.06364703653051335,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/001",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.16208419611085984,
+    "progress_towards_goal_m": 0.28791580388914023,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/002",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.06759211014453548,
+    "progress_towards_goal_m": 0.3824078898554645,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/003",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.0781036727410305,
+    "progress_towards_goal_m": -0.6281036727410305,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/004",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.10331817344947333,
+    "progress_towards_goal_m": 0.3466818265505265,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/005",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.14442845474795832,
+    "progress_towards_goal_m": 0.30557154525204155,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/006",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.927752500278783,
+    "progress_towards_goal_m": -0.4777525002787829,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/007",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.18861501069169218,
+    "progress_towards_goal_m": 0.2613849893083079,
+    "skills": 3
+   },
+   {
+    "root_id": "test/dual_same_side/008",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.09787404447690123,
+    "progress_towards_goal_m": 0.3521259555230988,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/009",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.14199180361619396,
+    "progress_towards_goal_m": 0.30800819638380605,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/010",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.11555217568526993,
+    "progress_towards_goal_m": 0.33444782431473014,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/011",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 1.1103729713874964,
+    "progress_towards_goal_m": -0.6603729713874964,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/012",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.5532785375616519,
+    "progress_towards_goal_m": -0.1032785375616519,
+    "skills": 12
+   },
+   {
+    "root_id": "test/dual_same_side/013",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.10831688055404373,
+    "progress_towards_goal_m": 0.3416831194459564,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/014",
+    "scene": "dual_same_side",
+    "success": true,
+    "outcome": "success",
+    "end_distance_m": 0.10877613422740619,
+    "progress_towards_goal_m": 0.3412238657725939,
+    "skills": 2
+   },
+   {
+    "root_id": "test/dual_same_side/015",
+    "scene": "dual_same_side",
+    "success": false,
+    "outcome": "task_budget",
+    "end_distance_m": 0.8895237045744522,
+    "progress_towards_goal_m": -0.4395237045744522,
+    "skills": 12
+   }
+  ]
  }
 }

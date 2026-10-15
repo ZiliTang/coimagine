@@ -46,8 +46,12 @@ def main() -> int:
     shutil.copy2(ROOT / "experiments/night_repair2_v1/verify_sample.py",
                  package / "verify_package.py")
     shutil.copy2(ROOT / "experiments/night_repair2_v1/verify.py", package / "code" / "verify.py")
-    for name in ("rl.py", "ppo.py", "collect.py", "verify.py", "package.py"):
+    for name in ("rl.py", "ppo.py", "collect.py", "verify.py", "package.py", "datacard.py",
+                 "compare_policies.py", "world_train_eval.py"):
         shutil.copy2(ROOT / "experiments/night_repair2_v1" / name, package / "code" / name)
+    # the world-model trainer change is part of the delivered evidence, so ship the file too
+    shutil.copy2(ROOT / "experiments/transformer_scale_latent_v1/train.py",
+                 package / "code" / "world_train.py")
     for name in ("option_env.py", "policy.py"):
         shutil.copy2(ROOT / "experiments/night_repair_optionrl_v1" / name,
                      package / "code" / f"legacy_{name}")
@@ -66,7 +70,21 @@ def main() -> int:
         source = BASE / "repair" / name
         if source.exists():
             shutil.copy2(source, package / "results" / name)
-    for name in ("train_result_seed0.json", "checkpoint_comparison.json"):
+    for name in ("train_result_seed0.json", "checkpoint_comparison.json",
+                 "policy_comparison.json"):
+        source = BASE / "option_rl" / name
+        if source.exists():
+            shutil.copy2(source, package / "results" / name)
+    for name in ("world_train_eval.json",):
+        source = ROOT / "outputs/night_repair2_v1/world_models" / name
+        if source.exists():
+            shutil.copy2(source, package / "results" / name)
+    for name in ("TRIAL_SUMMARY.json", "DATA_CARD.md", "DATACARD.json"):
+        source = BASE / "collection" / name
+        if source.exists():
+            shutil.copy2(source, package / "data" / name)
+    for name in ():
+
         source = BASE / "option_rl" / name
         if source.exists():
             shutil.copy2(source, package / "results" / name)
