@@ -200,6 +200,9 @@ class OptionRLEnv:
         self.trajectory = []
         self.boundaries = []
         self.initial_object = np.asarray(initial_object, dtype=np.float64)
+        # the distance the episode starts at, so a caller never has to re-derive it
+        self.start_distance = float(np.hypot(self.initial_object[0] - self.goal[0],
+                                             self.initial_object[1] - self.goal[1]))
         self._last_potential = self._potential()
         self._noise_rng = noise_rng
         return self._observation()
@@ -221,45 +224,68 @@ class OptionRLEnv:
         return float(np.hypot(pose[0] - self.goal[0], pose[1] - self.goal[1])) <= \
             self.config.goal_tolerance
 
+    def _task_budget_expired(self) -> bool:
+        """True when the public task budget ran out rather than the sampling buffer being cut."""
+
+        return self.skills_used >= self.config.max_skills
+
     # -- observation -------------------------------------------------------
-    def _observation(self) -> np.ndarray:
-        values: List[float] = []
-        goal_delta = np.zeros(2)
-        for robot_id in (0, 1):
-            observation = self.env.observation()
-            pose = observation.robots[robot_id]
-            values += [pose.x, pose.y, pose.angle, pose.vx, pose.vy, pose.omega]
-            sensed = build_observation(self.env, self.config_option(), robot_id, stage="idle",
-                                       teammate=None,
-                                       skill={"alpha": 0.0, "speed": 0.0})
-            patch = sensed.patch
-            if patch is not None:
-                normal = patch.normal_world if hasattr(patch, "normal_world") else (0.0, 0.0)
-                values += [1.0, float(patch.distance), float(normal[0]), float(normal[1]),
-                           1.0 if sensed.contacting else 0.0]
-            else:
-                values += [0.0, 0.0, 0.0, 0.0, 1.0 if sensed.contacting else 0.0]
-        own0 = self.env.observation().robots[0]
-        own1 = self.env.observation().robots[1]
-        values += [own1.x - own0.x, own1.y - own0.y,
-                   math.atan2(math.sin(own1.angle - own0.angle),
-                              math.cos(own1.angle - own0.angle))]
-        values += [self.goal[0] - own0.x, self.goal[1] - own0.y,
-                   float(np.hypot(self.goal[0] - own0.x, self.goal[1] - own0.y))]
-        # a sensed object direction is what the scan implies; the true object vector is not used
-        sensed0 = build_observation(self.env, self.config_option(), 0, stage="idle", teammate=None,
-                                    skill={"alpha": 0.0, "speed": 0.0})
-        if sensed0.patch is not None and sensed0.patch.arc_rays > 0:
-            values += [float(sensed0.patch.distance), 0.0]
-        else:
-            values += [0.0, 0.0]
-        values += [min(1.0, self.steps / max(1.0, self.config.max_skills * 40)),
-                   self.skills_used / max(1, self.config.max_skills)]
-        goal_delta[0] = np.hypot(self.goal[0] - own0.x, self.goal[1] - own0.y)
+    #: nominal physics steps per skill, used only to normalise the clock feature
+    NOMINAL_SKILL_STEPS = 80
+
+    def _clock_features(self, elapsed_seconds: float) -> List[float]:
+        """The two clock columns, defined once so boundary and inner frames cannot disagree."""
+
+        horizon = max(1.0, self.config.max_skills * self.NOMINAL_SKILL_STEPS * 0.05)
+        return [min(1.0, elapsed_seconds / horizon),
+                self.skills_used / max(1, self.config.max_skills)]
+
+    def _robot_block(self, robot_id: int) -> List[float]:
+        """One robot's legal block: own kinematics plus what its **own** scan reports."""
+
+        observation = self.env.observation()
+        pose = observation.robots[robot_id]
+        sensed = build_observation(self.env, self.config_option(), robot_id, stage="idle",
+                                   teammate=None, skill={"alpha": 0.0, "speed": 0.0})
+        patch = sensed.patch
+        valid = 1.0 if (patch is not None and patch.arc_rays > 0) else 0.0
+        distance = float(patch.distance) if valid else 0.0
+        normal = patch.normal_world if valid else (0.0, 0.0)
+        return [pose.x, pose.y, pose.angle, pose.vx, pose.vy, pose.omega,
+                valid, distance, float(normal[0]), float(normal[1]),
+                1.0 if sensed.contacting else 0.0]
+
+    def _object_block(self, robot0_block) -> List[float]:
+        """The two ``object_sensed_*`` columns, taken from robot 0's own scan block.
+
+        They are listed separately in ``ObservationSpec`` but must be derived from the same scan,
+        so they are read out of the already-built robot block rather than sensed a second time.
+        """
+
+        return [float(robot0_block[7]), 0.0]
+
+    def _assemble(self, robot_blocks, teammate_block, goal_block, object_block,
+                  clock_block) -> np.ndarray:
+        values = list(robot_blocks[0]) + list(robot_blocks[1]) + list(teammate_block) \
+            + list(goal_block) + list(object_block) + list(clock_block)
         array = np.asarray(values, dtype=np.float32)
         if array.shape[0] != self.spec.width:
             raise RuntimeError(f"observation width {array.shape[0]} != spec {self.spec.width}")
         return array
+
+    def _observation(self) -> np.ndarray:
+        """The boundary observation, built from the shared field assembler."""
+
+        own0 = self.env.observation().robots[0]
+        own1 = self.env.observation().robots[1]
+        teammate = [own1.x - own0.x, own1.y - own0.y,
+                    math.atan2(math.sin(own1.angle - own0.angle),
+                               math.cos(own1.angle - own0.angle))]
+        goal = [self.goal[0] - own0.x, self.goal[1] - own0.y,
+                float(np.hypot(self.goal[0] - own0.x, self.goal[1] - own0.y))]
+        blocks = [self._robot_block(0), self._robot_block(1)]
+        return self._assemble(blocks, teammate, goal, self._object_block(blocks[0]),
+                              self._clock_features(self.steps * 0.05))
 
     def config_option(self) -> OptionConfig:
         return self.option_config
@@ -315,7 +341,11 @@ class OptionRLEnv:
             reward += self.config.failure_penalty
         info = {"success": success, "steps": steps, "skills_used": self.skills_used,
                 "object_pose": self.privileged_object().tolist(),
-                "goal_distance": float(-after), "discount": discount_to_end}
+                "goal_distance": float(-after), "discount": discount_to_end,
+                # the caller must be able to tell "the task's own budget ran out" from "the sampler
+                # stopped early"; only the latter bootstraps
+                "task_budget_expired": bool(self._task_budget_expired()),
+                "goal_reached": bool(self._goal_reached())}
         return StepResult(observation=self._observation(), reward=float(reward),
                           terminated=terminated, truncated=truncated, info=info,
                           inner_observations=self._inner_observations(result.rows),
@@ -351,6 +381,9 @@ class OptionRLEnv:
                 block = observed.get(str(robot_id), {})
                 own = block.get("own") or [0.0] * 6
                 values += [float(v) for v in own[:6]]
+                # exactly the same five fields as ``_robot_block``; the previous version put the
+                # elapsed time here, so column 28 meant "patch distance" at a boundary and "clock"
+                # inside a skill
                 values += [1.0 if block.get("patch_points") else 0.0,
                            float(block.get("patch_distance") or 0.0)]
                 normal = block.get("patch_normal") or (0.0, 0.0)
@@ -363,9 +396,9 @@ class OptionRLEnv:
                                   math.cos(robot1[2] - robot0[2]))]
             values += [self.goal[0] - robot0[0], self.goal[1] - robot0[1],
                        float(np.hypot(self.goal[0] - robot0[0], self.goal[1] - robot0[1]))]
-            values += [float(row.get("time", 0.0)), 0.0]
-            values += [min(1.0, float(row.get("time", 0.0)) / 30.0),
-                       self.skills_used / max(1, self.config.max_skills)]
+            # the inner block has the same width as the boundary block: 11 + 11 + 3 + 3 + 2
+            values += [float((observed.get("0", {}) or {}).get("patch_distance") or 0.0), 0.0]
+            values += self._clock_features(float(row.get("time", 0.0)))
             array = np.asarray(values, dtype=np.float32)
             if array.shape[0] != self.spec.width:
                 raise RuntimeError(f"inner observation width {array.shape[0]} != {self.spec.width}")

@@ -1,0 +1,308 @@
+{
+ "seed": 0,
+ "iterations": 9,
+ "history": [
+  {
+   "iteration": 1,
+   "explore_return": -0.35084233299361856,
+   "explore_success": 0.125,
+   "val_success_rate": 0.234375,
+   "val_progress_towards_goal_m": -0.2960206424001707,
+   "val_end_distance_m": 0.7460206424001707,
+   "seconds": 54.46581292152405,
+   "policy_loss": -0.0774561339834084,
+   "value_loss": 0.027912904809151467,
+   "entropy": 4.058145870765051,
+   "kl": 0.00990188339104255,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999902969183,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 5,
+   "explore_return": -0.31238944679145053,
+   "explore_success": 0.375,
+   "val_success_rate": 0.234375,
+   "val_progress_towards_goal_m": -0.44893972288083095,
+   "val_end_distance_m": 0.8989397228808309,
+   "seconds": 139.3154492378235,
+   "policy_loss": -0.07210140202854139,
+   "value_loss": 0.018995553589775224,
+   "entropy": 4.008764947454135,
+   "kl": 0.01724679737041394,
+   "updates": 32,
+   "mean_ratio_before_update": 1.000000014233945,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 10,
+   "explore_return": -0.4727759112628537,
+   "explore_success": 0.0,
+   "val_success_rate": 0.109375,
+   "val_progress_towards_goal_m": -0.33491076952454013,
+   "val_end_distance_m": 0.7849107695245401,
+   "seconds": 252.45209550857544,
+   "policy_loss": -0.06507474347017705,
+   "value_loss": 0.016715070106632385,
+   "entropy": 3.9299431840578722,
+   "kl": -0.010588944579164187,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999838570753,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 15,
+   "explore_return": -0.24537574268413254,
+   "explore_success": 0.375,
+   "val_success_rate": 0.15625,
+   "val_progress_towards_goal_m": -0.3866200682487593,
+   "val_end_distance_m": 0.8366200682487592,
+   "seconds": 354.1712522506714,
+   "policy_loss": -0.06756141089135781,
+   "value_loss": 0.019986322078087444,
+   "entropy": 3.5585202475388855,
+   "kl": 0.03513104903201262,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999929876888,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 20,
+   "explore_return": -0.36708026450722775,
+   "explore_success": 0.125,
+   "val_success_rate": 0.0625,
+   "val_progress_towards_goal_m": -0.351153998887623,
+   "val_end_distance_m": 0.8011539988876231,
+   "seconds": 457.0527124404907,
+   "policy_loss": -0.0720935469532075,
+   "value_loss": 0.015354264134657567,
+   "entropy": 3.0890149325132366,
+   "kl": 0.03255351508657138,
+   "updates": 32,
+   "mean_ratio_before_update": 1.0000000110892362,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 25,
+   "explore_return": -0.4112124234839536,
+   "explore_success": 0.125,
+   "val_success_rate": 0.109375,
+   "val_progress_towards_goal_m": -0.36140324960939,
+   "val_end_distance_m": 0.81140324960939,
+   "seconds": 559.7119951248169,
+   "policy_loss": -0.06541511991720957,
+   "value_loss": 0.018669918960464806,
+   "entropy": 2.9977623522281647,
+   "kl": 0.00514678005129099,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999972595566,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 30,
+   "explore_return": -0.345205409203986,
+   "explore_success": 0.0,
+   "val_success_rate": 0.171875,
+   "val_progress_towards_goal_m": -0.30185596636552214,
+   "val_end_distance_m": 0.7518559663655222,
+   "seconds": 656.5776584148407,
+   "policy_loss": -0.05343504428553085,
+   "value_loss": 0.017742001306032762,
+   "entropy": 2.9421769181887316,
+   "kl": 0.009027055154244106,
+   "updates": 32,
+   "mean_ratio_before_update": 0.9999999913076559,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 35,
+   "explore_return": -0.39926168776074733,
+   "explore_success": 0.25,
+   "val_success_rate": 0.140625,
+   "val_progress_towards_goal_m": -0.3230126853740543,
+   "val_end_distance_m": 0.7730126853740542,
+   "seconds": 760.792462348938,
+   "policy_loss": -0.06198130684876533,
+   "value_loss": 0.01994583508437217,
+   "entropy": 3.313733908714671,
+   "kl": 0.00773990380041527,
+   "updates": 32,
+   "mean_ratio_before_update": 1.0000000469824848,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  },
+  {
+   "iteration": 40,
+   "explore_return": -0.42313094507805504,
+   "explore_success": 0.375,
+   "val_success_rate": 0.09375,
+   "val_progress_towards_goal_m": -0.37003453111443574,
+   "val_end_distance_m": 0.8200345311144357,
+   "seconds": 857.0633842945099,
+   "policy_loss": -0.07398934741245788,
+   "value_loss": 0.010139973155067613,
+   "entropy": 3.0882591000861583,
+   "kl": 0.005843120963416165,
+   "updates": 32,
+   "mean_ratio_before_update": 1.0000000080546818,
+   "max_abs_ratio_minus_one": 4.76837158203125e-07
+  }
+ ],
+ "seconds": 1045.946720123291,
+ "inference_checkpoint": "outputs/night_repair2_v1/option_rl/policy_best_seed0.pt",
+ "resumable_checkpoint": "outputs/night_repair2_v1/option_rl/policy_resumable_seed0.pt",
+ "dev_roots": 24,
+ "val_roots": 64,
+ "test_roots": 64,
+ "trained": {
+  "validation": {
+   "episodes": 64,
+   "success_rate": 0.09375,
+   "mean_end_distance_m": 0.8200345311144357,
+   "mean_start_distance_m": 0.45,
+   "mean_progress_towards_goal_m": -0.37003453111443574,
+   "mean_distance_change_m": 0.37003453111443574,
+   "median_skills": 12.0,
+   "mean_return": -0.3973135876587499,
+   "outcomes": {
+    "task_budget": 58,
+    "success": 6
+   },
+   "per_scene": {
+    "dual_same_side": {
+     "episodes": 16,
+     "success_rate": 0.1875,
+     "mean_progress_towards_goal_m": -0.3492842538274896,
+     "mean_end_distance_m": 0.7992842538274896
+    },
+    "solo_central": {
+     "episodes": 24,
+     "success_rate": 0.08333333333333333,
+     "mean_progress_towards_goal_m": -0.4035050439700251,
+     "mean_end_distance_m": 0.8535050439700251
+    },
+    "solo_offset": {
+     "episodes": 24,
+     "success_rate": 0.041666666666666664,
+     "mean_progress_towards_goal_m": -0.3503975364501437,
+     "mean_end_distance_m": 0.8003975364501438
+    }
+   }
+  },
+  "test": {
+   "episodes": 64,
+   "success_rate": 0.125,
+   "mean_end_distance_m": 0.898652849464495,
+   "mean_start_distance_m": 0.45000000000000007,
+   "mean_progress_towards_goal_m": -0.448652849464495,
+   "mean_distance_change_m": 0.448652849464495,
+   "median_skills": 12.0,
+   "mean_return": -0.2765591958279404,
+   "outcomes": {
+    "task_budget": 56,
+    "success": 8
+   },
+   "per_scene": {
+    "constrained": {
+     "episodes": 8,
+     "success_rate": 0.25,
+     "mean_progress_towards_goal_m": -0.07012914424494683,
+     "mean_end_distance_m": 0.5201291442449468
+    },
+    "dual_rotate": {
+     "episodes": 24,
+     "success_rate": 0.041666666666666664,
+     "mean_progress_towards_goal_m": -0.5368768013406674,
+     "mean_end_distance_m": 0.9868768013406672
+    },
+    "dual_same_side": {
+     "episodes": 8,
+     "success_rate": 0.25,
+     "mean_progress_towards_goal_m": -0.5282406111432967,
+     "mean_end_distance_m": 0.9782406111432966
+    },
+    "incompatible": {
+     "episodes": 24,
+     "success_rate": 0.125,
+     "mean_progress_towards_goal_m": -0.46007421210190474,
+     "mean_end_distance_m": 0.9100742121019048
+    }
+   }
+  }
+ },
+ "random": {
+  "validation": {
+   "episodes": 64,
+   "success_rate": 0.15625,
+   "mean_end_distance_m": 0.8024620029144361,
+   "mean_start_distance_m": 0.45,
+   "mean_progress_towards_goal_m": -0.35246200291443613,
+   "mean_distance_change_m": 0.35246200291443613,
+   "median_skills": 12.0,
+   "mean_return": -0.2823797352971814,
+   "outcomes": {
+    "task_budget": 54,
+    "success": 10
+   },
+   "per_scene": {
+    "dual_same_side": {
+     "episodes": 16,
+     "success_rate": 0.5625,
+     "mean_progress_towards_goal_m": 0.03523102211273337,
+     "mean_end_distance_m": 0.4147689778872667
+    },
+    "solo_central": {
+     "episodes": 24,
+     "success_rate": 0.041666666666666664,
+     "mean_progress_towards_goal_m": -0.5453654959966385,
+     "mean_end_distance_m": 0.9953654959966385
+    },
+    "solo_offset": {
+     "episodes": 24,
+     "success_rate": 0.0,
+     "mean_progress_towards_goal_m": -0.4180205265170134,
+     "mean_end_distance_m": 0.8680205265170136
+    }
+   }
+  },
+  "test": {
+   "episodes": 64,
+   "success_rate": 0.21875,
+   "mean_end_distance_m": 0.5294608358500834,
+   "mean_start_distance_m": 0.45000000000000007,
+   "mean_progress_towards_goal_m": -0.07946083585008334,
+   "mean_distance_change_m": 0.07946083585008334,
+   "median_skills": 12.0,
+   "mean_return": -0.3958867413626591,
+   "outcomes": {
+    "success": 14,
+    "task_budget": 50
+   },
+   "per_scene": {
+    "constrained": {
+     "episodes": 8,
+     "success_rate": 0.0,
+     "mean_progress_towards_goal_m": -0.09563625268710749,
+     "mean_end_distance_m": 0.5456362526871075
+    },
+    "dual_rotate": {
+     "episodes": 24,
+     "success_rate": 0.20833333333333334,
+     "mean_progress_towards_goal_m": 0.021549987029365156,
+     "mean_end_distance_m": 0.42845001297063484
+    },
+    "dual_same_side": {
+     "episodes": 8,
+     "success_rate": 0.5,
+     "mean_progress_towards_goal_m": -0.045098001222196565,
+     "mean_end_distance_m": 0.4950980012221966
+    },
+    "incompatible": {
+     "episodes": 24,
+     "success_rate": 0.20833333333333334,
+     "mean_progress_towards_goal_m": -0.1865341313264861,
+     "mean_end_distance_m": 0.6365341313264862
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,224 @@
+{
+ "policy_best_seed0|validation": {
+  "episodes": 64,
+  "success_rate": 0.234375,
+  "mean_end_distance_m": 0.7460206424001707,
+  "mean_start_distance_m": 0.45,
+  "mean_progress_towards_goal_m": -0.2960206424001707,
+  "mean_distance_change_m": 0.2960206424001707,
+  "median_skills": 12.0,
+  "mean_return": -0.2451742232056673,
+  "outcomes": {
+   "task_budget": 49,
+   "success": 15
+  },
+  "per_scene": {
+   "dual_same_side": {
+    "episodes": 16,
+    "success_rate": 0.9375,
+    "mean_progress_towards_goal_m": 0.274683126315197,
+    "mean_end_distance_m": 0.175316873684803
+   },
+   "solo_central": {
+    "episodes": 24,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.5611249466437552,
+    "mean_end_distance_m": 1.0111249466437553
+   },
+   "solo_offset": {
+    "episodes": 24,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.41138551730016476,
+    "mean_end_distance_m": 0.8613855173001648
+   }
+  }
+ },
+ "policy_best_seed0|test": {
+  "episodes": 64,
+  "success_rate": 0.40625,
+  "mean_end_distance_m": 0.4910788697313218,
+  "mean_start_distance_m": 0.45000000000000007,
+  "mean_progress_towards_goal_m": -0.041078869731321785,
+  "mean_distance_change_m": 0.041078869731321785,
+  "median_skills": 12.0,
+  "mean_return": -0.24013022895400038,
+  "outcomes": {
+   "task_budget": 38,
+   "success": 26
+  },
+  "per_scene": {
+   "constrained": {
+    "episodes": 8,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.06644431065099007,
+    "mean_end_distance_m": 0.5164443106509902
+   },
+   "dual_rotate": {
+    "episodes": 24,
+    "success_rate": 0.5,
+    "mean_progress_towards_goal_m": -0.01567510892724525,
+    "mean_end_distance_m": 0.46567510892724523
+   },
+   "dual_same_side": {
+    "episodes": 8,
+    "success_rate": 0.5,
+    "mean_progress_towards_goal_m": -0.017901096271441527,
+    "mean_end_distance_m": 0.46790109627144155
+   },
+   "incompatible": {
+    "episodes": 24,
+    "success_rate": 0.4166666666666667,
+    "mean_progress_towards_goal_m": -0.0657534080488023,
+    "mean_end_distance_m": 0.5157534080488023
+   }
+  }
+ },
+ "policy_resumable_seed0|validation": {
+  "episodes": 64,
+  "success_rate": 0.09375,
+  "mean_end_distance_m": 0.8200345311144357,
+  "mean_start_distance_m": 0.45,
+  "mean_progress_towards_goal_m": -0.37003453111443574,
+  "mean_distance_change_m": 0.37003453111443574,
+  "median_skills": 12.0,
+  "mean_return": -0.3973135876587499,
+  "outcomes": {
+   "task_budget": 58,
+   "success": 6
+  },
+  "per_scene": {
+   "dual_same_side": {
+    "episodes": 16,
+    "success_rate": 0.1875,
+    "mean_progress_towards_goal_m": -0.3492842538274896,
+    "mean_end_distance_m": 0.7992842538274896
+   },
+   "solo_central": {
+    "episodes": 24,
+    "success_rate": 0.08333333333333333,
+    "mean_progress_towards_goal_m": -0.4035050439700251,
+    "mean_end_distance_m": 0.8535050439700251
+   },
+   "solo_offset": {
+    "episodes": 24,
+    "success_rate": 0.041666666666666664,
+    "mean_progress_towards_goal_m": -0.3503975364501437,
+    "mean_end_distance_m": 0.8003975364501438
+   }
+  }
+ },
+ "policy_resumable_seed0|test": {
+  "episodes": 64,
+  "success_rate": 0.125,
+  "mean_end_distance_m": 0.898652849464495,
+  "mean_start_distance_m": 0.45000000000000007,
+  "mean_progress_towards_goal_m": -0.448652849464495,
+  "mean_distance_change_m": 0.448652849464495,
+  "median_skills": 12.0,
+  "mean_return": -0.2765591958279404,
+  "outcomes": {
+   "task_budget": 56,
+   "success": 8
+  },
+  "per_scene": {
+   "constrained": {
+    "episodes": 8,
+    "success_rate": 0.25,
+    "mean_progress_towards_goal_m": -0.07012914424494683,
+    "mean_end_distance_m": 0.5201291442449468
+   },
+   "dual_rotate": {
+    "episodes": 24,
+    "success_rate": 0.041666666666666664,
+    "mean_progress_towards_goal_m": -0.5368768013406674,
+    "mean_end_distance_m": 0.9868768013406672
+   },
+   "dual_same_side": {
+    "episodes": 8,
+    "success_rate": 0.25,
+    "mean_progress_towards_goal_m": -0.5282406111432967,
+    "mean_end_distance_m": 0.9782406111432966
+   },
+   "incompatible": {
+    "episodes": 24,
+    "success_rate": 0.125,
+    "mean_progress_towards_goal_m": -0.46007421210190474,
+    "mean_end_distance_m": 0.9100742121019048
+   }
+  }
+ },
+ "random|validation": {
+  "episodes": 64,
+  "success_rate": 0.125,
+  "mean_end_distance_m": 0.8310318124440448,
+  "mean_start_distance_m": 0.45,
+  "mean_progress_towards_goal_m": -0.38103181244404466,
+  "mean_distance_change_m": 0.38103181244404466,
+  "median_skills": 12.0,
+  "mean_return": -0.3207529973518425,
+  "outcomes": {
+   "task_budget": 56,
+   "success": 8
+  },
+  "per_scene": {
+   "dual_same_side": {
+    "episodes": 16,
+    "success_rate": 0.5,
+    "mean_progress_towards_goal_m": -0.015963688135868723,
+    "mean_end_distance_m": 0.4659636881358688
+   },
+   "solo_central": {
+    "episodes": 24,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.544343196953633,
+    "mean_end_distance_m": 0.994343196953633
+   },
+   "solo_offset": {
+    "episodes": 24,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.4610991774732404,
+    "mean_end_distance_m": 0.9110991774732403
+   }
+  }
+ },
+ "random|test": {
+  "episodes": 64,
+  "success_rate": 0.296875,
+  "mean_end_distance_m": 0.4653341058811644,
+  "mean_start_distance_m": 0.45000000000000007,
+  "mean_progress_towards_goal_m": -0.015334105881164415,
+  "mean_distance_change_m": 0.015334105881164415,
+  "median_skills": 12.0,
+  "mean_return": -0.3331439063683936,
+  "outcomes": {
+   "task_budget": 45,
+   "success": 19
+  },
+  "per_scene": {
+   "constrained": {
+    "episodes": 8,
+    "success_rate": 0.0,
+    "mean_progress_towards_goal_m": -0.17722009929535348,
+    "mean_end_distance_m": 0.6272200992953535
+   },
+   "dual_rotate": {
+    "episodes": 24,
+    "success_rate": 0.25,
+    "mean_progress_towards_goal_m": 0.01541314346089676,
+    "mean_end_distance_m": 0.4345868565391033
+   },
+   "dual_same_side": {
+    "episodes": 8,
+    "success_rate": 0.375,
+    "mean_progress_towards_goal_m": -0.17357474282982532,
+    "mean_end_distance_m": 0.6235747428298253
+   },
+   "incompatible": {
+    "episodes": 24,
+    "success_rate": 0.4166666666666667,
+    "mean_progress_towards_goal_m": 0.06062752156439107,
+    "mean_end_distance_m": 0.38937247843560896
+   }
+  }
+ }
+}

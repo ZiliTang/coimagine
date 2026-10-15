@@ -311,12 +311,19 @@ def train(kind: str, config: Dict[str, object], seed: int, *, min_future_default
                                       min_future=min(min_future_default, horizon))
     val_index, val_ends = D.sample_windows(tokens, ["val"], 1024, seed=seed + 2,
                                            horizon=horizon, min_future=1)
+    # a **fixed train panel**, scored in eval mode with the same metric as validation: the random
+    # training batch loss cannot answer under- versus over-fitting, and the previous round only
+    # logged that loss
+    trainpanel_index, trainpanel_ends = D.sample_windows(tokens, ["d0", "d1ext"], 1024,
+                                                         seed=seed + 3, horizon=horizon,
+                                                         min_future=1)
     # the transform statistics come from a large fixed draw so they do not wobble epoch to epoch
     fit_index, fit_ends = D.sample_windows(tokens, ["d0", "d1ext"], 8192, seed=seed + 7,
                                            horizon=horizon, min_future=1)
     stats = fit_statistics(tokens, fit_index, fit_ends, horizon)
     train_panel = C.build_multistep_cache(tokens, index, ends, horizon)
     val_panel = C.build_multistep_cache(tokens, val_index, val_ends, horizon)
+    trainpanel = C.build_multistep_cache(tokens, trainpanel_index, trainpanel_ends, horizon)
     coverage = {"epochs": [], "cumulative_windows": 0, "cumulative_unique_roots": 0,
                 "cumulative_unique_records": 0, "cumulative_unique_record_prefix_pairs": 0}
     seen_roots: set = set()
@@ -386,16 +393,21 @@ def train(kind: str, config: Dict[str, object], seed: int, *, min_future_default
             temporary.replace(checkpoint_path)
         if update % validate_every == 0 or update == updates:
             report = evaluate(model, kind, tokens, val_panel, stats, horizon, device)
+            train_report = evaluate(model, kind, tokens, trainpanel, stats, horizon, device)
             curves.append({"update": update, "train_total": float(loss.detach()),
-                           "val_total": report["loss"], "val_step_p50_cm": report["step_p50_cm"]})
+                           "val_total": report["loss"], "val_step_p50_cm": report["step_p50_cm"],
+                           "fixed_train_total": train_report["loss"],
+                           "fixed_train_step_p50_cm": train_report["step_p50_cm"]})
             if report["loss"] is not None and report["loss"] < best["loss"]:
                 best = {"loss": report["loss"], "update": update,
                         "state": {k: v.detach().clone() for k, v in model.state_dict().items()}}
             if log:
                 print(f"  [{kind}|s{seed}|h{horizon}] {update}/{updates} "
-                      f"train={float(loss.detach()):.5f} val={report['loss']:.5f} "
-                      f"step1={report['step_p50_cm'][0]} ({time.perf_counter() - started:.0f}s)",
-                      flush=True)
+                      f"batch={float(loss.detach()):.5f} "
+                      f"fixed_train={train_report['loss']:.5f} val={report['loss']:.5f} "
+                      f"train_k1={train_report['step_p50_cm'][0]} "
+                      f"val_k1={report['step_p50_cm'][0]} "
+                      f"({time.perf_counter() - started:.0f}s)", flush=True)
     if best["state"] is not None:
         model.load_state_dict(best["state"])
     name = tag or f"{kind}_h{horizon}_lr{lr:g}_seed{seed}"

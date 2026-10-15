@@ -59,14 +59,24 @@ def scan(directory: Path) -> Dict[str, object]:
     roots = {e["root_id"] for e in episodes}
     reasons: Dict[str, int] = {}
     for episode in episodes:
-        for reason in episode["exit_reasons"]:
+        # the corrected schema keeps the exit reason on each boundary; the older one had a flat list
+        flat = episode.get("exit_reasons")
+        if flat is None:
+            flat = [b.get("exit_reason", "") for b in episode.get("boundaries", [])]
+        for reason in flat:
             reasons[reason] = reasons.get(reason, 0) + 1
     return {
         "shards": len(shards), "episodes": len(episodes), "independent_roots": len(roots),
         "raw_frames": frames_total, "skills": int(sum(e["skills"] for e in episodes)),
-        "episodes_with_frames": int(sum(1 for e in episodes if e["raw_frames"] > 0)),
+        "episodes_with_frames": int(sum(1 for e in episodes
+                                         if e.get("raw_frames", e.get("frames", 0)) > 0)),
         "success_rate": float(np.mean([e["success"] for e in episodes])) if episodes else None,
-        "truncated_rate": float(np.mean([e["truncated"] for e in episodes])) if episodes else None,
+        "truncated_rate": float(np.mean([bool(e.get("truncated", e.get("outcome") ==
+                                                     "sampling_truncation")) for e in episodes]))
+        if episodes else None,
+        "bootstraps_rate": float(np.mean([bool(e.get("bootstraps", False)) for e in episodes]))
+        if episodes else None,
+        "time_axis_consistent": bool(all(e.get("time_axis_consistent", True) for e in episodes)),
         "scene_counts": {scene: sum(1 for e in episodes if e["scene"] == scene)
                          for scene in sorted({e["scene"] for e in episodes})},
         "source_counts": {source: sum(1 for e in episodes if e["behaviour_source"] == source)
@@ -111,6 +121,7 @@ def main() -> int:
                 if summary["success_rate"] is not None else "- 成功率：—",
                 f"- 截断率：{summary['truncated_rate']:.4f}"
                 if summary["truncated_rate"] is not None else "- 截断率：—",
+                f"- 时间轴与物理周期一致：{summary.get('time_axis_consistent')}",
                 "", "## 来源与场景", "",
                 f"- 来源：{summary['source_counts']}",
                 f"- 场景：{summary['scene_counts']}",
