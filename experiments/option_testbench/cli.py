@@ -132,7 +132,7 @@ def main():
                           default=ROOT / "outputs/option_testbench_v1/round_000")
         if name == "run":
             node.add_argument("--branch-wall-seconds", type=float, default=10.0)
-            node.add_argument("--recovery-horizon-seconds", type=float, default=12.0)
+            node.add_argument("--recovery-horizon-seconds", type=float, default=30.0)
             node.add_argument("--total-wall-seconds", type=float, default=55.0)
             node.add_argument("--request-indices", type=int, nargs="*", default=None)
     args = parser.parse_args()

@@ -64,6 +64,7 @@ from .spec import (
     ROBOT_RADIUS,
     SAFETY_GAP,
     SKILL_MAX_SECONDS,
+    OPTION_BUDGET_EXIT,
     RobotAction,
 )
 
@@ -149,6 +150,9 @@ class Skill:
     def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE):
         self.action = action
         self.force_limit = force_limit
+        #: v4 option scale: the skill's own time budget in seconds (None = no budget)
+        self.time_budget: Optional[float] = (float(action.scale)
+                                             if getattr(action, "scale", 0.0) else None)
         self.stage = "find"
         self.exit_reason: Optional[str] = None
         self.done = False
@@ -201,7 +205,9 @@ class Skill:
         return None
 
     def _common_checks(self, observation: SkillObservation, dt: float) -> Optional[str]:
-        if self.skill_time >= SKILL_MAX_SECONDS:
+        if self.time_budget is not None and self.skill_time >= self.time_budget:
+            return OPTION_BUDGET_EXIT
+        if self.skill_time >= (self.time_budget or 0.0) + SKILL_MAX_SECONDS:
             return "timeout"
         safety = self._safety(observation)
         if safety is not None:
@@ -317,8 +323,8 @@ class WaitBrakeSkill(Skill):
         if self.progress >= self.duration:
             reason = "wait_complete"
         else:
-            reason = self._safety(observation) or (None if self.skill_time < SKILL_MAX_SECONDS
-                                                   else "timeout")
+            reason = self._safety(observation) or (
+                None if self.skill_time < (self.time_budget or SKILL_MAX_SECONDS) else "timeout")
         if reason is not None:
             self._finish(reason, observation)
         info = self._info(observation, force, saturated, reference, (0.0, 0.0))

@@ -96,8 +96,8 @@ def test_success_hold_is_an_environment_clock(instances):
 
 def test_wait_brake_never_commands_a_push(instances):
     environment = E.RandomStartEnv(instances[0])
-    environment.joint_step(3, 13)
-    boundary = environment.joint_step(13, 13)
+    environment.joint_step(16, 16)      # v4: PUSH(a=+0deg,v=0.16) scale 2 s
+    boundary = environment.joint_step(44, 44)  # v4: WAIT_BRAKE scale 2 s
     rows = environment.rows[-boundary["periods"]:]
     assert all(math.hypot(*row["r0"]["desired_velocity"]) <= 1e-12 for row in rows)
     assert all(entry["exit_reason"] in ("wait_complete", "safety_abort", "timeout",
@@ -129,7 +129,7 @@ def test_fast_skill_exits_cannot_end_episode_or_save_time_cost(instances):
     for window in (0.05, 0.4):
         env = E.RandomStartEnv(instances[0], E.EnvConfig(time_budget=1.6, joint_max_seconds=window))
         while env.termination is None:
-            env.joint_step(13, 13)
+            env.joint_step(44, 44)
             if env.skills_used == 30:
                 assert env.termination is None
         assert env.termination == E.TERMINATION_BUDGET

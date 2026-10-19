@@ -77,12 +77,12 @@ def test_independent_recompute_of_push_and_reposition(prepared, tmp_path):
     push = runner.run_branch(prepared, 0, tmp_path)          # face__push_push
     reposition = runner.run_branch(prepared, 1, tmp_path)    # face__push_reposition_ccw
     contract = json.loads((prepared / "contracts" / "contracts.json").read_text())
-    push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 4, contract)
+    push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 17, contract)
     assert push_option["status"] == "fulfilled"
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["contact_established_seconds"]
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["full_push_seconds"]
     reposition_option = metrics.recompute_option(
-        reposition, reposition["boundaries"][0], 1, 9, contract)
+        reposition, reposition["boundaries"][0], 1, 37, contract)
     assert reposition_option["status"] == "fulfilled"
     assert abs(reposition_option["tangential_progress"]) >= (
         contract["reposition"]["thresholds"]["progress_fraction_min"] * 0.25 - 1e-9)
@@ -142,11 +142,13 @@ def test_timeout_kills_process_group_and_preserves_log(tmp_path):
 
 
 def test_baseline_menu_and_no_implicit_monkeypatch(prepared, tmp_path):
-    assert spec.ENV_VERSION == "random-start-time-budget-v3.1"
-    assert spec.ROBOT_ACTIONS[4].label == "PUSH(a=+0deg,v=0.16)"
-    assert spec.ROBOT_ACTIONS[9].label.startswith("REPOSITION_CCW(0.25")
-    assert spec.ROBOT_ACTIONS[11].label.startswith("REPOSITION_CW(0.25")
-    assert spec.ROBOT_ACTIONS[13].label.startswith("WAIT_BRAKE(0.50")
+    assert spec.ENV_VERSION == "random-start-oriented-v4"
+    assert spec.ROBOT_ACTION_COUNT == 48 and spec.JOINT_ACTION_COUNT == 2304
+    assert spec.ROBOT_ACTIONS[16].label.startswith("PUSH(a=+0deg,v=0.16)")
+    assert spec.ROBOT_ACTIONS[36].label.startswith("REPOSITION_CCW")
+    assert spec.ROBOT_ACTIONS[40].label.startswith("REPOSITION_CW")
+    assert spec.ROBOT_ACTIONS[44].label.startswith("WAIT_BRAKE")
+    assert spec.ROBOT_ACTIONS[16].scale == 2.0 and spec.ROBOT_ACTIONS[19].scale == 24.0
     metadata = json.loads((prepared / "panel.json").read_text())
     before = E.make_skill
     runner.build_world(metadata, "face", prepared)

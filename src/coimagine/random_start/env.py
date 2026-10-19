@@ -100,10 +100,9 @@ class EnvConfig:
     #: kinematic heading DOF + stable pushing side: the robot must turn its heading towards
     #: the push direction; a misaligned push is scaled by cos(error). This is a *prototype*
     #: actuation model, not a torque-coupled contact model.
-    oriented: bool = False
-    #: diagnostic mode: "" / "off" = v3.1, "lidar_only" = rotate heading + body-fixed scan,
-    #: "scale_only" = fixed heading + cos(error) force gating, "full" = rotate + gate.
-    oriented_mode: str = ""
+    #: v4 has exactly one actuation model: an omni-directional chassis whose heading turns
+    #: towards the heading its skill declares. There is no model-selection switch to mislead
+    #: callers; these three values are its only parameters.
     max_omega: float = 1.5            # rad/s heading-rate limit
     align_gain: float = 3.0           # heading-rate proportional gain
     align_tolerance_deg: float = 20.0  # full force inside this heading error
@@ -116,17 +115,10 @@ class EnvConfig:
                 or not math.isclose(self.time_budget / CONTROL_DT,
                                     round(self.time_budget / CONTROL_DT), abs_tol=1e-8)):
             raise ValueError("time_budget must be a positive integer number of control periods")
-        if self.oriented_mode and self.oriented_mode not in ("off", "lidar_only",
-                                                              "scale_only", "full",
-                                                              "heading_target"):
-            raise ValueError(f"unknown oriented_mode {self.oriented_mode!r}")
-        if self.oriented_mode in ("lidar_only", "scale_only", "full", "heading_target"):
-            self.oriented = True
-        if self.oriented:
-            if self.max_omega <= 0 or self.align_gain <= 0:
-                raise ValueError("oriented model needs positive max_omega and align_gain")
-            if not (0.0 < self.align_tolerance_deg < 90.0):
-                raise ValueError("align_tolerance_deg must be in (0, 90)")
+        if self.max_omega <= 0 or self.align_gain <= 0:
+            raise ValueError("the v4 actuation model needs positive max_omega and align_gain")
+        if not (0.0 < self.align_tolerance_deg < 90.0):
+            raise ValueError("align_tolerance_deg must be in (0, 90)")
 
     def as_dict(self) -> Dict[str, object]:
         return {"env_version": ENV_VERSION, "time_budget": self.time_budget,
@@ -141,7 +133,7 @@ class EnvConfig:
                 "success_hold": self.success_hold,
                 "joint_max_seconds": self.joint_max_seconds,
                 "penetration_limit": self.penetration_limit,
-                "oriented": self.oriented, "oriented_mode": self.oriented_mode,
+                "actuation_model": "omni_chassis_heading_target",
                 "max_omega": self.max_omega,
                 "align_gain": self.align_gain,
                 "align_tolerance_deg": self.align_tolerance_deg,
@@ -191,13 +183,13 @@ class RandomStartEnv:
         # kinematic heading state of the oriented prototype; unused when oriented=False
         self.heading = [float(pose.angle) for pose in instance.robot_poses]
         self.heading_rate = [0.0, 0.0]
-        mode = self.config.oriented_mode or ("full" if self.config.oriented else "off")
-        self.orient_mode = mode
-        self.orient_rotate = mode in ("lidar_only", "full", "heading_target")
-        self.orient_gate = mode in ("scale_only", "full")
-        #: minimal candidate: turn towards the heading the *skill* declares; never gate the force
-        #: (braking, safety and avoidance stay fully effective)
-        self.orient_target = mode == "heading_target"
+        # v4: there is exactly one actuation model. The robot turns towards the heading its
+        # skill declares; the force is never gated, so braking, safety and avoidance stay fully
+        # effective. The old diagnostic modes are gone.
+        self.orient_mode = "heading_target"
+        self.orient_rotate = True
+        self.orient_gate = False
+        self.orient_target = True
 
     # -- privileged truth, reward and evaluation only -----------------------
     def object_state(self):
@@ -344,9 +336,17 @@ class RandomStartEnv:
                    max(0.0, self.config.time_budget - elapsed) / self.config.time_budget]
         for observation in (observation_0, observation_1):
             scan = observation.scan
-            values += [((scan.distances[index] / LIDAR_RANGE) if scan.valid[index] else 0.0)
-                       for index in range(len(scan.valid))]
-            values += [scan.category[index] / 3.0 for index in range(len(scan.valid))]
+            for index in range(len(scan.valid)):
+                if scan.valid[index]:
+                    # v4: clip at the range so a hit at the boundary is continuous with no return
+                    values.append(min(float(scan.distances[index]), LIDAR_RANGE) / LIDAR_RANGE)
+                    values.append(1.0)
+                    category = int(scan.category[index])
+                    values += [1.0 if category == 1 else 0.0,
+                               1.0 if category == 2 else 0.0,
+                               1.0 if category == 3 else 0.0]
+                else:
+                    values += [1.0, 0.0, 0.0, 0.0, 0.0]
         return np.asarray(values, dtype=np.float32)
 
     def observation_fields(self) -> List[str]:
@@ -364,8 +364,12 @@ class RandomStartEnv:
                        f"r{robot_id}_contact_teammate"]
         fields += ["elapsed_fraction", "reserved_zero", "remaining_fraction"]
         for robot_id in (0, 1):
-            fields += [f"r{robot_id}_lidar_{index:02d}" for index in range(72)]
-            fields += [f"r{robot_id}_class_{index:02d}" for index in range(72)]
+            for index in range(72):
+                fields += [f"r{robot_id}_lidar_distance_{index:02d}",
+                           f"r{robot_id}_lidar_hit_{index:02d}",
+                           f"r{robot_id}_lidar_object_{index:02d}",
+                           f"r{robot_id}_lidar_static_{index:02d}",
+                           f"r{robot_id}_lidar_teammate_{index:02d}"]
         return fields
 
     # -- one synchronous joint skill ---------------------------------------
@@ -377,6 +381,9 @@ class RandomStartEnv:
                 "may not be extended (it must not be used as a branchable parent)")
         action_0 = ROBOT_ACTIONS[action_index_0]
         action_1 = ROBOT_ACTIONS[action_index_1]
+        # v4: the joint window is the option's own time budget (the longer of the two), capped
+        window_seconds = min(self.config.joint_max_seconds,
+                             max(float(action_0.scale), float(action_1.scale)))
         skills: Dict[int, Skill] = {0: self.skill_factory(action_0, MAX_FORCE),
                                     1: self.skill_factory(action_1, MAX_FORCE)}
         holds: Dict[int, HoldBrake] = {0: HoldBrake(MAX_FORCE), 1: HoldBrake(MAX_FORCE)}
@@ -444,42 +451,6 @@ class RandomStartEnv:
                                            "force_scale": 1.0,
                                            "force_gated": list(forces[robot_id]),
                                            "oriented_mode": self.orient_mode}
-            elif self.orient_rotate or self.orient_gate:
-                for robot_id in (0, 1):
-                    force = forces[robot_id]
-                    magnitude = math.hypot(force[0], force[1])
-                    if magnitude > 1e-9:
-                        desired = math.atan2(force[1], force[0])
-                        error = _wrap_angle(desired - self.heading[robot_id])
-                        omega = 0.0
-                        if self.orient_rotate:
-                            omega = max(-self.config.max_omega,
-                                        min(self.config.max_omega,
-                                            self.config.align_gain * error))
-                            self.heading_rate[robot_id] = omega
-                            self.heading[robot_id] = _wrap_angle(
-                                self.heading[robot_id] + omega * CONTROL_DT)
-                        else:
-                            self.heading_rate[robot_id] = 0.0
-                        scale = 1.0
-                        if self.orient_gate:
-                            tolerance = math.radians(self.config.align_tolerance_deg)
-                            scale = 1.0 if abs(error) <= tolerance else max(0.0, math.cos(error))
-                        forces[robot_id] = (force[0] * scale, force[1] * scale)
-                        infos[robot_id] = {**infos[robot_id],
-                                           "heading": self.heading[robot_id],
-                                           "heading_rate": omega,
-                                           "align_error_deg": math.degrees(error),
-                                           "force_scale": scale,
-                                           "force_gated": list(forces[robot_id]),
-                                           "oriented_mode": self.orient_mode}
-                    else:
-                        self.heading_rate[robot_id] = 0.0
-                        infos[robot_id] = {**infos[robot_id],
-                                           "heading": self.heading[robot_id],
-                                           "heading_rate": 0.0, "align_error_deg": None,
-                                           "force_scale": 1.0, "force_gated": [0.0, 0.0],
-                                           "oriented_mode": self.orient_mode}
             self.env.step_control((forces[0], forces[1]))
             self.world_advances += 1
             self.total_periods += 1
@@ -526,12 +497,12 @@ class RandomStartEnv:
                 break
             if all(skills[robot_id].done for robot_id in (0, 1)):
                 break
-            if periods * CONTROL_DT >= self.config.joint_max_seconds:
+            if periods * CONTROL_DT >= window_seconds:
                 break
             if elapsed >= self.config.time_budget:
                 break
 
-        # a robot whose skill was still running when the shared 8 s window closed gets an
+        # a robot whose skill was still running when the shared option window closed gets an
         # explicit exit reason; it is never left as "no reason"
         for robot_id in (0, 1):
             if skill_ends[robot_id] is None:
@@ -655,7 +626,7 @@ class RandomStartEnv:
             "penetration": float(penetration),
             "diagnostic_only": "true state, goal distance and hold timer are diagnostic truth",
             "true_goal_distance": self.object_distance(),
-            "oriented": bool(self.config.oriented), "oriented_mode": self.orient_mode,
+            "oriented": True, "oriented_mode": self.orient_mode,
         }
         for robot_id in (0, 1):
             info = infos[robot_id]
@@ -744,7 +715,7 @@ class RandomStartEnv:
             "history": list(self.history),
             "rows": len(self.rows),
             "boundaries": len(self.boundaries),
-            "oriented": bool(self.config.oriented),
+            "oriented": True,
             "oriented_mode": self.orient_mode,
             "heading": list(self.heading), "heading_rate": list(self.heading_rate),
         }
@@ -752,8 +723,8 @@ class RandomStartEnv:
     def restore_branch_state(self, state: Dict[str, object]) -> None:
         if state.get("env_version") != ENV_VERSION:
             raise ValueError("Cannot restore a branch from a different reward contract")
-        if "oriented" in state and bool(state["oriented"]) != bool(self.config.oriented):
-            raise ValueError("Cannot restore an oriented branch into a different actuation model")
+        if "oriented" in state and not bool(state["oriented"]):
+            raise ValueError("Cannot restore a pre-v4 branch into the v4 actuation model")
         self.env.restore(state["snapshot"], exact=True)  # type: ignore[arg-type]
         self.total_periods = int(state["total_periods"])  # type: ignore[arg-type]
         self.skills_used = int(state["skills_used"])  # type: ignore[arg-type]

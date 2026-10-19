@@ -102,14 +102,21 @@ OBSERVATION_FAIL_TOLERANCE: float = 1.00  # s, "lost the object" re-acquisition 
 ALPHA_DEG: Tuple[float, ...] = (-15.0, 0.0, 15.0)
 PUSH_SPEEDS: Tuple[float, ...] = (0.08, 0.16, 0.26)          # m/s commanded surface speed
 REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
-REPOSITION_DISTANCES: Tuple[float, ...] = (0.25, 0.50)       # m along the visible boundary
-WAIT_DURATIONS: Tuple[float, ...] = (0.50, 1.00)             # s
+#: v4 option scale: the option's own time budget in seconds. The skill executes continuously
+#: inside this budget; this is *not* "repeat the option N times".
+OPTION_SCALES: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
+WAIT_DURATIONS: Tuple[float, ...] = OPTION_SCALES            # the wait skill's hold duration
 AGENTS: Tuple[int, int] = (0, 1)
-ROBOT_ACTION_COUNT: int = 15
-JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2            # 225, unique per ordered pair
+#: 12 types (9 PUSH + 2 REPOSITION + 1 WAIT_BRAKE) x 4 scales, type-major:
+#: index = type_index * len(OPTION_SCALES) + scale_index
+ROBOT_ACTION_TYPE_COUNT: int = 12
+ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * len(OPTION_SCALES)   # 48
+JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 2304
 
-SKILL_MAX_SECONDS: float = 8.0        # per robot skill: seek + approach + execute + brake
-JOINT_MAX_SECONDS: float = 8.0        # synchronous joint window
+SKILL_MAX_SECONDS: float = 8.0        # seek + approach stage before the option budget
+JOINT_MAX_SECONDS: float = 24.0       # v4: joint window = the option budget (max 24 s)
+#: exit reason when the option's own time budget is exhausted before natural completion
+OPTION_BUDGET_EXIT: str = "option_budget"
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
 APPROACH_TIMEOUT: float = 6.0         # s, raised from the inherited 5.0 s (see CHANGELOG)
@@ -162,7 +169,7 @@ DISTANCE_COST: float = 0.02           # reward / (m s), integrated at CONTROL_DT
 # v3.1 repairs PUSH's seek timeout (skill-local time, never episode elapsed time).
 # Rewards, physical horizon and observation layout are unchanged. Old weights may
 # be evaluated explicitly, but training/branch restores must not cross versions.
-ENV_VERSION: str = "random-start-time-budget-v3.1"
+ENV_VERSION: str = "random-start-oriented-v4"
 
 # ---------------------------------------------------------------------------
 # the 15 discrete robot actions and the 225 joint actions
@@ -179,32 +186,50 @@ class RobotAction:
     direction: str = ""
     distance: float = 0.0
     duration: float = 0.0
+    #: v4 option scale (seconds) and its frozen position in the factorized menu
+    scale: float = 0.0
+    scale_index: int = -1
+    type_index: int = -1
     label: str = ""
     index: int = -1
 
     def parameters(self) -> Dict[str, float]:
-        return {"alpha_deg": self.alpha_deg, "speed": self.speed,
+        return {"alpha_deg": self.alpha_deg, "speed": self.speed, "scale": self.scale,
                 "cw": 1.0 if self.direction == "CW" else 0.0,
                 "distance": self.distance, "duration": self.duration}
 
 
 def action_table() -> Tuple[RobotAction, ...]:
-    """The public menu, in a frozen order: 9 PUSH, 4 REPOSITION, 2 WAIT_BRAKE."""
+    """The v4 public menu: 12 types x 4 option scales, in a frozen type-major order.
 
-    out = []
+    ``index = type_index * len(OPTION_SCALES) + scale_index``. The type carries the
+    direction/speed/alpha; the scale is the option's own time budget in seconds. A
+    REPOSITION's nominal distance and a WAIT's hold duration follow from the scale.
+    """
+
+    types = []
     for alpha in ALPHA_DEG:
         for speed in PUSH_SPEEDS:
-            out.append(RobotAction(
+            types.append(RobotAction(
                 kind="push", alpha_deg=alpha, speed=speed,
                 label=f"PUSH(a={alpha:+.0f}deg,v={speed:.2f})"))
     for direction in REPOSITION_DIRECTIONS:
-        for distance in REPOSITION_DISTANCES:
-            out.append(RobotAction(
-                kind="reposition", direction=direction, distance=distance,
-                label=f"REPOSITION_{direction}({distance:.2f}m)"))
-    for duration in WAIT_DURATIONS:
-        out.append(RobotAction(kind="wait", duration=duration,
-                               label=f"WAIT_BRAKE({duration:.2f}s)"))
+        types.append(RobotAction(
+            kind="reposition", direction=direction,
+            label=f"REPOSITION_{direction}"))
+    types.append(RobotAction(kind="wait", label="WAIT_BRAKE"))
+    out = []
+    for type_index, action in enumerate(types):
+        for scale_index, scale in enumerate(OPTION_SCALES):
+            payload = dict(action.__dict__)
+            payload.update({
+                "scale": float(scale), "scale_index": int(scale_index),
+                "type_index": int(type_index),
+                "distance": (REPOSITION_SPEED * float(scale)
+                             if action.kind == "reposition" else action.distance),
+                "duration": (float(scale) if action.kind == "wait" else action.duration),
+                "label": f"{action.label}[{scale:.0f}s]"})
+            out.append(RobotAction(**payload))
     table = []
     for index, action in enumerate(out):
         table.append(RobotAction(**{**action.__dict__, "index": index}))

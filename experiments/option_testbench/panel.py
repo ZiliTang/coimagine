@@ -27,12 +27,17 @@ CONTRACT_VERSION = "option-contract-v2"  # v2: calibrated PUSH/REPOSITION fulfil
 METRIC_VERSION = "option-metric-v2"  # v2: six calibration fixes; v1 outputs preserved
 
 # The three pre-registered baseline options, in the frozen action-table order:
-#   4  = PUSH(alpha=0 deg, speed=0.16 m/s)
-#   9  = REPOSITION_CCW(0.25 m)
-#   11 = REPOSITION_CW(0.25 m)
-#  13  = WAIT_BRAKE(0.50 s), the explicit teammate brake/hold condition
-BASELINE_OPTIONS = {"PUSH_0_016": 4, "REPOSITION_CCW_025": 9,
-                    "REPOSITION_CW_025": 11, "WAIT_BRAKE_050": 13}
+# v4 type-major menu: index = type_index * 4 + scale_index; scales are (2, 6, 12, 24) s.
+#  17 = PUSH(alpha=0 deg, speed=0.16 m/s) at scale 6 s (type 4)
+#  37 = REPOSITION_CCW at scale 6 s (type 9)
+#  41 = REPOSITION_CW at scale 6 s (type 10)
+#  44 = WAIT_BRAKE at scale 2 s (type 11), the explicit teammate brake/hold condition
+PUSH_0_016 = 17      # type 4 (PUSH a=0, v=0.16) at scale 6 s: approach + 2 s contact fits
+REPOSITION_CCW = 37  # type 9 at scale 6 s
+REPOSITION_CW = 41   # type 10 at scale 6 s
+WAIT_BRAKE = 44      # type 11 at scale 2 s
+BASELINE_OPTIONS = {"PUSH_0_016": PUSH_0_016, "REPOSITION_CCW": REPOSITION_CCW,
+                    "REPOSITION_CW": REPOSITION_CW, "WAIT_BRAKE": WAIT_BRAKE}
 
 
 FOCUS_EXPLANATIONS = {
@@ -331,7 +336,7 @@ def _state_tuple(env):
             "total_periods": int(env.total_periods), "hold_seconds": float(env.hold_seconds)}
 
 
-def make_moving_snapshot(instance, out_dir, prefix_action=(4, 13)):
+def make_moving_snapshot(instance, out_dir, prefix_action=(17, 44)):
     """Run one real joint skill and freeze the resulting boundary as a dynamic fixture."""
     world = E.RandomStartEnv(instance)
     boundary = world.joint_step(*prefix_action)
@@ -379,7 +384,8 @@ def contracts():
                           "inside the 8 s window",
             "contact_established": "accumulated real object-contact time >= 0.50 s",
             "claim_exits": ["push_complete"],
-            "benign_exits": ["joint_window_end", "contact_lost", "blocked_no_progress",
+            "benign_exits": ["joint_window_end", "option_budget", "contact_lost",
+                             "blocked_no_progress",
                              "patch_lost", "not_observed", "push_wall_timeout",
                              "evaluation_horizon"],
             "violation_exits": ["safety_abort", "blocked_contact", "environment_termination"],
@@ -395,14 +401,17 @@ def contracts():
             "option": "REPOSITION", "action_contract": "move along the locally estimated "
             "visible-boundary tangent by the requested distance while holding the target gap",
             "legal_inputs": "robot's own lidar/patch/contact history and the public clock",
-            "completion": "positive accumulated tangential progress in the requested direction "
-                          ">= 0.80 * requested distance inside the window",
+            "completion": "the MOVE stage ran for >= 0.80 * option scale seconds with positive "
+                          "tangential progress in the requested direction, or the requested "
+                          "distance was reached",
             "claim_exits": ["reposition_complete"],
-            "benign_exits": ["joint_window_end", "blocked_no_progress", "blocked_contact",
+            "benign_exits": ["joint_window_end", "option_budget", "blocked_no_progress",
+                             "blocked_contact",
                              "patch_lost", "not_observed", "evaluation_horizon"],
             "violation_exits": ["safety_abort", "environment_termination"],
             "window_seconds": 8.0,
-            "thresholds": {"progress_fraction_min": 0.80, "signed_direction": True},
+            "thresholds": {"progress_fraction_min": 0.80, "move_seconds_fraction_min": 0.80,
+                           "signed_direction": True},
             "note": "going around a corner is not automatically a cross-face completion",
         },
         "unresolved": ["wall_timeout", "evaluation_horizon", "missing_log", "batch_timeout"],
@@ -429,30 +438,30 @@ def requests():
     """At most three pre-registered branches per snapshot; 24 in total."""
     menu = []
     plan = {
-        "face": [("push_push", [[4, 4]], "joint_push"),
-                 ("push_reposition_ccw", [[4, 9]], "push_plus_ccw"),
-                 ("reposition_ccw_push", [[9, 4]], "ccw_plus_push")],
-        "corner_minus": [("push_push", [[4, 4]], "joint_push"),
-                         ("push_reposition_cw", [[4, 11]], "push_plus_cw"),
-                         ("reposition_ccw_ccw", [[9, 9]], "double_ccw")],
-        "corner_plus": [("push_push", [[4, 4]], "joint_push"),
-                        ("push_reposition_cw", [[4, 11]], "push_plus_cw"),
-                        ("reposition_ccw_ccw", [[9, 9]], "double_ccw")],
-        "edge_turn": [("push_push", [[4, 4]], "joint_push"),
-                      ("reposition_ccw_push", [[9, 4]], "ccw_plus_push"),
+        "face": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                 ("push_reposition_ccw", [[PUSH_0_016, REPOSITION_CCW]], "push_plus_ccw"),
+                 ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
+        "corner_minus": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                         ("push_reposition_cw", [[PUSH_0_016, REPOSITION_CW]], "push_plus_cw"),
+                         ("reposition_ccw_ccw", [[REPOSITION_CCW, REPOSITION_CCW]], "double_ccw")],
+        "corner_plus": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                        ("push_reposition_cw", [[PUSH_0_016, REPOSITION_CW]], "push_plus_cw"),
+                        ("reposition_ccw_ccw", [[REPOSITION_CCW, REPOSITION_CCW]], "double_ccw")],
+        "edge_turn": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                      ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push"),
                       ("push_teammate_brake", [[4, 13]], "single_push_brake")],
-        "corridor_wide": [("push_push", [[4, 4]], "joint_push"),
-                          ("reposition_ccw_push", [[9, 4]], "ccw_plus_push"),
-                          ("push_reposition_ccw", [[4, 9]], "push_plus_ccw")],
-        "corridor_tight": [("push_push", [[4, 4]], "joint_push"),
-                           ("recovery_push_then_ccw", [[4, 13], [9, 13]], "recovery_2step"),
-                           ("reposition_ccw_push", [[9, 4]], "ccw_plus_push")],
-        "teammate": [("push_push", [[4, 4]], "joint_push"),
-                     ("push_reposition_ccw", [[4, 9]], "push_plus_ccw"),
-                     ("reposition_ccw_push", [[9, 4]], "ccw_plus_push")],
-        "moving_recovery": [("recovery_push_then_ccw", [[4, 13], [9, 13]], "recovery_2step"),
-                            ("push_push", [[4, 4]], "joint_push"),
-                            ("reposition_ccw_push", [[9, 4]], "ccw_plus_push")],
+        "corridor_wide": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                          ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push"),
+                          ("push_reposition_ccw", [[PUSH_0_016, REPOSITION_CCW]], "push_plus_ccw")],
+        "corridor_tight": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                           ("recovery_push_then_ccw", [[PUSH_0_016, WAIT_BRAKE], [REPOSITION_CCW, WAIT_BRAKE]], "recovery_2step"),
+                           ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
+        "teammate": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                     ("push_reposition_ccw", [[PUSH_0_016, REPOSITION_CCW]], "push_plus_ccw"),
+                     ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
+        "moving_recovery": [("recovery_push_then_ccw", [[PUSH_0_016, WAIT_BRAKE], [REPOSITION_CCW, WAIT_BRAKE]], "recovery_2step"),
+                            ("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
+                            ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
     }
     for snapshot, branches in plan.items():
         for suffix, actions, focus in branches:

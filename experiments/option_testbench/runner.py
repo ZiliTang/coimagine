@@ -100,8 +100,9 @@ def run_branch(panel_dir, request_index, out_dir, branch_wall_seconds=10.0,
         "recovery_horizon_seconds": recovery_horizon_seconds,
     }
     controller_version = request.get("controller_version", "baseline")
-    oriented_mode = request.get("oriented_mode", "off")
-    env_config = E.EnvConfig(oriented_mode=oriented_mode)
+    # v4 has one fixed actuation model; a request's legacy "oriented_mode" field is recorded
+    # for history only and never selects behaviour.
+    env_config = E.EnvConfig()
     controller_hash = None
     skill_factory = None
     try:
@@ -120,7 +121,7 @@ def run_branch(panel_dir, request_index, out_dir, branch_wall_seconds=10.0,
         return record
     record["instance"] = instance.name
     record["controller_version"] = controller_version
-    record["oriented_mode"] = oriented_mode
+    record["oriented_mode"] = "heading_target (v4 fixed model; request field ignored)"
     record["controller_source_sha256"] = controller_hash
     record["initial_state"] = _state_tuple(world)
     record["snapshot_sha256"] = metadata["snapshots"][request["snapshot"]]["sha256"]

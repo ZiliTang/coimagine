@@ -177,7 +177,14 @@ round** and compare it against the frozen baseline. Full contract:
   [`round_001`](outputs/option_testbench_v1/round_001/) (`segment-contact-v1`),
   [`round_002`](outputs/option_testbench_v1/round_002/) (authorized multi-step transfer),
   [`round_003`](outputs/option_testbench_v1/round_003/) (metric calibration v1 -> v2; no
-  controller change). Current metric/contract version: `option-metric-v2` / `option-contract-v2`.
+  controller change), `round_004`/`round_005` (oriented-model diagnostics). Current metric
+  version: `option-metric-v2`.
+- RL contract v4 (single maintained model, 2026-10-19): body-fixed lidar clipped at the range
+  with a hit flag and category one-hot (756-dim observation), formal heading model
+  (skill-declared `desired_heading`, braking/avoidance ungated), and an option scale dimension
+  `{2,6,12,24}` s with window = budget (48 actions/robot, 2304 joint). Old 324-dim RL results are
+  formally invalidated. See
+  [`docs/handoff/20261019_RL_Contract_v4_Design.md`](docs/handoff/20261019_RL_Contract_v4_Design.md).
 - oriented-model prototype (A): `experiments/option_testbench/oriented_prototype.py` and
   [`docs/handoff/20261019_Oriented_Model_Prototype_Note.md`](docs/handoff/20261019_Oriented_Model_Prototype_Note.md)
   (kinematic heading + stable pushing side; `EnvConfig(oriented=True)`, default off).

@@ -175,11 +175,17 @@ def recompute_option(branch, boundary, robot_id, action_index, contract):
             if advance > 0.0:
                 progress += advance
                 samples += 1
+        move_seconds = sum(DT for row in rows if row[key].get("stage") == "move")
         metrics["requested_distance"] = float(action.distance)
         metrics["tangential_progress"] = progress
         metrics["tangential_samples"] = samples
-        metrics["completion_met"] = progress >= (
-            terms["thresholds"]["progress_fraction_min"] * float(action.distance))
+        metrics["move_seconds"] = move_seconds
+        metrics["option_scale_seconds"] = float(getattr(action, "scale", 0.0))
+        metrics["completion_met"] = (
+            progress >= terms["thresholds"]["progress_fraction_min"] * float(action.distance)
+            or (float(getattr(action, "scale", 0.0)) > 0 and move_seconds
+                >= terms["thresholds"].get("move_seconds_fraction_min", 0.80)
+                * float(action.scale)))
     # layer 3: offline task effect only
     object_before = [float(value) for value in first["true"]["object"]]
     object_after = [float(value) for value in last["true"]["object"]]
