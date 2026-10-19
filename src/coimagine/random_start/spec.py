@@ -110,7 +110,7 @@ REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
 #: 0.459 m; REPOSITION median 0.251 m): the low levels are reachable, the high levels stay
 #: deliberately ambitious so "requested but not reached" remains visible instead of being tuned
 #: away.
-PUSH_DISTANCES: Tuple[float, ...] = (0.05, 0.10, 0.20, 0.40)
+PUSH_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
 REPOSITION_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
 WAIT_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 #: SUPPORT_FOLLOW v1 is a *duration* option: hold the relative pose for this long. It never

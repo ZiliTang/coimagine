@@ -36,7 +36,7 @@ def labels(title_zh, title_en):
 
 
 def main():
-    out = ROOT / "outputs/option_testbench_v1/round_012"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "outputs/option_testbench_v1/round_013"; out.mkdir(parents=True, exist_ok=True)
     P.prepare(out)
     panel = json.loads((out / "panel.json").read_text())
     snapshots = {name: panel["snapshots"][name] for name in TYPICAL}
@@ -51,8 +51,17 @@ def main():
                   "fixtures": fixtures, "note": "demo showcase: 5 typical + 5 random"})
     (out / "panel.json").write_text(json.dumps(panel, indent=1) + "\n")
     requests = []
-    for name in snapshots:
-        for strategy, (actions, focus) in STRATEGIES.items():
+    long_snapshots = ["teammate"] + [instance.name for instance in random_instances]
+    long_strategies = {
+        "long_push_both": ([19, 19], "长程双推 1.0 m push/push"),
+        "long_push_brake": ([19, 45], "长程主推+制动 1.0 m push/brake"),
+        "long_push_follow": ([19, 49], "长程主推+跟随 1.0 m push/follow"),
+    }
+    plan = [(name, strategy, spec) for name in snapshots
+            for strategy, spec in STRATEGIES.items()]
+    plan += [(name, strategy, item) for name in long_snapshots
+             for strategy, item in long_strategies.items()]
+    for name, strategy, (actions, focus) in plan:
             requests.append({
                 "branch_id": f"{name}__{strategy}", "base_branch_id": f"{name}__{strategy}",
                 "snapshot": name, "actions": [actions], "focus": strategy,

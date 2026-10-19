@@ -258,8 +258,15 @@ function drawScene(target,tctx,b,frames,index){
   const f=frames[index];
   const snap=P[b.snapshot],sc=scaleFor(snap.arena,target.width,target.height);
   tctx.clearRect(0,0,target.width,target.height);
+  // draw the arena boundary as a wall of the same thickness the physics uses (0.10 m band)
+  tctx.strokeStyle='#1b2331';tctx.lineWidth=Math.max(2,0.10*sc.s);
+  tctx.strokeRect(...toPx(sc,0,snap.arena[1]),snap.arena[0]*sc.s,snap.arena[1]*sc.s);
   tctx.strokeStyle='#2a3547';tctx.lineWidth=2;tctx.strokeRect(...toPx(sc,0,snap.arena[1]),
     snap.arena[0]*sc.s,snap.arena[1]*sc.s);
+  (snap.obstacles||[]).forEach(box=>{const [x,y]=toPx(sc,box.cx,box.cy);
+    tctx.save();tctx.translate(x,y);tctx.rotate(-(box.angle||0));tctx.fillStyle='#2a3547';
+    tctx.fillRect(-box.half_w*sc.s,-box.half_h*sc.s,2*box.half_w*sc.s,2*box.half_h*sc.s);
+    tctx.restore();});
   const [gx,gy]=toPx(sc,snap.goal[0],snap.goal[1]);tctx.strokeStyle='#4aa3ff';tctx.lineWidth=2;
   tctx.beginPath();tctx.arc(gx,gy,snap.goal_radius*sc.s,0,7);tctx.stroke();
   tctx.fillStyle='#4aa3ff';tctx.font='11px sans-serif';tctx.fillText('goal 目标',gx+6,gy-6);
@@ -286,6 +293,10 @@ function drawScene(target,tctx,b,frames,index){
         tctx.strokeStyle=c===1?'#ff6b6b':(c===2?'#ffd166':(c===3?'#4aa3ff':'#39506e'));
         tctx.lineWidth=1;tctx.globalAlpha=.55;tctx.beginPath();tctx.moveTo(x0,y0);tctx.lineTo(x1,y1);
         tctx.stroke();tctx.globalAlpha=1;}}}
+  if(f.fs){for(let i=0;i<2;i++){if(!f.fs[i])continue;const r=f.r[i];const [x,y]=toPx(sc,r[0],r[1]);
+    tctx.strokeStyle='#ffb347';tctx.lineWidth=2;tctx.beginPath();
+    tctx.arc(x,y,0.24*sc.s,0,7);tctx.stroke();
+    tctx.fillStyle='#ffb347';tctx.font='10px sans-serif';tctx.fillText('face switch 换面',x+0.22*sc.s,y-0.22*sc.s);}}
   if(state.layers.patch){tctx.fillStyle='#ff6b6b';for(let i=0;i<2;i++){f.pp[i].forEach(p=>{
     const [x,y]=toPx(sc,p[0],p[1]);tctx.fillRect(x-1.5,y-1.5,3,3);});}}
   if(state.layers.traj){tctx.strokeStyle='#ffb34755';tctx.lineWidth=1.5;tctx.beginPath();

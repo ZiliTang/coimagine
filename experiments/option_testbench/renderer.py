@@ -65,6 +65,8 @@ def frame(row):
                [_round(row["r1"]["reference_velocity"][0]), _round(row["r1"]["reference_velocity"][1])]],
         "sk": [row["r0"]["skill"], row["r1"]["skill"]],
         "pp": [_patch_points(row, 0), _patch_points(row, 1)],
+        "fs": [bool(row["r0"].get("anchor_face_switch")),
+               bool(row["r1"].get("anchor_face_switch"))],
         "scan": [[_round(value, 3) for value in row["r0"]["scan"]["distance"]],
                  [_round(value, 3) for value in row["r1"]["scan"]["distance"]]],
         "cat": [list(row["r0"]["scan"]["category"]), list(row["r1"]["scan"]["category"])],
