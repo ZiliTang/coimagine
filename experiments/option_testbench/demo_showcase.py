@@ -14,7 +14,7 @@ import panel as P  # noqa: E402
 from coimagine.random_start import layout, spec  # noqa: E402
 
 TYPICAL = ("face", "corner_minus", "corner_plus", "edge_turn", "teammate")
-PUSH, WAIT6, FOLLOW6, REP_CCW = 17, 45, 49, 36
+PUSH, WAIT6, FOLLOW6, REP_CCW = 18, 45, 49, 36  # 0.50 m main demo
 STRATEGIES = {
     "push_push": ([PUSH, PUSH], "双推 joint push"),
     "push_brake": ([PUSH, WAIT6], "主推+制动 push + brake"),
@@ -36,7 +36,7 @@ def labels(title_zh, title_en):
 
 
 def main():
-    out = ROOT / "outputs/option_testbench_v1/round_013"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "outputs/option_testbench_v1/round_014"; out.mkdir(parents=True, exist_ok=True)
     P.prepare(out)
     panel = json.loads((out / "panel.json").read_text())
     snapshots = {name: panel["snapshots"][name] for name in TYPICAL}
