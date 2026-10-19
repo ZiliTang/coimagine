@@ -45,6 +45,7 @@ from .skills import (
     SkillObservation,
     make_skill,
 )
+from .anchor import AnchorTracker
 from .spec import (
     option_timeout,
     CONTROL_DT,
@@ -186,6 +187,9 @@ class RandomStartEnv:
         self.heading_rate = [0.0, 0.0]
         #: v4.1 option progress of the previous period, per robot: (signed travel, target)
         self._last_progress = {0: (0.0, 0.0), 1: (0.0, 0.0)}
+        #: v4.1 anchor tracking: legal corner candidates only, with an explicit status
+        self.anchor_trackers = {0: AnchorTracker(), 1: AnchorTracker()}
+        self._last_anchor = {0: None, 1: None}
         # v4: there is exactly one actuation model. The robot turns towards the heading its
         # skill declares; the force is never gated, so braking, safety and avoidance stay fully
         # effective. The old diagnostic modes are gone.
@@ -260,6 +264,8 @@ class RandomStartEnv:
             mate = replace(mate, angle=float(self.heading[1 - robot_id]),
                            omega=float(self.heading_rate[1 - robot_id]))
         scan = self.scan_for(robot_id, tick, time)
+        self._last_anchor[robot_id] = self.anchor_trackers[robot_id].update(
+            scan, float(time), CONTROL_DT)
         patches = tuple(scan_patches(scan, (own.x, own.y)))
         patch = None
         for candidate in patches:
@@ -705,6 +711,25 @@ class RandomStartEnv:
                 "progress_target_distance": info.get("progress_target_distance"),
                 "option_timeout_seconds": info.get("option_timeout_seconds"),
                 "face_switches": info.get("face_switches"),
+                "anchor_status": (self._last_anchor[robot_id].status
+                                  if self._last_anchor[robot_id] else None),
+                "anchor_candidates": ([list(point) for point in
+                                       self._last_anchor[robot_id].candidates]
+                                      if self._last_anchor[robot_id] else []),
+                "anchor_confidence": (self._last_anchor[robot_id].confidence
+                                      if self._last_anchor[robot_id] else None),
+                "anchor_observation_age_s": (
+                    self._last_anchor[robot_id].observation_age_s
+                    if self._last_anchor[robot_id] else None),
+                "anchor_legal_candidates": (
+                    self._last_anchor[robot_id].legal_candidates
+                    if self._last_anchor[robot_id] else None),
+                "anchor_shadow_boundaries": (
+                    self._last_anchor[robot_id].shadow_boundaries
+                    if self._last_anchor[robot_id] else None),
+                "anchor_face_switch": (
+                    self._last_anchor[robot_id].face_switch
+                    if self._last_anchor[robot_id] else None),
                 "heading": info.get("heading"), "heading_rate": info.get("heading_rate"),
                 "desired_heading": info.get("desired_heading"),
                 "align_error_deg": info.get("align_error_deg"),

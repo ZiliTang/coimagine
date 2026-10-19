@@ -154,14 +154,17 @@ def observe(team_xy: Tuple[float, float]) -> Dict[str, object]:
 SHORT_SIDE_CORNERS = ((1.10, 0.975), (1.10, 1.225))     # the object's left short side
 
 
-def short_side_case(team_xy: Tuple[float, float]) -> Dict[str, object]:
+def short_side_case_instance(team_xy: Tuple[float, float]) -> layout.InstanceSpec:
     """Observer faces the 0.25 m short side; a teammate directly in front can hide both ends."""
-    spec_instance = layout.InstanceSpec(
+    return layout.InstanceSpec(
         name="short_side", map="L0", split="test", index=0, seed=0, arena=(3.2, 2.2),
         obstacles=(), object_pose=Pose(OBJECT_CENTRE[0], OBJECT_CENTRE[1], OBJECT_ANGLE),
         robot_poses=(Pose(0.40, 1.10, 0.0), Pose(team_xy[0], team_xy[1], 0.0)),
         goal_centre=(1.60, 0.30), goal_radius=0.20, env_version=spec.ENV_VERSION)
-    world = E.RandomStartEnv(spec_instance)
+
+
+def short_side_case(team_xy: Tuple[float, float]) -> Dict[str, object]:
+    world = E.RandomStartEnv(short_side_case_instance(team_xy))
     return analyse(world.observe(0, 0, 0.0), corners=SHORT_SIDE_CORNERS)
 
 
