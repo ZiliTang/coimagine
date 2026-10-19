@@ -20,6 +20,7 @@ STRATEGIES = {
     "push_brake": ([PUSH, WAIT6], "主推+制动 push + brake"),
     "push_follow": ([PUSH, FOLLOW6], "主推+跟随 push + follow"),
     "push_reposition": ([PUSH, REP_CCW], "主推+绕行 push + reposition"),
+    "sync_mixed": ([5, 7], "混合距离同步双推 0.25/1.00 m"),
 }
 
 
@@ -36,7 +37,7 @@ def labels(title_zh, title_en):
 
 
 def main():
-    out = ROOT / "outputs/option_testbench_v1/round_015"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "outputs/option_testbench_v1/round_016"; out.mkdir(parents=True, exist_ok=True)
     P.prepare(out)
     panel = json.loads((out / "panel.json").read_text())
     snapshots = {name: panel["snapshots"][name] for name in TYPICAL}

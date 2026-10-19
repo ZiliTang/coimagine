@@ -770,6 +770,8 @@ class RandomStartEnv:
                 "progress_target_distance": info.get("progress_target_distance"),
                 "option_timeout_seconds": info.get("option_timeout_seconds"),
                 "face_switches": info.get("face_switches"),
+                "hold": info.get("hold"), "speed_command": info.get("speed_command"),
+                "corner_rejected": info.get("corner_rejected"),
                 "follow_offset": info.get("follow_offset"),
                 "follow_reference_offset": info.get("follow_reference_offset"),
                 "follow_pose_error": info.get("follow_pose_error"),

@@ -466,6 +466,7 @@ class PushSkill(_VisionSkill):
         self.push_wall = 0.0
         self.approach_time = 0.0
         self.corner_rejected = False
+        self.reobserve_time = 0.0
         #: set by the environment while a cooperative push waits for the teammate to start
         self.hold = False
 
@@ -517,10 +518,24 @@ class PushSkill(_VisionSkill):
                               + observation.own.y * tangent[1])
                 margin = ROBOT_RADIUS + 0.02
                 if high - low < 2.0 * margin:
-                    reason = "insufficient_visible_segment"
-                elif not (low + margin <= robot_proj <= high - margin):
+                    # too short to know a face: do not push, move along the boundary to
+                    # re-observe; only give up after a bounded attempt
+                    self.reobserve_time += dt
+                    midpoint = 0.5 * (low + high)
+                    sign = 1.0 if midpoint >= robot_proj else -1.0
+                    raw = (sign * REPOSITION_SPEED * tangent[0],
+                           sign * REPOSITION_SPEED * tangent[1])
                     self.corner_rejected = True
-                    raw = (0.35 * raw[0], 0.35 * raw[1])
+                    if self.reobserve_time >= 2.0:
+                        reason = "insufficient_visible_segment"
+                elif not (low + margin <= robot_proj <= high - margin):
+                    # only a *near-boundary* projection is treated as a corner; being far
+                    # outside the interval is a normal approach along the face
+                    outside = min(abs(robot_proj - (low + margin)),
+                                  abs(robot_proj - (high - margin)))
+                    self.corner_rejected = outside <= 0.10
+                    if self.corner_rejected:
+                        raw = (0.35 * raw[0], 0.35 * raw[1])
                 else:
                     self.corner_rejected = False
                 # PUSH starts on a sensed contact, not on a range threshold: the range is the
@@ -630,7 +645,7 @@ class PushSkill(_VisionSkill):
             "push_speed": self.speed_command,
             "effective_contact_seconds": self.effective_contact,
             "push_wall_seconds": self.push_wall,
-            "corner_rejected": self.corner_rejected,
+            "corner_rejected": self.corner_rejected, "reobserve_time": self.reobserve_time,
             "hold": self.hold, "speed_command": self.speed_command,
             "edge_assigned": not self.corner_rejected,
             "progress": self.progress, "progress_target": PUSH_ACTIVE_SECONDS,
