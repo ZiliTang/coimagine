@@ -833,18 +833,29 @@ class SupportFollowSkill(_VisionSkill):
         self.reference_offset: Optional[float] = None
         self.follow_time = 0.0
         self.gap: Optional[float] = None
+        self.centre_gap: Optional[float] = None
         self.offset: Optional[float] = None
         self.pose_error: Optional[float] = None
         self.force_peak = 0.0
 
     def _frame(self, observation: SkillObservation, patch: SurfacePatch):
+        """The control gap is the **edge** clearance, not the centre-to-line distance.
+
+        ``patch.distance`` is the robot-centre distance to the fitted infinite line; on a flat
+        face the physical edge gap is ``nearest_distance - ROBOT_RADIUS`` (nearest_distance is
+        the clearance to the surface and stays correct when the perpendicular foot leaves the
+        visible segment). The two are reported separately so the offline check can compare the
+        control gap with the true edge gap.
+        """
         tangent = patch.tangent_world
         projections = [point[0] * tangent[0] + point[1] * tangent[1]
                        for point in patch.points_world]
         low, high = min(projections), max(projections)
         robot = observation.own.x * tangent[0] + observation.own.y * tangent[1]
-        return (float(patch.distance), robot - 0.5 * (low + high),
-                tangent, patch.normal_world)
+        centre_gap = float(patch.nearest_distance)
+        edge_gap = centre_gap - ROBOT_RADIUS
+        self.centre_gap = centre_gap
+        return (edge_gap, robot - 0.5 * (low + high), tangent, patch.normal_world)
 
     def step(self, observation: SkillObservation, dt: float):
         self.skill_time += dt
@@ -907,7 +918,7 @@ class SupportFollowSkill(_VisionSkill):
             "normal_world": patch.normal_world if patch is not None else None,
             "normal_valid": bool(patch is not None and patch.valid),
             "tangent_world": patch.tangent_world if patch is not None else None,
-            "gap": self.gap, "follow_offset": self.offset,
+            "gap": self.gap, "centre_gap": self.centre_gap, "follow_offset": self.offset,
             "follow_reference_offset": self.reference_offset,
             "follow_pose_error": self.pose_error, "follow_time": self.follow_time,
             "force_peak": self.force_peak,

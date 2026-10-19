@@ -36,6 +36,7 @@ PUSH_0_016 = 17      # type 4 (PUSH a=0, v=0.16) at scale 6 s: approach + 2 s co
 REPOSITION_CCW = 36  # type 9 at the 0.25 m requested distance (the historical baseline)
 REPOSITION_CW = 40   # type 10 at the 0.25 m requested distance
 WAIT_BRAKE = 44      # type 11 at scale 2 s
+FOLLOW_6S = 49       # SUPPORT_FOLLOW[6s] (type 12)
 BASELINE_OPTIONS = {"PUSH_0_016": PUSH_0_016, "REPOSITION_CCW": REPOSITION_CCW,
                     "REPOSITION_CW": REPOSITION_CW, "WAIT_BRAKE": WAIT_BRAKE}
 
@@ -65,6 +66,11 @@ FOCUS_EXPLANATIONS = {
         "detail_zh": "两侧都执行 REPOSITION_CCW(0.25 m)：检验纯边界跟随、队友间隙与间隙保持。",
         "detail_en": "Both robots reposition CCW (0.25 m): pure boundary following, teammate "
                      "clearance and gap holding."},
+    "push_follow": {
+        "zh": "主推 + 支撑跟随", "en": "Push + support follow",
+        "detail_zh": "r0 推动，r1 在非推动侧做相对位姿跟随（不主动持续施力）。",
+        "detail_en": "r0 pushes while r1 follows the relative pose on a non-push side without a "
+                     "sustained push."},
     "single_push_brake": {
         "zh": "单侧 PUSH，队友持续制动", "en": "One-sided PUSH, teammate brakes/holds",
         "detail_zh": "只有 r0 执行 PUSH；r1 显式执行 WAIT_BRAKE(0.5 s) 并随后保持制动。队友仍在同一"
@@ -416,6 +422,20 @@ def contracts():
             "note": "going around a corner is not automatically a cross-face completion",
         },
         "unresolved": ["wall_timeout", "evaluation_horizon", "missing_log", "batch_timeout"],
+        "follow": {
+            "kind": "follow",
+            "completion": "effective FOLLOW time >= 0.80 * requested follow duration and the "
+                          "relative-pose error within tolerance for >= 0.80 of it; actual "
+                          "contact must stay below the threshold",
+            "claim_exits": ["follow_complete"],
+            "violation_exits": ["safety_abort", "environment_termination"],
+            "thresholds": {"follow_seconds_fraction_min": 0.80,
+                           "within_tolerance_fraction_min": 0.80,
+                           "pose_tolerance_m": spec.FOLLOW_POSE_TOLERANCE,
+                           "max_contact_seconds": 0.20},
+            "benign_exits": ["option_budget", "face_switch", "patch_lost",
+                             "anchor_unobservable", "joint_window_end", "blocked_no_progress"],
+        },
         "calibration_v2": [
             "PUSH fulfilment split into contact_established (0.50 s) and full_push (2.00 s)",
             "contact/reposition stats truncated at each robot's own skill-end period",
@@ -459,7 +479,7 @@ def requests():
                            ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
         "teammate": [("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
                      ("push_reposition_ccw", [[PUSH_0_016, REPOSITION_CCW]], "push_plus_ccw"),
-                     ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],
+                     ("push_follow", [[PUSH_0_016, FOLLOW_6S]], "push_follow")],
         "moving_recovery": [("recovery_push_then_ccw", [[PUSH_0_016, WAIT_BRAKE], [REPOSITION_CCW, WAIT_BRAKE]], "recovery_2step"),
                             ("push_push", [[PUSH_0_016, PUSH_0_016]], "joint_push"),
                             ("reposition_ccw_push", [[REPOSITION_CCW, PUSH_0_016]], "ccw_plus_push")],

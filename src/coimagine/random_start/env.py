@@ -142,6 +142,34 @@ class EnvConfig:
                 "physics_config_hash": self.base.config_hash()}
 
 
+def _segment_distance(point, a, b) -> float:
+    ax, ay = a
+    bx, by = b
+    ex, ey = bx - ax, by - ay
+    denom = ex * ex + ey * ey
+    t = 0.0 if denom < 1e-12 else max(0.0, min(1.0, ((point[0] - ax) * ex
+                                                     + (point[1] - ay) * ey) / denom))
+    return math.hypot(point[0] - (ax + t * ex), point[1] - (ay + t * ey))
+
+
+def _point_polygon_distance(point, polygon) -> float:
+    """Signed distance from a point to a convex polygon (negative inside); diagnostics only."""
+
+    edges = list(zip(polygon, list(polygon[1:]) + [polygon[0]]))
+    distance = min(_segment_distance(point, a, b) for a, b in edges)
+    sign = None
+    for a, b in edges:
+        cross = (b[0] - a[0]) * (point[1] - a[1]) - (b[1] - a[1]) * (point[0] - a[0])
+        if abs(cross) < 1e-12:
+            continue
+        current = cross > 0
+        if sign is None:
+            sign = current
+        elif current != sign:
+            return distance
+    return -distance
+
+
 def _wrap_angle(value: float) -> float:
     return math.atan2(math.sin(value), math.cos(value))
 
@@ -629,6 +657,8 @@ class RandomStartEnv:
              conditions, penetration) -> Dict[str, object]:
         true_states = self.robot_states()
         object_state = self.object_state()
+        object_polygon = G.box_polygon(object_state.x, object_state.y, object_state.angle,
+                                       OBJECT_WIDTH / 2.0, OBJECT_HEIGHT / 2.0)
         robot_tuples = [list(state.as_tuple()) for state in true_states]
         if self.orient_rotate:
             for robot_id in (0, 1):
@@ -653,6 +683,11 @@ class RandomStartEnv:
             "penetration": float(penetration),
             "diagnostic_only": "true state, goal distance and hold timer are diagnostic truth",
             "true_goal_distance": self.object_distance(),
+            "true_edge_gap": {
+                str(robot_id): (_point_polygon_distance(
+                    (true_states[robot_id].x, true_states[robot_id].y), object_polygon)
+                    - ROBOT_RADIUS)
+                for robot_id in (0, 1)},
             "oriented": True, "oriented_mode": self.orient_mode,
         }
         for robot_id in (0, 1):
@@ -671,7 +706,8 @@ class RandomStartEnv:
                 "force_saturated": bool(info.get("force_saturated", False)),
                 "progress": info.get("progress"), "progress_target": info.get("progress_target"),
                 "no_progress_seconds": info.get("no_progress_seconds"),
-                "gap": info.get("gap"), "gap_target": info.get("gap_target"),
+                "gap": info.get("gap"), "centre_gap": info.get("centre_gap"),
+                "gap_target": info.get("gap_target"),
                 "gap_error": info.get("gap_error"),
                 "normal_world": info.get("normal_world"),
                 "outward_normal": info.get("outward_normal"),

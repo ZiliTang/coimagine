@@ -93,7 +93,7 @@ def _normal_jumps(rows, key):
 def recompute_option(branch, boundary, robot_id, action_index, contract):
     rows = _boundary_rows(branch, boundary, robot_id)
     action = spec.ROBOT_ACTIONS[action_index]
-    option = "push" if action.kind == "push" else "reposition"
+    option = action.kind          # push / reposition / follow
     terms = contract[option]
     key = f"r{robot_id}"
     ends = boundary.get("skill_ends", {})
@@ -191,6 +191,30 @@ def recompute_option(branch, boundary, robot_id, action_index, contract):
         metrics["reference_direction_error_deg_max"] = (max(direction_errors)
                                                         if direction_errors else None)
         metrics["reference_direction_error_samples"] = len(direction_errors)
+    elif option == "follow":
+        follow_rows = [row for row in rows
+                       if row[key].get("stage") == "follow" and not row[key]["done"]]
+        errors = [float(row[key]["follow_pose_error"]) for row in follow_rows
+                  if row[key].get("follow_pose_error") is not None]
+        contact = sum(DT for row in follow_rows if row[key]["contacting_object"])
+        effective = len(follow_rows) * DT
+        metrics["follow_seconds"] = effective
+        metrics["pose_error_n"] = len(errors)
+        metrics["pose_error_mean"] = (sum(errors) / len(errors) if errors else None)
+        metrics["pose_error_max"] = (max(errors) if errors else None)
+        metrics["within_tolerance_fraction"] = (
+            sum(1 for error in errors
+                if error <= terms["thresholds"]["pose_tolerance_m"]) / len(errors)
+            if errors else None)
+        metrics["follow_contact_seconds"] = contact
+        if effective < terms["thresholds"]["follow_seconds_fraction_min"] * float(action.duration):
+            metrics["completion_met"] = None          # undetermined: not enough follow time
+        else:
+            metrics["completion_met"] = bool(
+                metrics["within_tolerance_fraction"] is not None
+                and metrics["within_tolerance_fraction"]
+                >= terms["thresholds"]["within_tolerance_fraction_min"]
+                and contact <= terms["thresholds"]["max_contact_seconds"])
     else:
         declared, signed, positive, backward = signed_travel(
             lambda row: row[key].get("stage") == "move" and not row[key]["contacting_object"],
@@ -218,7 +242,9 @@ def recompute_option(branch, boundary, robot_id, action_index, contract):
         if norm > 1e-9 else None
     metrics["final_goal_distance"] = float(last["true_goal_distance"])
     # contract decision
-    if exit_reason in contract["unresolved"]:
+    if option == "follow" and metrics.get("completion_met") is None:
+        status = "unresolved"          # not enough evidence to judge, never a silent success
+    elif exit_reason in contract["unresolved"]:
         status = "unresolved"
     elif metrics["completion_met"]:
         status = "fulfilled"
@@ -246,7 +272,7 @@ def evaluate_branch(branch, contract):
             continue
         for robot_id, action_index in enumerate(pair):
             action = spec.ROBOT_ACTIONS[int(action_index)]
-            if action.kind in ("push", "reposition"):
+            if action.kind in ("push", "reposition", "follow"):
                 options.append(recompute_option(branch, boundary, robot_id,
                                                 int(action_index), contract))
     statuses = [option["status"] for option in options]
