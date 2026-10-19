@@ -108,7 +108,7 @@ def test_wait_brake_never_commands_a_push(instances):
 def test_every_action_index_is_used_and_unique():
     assert len(ROBOT_ACTIONS) == ROBOT_ACTION_COUNT
     assert len({action.index for action in ROBOT_ACTIONS}) == ROBOT_ACTION_COUNT
-    assert {action.kind for action in ROBOT_ACTIONS} == {"push", "reposition", "wait"}
+    assert {action.kind for action in ROBOT_ACTIONS} == {"push", "reposition", "wait", "follow"}
 
 
 def test_observation_whitelist_has_no_forbidden_field(instances):

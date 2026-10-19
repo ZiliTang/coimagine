@@ -148,7 +148,7 @@ def test_timeout_kills_process_group_and_preserves_log(tmp_path):
 
 def test_baseline_menu_and_no_implicit_monkeypatch(prepared, tmp_path):
     assert spec.ENV_VERSION == "random-start-oriented-v4.1"
-    assert spec.ROBOT_ACTION_COUNT == 48 and spec.JOINT_ACTION_COUNT == 2304
+    assert spec.ROBOT_ACTION_COUNT == 52 and spec.JOINT_ACTION_COUNT == 2704
     assert spec.ROBOT_ACTIONS[16].label.startswith("PUSH(a=+0deg,v=0.16)")
     assert spec.ROBOT_ACTIONS[36].label.startswith("REPOSITION_CCW")
     assert spec.ROBOT_ACTIONS[40].label.startswith("REPOSITION_CW")
