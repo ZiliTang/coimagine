@@ -217,7 +217,8 @@ class Continuous2DEnv:
         )
 
     # -- stepping ----------------------------------------------------------
-    def step_control(self, joint_control: Tuple[Vec, Vec]) -> Tuple[Observation, Dict[str, object]]:
+    def step_control(self, joint_control: Tuple[Vec, Vec],
+                     headings=None) -> Tuple[Observation, Dict[str, object]]:
         if self.termination is not None:
             # A terminated episode never advances: explicit zero-increment terminal result.
             return self.observation(), {
@@ -230,7 +231,7 @@ class Continuous2DEnv:
                 "already_terminated": True,
                 "termination": self.termination,
             }
-        self.backend.apply_and_step(joint_control)
+        self.backend.apply_and_step(joint_control, headings)
         self.tick += 1
         diagnostics: Dict[str, object] = {
             "penetration": self.backend.max_penetration(),

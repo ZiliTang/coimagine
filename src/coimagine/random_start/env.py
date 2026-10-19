@@ -475,7 +475,10 @@ class RandomStartEnv:
                 self._last_progress[robot_id] = (
                     float(infos[robot_id].get("signed_progress") or 0.0),
                     float(target) if target else 0.0)
-            self.env.step_control((forces[0], forces[1]))
+            self.env.step_control(
+                (forces[0], forces[1]),
+                ((self.heading[0], self.heading_rate[0]),
+                 (self.heading[1], self.heading_rate[1])))
             self.world_advances += 1
             self.total_periods += 1
             periods += 1

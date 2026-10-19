@@ -280,8 +280,12 @@ class PymunkBackend:
         self._build(scene=snapshot.scene_config, physics=snapshot.physics)
         self.tick = 0
         self.prefix = []
-        for control in snapshot.prefix:
-            self.apply_and_step(control)
+        for entry in snapshot.prefix:
+            if len(entry) == 2 and isinstance(entry[0][0], (int, float)):
+                self.apply_and_step(entry)          # legacy prefix: control only
+            else:
+                control, headings = entry
+                self.apply_and_step(control, headings)
         if self.tick != snapshot.tick:
             raise SnapshotRestoreError(
                 f"prefix replay produced tick {self.tick}, expected {snapshot.tick}"
@@ -330,14 +334,33 @@ class PymunkBackend:
             )
             body.torque += -physics.angular_damping * body.angular_velocity
 
-    def apply_and_step(self, control: Tuple[VecTuple, VecTuple]) -> None:
-        """One control period: ``substeps`` physics steps with the control held constant."""
+    def apply_and_step(self, control: Tuple[VecTuple, VecTuple],
+                       headings: Optional[Sequence[Tuple[float, float]]] = None) -> None:
+        """One control period: ``substeps`` physics steps with the control held constant.
 
+        ``headings`` carries the authoritative kinematic heading per robot. When supplied, the
+        rigid body's angle is set to it and its angular velocity is zeroed, so the body, the
+        scan and the future front pushing face all share **one** heading. The headings are
+        stored in the prefix so ``restore_exact`` replays them too.
+        """
+
+        if headings is not None:
+            for robot_id, (angle, omega) in enumerate(headings):
+                self.set_robot_heading(robot_id, float(angle), 0.0)
         for _ in range(self.physics.substeps):
             self._apply_forces(control)
             self.space.step(self.physics.physics_dt)
+        if headings is not None:
+            # contact friction can apply a torque to the disc; re-impose the kinematic heading
+            # after the substeps so the body, the scan and the future front face stay aligned
+            for robot_id, (angle, omega) in enumerate(headings):
+                self.set_robot_heading(robot_id, float(angle), 0.0)
         self.tick += 1
-        self.prefix.append((tuple(control[0]), tuple(control[1])))
+        entry = (tuple(control[0]), tuple(control[1]))
+        if headings is None:
+            self.prefix.append(entry)
+        else:
+            self.prefix.append((entry, (tuple(headings[0]), tuple(headings[1]))))
 
     # -- diagnostics -------------------------------------------------------
     def contacts(self) -> List[Dict[str, object]]:

@@ -145,3 +145,18 @@ def test_time_budget_rejects_fractional_period_and_old_action_budget():
         E.EnvConfig(time_budget=0.071)
     with pytest.raises(TypeError):
         E.EnvConfig(skill_budget=30)
+
+
+def test_physical_heading_is_the_authoritative_heading(instances):
+    """The rigid body angle equals the heading the observation and the scan use, and the
+    exact prefix replay reproduces it."""
+    environment = E.RandomStartEnv(instances[0])
+    environment.joint_step(17, 44)          # a push by r0 while r1 waits
+    states = environment.robot_states()
+    for robot_id in (0, 1):
+        state_angle = math.atan2(math.sin(states[robot_id].angle),
+                                 math.cos(states[robot_id].angle))
+        heading = math.atan2(math.sin(environment.heading[robot_id]),
+                             math.cos(environment.heading[robot_id]))
+        assert abs(state_angle - heading) < 1e-9
+    assert verify.check_branch_restore(instances[0])["ok"]
