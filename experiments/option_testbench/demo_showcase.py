@@ -14,7 +14,7 @@ import panel as P  # noqa: E402
 from coimagine.random_start import layout, spec  # noqa: E402
 
 TYPICAL = ("face", "corner_minus", "corner_plus", "edge_turn", "teammate")
-PUSH, WAIT6, FOLLOW6, REP_CCW = 18, 45, 49, 36  # 0.50 m main demo
+PUSH, WAIT6, FOLLOW6, REP_CCW = 6, 21, 25, 14  # v4.2: 0.50 m main demo
 STRATEGIES = {
     "push_push": ([PUSH, PUSH], "双推 joint push"),
     "push_brake": ([PUSH, WAIT6], "主推+制动 push + brake"),
@@ -36,7 +36,7 @@ def labels(title_zh, title_en):
 
 
 def main():
-    out = ROOT / "outputs/option_testbench_v1/round_014"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "outputs/option_testbench_v1/round_015"; out.mkdir(parents=True, exist_ok=True)
     P.prepare(out)
     panel = json.loads((out / "panel.json").read_text())
     snapshots = {name: panel["snapshots"][name] for name in TYPICAL}
@@ -53,9 +53,9 @@ def main():
     requests = []
     long_snapshots = ["teammate"] + [instance.name for instance in random_instances]
     long_strategies = {
-        "long_push_both": ([19, 19], "长程双推 1.0 m push/push"),
-        "long_push_brake": ([19, 45], "长程主推+制动 1.0 m push/brake"),
-        "long_push_follow": ([19, 49], "长程主推+跟随 1.0 m push/follow"),
+        "long_push_both": ([7, 7], "长程双推 1.0 m push/push"),
+        "long_push_brake": ([7, 21], "长程主推+制动 1.0 m push/brake"),
+        "long_push_follow": ([7, 25], "长程主推+跟随 1.0 m push/follow"),
     }
     plan = [(name, strategy, spec) for name in snapshots
             for strategy, spec in STRATEGIES.items()]

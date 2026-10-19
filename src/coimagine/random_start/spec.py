@@ -99,8 +99,11 @@ OBSERVATION_FAIL_TOLERANCE: float = 1.00  # s, "lost the object" re-acquisition 
 # skills (task book section 4)
 # ---------------------------------------------------------------------------
 
-ALPHA_DEG: Tuple[float, ...] = (-15.0, 0.0, 15.0)
-PUSH_SPEEDS: Tuple[float, ...] = (0.08, 0.16, 0.26)          # m/s commanded surface speed
+#: v4.2: PUSH applies a purely **normal** force. The +/-15 deg offset was removed: the
+#: tangential force would come from tangential speed, but in this framework tangential motion is
+#: used to recover the contact point, so the imagined 15 deg friction had no measurable effect.
+ALPHA_DEG: Tuple[float, ...] = (0.0,)
+PUSH_SPEEDS: Tuple[float, ...] = (0.12, 0.24, 0.39)          # m/s, ~1.5x the old commands
 REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
 #: v4.1 option scale. PUSH and REPOSITION are requested **distances** (m): the promise is
 #: "after contact is established, complete this robot push travel along the declared direction".
@@ -118,12 +121,12 @@ WAIT_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 FOLLOW_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 OPTION_SCALE_COUNT: int = 4
 AGENTS: Tuple[int, int] = (0, 1)
-#: 13 types (9 PUSH + 2 REPOSITION + 1 WAIT_BRAKE + 1 SUPPORT_FOLLOW) x 4 scales, type-major:
+#: 7 types (3 PUSH + 2 REPOSITION + 1 WAIT_BRAKE + 1 SUPPORT_FOLLOW) x 4 scales, type-major:
 #: index = type_index * OPTION_SCALE_COUNT + scale_index. FOLLOW is appended last so the
 #: historical type indices (and the testbench baselines) are unchanged.
-ROBOT_ACTION_TYPE_COUNT: int = 13
-ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * OPTION_SCALE_COUNT   # 52
-JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 2704
+ROBOT_ACTION_TYPE_COUNT: int = 7
+ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * OPTION_SCALE_COUNT   # 28
+JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 784
 #: the follow keeps a clearance (it does not press); the normal term is a gap servo
 FOLLOW_GAP: float = 0.05
 FOLLOW_GAP_GAIN: float = 1.5
@@ -144,7 +147,7 @@ OPTION_TIMEOUT_SLACK: float = 2.5
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
 APPROACH_TIMEOUT: float = 6.0         # s, raised from the inherited 5.0 s (see CHANGELOG)
-APPROACH_MIN_SPEED: float = 0.02      # m/s, inherited from the staged protocol
+APPROACH_MIN_SPEED: float = 0.05      # m/s, v4.2: less crawl/braking at the end
 #: Raised from the inherited 0.08 m/s. The inherited value was tuned for a fixed 0.35 m
 #: staging standoff; a random start may be up to 0.50 m clear of the object, and 0.08 m/s
 #: cannot close that inside the 8 s skill at all. The physics, the force limit and the
@@ -155,13 +158,13 @@ BRAKE_MAX_SECONDS: float = 0.80       # s of braking before the skill ends regar
 BRAKE_SPEED: float = 0.03             # m/s, below this the robot counts as braked
 NO_PROGRESS_SECONDS: float = 2.0      # continuous seconds without progress -> blocked
 REPOSITION_GAP: float = 0.10          # m, target robot-edge to object-surface gap
-REPOSITION_SPEED_MAX: float = 0.12    # m/s, tangential speed cap
+REPOSITION_SPEED_MAX: float = 0.18    # m/s, tangential speed cap (1.5x, see v4.2)
 REPOSITION_ALIGN_TOLERANCE: float = 0.035  # m, gap error considered aligned
-REPOSITION_SPEED: float = 0.12        # m/s, tangential command (equal to the contract cap)
+REPOSITION_SPEED: float = 0.18        # m/s, tangential command (equal to the contract cap)
 #: The MOVE stage may start while the gap is still converging: the radial correction runs
 #: inside MOVE as well, so waiting for exact alignment first would waste most of the 8 s
 #: window on a 0.50 m reposition (0.50 m / 0.12 m/s is already 4.2 s of pure travel).
-REPOSITION_ALIGN_ENTRY: float = 0.15  # m, gap error at which MOVE may start
+REPOSITION_ALIGN_ENTRY: float = 0.20  # m, v4.2: relax the approach arrival
 REPOSITION_GAP_GAIN: float = 1.0      # 1/s, radial gap correction gain
 #: Dead band around the target gap: inside it the radial correction is zero, so the tangential
 #: motion cannot press the disc into the surface when the boundary curves away from the tangent.

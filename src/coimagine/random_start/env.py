@@ -432,6 +432,19 @@ class RandomStartEnv:
                              max(option_timeout(action_0), option_timeout(action_1)))
         skills: Dict[int, Skill] = {0: self.skill_factory(action_0, MAX_FORCE),
                                     1: self.skill_factory(action_1, MAX_FORCE)}
+        # v4.2: a cooperative push shares one time budget T = max(A, B) / v_ref; each robot's
+        # reference speed becomes A/T, B/T so they start together and finish together. The
+        # slower/earlier one is held by the environment until both are in the push stage.
+        cooperative_push = action_0.kind == action_1.kind == "push"
+        if cooperative_push:
+            distances = (float(action_0.distance), float(action_1.distance))
+            speeds = (float(action_0.speed), float(action_1.speed))
+            reference = max(speeds[0], speeds[1], 1e-6)
+            budget = max(distances) / reference
+            for robot_id in (0, 1):
+                if hasattr(skills[robot_id], "speed_command"):
+                    skills[robot_id].speed_command = (distances[robot_id] / budget
+                                                      if budget > 0.0 else speeds[robot_id])
         holds: Dict[int, HoldBrake] = {0: HoldBrake(MAX_FORCE), 1: HoldBrake(MAX_FORCE)}
         skill_ends: Dict[int, Optional[Dict[str, object]]] = {0: None, 1: None}
         skill_index = self.skills_used + 1
@@ -448,6 +461,13 @@ class RandomStartEnv:
         while True:
             now = (start_period + periods) * CONTROL_DT
             contacts = self.contacts()
+            if cooperative_push:
+                both_pushing = all(getattr(skills[robot_id], "stage", None) == "push"
+                                   for robot_id in (0, 1))
+                for robot_id in (0, 1):
+                    if hasattr(skills[robot_id], "hold"):
+                        skills[robot_id].hold = (not both_pushing
+                                                 and skills[robot_id].stage == "push")
             observations = {robot_id: self.observe(robot_id, self.total_periods, now, contacts)
                             for robot_id in (0, 1)}
             # the policy-facing vector of this period must be built *before* the world advances

@@ -429,6 +429,12 @@ class _VisionSkill(Skill):
         return (FIND_SPEED * self.find_direction[0], FIND_SPEED * self.find_direction[1])
 
     # -- APPROACH ----------------------------------------------------------
+    def _segment_extent(self, patch: SurfacePatch):
+        tangent = patch.tangent_world
+        projections = [point[0] * tangent[0] + point[1] * tangent[1]
+                       for point in patch.points_world]
+        return min(projections), max(projections), tangent
+
     def _approach(self, observation: SkillObservation, patch: SurfacePatch,
                   gap_target: float) -> Vec:
         gap = patch_gap(patch)
@@ -459,6 +465,9 @@ class PushSkill(_VisionSkill):
         self.contact_loss_seconds = 0.0
         self.push_wall = 0.0
         self.approach_time = 0.0
+        self.corner_rejected = False
+        #: set by the environment while a cooperative push waits for the teammate to start
+        self.hold = False
 
     def _tangential_reference(self, observation: SkillObservation,
                               patch: SurfacePatch) -> Vec:
@@ -499,6 +508,21 @@ class PushSkill(_VisionSkill):
                 gap = patch_gap(patch)
                 self._track_gap_progress(gap)
                 raw = self._approach(observation, patch, 0.0)
+                # v4.2/M2: never approach a corner. The contact region is the visible segment
+                # inset by R; while the projection is outside it the tangential correction gets
+                # priority and the radial speed is reduced, so the robot enters the face instead
+                # of driving into the corner.
+                low, high, tangent = self._segment_extent(patch)
+                robot_proj = (observation.own.x * tangent[0]
+                              + observation.own.y * tangent[1])
+                margin = ROBOT_RADIUS + 0.02
+                if high - low < 2.0 * margin:
+                    reason = "insufficient_visible_segment"
+                elif not (low + margin <= robot_proj <= high - margin):
+                    self.corner_rejected = True
+                    raw = (0.35 * raw[0], 0.35 * raw[1])
+                else:
+                    self.corner_rejected = False
                 # PUSH starts on a sensed contact, not on a range threshold: the range is the
                 # distance to the *fitted plane*, which a convex corner can make look closed
                 # while the surfaces are still a few millimetres apart. The approach keeps a
@@ -511,7 +535,8 @@ class PushSkill(_VisionSkill):
                 elif self.approach_time >= APPROACH_TIMEOUT:
                     reason = "blocked_no_progress"
         elif self.stage == "push":
-            self.push_wall += dt
+            if not self.hold:
+                self.push_wall += dt
             if patch is None:
                 if self.patch_missing_seconds >= OBSERVATION_FAIL_TOLERANCE:
                     reason = "patch_lost"
@@ -520,7 +545,9 @@ class PushSkill(_VisionSkill):
             else:
                 raw = raw_reference(patch.normal_world if normal is None else normal,
                                     self.alpha, self.speed_command)
-            if observation.contacting_object:
+            if self.hold:
+                raw = (0.0, 0.0)
+            if observation.contacting_object and not self.hold:
                 self.effective_contact += dt
                 self.contact_seen = True
                 self.contact_loss_seconds = 0.0
@@ -603,6 +630,9 @@ class PushSkill(_VisionSkill):
             "push_speed": self.speed_command,
             "effective_contact_seconds": self.effective_contact,
             "push_wall_seconds": self.push_wall,
+            "corner_rejected": self.corner_rejected,
+            "hold": self.hold, "speed_command": self.speed_command,
+            "edge_assigned": not self.corner_rejected,
             "progress": self.progress, "progress_target": PUSH_ACTIVE_SECONDS,
             **self._progress_info(),
             "no_progress_seconds": self.no_progress_seconds,

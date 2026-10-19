@@ -79,14 +79,14 @@ def test_independent_recompute_of_push_and_reposition(prepared, tmp_path):
     push = runner.run_branch(prepared, 18, tmp_path)         # teammate__push_push
     reposition = runner.run_branch(prepared, 1, tmp_path)    # face__push_reposition_ccw
     contract = json.loads((prepared / "contracts" / "contracts.json").read_text())
-    push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 17, contract)
+    push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 6, contract)
     assert push_option["status"] == "fulfilled"
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["contact_established_seconds"]
     # v4.1: the push promise is the signed travel, not a 2 s contact accumulation
     assert push_option["signed_progress"] >= (
         contract["push"]["thresholds"]["progress_fraction_min"] * push_option["requested_distance"])
     reposition_option = metrics.recompute_option(
-        reposition, reposition["boundaries"][0], 1, 36, contract)
+        reposition, reposition["boundaries"][0], 1, 12, contract)
     assert reposition_option["status"] == "fulfilled"
     assert abs(reposition_option["signed_progress"]) >= (
         contract["reposition"]["thresholds"]["progress_fraction_min"]
@@ -148,16 +148,16 @@ def test_timeout_kills_process_group_and_preserves_log(tmp_path):
 
 def test_baseline_menu_and_no_implicit_monkeypatch(prepared, tmp_path):
     assert spec.ENV_VERSION == "random-start-oriented-v4.1"
-    assert spec.ROBOT_ACTION_COUNT == 52 and spec.JOINT_ACTION_COUNT == 2704
-    assert spec.ROBOT_ACTIONS[16].label.startswith("PUSH(a=+0deg,v=0.16)")
-    assert spec.ROBOT_ACTIONS[36].label.startswith("REPOSITION_CCW")
-    assert spec.ROBOT_ACTIONS[40].label.startswith("REPOSITION_CW")
-    assert spec.ROBOT_ACTIONS[44].label.startswith("WAIT_BRAKE")
-    # v4.1: PUSH/REPOSITION scales are requested distances (m); WAIT stays a duration (s)
-    assert spec.ROBOT_ACTIONS[16].scale == spec.PUSH_DISTANCES[0]
-    assert spec.ROBOT_ACTIONS[19].scale == spec.PUSH_DISTANCES[-1]
-    assert spec.ROBOT_ACTIONS[16].scale_kind == "distance"
-    assert spec.ROBOT_ACTIONS[44].scale_kind == "duration"
+    assert spec.ROBOT_ACTION_COUNT == 28 and spec.JOINT_ACTION_COUNT == 784
+    assert spec.ROBOT_ACTIONS[6].label.startswith("PUSH(a=+0deg,v=0.24)")
+    assert spec.ROBOT_ACTIONS[12].label.startswith("REPOSITION_CCW")
+    assert spec.ROBOT_ACTIONS[16].label.startswith("REPOSITION_CW")
+    assert spec.ROBOT_ACTIONS[20].label.startswith("WAIT_BRAKE")
+    # v4.2: PUSH/REPOSITION scales are requested distances (m); WAIT stays a duration (s)
+    assert spec.ROBOT_ACTIONS[4].scale == spec.PUSH_DISTANCES[0]
+    assert spec.ROBOT_ACTIONS[7].scale == spec.PUSH_DISTANCES[-1]
+    assert spec.ROBOT_ACTIONS[4].scale_kind == "distance"
+    assert spec.ROBOT_ACTIONS[20].scale_kind == "duration"
     timeout = spec.option_timeout(spec.ROBOT_ACTIONS[19])
     assert spec.OPTION_PREPARE_SECONDS < timeout <= spec.JOINT_MAX_SECONDS
     metadata = json.loads((prepared / "panel.json").read_text())

@@ -29,14 +29,14 @@ METRIC_VERSION = "option-metric-v2"  # v2: six calibration fixes; v1 outputs pre
 # The three pre-registered baseline options, in the frozen action-table order:
 # v4 type-major menu: index = type_index * 4 + scale_index; scales are (2, 6, 12, 24) s.
 #  17 = PUSH(alpha=0 deg, speed=0.16 m/s) at scale 6 s (type 4)
-#  36 = REPOSITION_CCW at the 0.25 m requested distance (type 9)
-#  40 = REPOSITION_CW at the 0.25 m requested distance (type 10)
-#  44 = WAIT_BRAKE at scale 2 s (type 11), the explicit teammate brake/hold condition
-PUSH_0_016 = 17      # type 4 (PUSH a=0, v=0.16) at scale 6 s: approach + 2 s contact fits
-REPOSITION_CCW = 36  # type 9 at the 0.25 m requested distance (the historical baseline)
-REPOSITION_CW = 40   # type 10 at the 0.25 m requested distance
-WAIT_BRAKE = 44      # type 11 at scale 2 s
-FOLLOW_6S = 49       # SUPPORT_FOLLOW[6s] (type 12)
+#  12 = REPOSITION_CCW at the 0.10 m requested distance (type 3)
+#  16 = REPOSITION_CW at the 0.10 m requested distance (type 4)
+#  20 = WAIT_BRAKE at scale 2 s (type 5), the explicit teammate brake/hold condition
+PUSH_0_016 = 6       # type 1 (PUSH a=0, v=0.24) at 0.50 m
+REPOSITION_CCW = 12  # type 3 at the 0.10 m requested distance
+REPOSITION_CW = 16   # type 4 at the 0.10 m requested distance
+WAIT_BRAKE = 20      # type 5 at scale 2 s
+FOLLOW_6S = 25       # type 6 at scale 6 s
 BASELINE_OPTIONS = {"PUSH_0_016": PUSH_0_016, "REPOSITION_CCW": REPOSITION_CCW,
                     "REPOSITION_CW": REPOSITION_CW, "WAIT_BRAKE": WAIT_BRAKE}
 
@@ -342,7 +342,7 @@ def _state_tuple(env):
             "total_periods": int(env.total_periods), "hold_seconds": float(env.hold_seconds)}
 
 
-def make_moving_snapshot(instance, out_dir, prefix_action=(17, 44)):
+def make_moving_snapshot(instance, out_dir, prefix_action=(5, 20)):
     """Run one real joint skill and freeze the resulting boundary as a dynamic fixture."""
     world = E.RandomStartEnv(instance)
     boundary = world.joint_step(*prefix_action)

@@ -249,8 +249,8 @@ def test_reward_accounting_matches_direct_environment_components(rl):
     instance = rl.layout.build_split("L0", "train", count=1)[0][0]
     env = rl.E.RandomStartEnv(instance, rl.E.EnvConfig(time_budget=.4, joint_max_seconds=.2))
     initial = env.object_distance()
-    env.joint_step(44, 44)
-    env.joint_step(44, 44)
+    env.joint_step(20, 20)
+    env.joint_step(20, 20)
     actual = module.decompose(env.reward_total, initial, env.object_distance(), env.total_periods,
                               float(env.success), env.config.as_dict())
     for key in ("progress", "time_cost", "success_bonus", "failure_penalty"):
