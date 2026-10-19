@@ -32,8 +32,8 @@ from coimagine.random_start import env as E  # noqa: E402
 from coimagine.random_start import layout  # noqa: E402
 from coimagine.random_start.spec import ROBOT_ACTION_COUNT, ROBOT_ACTIONS  # noqa: E402
 
-OUT = ROOT / "outputs/random_start_reposition_v1"
-SCHEMA_VERSION = "random-start-collection-v1"
+OUT = ROOT / "outputs/random_start_time_budget_v3"
+SCHEMA_VERSION = "random-start-collection-v3-time-budget"
 
 
 def behaviour_action(policy, environment, epsilon: float, rng: np.random.Generator,
@@ -79,8 +79,8 @@ def collect_episode(instance, policy, epsilon: float, seed: int, rng: np.random.
             "reward": boundary["reward"],
             "success": bool(boundary["success"]), "truncated": bool(boundary["truncated"]),
             "anomaly": boundary["anomaly"], "termination": boundary["termination"],
-            "phi_before": float(boundary["phi_before"]),
-            "phi_next_used": float(boundary["phi_next_used"]),
+            "distance_before": float(boundary["distance_before"]),
+            "distance_after": float(boundary["distance_after"]),
         })
         for row in rows:
             vectors.append(np.asarray(environment.history[row["period"] - 1]["observation"],
@@ -228,6 +228,9 @@ def main() -> int:
     parser.add_argument("--checkpoint", default=None)
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
+    if args.checkpoint or args.mode == "trial":
+        raise RuntimeError("Policy/trial collection is blocked: S4 has not passed and this legacy "
+                           "collector does not preserve recurrent state or correct mixture probabilities")
     out = Path(args.out)
     (out / "data").mkdir(parents=True, exist_ok=True)
     (out / "logs").mkdir(parents=True, exist_ok=True)

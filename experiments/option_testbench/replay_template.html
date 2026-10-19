@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>Option 小场景测台 — Round 000 (baseline) / Option testbench</title>
+<style>
+:root{--bg:#11151c;--panel:#1a212c;--ink:#e8edf5;--dim:#93a1b5;--acc:#4aa3ff;--warn:#ffb347;
+--bad:#ff6b6b;--ok:#4ad991;}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+font:13px/1.5 -apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif}
+header{padding:10px 16px;background:#0d1117;border-bottom:1px solid #232c3a}
+header h1{font-size:15px;margin:0 0 2px}
+header .en{color:#b9c6d8;font-size:12px;font-weight:400}
+header .tag{color:var(--dim);font-size:12px;margin-right:18px}
+main{display:grid;grid-template-columns:340px 1fr;gap:12px;padding:12px;align-items:start}
+.card{background:var(--panel);border:1px solid #232c3a;border-radius:8px;padding:10px;margin-bottom:10px}
+.card h2{font-size:13px;margin:0 0 6px}
+.card h2 .en{color:var(--dim);font-weight:400;font-size:11px}
+#snapList{max-height:230px;overflow:auto}
+.snap{display:flex;gap:8px;align-items:flex-start;padding:6px;border-radius:6px;cursor:pointer}
+.snap:hover,.branch:hover{background:#222c3a}
+.snap.sel,.branch.sel{background:#1d3a5c;outline:1px solid var(--acc)}
+.snap canvas{background:#0b0f14;border-radius:4px;flex:0 0 auto}
+.snap .zh{font-weight:600}.snap .en{color:var(--dim);font-size:11px}
+.snap .pr{color:#b9c6d8;font-size:11px;margin-top:1px}
+.branch{padding:6px;border-radius:6px;cursor:pointer;font-size:12px}
+.branch .st{float:right;font-size:11px}
+.branch .en{color:var(--dim);font-size:11px}
+.badge{display:inline-block;padding:1px 6px;border-radius:9px;font-size:11px;background:#243244}
+.badge.ok{background:#17402d;color:var(--ok)}.badge.bad{background:#43202a;color:var(--bad)}
+.badge.warn{background:#40331a;color:var(--warn)}
+canvas.view{background:#0b0f14;border:1px solid #232c3a;border-radius:8px;display:block}
+#controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 8px}
+button{background:#243244;color:var(--ink);border:1px solid #33435a;border-radius:6px;
+padding:4px 10px;cursor:pointer}button:hover{background:#2d3d52}
+input[type=range]{width:250px}
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:12px;margin:6px 0}
+.layers .ly{color:var(--dim)}.layers .ly b{color:var(--ink)}
+.layers .ly .en{color:#8fa0b6}
+#status{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:5px 14px;
+font-size:12px;color:var(--dim);margin-top:6px}
+#status b{color:var(--ink);font-weight:600}
+#status .en{display:block;color:#8fa0b6;font-size:10.5px}
+.legend{color:var(--dim);font-size:11px;margin-top:8px;line-height:1.7}
+.truth{color:var(--warn)}
+#snapshotInfo,#branchInfo{font-size:12px;color:#c7d2e0}
+#snapshotInfo .row,#branchInfo .row{margin:4px 0}
+#snapshotInfo .k,#branchInfo .k{color:var(--acc);font-weight:600}
+#snapshotInfo .en,#branchInfo .en{color:#8fa0b6}
+#summary{font-size:12px;color:#c7d2e0}
+#summary .m{margin:4px 0}#summary b{color:var(--ink)}
+#summary .en{color:#8fa0b6;font-size:11px}
+details{margin-top:8px;background:#141b25;border:1px solid #232c3a;border-radius:6px;padding:6px 10px}
+summary{cursor:pointer;color:var(--acc);font-size:12.5px}
+details .body{font-size:12px;color:#c7d2e0;margin-top:6px}
+details h3{margin:8px 0 2px;font-size:12.5px;color:var(--ink)}
+details .en{color:#8fa0b6}
+code{background:#0d1117;padding:0 4px;border-radius:3px}
+</style></head><body>
+<header>
+  <h1>Option 小场景测台 — Round 000（baseline）
+    <span class="en">Option small-scene testbench — Round 000 (baseline)</span></h1>
+  <span class="tag">面板 / panel: __PANEL_VERSION__</span>
+  <span class="tag">本地日志驱动回放，无外部服务 / local log-driven replay, no external service</span>
+  <span class="tag">真值层用 <span class="truth">橙色</span> 标注 / truth layer marked in <span class="truth">orange</span></span>
+</header>
+<main>
+<div>
+  <div class="card"><h2>8 个冻结 snapshot <span class="en">/ 8 frozen snapshots</span></h2>
+    <div id="snapList"></div></div>
+  <div class="card"><h2>场景说明 <span class="en">/ snapshot explanation</span></h2>
+    <div id="snapshotInfo"></div></div>
+  <div class="card"><h2>预登记分支（≤3/场景）<span class="en"> / pre-registered branches (≤3 per snapshot)</span></h2>
+    <div id="branchList"></div></div>
+  <div class="card"><h2>本轮覆盖与兑现 <span class="en">/ coverage &amp; fulfilment</span></h2>
+    <div id="summary"></div></div>
+</div>
+<div>
+  <div class="card">
+    <div id="controls">
+      <button id="play">播放 / Play</button><button id="stepBack">−1 周期 / period</button>
+      <button id="stepFwd">+1 周期 / period</button><button id="reset">复位 / Reset</button>
+      <label>速度 / Speed <select id="speed"><option value="1">1×</option><option value="2">2×</option>
+        <option value="4">4×</option><option value="0.5">0.5×</option></select></label>
+      <input type="range" id="timeline" min="0" max="1" value="0">
+      <span id="clock"></span>
+      <label>对比 / Compare <select id="compare"><option value="">—</option></select></label>
+    </div>
+    <div class="layers" id="layers"></div>
+    <div id="snapshotHead" class="legend"></div>
+    <canvas class="view" id="cv" width="720" height="500"></canvas>
+    <div id="stage2" style="display:none;margin-top:8px">
+      <div id="compareLabel" class="legend"></div>
+      <canvas class="view" id="cv2" width="720" height="500"></canvas>
+    </div>
+    <div id="status"></div>
+    <div id="branchInfo"></div>
+    <div class="legend" id="legend"></div>
+    <details open><summary>如何阅读本页 / How to read this page</summary>
+      <div class="body">
+        <h3>1. 三个层次分开记录 / Three separate metric layers</h3>
+        <div>① 控制器声称完成（层 1）：只读技能自己给出的 <code>push_complete</code> /
+          <code>reposition_complete</code> 等退出字符串。<br>
+          <span class="en">① Controller claim (layer 1): the skill's own exit string, e.g.
+          <code>push_complete</code> / <code>reposition_complete</code>.</span></div>
+        <div>② 独立契约兑现（层 2）：从原始逐周期日志重算完成条件，不直接相信退出字符串。
+          如果声称完成但重算条件不成立，记为 <b>violated</b>（假兑现）。<br>
+          <span class="en">② Independent contract (layer 2): the completion condition is
+          recomputed from the raw per-period log. A completion claim whose condition fails is a
+          <b>violated</b> (false claim).</span></div>
+        <div>③ 任务效果（层 3）：物体真实位移/转角与目标方向进展，只用离线真值评价，绝不作为
+          控制器输入。<br>
+          <span class="en">③ Task effect (layer 3): real object displacement/rotation and
+          goal-direction progress, evaluated offline from truth only and never fed back.</span></div>
+        <h3>2. 契约 / Contracts</h3>
+        <div>PUSH：在 8 s 窗口内累计真实物体接触 ≥ 0.50 s 视为兑现；旧 PUSH 的承诺是“接触推动”，
+          <b>不是</b>世界方向物体平移。REPOSITION：沿自身估计切向的累计位移 ≥ 0.80×请求距离。<br>
+          <span class="en">PUSH: at least 0.50 s of accumulated real object contact inside the 8 s
+          window. The promise is contact pushing, <b>not</b> world-direction translation.
+          REPOSITION: accumulated tangential displacement ≥ 0.80× requested distance.</span></div>
+        <h3>3. 覆盖率口径 / Coverage definitions</h3>
+        <div><code>request_coverage</code> = 接受请求 / 全部预登记请求；
+          <code>state_coverage</code> = 至少一个请求被接受的 snapshot 数 / 面板 snapshot 数；
+          条件兑现率 = fulfilled / accepted；保守区间 = [fulfilled/accepted,
+          (fulfilled+unresolved)/accepted]，accepted=0 记 N/A；
+          有效兑现覆盖 = fulfilled / 全部预登记请求，防止靠拒绝困难情况抬高兑现率。安全/受阻退出
+          单列，不算兑现。<br>
+          <span class="en"><code>request_coverage</code> = accepted / all pre-registered requests;
+          <code>state_coverage</code> = snapshots with ≥1 accepted / panel snapshots; conditional
+          fulfilment = fulfilled / accepted; conservative interval = [fulfilled/accepted,
+          (fulfilled+unresolved)/accepted], N/A when accepted=0; effective fulfilment coverage =
+          fulfilled / all requests, so rejecting hard cases cannot inflate the rate. Safety and
+          blocked exits are listed separately and are not counted as fulfilment.</span></div>
+        <h3>4. 图层 / Layers</h3>
+        <div id="layerHelp"></div>
+        <h3>5. 时间与真值 / Time and truth</h3>
+        <div>时间轴按真实物理周期（0.05 s/周期），不是插值动画；执行较早结束的一侧停在终态。
+          雷达、拟合片段、法向/切向、参考速度、力都是控制器的合法输入；物体轮廓/中心与
+          <code>true_goal_distance</code> 是诊断真值，仅用于离线层。<br>
+          <span class="en">The timeline is real physical periods (0.05 s each), not an interpolated
+          animation; a side that ends earlier stops at its terminal state. Lidar, fitted patches,
+          normal/tangent, reference velocity and force are legal controller inputs; the object
+          outline/centre and <code>true_goal_distance</code> are diagnostic truth for offline
+          layers only. Lidar rays with no hit inside the 1.20 m range are drawn at the range
+          length in dark grey; the dashed circle is the 1.20 m sensing limit.</span></div>
+      </div>
+    </details>
+  </div>
+</div>
+</main>
+<script src="data/panel.js"></script><script src="data/branches.js"></script>
+<script src="data/metrics.js"></script>
+<!--FRAME_SCRIPTS-->
+<script>
+window.onerror=function(m,src,line,col){var el=document.getElementById('status');
+  if(el)el.innerHTML='<b style="color:#ff6b6b">JS 错误 / JS error</b>: '+m+' @'+line+':'+col;};
+const P=window.__DATA__.panel, B=window.__DATA__.branches, M=window.__DATA__.metrics;
+const RANGE=(M.constants&&M.constants.lidar_range)||1.2;
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+const state={snapshot:null,branch:null,index:0,playing:false,last:0,speed:1,compare:'',
+  layers:{scan:true,patch:true,contact:true,normal:true,refvel:true,force:true,traj:true,
+          safety:true,truth:true}};
+const LAYERS={
+ scan:{zh:'雷达与拟合片段',en:'Lidar & fitted patches',
+   dz:'每个周期的 72 束测距：命中物体/静态/队友的按类别着色；1.20 m 量程内没有命中的射线按上限长度画成暗灰，表示“无回波”，不是数据缺失。虚线圆为 1.20 m 量程。',
+   de:'72 range returns per period, coloured by hit category; rays with no hit inside the 1.20 m range are drawn at the range length in dark grey to show "no return", not missing data. The dashed circle is the 1.20 m range.'},
+ patch:{zh:'选中片段点',en:'Selected patch points',
+   dz:'控制器当前选中用于估计法向的可见片段采样点。',
+   de:'The visible-fragment samples the controller currently uses for the normal estimate.'},
+ contact:{zh:'接触事件',en:'Contact events',
+   dz:'机器人—物体、机器人—静态、机器人—队友接触；用圆点/状态文字显示。',
+   de:'Robot-object, robot-static and robot-teammate contacts, shown as markers/status text.'},
+ normal:{zh:'法向/切向',en:'Normal / tangent',
+   dz:'红色为表面法向，黄色为切向；法向跳变表示经过角点。',
+   de:'Red is the surface normal, yellow the tangent; a normal jump marks a corner transition.'},
+ refvel:{zh:'期望参考速度',en:'Reference velocity',
+   dz:'控制器希望机器人达到的速度（蓝），不是实际速度。',
+   de:'The velocity the controller asks for (blue), not the realised velocity.'},
+ force:{zh:'实际力',en:'Applied force',
+   dz:'该周期实际施加的力（紫），受 15 N 上限。',
+   de:'The force actually applied in that period (purple), capped at 15 N.'},
+ traj:{zh:'轨迹',en:'Trajectory',
+   dz:'物体中心的真实轨迹（橙色，真值层）。',
+   de:'The real object-centre trajectory (orange, truth layer).'},
+ safety:{zh:'安全间隙',en:'Safety gaps',
+   dz:'到墙/静态物/队友的最小测量间隙，接近 0.05 m 时触发安全退出。',
+   de:'Minimum measured clearance to wall/static/teammate; a safety exit triggers near 0.05 m.'},
+ truth:{zh:'真值层（物体/真值）',en:'Truth layer (object/truth)',
+   dz:'物体轮廓与真值距离，仅用于离线展示，绝不进入控制器。',
+   de:'Object outline and true distances, offline display only; never a controller input.'}
+};
+const STATUS_LABELS={
+ snapshot:['snapshot','snapshot'], branch:['分支','branch'], focus:['动作组合','action focus'],
+ teammate:['队友协议','teammate protocol'], skill:['技能','skill'], stage:['阶段','stage'],
+ contact:['接触','contact'], gap:['间隙','gap'], progress:['控制器进度','controller progress'],
+ exit:['退出','exit'], effect:['任务效果（真值）','task effect (truth)'],
+ contract:['契约判定','contract'], eligibility:['适用性','eligibility'],
+ physical:['物理时间','physical time'], wall:['墙钟','wall time'],
+ period:['周期','period'], time:['时间','time']};
+function L(pair){return pair[0]+' / '+pair[1];}
+function scaleFor(arena,w,h){const s=Math.min((w-40)/arena[0],(h-40)/arena[1]);
+  return {s,ox:(w-arena[0]*s)/2,oy:h-(h-arena[1]*s)/2};}
+function toPx(sc,x,y){return [sc.ox+x*sc.s, sc.oy-y*sc.s];}
+function drawSnapThumb(canvas,snap){const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+  const sc=scaleFor(snap.arena,w,h);c.clearRect(0,0,w,h);
+  const [gx,gy]=toPx(sc,snap.goal[0],snap.goal[1]);c.strokeStyle='#4aa3ff';c.beginPath();
+  c.arc(gx,gy,snap.goal_radius*sc.s,0,7);c.stroke();
+  c.save();const [ox,oy]=toPx(sc,snap.object.x,snap.object.y);c.translate(ox,oy);
+  c.rotate(-snap.object.angle);c.fillStyle='#ffb347';c.fillRect(-0.5*sc.s,-0.125*sc.s,sc.s,0.25*sc.s);
+  c.restore();c.fillStyle='#4ad991';snap.robots.forEach(r=>{const [x,y]=toPx(sc,r.x,r.y);
+    c.beginPath();c.arc(x,y,0.18*sc.s,0,7);c.fill();});}
+function buildSidebar(){const list=document.getElementById('snapList');list.innerHTML='';
+  Object.values(P).forEach(snap=>{const row=document.createElement('div');row.className='snap';
+    const c=document.createElement('canvas');c.width=78;c.height=54;drawSnapThumb(c,snap);
+    const info=document.createElement('div');
+    info.innerHTML=`<div class="zh">${snap.title_zh}</div><div class="en">${snap.title_en}</div>
+      <div class="pr">${snap.problem_zh}</div>`;
+    row.appendChild(c);row.appendChild(info);row.onclick=()=>selectSnapshot(snap.name);list.appendChild(row);});}
+function updateSnapshotInfo(snap){const el=document.getElementById('snapshotInfo');
+  el.innerHTML=`<div class="row"><span class="k">名称 / Name</span>：${snap.title_zh}
+      <span class="en">${snap.title_en}</span></div>
+    <div class="row"><span class="k">问题 / Problem</span>：${snap.problem_zh}<br>
+      <span class="en">${snap.problem_en}</span></div>
+    <div class="row"><span class="k">几何 / Geometry</span>：${snap.geometry_zh}<br>
+      <span class="en">${snap.geometry_en}</span></div>
+    <div class="row"><span class="k">预期 / Expectation</span>：${snap.expectation_zh}<br>
+      <span class="en">${snap.expectation_en}</span></div>
+    <div class="row"><span class="k">看什么 / Watch</span>：${snap.watch_zh}<br>
+      <span class="en">${snap.watch_en}</span></div>
+    <div class="row"><span class="k">初态哈希 / state hash</span>：<code>${snap.sha256.slice(0,16)}…</code>
+      ${snap.kind==='dynamic'?'（动态边界，精确回放 / dynamic boundary, exact replay）':''}</div>`;}
+function updateCompareOptions(){const sel=document.getElementById('compare');
+  const others=B.filter(b=>b.snapshot===state.snapshot&&b.branch_id!==state.branch);
+  sel.innerHTML='<option value="">—</option>'+others.map(b=>`<option value="${b.branch_id}">${b.branch_id}</option>`).join('');
+  sel.value='';state.compare='';}
+function selectSnapshot(name){state.snapshot=name;updateSnapshotInfo(P[name]);
+  const first=B.find(b=>b.snapshot===name);selectBranch(first?first.branch_id:null);
+  renderSidebar();updateCompareOptions();}
+function selectBranch(id){state.branch=id;state.index=0;state.playing=false;
+  const b=B.find(x=>x.branch_id===id);if(!b)return;render();renderSidebar();}
+function frames(){return (window.__DATA__[state.branch]||{}).frames||[];}
+function renderSidebar(){document.querySelectorAll('#snapList .snap').forEach((el,i)=>{
+  el.classList.toggle('sel',Object.keys(P)[i]===state.snapshot);});
+  const list=document.getElementById('branchList');list.innerHTML='';
+  B.filter(b=>b.snapshot===state.snapshot).forEach(b=>{const row=document.createElement('div');
+    row.className='branch'+(b.branch_id===state.branch?' sel':'');const cls=b.contract_status==='fulfilled'?'ok':
+      (b.contract_status==='violated'?'bad':'warn');
+    row.innerHTML=`<span class="st badge ${cls}">${b.contract_status||b.status}</span>
+      <div>${b.focus_zh||b.focus} <span class="badge">${b.controller_version||'baseline'}</span></div>
+      <div class="en">${b.focus_en||''}</div>
+      <div class="en">${b.branch_id}</div>`;
+    row.onclick=()=>selectBranch(b.branch_id);list.appendChild(row);});}
+function currentBranch(){return B.find(b=>b.branch_id===state.branch);}
+function drawArrow(c,x,y,vx,vy,color,scale=1){const n=Math.hypot(vx,vy);if(n<1e-9)return;
+  const ux=vx/n,uy=vy/n,len=Math.min(60,12+n*scale);c.strokeStyle=color;c.fillStyle=color;
+  c.beginPath();c.moveTo(x,y);c.lineTo(x+ux*len,y-uy*len);c.stroke();
+  c.beginPath();c.arc(x+ux*len,y-uy*len,2.5,0,7);c.fill();}
+function framesOf(id){return (window.__DATA__[id]||{}).frames||[];}
+function drawScene(target,tctx,b,frames,index){
+  const f=frames[index];
+  const snap=P[b.snapshot],sc=scaleFor(snap.arena,target.width,target.height);
+  tctx.clearRect(0,0,target.width,target.height);
+  tctx.strokeStyle='#2a3547';tctx.lineWidth=2;tctx.strokeRect(...toPx(sc,0,snap.arena[1]),
+    snap.arena[0]*sc.s,snap.arena[1]*sc.s);
+  const [gx,gy]=toPx(sc,snap.goal[0],snap.goal[1]);tctx.strokeStyle='#4aa3ff';tctx.lineWidth=2;
+  tctx.beginPath();tctx.arc(gx,gy,snap.goal_radius*sc.s,0,7);tctx.stroke();
+  tctx.fillStyle='#4aa3ff';tctx.font='11px sans-serif';tctx.fillText('goal 目标',gx+6,gy-6);
+  for(let i=0;i<2;i++){const r=f.r[i];const [x,y]=toPx(sc,r[0],r[1]);
+    tctx.fillStyle=i===0?'#4ad991':'#c792ea';tctx.beginPath();tctx.arc(x,y,0.18*sc.s,0,7);tctx.fill();
+    tctx.strokeStyle='#0b0f14';tctx.beginPath();tctx.moveTo(x,y);
+    tctx.lineTo(x+Math.cos(r[2])*0.18*sc.s,y-Math.sin(r[2])*0.18*sc.s);tctx.stroke();}
+  if(state.layers.scan){
+    tctx.setLineDash([3,4]);tctx.strokeStyle='#2f3b4f';tctx.lineWidth=1;
+    for(let i=0;i<2;i++){const r=f.r[i];const [x,y]=toPx(sc,r[0],r[1]);
+      tctx.beginPath();tctx.arc(x,y,RANGE*sc.s,0,7);tctx.stroke();}
+    tctx.setLineDash([]);
+    for(let i=0;i<2;i++){const r=f.r[i],scan=f.scan[i],cat=f.cat[i],val=f.val[i];
+      for(let k=0;k<scan.length;k++){const ang=r[2]+k*2*Math.PI/72;
+        const [x0,y0]=toPx(sc,r[0],r[1]);
+        const noReturn=(val&&val[k]===false)||scan[k]===null||scan[k]===0;
+        const reach=noReturn?RANGE:scan[k];
+        const ex=r[0]+reach*Math.cos(ang),ey=r[1]+reach*Math.sin(ang);
+        const [x1,y1]=toPx(sc,ex,ey);
+        if(noReturn){tctx.strokeStyle='#46536b';tctx.globalAlpha=.28;tctx.lineWidth=1;
+          tctx.beginPath();tctx.moveTo(x0,y0);tctx.lineTo(x1,y1);tctx.stroke();tctx.globalAlpha=1;
+          continue;}
+        const c=cat[k];
+        tctx.strokeStyle=c===1?'#ff6b6b':(c===2?'#ffd166':(c===3?'#4aa3ff':'#39506e'));
+        tctx.lineWidth=1;tctx.globalAlpha=.55;tctx.beginPath();tctx.moveTo(x0,y0);tctx.lineTo(x1,y1);
+        tctx.stroke();tctx.globalAlpha=1;}}}
+  if(state.layers.patch){tctx.fillStyle='#ff6b6b';for(let i=0;i<2;i++){f.pp[i].forEach(p=>{
+    const [x,y]=toPx(sc,p[0],p[1]);tctx.fillRect(x-1.5,y-1.5,3,3);});}}
+  if(state.layers.traj){tctx.strokeStyle='#ffb34755';tctx.lineWidth=1.5;tctx.beginPath();
+    frames.slice(0,index+1).forEach((fr,j)=>{const [x,y]=toPx(sc,fr.o[0],fr.o[1]);
+      j?tctx.lineTo(x,y):tctx.moveTo(x,y);});tctx.stroke();}
+  if(state.layers.normal){for(let i=0;i<2;i++){const r=f.r[i],n=f.n[i],t=f.tg[i];
+    const [x,y]=toPx(sc,r[0],r[1]);if(n&&n[0]!==null)drawArrow(tctx,x,y,n[0],n[1],'#ff6b6b',40);
+    if(t&&t[0]!==null)drawArrow(tctx,x,y,t[0],t[1],'#ffd166',40);}}
+  if(state.layers.refvel){for(let i=0;i<2;i++){const r=f.r[i],v=f.rv[i];
+    const [x,y]=toPx(sc,r[0],r[1]);drawArrow(tctx,x,y,v[0],v[1],'#4aa3ff',120);}}
+  if(state.layers.force){for(let i=0;i<2;i++){const r=f.r[i],fo=f.f[i];
+    const [x,y]=toPx(sc,r[0],r[1]);drawArrow(tctx,x,y,fo[0]/15,fo[1]/15,'#c792ea',60);}}
+  if(state.layers.truth){const [x,y]=toPx(sc,f.o[0],f.o[1]);tctx.save();tctx.translate(x,y);
+    tctx.rotate(-f.o[2]);tctx.fillStyle='#ffb347';tctx.fillRect(-0.5*sc.s,-0.125*sc.s,sc.s,0.25*sc.s);
+    tctx.restore();}
+}
+function render(){const b=currentBranch();if(!b)return;const F=framesOf(state.branch);
+  if(!F.length){document.getElementById('status').innerHTML='<b style="color:#ffb347">'+
+    '帧数据未加载 / frames not loaded</b> — 请确认 index.html 与 data/frames/ 在同一目录且未移动；'+
+    'frame id = '+state.branch;return;}
+  state.index=Math.max(0,Math.min(state.index,F.length-1));
+  drawScene(cv,ctx,b,F,state.index);
+  const cv2=document.getElementById('cv2'),ctx2=cv2.getContext('2d');
+  const label=document.getElementById('compareLabel');
+  if(state.compare&&state.compare!==state.branch){const b2=B.find(x=>x.branch_id===state.compare);
+    const F2=b2?framesOf(b2.branch_id):[];
+    if(F2.length){const idx2=Math.min(state.index,F2.length-1);
+      drawScene(cv2,ctx2,b2,F2,idx2);cv2.style.display='block';
+      label.textContent='对比 / compare: '+b2.branch_id+' — period '+F2[idx2].p+'/'+(F2.length-1)+
+        (idx2<state.index?'（较早结束，停在终态 / ended earlier, held at terminal）':'');}
+    else{cv2.style.display='none';label.textContent='';}}
+  else{cv2.style.display='none';label.textContent='';}
+  updateDom(b,F[state.index],F.length);}
+function fmt(v,d=3){return v===null||v===undefined?'—':Number(v).toFixed(d);}
+function updateDom(b,f,n){document.getElementById('timeline').max=n-1;
+  document.getElementById('timeline').value=state.index;
+  document.getElementById('clock').textContent=`t=${fmt(f.t,2)} s  period 周期 ${f.p}/${n-1}`;
+  const o=b.options[0]||{};
+  const lidarCounts={obj:0,stat:0,team:0,none:0};
+  for(let i=0;i<2;i++){const val=f.val[i],cat=f.cat[i];
+    for(let k=0;k<val.length;k++){if(!val[k])lidarCounts.none++;
+      else if(cat[k]===1)lidarCounts.obj++;else if(cat[k]===2)lidarCounts.stat++;
+      else if(cat[k]===3)lidarCounts.team++;}}
+  document.getElementById('status').innerHTML=
+   `<div>${L(STATUS_LABELS.snapshot)}: <b>${b.snapshot}</b></div>
+    <div>${L(STATUS_LABELS.branch)}: <b>${b.branch_id}</b></div>
+    <div>控制器 / controller: <b>${b.controller_version||'baseline'}</b></div>
+    <div>${L(STATUS_LABELS.skill)}: <b>r0=${f.sk[0]} / r1=${f.sk[1]}</b></div>
+    <div>${L(STATUS_LABELS.stage)}: <b>r0=${f.st[0]} / r1=${f.st[1]}</b></div>
+    <div>${L(STATUS_LABELS.contact)}: <b>${f.ct[0]}/${f.ct[1]}</b></div>
+    <div>雷达回波 / lidar returns: <b>物体 obj ${lidarCounts.obj} / 静态 static ${lidarCounts.stat} / 队友 team ${lidarCounts.team} / 无回波 no-return ${lidarCounts.none}</b> <span class="en">(range ${RANGE} m)</span></div>
+    <div>${L(STATUS_LABELS.gap)}: <b>${fmt(f.g[0])} / ${fmt(f.g[1])} m</b></div>
+    <div>${L(STATUS_LABELS.progress)}: <b>${fmt(f.pr[0])} / ${fmt(f.pr[1])} m</b></div>
+    <div>${L(STATUS_LABELS.exit)}: <b>${f.ex[0]||'—'} / ${f.ex[1]||'—'}</b></div>
+    <div>${L(STATUS_LABELS.effect)}: <b>${o.object_displacement?`d=(${fmt(o.object_displacement[0])}, ${fmt(o.object_displacement[1])}) m`:'—'} | goal ${fmt(o.object_goal_progress)} m</b></div>
+    <div>${L(STATUS_LABELS.contract)}: <b>${b.contract_status}</b> (${o.claim_exit||'—'} → ${o.status||'—'})</div>
+    <div>${L(STATUS_LABELS.eligibility)}: <b>${b.request_accepted?'accepted 接受':'rejected 拒绝'}</b></div>
+    <div>${L(STATUS_LABELS.physical)}: <b>${fmt(b.physical_seconds,2)} s</b> | ${L(STATUS_LABELS.wall)}: <b>${fmt(b.wall_seconds,2)} s</b></div>
+    <div>${L(STATUS_LABELS.teammate)}: <b>${b.teammate_protocol}</b></div>`;
+  document.getElementById('branchInfo').innerHTML=
+   `<div class="row"><span class="k">动作组合 / Action focus</span>：${b.focus_zh||b.focus}
+      <span class="en">${b.focus_en||''}</span></div>
+    <div class="row"><span class="en">${b.focus_detail_zh||''}</span></div>
+    <div class="row"><span class="en">${b.focus_detail_en||''}</span></div>
+    <div class="row"><span class="k">逐技能动作 / per-step actions</span>：
+      <code>${JSON.stringify(b.action_labels||b.actions)}</code></div>
+    <div class="row"><span class="k">分支状态 / branch status</span>：${b.status}；
+      <span class="k">契约</span>：${b.contract_status}</div>`;
+  document.getElementById('legend').innerHTML=
+   '雷达 / lidar：<span style="color:#ff6b6b">物体 object</span> / '+
+   '<span style="color:#ffd166">静态 static</span> / <span style="color:#4aa3ff">队友 teammate</span> / '+
+   '<span style="color:#46536b">无回波 no return &gt;1.20 m（按上限长度画 drawn at range）</span>；'+
+   '法向 normal=<span style="color:#ff6b6b">红</span> 切向 tangent=<span style="color:#ffd166">黄</span>；'+
+   '参考速度 ref. vel=<span style="color:#4aa3ff">蓝</span>；力 force=<span style="color:#c792ea">紫</span>；'+
+   '<span class="truth">物体轮廓 object outline = 真值 truth</span>';}
+function tick(ts){if(!state.playing)return;const F=frames();if(!F.length)return;
+  if(ts-state.last>120/state.speed){state.index=(state.index+1);if(state.index>=F.length){
+    state.index=F.length-1;state.playing=false;}state.last=ts;render();}
+  requestAnimationFrame(tick);}
+function init(){buildSidebar();
+  const layerBox=document.getElementById('layers');
+  Object.entries(LAYERS).forEach(([k,label])=>{const el=document.createElement('label');
+    el.className='ly';el.title=label.dz;
+    el.innerHTML=`<input type="checkbox" id="ly_${k}" ${state.layers[k]?'checked':''}> `+
+      `<b>${label.zh}</b> <span class="en">${label.en}</span>`;
+    layerBox.appendChild(el);
+    el.querySelector('input').onchange=e=>{state.layers[k]=e.target.checked;render();};});
+  document.getElementById('layerHelp').innerHTML=Object.values(LAYERS).map(label=>
+    `<div><b>${label.zh}</b> <span class="en">${label.en}</span>：${label.dz}<br>
+      <span class="en">${label.de}</span></div>`).join('');
+  document.getElementById('play').onclick=e=>{state.playing=!state.playing;
+    e.target.textContent=state.playing?'暂停 / Pause':'播放 / Play';state.last=0;
+    if(state.playing)requestAnimationFrame(tick);};
+  document.getElementById('stepFwd').onclick=()=>{state.playing=false;state.index++;render();};
+  document.getElementById('stepBack').onclick=()=>{state.playing=false;state.index--;render();};
+  document.getElementById('reset').onclick=()=>{state.playing=false;state.index=0;render();};
+  document.getElementById('timeline').oninput=e=>{state.playing=false;
+    state.index=Number(e.target.value);render();};
+  document.getElementById('speed').onchange=e=>{state.speed=Number(e.target.value);};
+  document.getElementById('compare').onchange=e=>{state.compare=e.target.value;render();};
+  const s=document.getElementById('summary');
+  s.innerHTML=`<div class="m">预登记请求 / requests: <b>${M.requests}</b>；接受 / accepted:
+      <b>${M.accepted}</b>；拒绝 / rejected: <b>${M.requests-M.accepted}</b></div>
+    <div class="m">请求覆盖率 / request_coverage: <b>${fmt(M.request_coverage,2)}</b>
+      <span class="en">= 接受请求 / 全部预登记请求</span></div>
+    <div class="m">状态覆盖率 / state_coverage: <b>${fmt(M.state_coverage,2)}</b>
+      <span class="en">= 至少一个请求被接受的 snapshot 数 / 8</span></div>
+    <div class="m">指标版本 / metric version: <b>${M.metric_version||'—'}</b>
+      <span class="en">（v2 起 PUSH 分 contact_established 0.5 s 与 full_push 2.0 s / since v2 PUSH is split into 0.5 s contact and 2.0 s full push）</span></div>
+    <div class="m">分支兑现 / branch outcome — fulfilled / contact_only / violated / unresolved / partial / benign:
+      <b>${M.fulfilled}/${M.contact_only}/${M.violated}/${M.unresolved}/${M.partial}/${M.not_fulfilled_benign}</b>
+      <span class="en">（假完成声明计入 violated / false completion claims count as violated）</span></div>
+    <div class="m">条件兑现率 / conditional_fulfillment:
+      <b>${M.conservative_interval?fmt(M.conservative_interval[0],2):'N/A'}</b>
+      <span class="en">= fulfilled / accepted</span></div>
+    <div class="m">保守区间 / conservative interval:
+      <b>${M.conservative_interval?M.conservative_interval.map(v=>fmt(v,2)).join(' .. '):'N/A'}</b>
+      <span class="en">= [fulfilled/accepted, (fulfilled+unresolved)/accepted]</span></div>
+    <div class="m">有效兑现覆盖 / effective fulfillment coverage:
+      <b>${fmt(M.effective_fulfillment_coverage,2)}</b>
+      <span class="en">= fulfilled / 全部预登记请求</span></div>`;
+  selectSnapshot(Object.keys(P)[0]);}
+init();
+</script></body></html>

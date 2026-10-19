@@ -120,3 +120,28 @@ def test_observation_whitelist_has_no_forbidden_field(instances):
 def test_tick_time_axis_and_branch_restore(instances):
     assert verify.check_tick_and_time_axis(instances[0])["ok"]
     assert verify.check_branch_restore(instances[0])["ok"]
+
+
+def test_fast_skill_exits_cannot_end_episode_or_save_time_cost(instances):
+    # Same stationary physical task, different joint-window lengths. Both must pay for
+    # the full horizon; even 32+ short decisions cannot trigger an action-count failure.
+    totals = []
+    for window in (0.05, 0.4):
+        env = E.RandomStartEnv(instances[0], E.EnvConfig(time_budget=1.6, joint_max_seconds=window))
+        while env.termination is None:
+            env.joint_step(13, 13)
+            if env.skills_used == 30:
+                assert env.termination is None
+        assert env.termination == E.TERMINATION_BUDGET
+        assert env.total_periods == 32
+        assert env.reward_components["time_cost"] == pytest.approx(-0.002 * 32)
+        assert env.reward_components["failure_penalty"] == -2.0
+        totals.append(env.reward_total)
+    assert totals[0] == pytest.approx(totals[1], abs=1e-12)
+
+
+def test_time_budget_rejects_fractional_period_and_old_action_budget():
+    with pytest.raises(ValueError):
+        E.EnvConfig(time_budget=0.071)
+    with pytest.raises(TypeError):
+        E.EnvConfig(skill_budget=30)

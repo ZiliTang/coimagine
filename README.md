@@ -160,6 +160,68 @@ python experiments/deterministic_grid/run_training.py  --run-id <run_id>
 python experiments/deterministic_grid/run_diagnostic.py --run-id <run_id>
 ```
 
+## Option small-scene testbench (reusable)
+
+A bounded option-level diagnosis harness: 8 frozen development snapshots, a pre-registered
+request menu, hard per-branch/per-command wall clocks, and a **local log-driven HTML replay**
+(no server, no external service). It exists to make **one attributable controller change per
+round** and compare it against the frozen baseline. Full contract:
+[`experiments/option_testbench/README.md`](experiments/option_testbench/README.md).
+
+- code: [`experiments/option_testbench/`](experiments/option_testbench/) — `panel.py` (fixtures,
+  contracts, request menu), `runner.py` (one branch = one isolated world), `metrics.py`
+  (three metric layers, coverage/fulfilment), `renderer.py` + `replay_template.html` (HTML
+  replay and keyframes), `cli.py` (`prepare / run / render / summarize`), `candidate_push.py`
+  (versioned candidate controller).
+- rounds: [`round_000`](outputs/option_testbench_v1/round_000/) (baseline),
+  [`round_001`](outputs/option_testbench_v1/round_001/) (`segment-contact-v1`),
+  [`round_002`](outputs/option_testbench_v1/round_002/) (authorized multi-step transfer),
+  [`round_003`](outputs/option_testbench_v1/round_003/) (metric calibration v1 -> v2; no
+  controller change). Current metric/contract version: `option-metric-v2` / `option-contract-v2`.
+- oriented-model prototype (A): `experiments/option_testbench/oriented_prototype.py` and
+  [`docs/handoff/20261019_Oriented_Model_Prototype_Note.md`](docs/handoff/20261019_Oriented_Model_Prototype_Note.md)
+  (kinematic heading + stable pushing side; `EnvConfig(oriented=True)`, default off).
+- handoff and design inputs:
+  [`docs/handoff/20261019_Option_Testbench_Handoff.md`](docs/handoff/20261019_Option_Testbench_Handoff.md).
+
+```bash
+TB=experiments/option_testbench
+OUT=outputs/option_testbench_v1/round_000
+
+# 1. freeze the panel, contracts and request menu (first time only)
+timeout --signal=TERM --kill-after=2s 60s .venv/bin/python $TB/panel.py --out $OUT
+# 2. run the pre-registered branches
+timeout --signal=TERM --kill-after=2s 60s .venv/bin/python $TB/cli.py run --out $OUT \
+  --branch-wall-seconds 10 --total-wall-seconds 55
+# 3. independent metrics (no simulation)
+timeout --signal=TERM --kill-after=2s 30s .venv/bin/python $TB/metrics.py --out $OUT
+# 4. local HTML replay + keyframes (no simulation)
+timeout --signal=TERM --kill-after=2s 30s .venv/bin/python $TB/cli.py render --out $OUT
+# 5. directed tests
+timeout --signal=TERM --kill-after=2s 30s .venv/bin/python -m pytest tests/test_option_testbench.py -q
+```
+
+Open `outputs/option_testbench_v1/round_000/index.html` directly in a browser: all resources are
+local and the per-branch frame data is loaded with static `<script src>` tags, so no server is
+needed. Use the left column to pick a snapshot and branch, the **Compare** selector for a
+baseline/candidate side-by-side on the same physical timeline, and the layer toggles for lidar
+(no-return rays are drawn at the 1.20 m range), fitted patches, contacts, normal/tangent,
+reference velocity, force, trajectory and truth.
+
+**Budgets (hard).** one branch <= 10 s wall; one batch command <= 60 s; one render/test command
+<= 30 s; one round of simulation+test+render <= 180 s. `metrics`/`render`/`summarize` never
+re-simulate. The panel and request menu are frozen before running; changing them bumps the panel
+version and keeps old results. A user-authorized exception for a specific measurement is recorded
+in that round's `manifest.json` (`authorized_exception`), e.g. round_002's <= 8 skills / <= 45 s.
+
+**Adding a round.** Freeze a new `requests.json` (<= 24 branches, <= 3 per snapshot); optionally
+inject a candidate controller by `controller_version` (the runner records the version and source
+hash). Candidate controllers live in their own module and are injected through
+`RandomStartEnv(instance, config, skill_factory=...)`; the default factory is the frozen baseline,
+so existing behaviour and checkpoints are untouched. Then run, `metrics.py`, `cli.py render`, and
+write `REVIEW.md` with the change, the per-case `baseline -> candidate` comparison, side effects,
+and one concrete feedback question.
+
 ## Read next
 
 - protocol contract: [`docs/2d_protocol_spec.md`](docs/2d_protocol_spec.md)

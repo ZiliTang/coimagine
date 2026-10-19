@@ -79,8 +79,8 @@ def frozen_config() -> Dict[str, object]:
             "REPOSITION_ALIGN_ENTRY", "REPOSITION_GAP_GAIN", "A_REF_MAX", "KV",
             "FIND_SECONDS", "FIND_SPEED", "SAFETY_GAP", "OBSTACLE_AVOID_GAIN",
             "OBSTACLE_AVOID_MARGIN", "SUCCESS_DISTANCE", "SUCCESS_LINEAR", "SUCCESS_ANGULAR",
-            "SUCCESS_HOLD_SECONDS", "TIME_BUDGET_SECONDS", "SKILL_BUDGET", "GAMMA",
-            "TIME_COST", "SUCCESS_BONUS", "FAILURE_PENALTY", "POTENTIAL_WEIGHT",
+            "SUCCESS_HOLD_SECONDS", "TIME_BUDGET_SECONDS", "GAMMA",
+            "TIME_COST", "SUCCESS_BONUS", "FAILURE_PENALTY", "PROGRESS_WEIGHT", "DISTANCE_COST",
             "ENV_VERSION", "CONFIG_HASH")
     dump = {key: getattr(S, key) for key in keys if hasattr(S, key)}
     dump["action_table"] = [asdict(action) for action in S.ROBOT_ACTIONS]

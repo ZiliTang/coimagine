@@ -114,9 +114,9 @@ def scripted_joint(environment: E.RandomStartEnv) -> Tuple[int, int, Dict[str, o
     return choices[0][0], choices[1][0], {str(key): value[1] for key, value in choices.items()}
 
 
-def run_episode(instance, policy: str, seed: int = 0, max_skills: int = 30,
+def run_episode(instance, policy: str, seed: int = 0,
                 record: bool = True) -> Dict[str, object]:
-    environment = E.RandomStartEnv(instance, E.EnvConfig(skill_budget=max_skills))
+    environment = E.RandomStartEnv(instance)
     rng = np.random.default_rng(seed)
     decisions: List[Dict[str, object]] = []
     while environment.termination is None:

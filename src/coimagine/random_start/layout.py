@@ -15,7 +15,7 @@ called "geometrically legal", never "reachable".
 from __future__ import annotations
 
 import math
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from ..continuous2d.scenes import Box, Pose, SceneSpec
@@ -280,12 +280,55 @@ def sample_instance(map_name: str, split: str, index: int, seed: int,
     return None
 
 
+SPLIT_VERSION = "independent-v2"
+LEGACY_SPLIT_VERSION = "overlapping-v1"
+
+
+def content_hash(instance: InstanceSpec) -> str:
+    """Hash physical task content, never names, seeds, indices or split labels."""
+    import hashlib
+    import json
+
+    data = instance.as_dict()
+    physical = {key: data[key] for key in
+                ("map", "arena", "obstacles", "object", "robots", "goal_centre", "goal_radius")}
+    return hashlib.sha256(json.dumps(physical, sort_keys=True).encode()).hexdigest()
+
+
+def audit_split_content(panels: Dict[str, Sequence[InstanceSpec]]) -> Dict[str, object]:
+    """Detect both within-panel and cross-panel exact physical duplicates."""
+    seen = {}
+    duplicates = []
+    for panel, instances in panels.items():
+        for instance in instances:
+            digest = content_hash(instance)
+            current = {"panel": panel, "instance": instance.name}
+            if digest in seen:
+                duplicates.append({"first": seen[digest], "second": current, "sha256": digest})
+            else:
+                seen[digest] = current
+    return {"ok": not duplicates, "unique": len(seen), "duplicates": duplicates}
+
+
 def build_split(map_name: str, split: str, count: Optional[int] = None,
-                base_seed: Optional[int] = None) -> Tuple[List[InstanceSpec], Dict[str, object]]:
-    """``count`` independent instances of one split, all or nothing per index."""
+                base_seed: Optional[int] = None, *,
+                split_version: str = SPLIT_VERSION) -> Tuple[List[InstanceSpec], Dict[str, object]]:
+    """Versioned panels; retain all original train seeds and geometries.
+
+    v2 evaluation seeds live above 2**64 in separate 2**32-wide namespaces, even
+    with an explicit base_seed. Legacy evaluation panels require an explicit version
+    for historical replay; they must never be presented as independent holdouts.
+    """
+
+    if split_version not in (SPLIT_VERSION, LEGACY_SPLIT_VERSION):
+        raise ValueError(f"Unknown split version: {split_version}")
+    if split not in SPLIT_SIZES:
+        raise ValueError(f"Unknown split: {split}")
 
     count = SPLIT_SIZES[split] if count is None else count
     base_seed = SPLIT_SEEDS[map_name] if base_seed is None else base_seed
+    if not 0 <= count < (2**32 - 1) // 10 or not 0 <= base_seed < 2**63:
+        raise ValueError("count/base_seed outside the versioned seed namespace")
     instances: List[InstanceSpec] = []
     total = RejectionLog()
     failures: List[Dict[str, object]] = []
@@ -294,6 +337,8 @@ def build_split(map_name: str, split: str, count: Optional[int] = None,
         if index > count * 10:
             raise RuntimeError(f"{map_name}/{split}: too many failed instance indices")
         seed = base_seed + index
+        if split_version == SPLIT_VERSION and split != "train":
+            seed = 2**64 + (base_seed << 33) + ((split == "test") << 32) + index
         log = RejectionLog()
         instance = sample_instance(map_name, split, index, seed, log)
         total.draws += log.draws
@@ -305,9 +350,12 @@ def build_split(map_name: str, split: str, count: Optional[int] = None,
         if instance is None:
             failures.append({"index": index, "seed": seed, "attempts": log.draws})
         else:
+            if split_version == SPLIT_VERSION and split != "train":
+                instance = replace(instance, name=f"{map_name}_{split}_v2_{index:04d}")
             instances.append(instance)
         index += 1
-    return instances, {"map": map_name, "split": split, "count": len(instances),
+    return instances, {"map": map_name, "split": split, "split_version": split_version,
+                       "base_seed": base_seed, "count": len(instances),
                        "failed_indices": failures, "rejections": total.as_dict()}
 
 

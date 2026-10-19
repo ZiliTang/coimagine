@@ -344,7 +344,7 @@ def check_reward_recomputation(instances: Sequence[layout.InstanceSpec]) -> Dict
                      "difference": abs(forced.reward_total - forced_recomputed["total"]),
                      "success": True, "budget": False})
 
-    budgeted = E.RandomStartEnv(instances[0], E.EnvConfig(skill_budget=2, time_budget=1e9))
+    budgeted = E.RandomStartEnv(instances[0], E.EnvConfig(time_budget=0.1))
     for action_index in (12, 12):
         if budgeted.termination is None:
             budgeted.joint_step(action_index, action_index)
@@ -355,7 +355,8 @@ def check_reward_recomputation(instances: Sequence[layout.InstanceSpec]) -> Dict
                      "environment_total": budgeted.reward_total,
                      "recomputed_total": budget_recomputed["total"],
                      "difference": abs(budgeted.reward_total - budget_recomputed["total"]),
-                     "success": budgeted.success, "budget": True})
+                      "success": budgeted.success,
+                      "budget": budgeted.termination == E.TERMINATION_BUDGET})
     worst = max(outcome["difference"] for outcome in outcomes)
     return {"ok": bool(worst < 1e-9
                        and any(outcome["success"] for outcome in outcomes)
@@ -366,8 +367,8 @@ def check_reward_recomputation(instances: Sequence[layout.InstanceSpec]) -> Dict
 def check_branch_restore(instance: layout.InstanceSpec) -> Dict[str, object]:
     environment = E.RandomStartEnv(instance)
     environment.joint_step(3, 13)
-    # a *terminated* parent may not be extended, checked on a budget-1 environment
-    finished = E.RandomStartEnv(instance, E.EnvConfig(skill_budget=1))
+    # a *terminated* parent may not be extended, checked on a one-period environment
+    finished = E.RandomStartEnv(instance, E.EnvConfig(time_budget=0.05))
     finished.joint_step(3, 3)
     refused = False
     try:

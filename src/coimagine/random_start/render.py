@@ -40,7 +40,6 @@ from .spec import (
     OBJECT_WIDTH,
     ROBOT_RADIUS,
     TIME_BUDGET_SECONDS,
-    SKILL_BUDGET,
 )
 
 for _candidate in ("/home/tzl/.local/share/fonts/wqy.ttc", "/tmp/wqy.ttc", "/tmp/cjk.ttf"):
@@ -255,7 +254,7 @@ def _draw_panel(panel, rows: Sequence[Dict[str, object]], index: int, meta: Dict
     lines.append(f"t = {elapsed:6.2f} s   tick {row['tick']}   period {row['period']}/{total}")
     lines.append(f"joint skill {row['skill_index']}   budget left "
                  f"{max(0.0, TIME_BUDGET_SECONDS - elapsed):5.1f} s   skills "
-                 f"{row['skill_index']}/{SKILL_BUDGET}")
+                 f"{row['skill_index']} (time budget only)")
     lines.append(f"joint action: {row['joint_action_label']}")
     lines.append("")
     for robot_id in (0, 1):

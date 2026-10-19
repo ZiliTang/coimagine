@@ -395,6 +395,17 @@ class PushSkill(_VisionSkill):
         self.push_wall = 0.0
         self.approach_time = 0.0
 
+    def _tangential_reference(self, observation: SkillObservation,
+                              patch: SurfacePatch) -> Vec:
+        """Candidate extension point: extra reference velocity along the visible tangent.
+
+        The default is a no-op, so the frozen baseline controller is unchanged. A candidate
+        controller may override it (for example to aim the contact point inside the visible
+        segment instead of at a corner). It never changes the observation or the safety gate.
+        """
+
+        return (0.0, 0.0)
+
     def step(self, observation: SkillObservation, dt: float) -> Tuple[Vec, Dict[str, object]]:
         self.skill_time += dt
         self.no_progress_seconds += dt
@@ -409,7 +420,7 @@ class PushSkill(_VisionSkill):
             if patch is not None:
                 self._mark_progress()
                 self.stage = "approach"
-            elif self.find_elapsed >= FIND_SECONDS or observation.elapsed_seconds >= SKILL_MAX_SECONDS:
+            elif self.find_elapsed >= FIND_SECONDS:
                 reason = "not_observed"
         elif self.stage == "approach":
             self.approach_time += dt
@@ -463,6 +474,9 @@ class PushSkill(_VisionSkill):
         else:
             raw = (0.0, 0.0)
 
+        if reason is None and patch is not None and self.stage in ("approach", "push"):
+            correction = self._tangential_reference(observation, patch)
+            raw = (raw[0] + correction[0], raw[1] + correction[1])
         if reason is None:
             reason = self._common_checks(observation, dt)
         if reason is None and self.stage != "find" and self.no_progress_seconds >= NO_PROGRESS_SECONDS:

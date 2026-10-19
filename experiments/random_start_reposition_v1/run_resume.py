@@ -24,8 +24,8 @@ SCRIPT = ROOT / "experiments/random_start_reposition_v1/rl.py"
 
 
 def run(arguments, out: Path) -> None:
-    command = [sys.executable, str(SCRIPT), "--out", str(out), "--scan", "8",
-               "--dev-instances", "4", "--episodes-per-update", "2", "--eval-every", "100"] + arguments
+    command = [sys.executable, str(SCRIPT), "--out", str(out), "--scan", "64",
+               "--episodes-per-update", "2", "--eval-every", "100"] + arguments
     subprocess.run(command, check=True, cwd=ROOT, stdout=subprocess.DEVNULL,
                    stderr=subprocess.STDOUT)
 

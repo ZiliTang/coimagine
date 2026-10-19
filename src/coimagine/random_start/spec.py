@@ -152,14 +152,17 @@ SUCCESS_LINEAR: float = 0.02          # m/s
 SUCCESS_ANGULAR: float = 0.05         # rad/s
 SUCCESS_HOLD_SECONDS: float = 0.50    # s of continuous true physical time
 TIME_BUDGET_SECONDS: float = 90.0
-SKILL_BUDGET: int = 30
-GAMMA: float = 0.997                  # per control period
+GAMMA: float = 1.0                    # finite-horizon undiscounted task, no delayed-failure benefit
 TIME_COST: float = 0.002              # per control period, in reward units
 SUCCESS_BONUS: float = 10.0
 FAILURE_PENALTY: float = -2.0
-POTENTIAL_WEIGHT: float = 1.0
+PROGRESS_WEIGHT: float = 1.0          # reward / m, real distance decrease (including final period)
+DISTANCE_COST: float = 0.02           # reward / (m s), integrated at CONTROL_DT
 
-ENV_VERSION: str = "random-start-reposition-v1"
+# v3.1 repairs PUSH's seek timeout (skill-local time, never episode elapsed time).
+# Rewards, physical horizon and observation layout are unchanged. Old weights may
+# be evaluated explicitly, but training/branch restores must not cross versions.
+ENV_VERSION: str = "random-start-time-budget-v3.1"
 
 # ---------------------------------------------------------------------------
 # the 15 discrete robot actions and the 225 joint actions

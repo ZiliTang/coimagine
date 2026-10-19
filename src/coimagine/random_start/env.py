@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import copy
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -47,6 +47,7 @@ from .skills import (
 )
 from .spec import (
     CONTROL_DT,
+    ENV_VERSION,
     FAILURE_PENALTY,
     GAMMA,
     JOINT_MAX_SECONDS,
@@ -54,10 +55,10 @@ from .spec import (
     MAX_FORCE,
     OBJECT_HEIGHT,
     OBJECT_WIDTH,
-    POTENTIAL_WEIGHT,
+    PROGRESS_WEIGHT,
+    DISTANCE_COST,
     ROBOT_ACTIONS,
     ROBOT_RADIUS,
-    SKILL_BUDGET,
     SUCCESS_ANGULAR,
     SUCCESS_BONUS,
     SUCCESS_DISTANCE,
@@ -83,33 +84,71 @@ ANOMALY_TERMINATIONS = (TERMINATION_NUMERIC, TERMINATION_PENETRATION, TERMINATIO
 @dataclass
 class EnvConfig:
     time_budget: float = TIME_BUDGET_SECONDS
-    skill_budget: int = SKILL_BUDGET
     gamma: float = GAMMA
     time_cost: float = TIME_COST
     success_bonus: float = SUCCESS_BONUS
     failure_penalty: float = FAILURE_PENALTY
-    potential_weight: float = POTENTIAL_WEIGHT
+    progress_weight: float = PROGRESS_WEIGHT
+    distance_cost: float = DISTANCE_COST
     success_distance: float = SUCCESS_DISTANCE
     success_linear: float = SUCCESS_LINEAR
     success_angular: float = SUCCESS_ANGULAR
     success_hold: float = SUCCESS_HOLD_SECONDS
     joint_max_seconds: float = JOINT_MAX_SECONDS
     penetration_limit: float = 0.05
+    # -- oriented prototype (default off: v3.1 behaviour is byte-identical) ----------------
+    #: kinematic heading DOF + stable pushing side: the robot must turn its heading towards
+    #: the push direction; a misaligned push is scaled by cos(error). This is a *prototype*
+    #: actuation model, not a torque-coupled contact model.
+    oriented: bool = False
+    #: diagnostic mode: "" / "off" = v3.1, "lidar_only" = rotate heading + body-fixed scan,
+    #: "scale_only" = fixed heading + cos(error) force gating, "full" = rotate + gate.
+    oriented_mode: str = ""
+    max_omega: float = 1.5            # rad/s heading-rate limit
+    align_gain: float = 3.0           # heading-rate proportional gain
+    align_tolerance_deg: float = 20.0  # full force inside this heading error
     base: Continuous2DConfig = field(default_factory=Continuous2DConfig)
 
+    def __post_init__(self):
+        if self.gamma != 1.0:
+            raise ValueError("time-budget-v3 uses undiscounted finite-horizon returns (gamma=1)")
+        if (self.time_budget <= 0 or not math.isfinite(self.time_budget)
+                or not math.isclose(self.time_budget / CONTROL_DT,
+                                    round(self.time_budget / CONTROL_DT), abs_tol=1e-8)):
+            raise ValueError("time_budget must be a positive integer number of control periods")
+        if self.oriented_mode and self.oriented_mode not in ("off", "lidar_only",
+                                                              "scale_only", "full"):
+            raise ValueError(f"unknown oriented_mode {self.oriented_mode!r}")
+        if self.oriented_mode in ("lidar_only", "scale_only", "full"):
+            self.oriented = True
+        if self.oriented:
+            if self.max_omega <= 0 or self.align_gain <= 0:
+                raise ValueError("oriented model needs positive max_omega and align_gain")
+            if not (0.0 < self.align_tolerance_deg < 90.0):
+                raise ValueError("align_tolerance_deg must be in (0, 90)")
+
     def as_dict(self) -> Dict[str, object]:
-        return {"time_budget": self.time_budget, "skill_budget": self.skill_budget,
+        return {"env_version": ENV_VERSION, "time_budget": self.time_budget,
                 "gamma": self.gamma, "time_cost": self.time_cost,
                 "success_bonus": self.success_bonus,
                 "failure_penalty": self.failure_penalty,
-                "potential_weight": self.potential_weight,
+                 "progress_weight": self.progress_weight,
+                 "distance_cost": self.distance_cost,
                 "success_distance": self.success_distance,
                 "success_linear": self.success_linear,
                 "success_angular": self.success_angular,
                 "success_hold": self.success_hold,
                 "joint_max_seconds": self.joint_max_seconds,
                 "penetration_limit": self.penetration_limit,
+                "oriented": self.oriented, "oriented_mode": self.oriented_mode,
+                "max_omega": self.max_omega,
+                "align_gain": self.align_gain,
+                "align_tolerance_deg": self.align_tolerance_deg,
                 "physics_config_hash": self.base.config_hash()}
+
+
+def _wrap_angle(value: float) -> float:
+    return math.atan2(math.sin(value), math.cos(value))
 
 
 def _kinematics(state) -> RobotKinematics:
@@ -120,9 +159,14 @@ def _kinematics(state) -> RobotKinematics:
 class RandomStartEnv:
     """One task instance, one living world, and a sequence of synchronous joint skills."""
 
-    def __init__(self, instance: InstanceSpec, config: Optional[EnvConfig] = None):
+    def __init__(self, instance: InstanceSpec, config: Optional[EnvConfig] = None,
+                 skill_factory=None):
         self.instance = instance
         self.config = config or EnvConfig()
+        # Explicit controller injection point. The default is the frozen baseline factory, so
+        # every existing caller keeps the identical behaviour; a candidate controller is passed
+        # here by name and is recorded in the branch log. No implicit global monkeypatch.
+        self.skill_factory = skill_factory if skill_factory is not None else make_skill
         self.env = Continuous2DEnv(self.config.base)
         self.env.reset(instance.to_scene())
         self.obstacle_polygons = tuple(
@@ -140,8 +184,16 @@ class RandomStartEnv:
         self.discount_prefix = 1.0
         self.reward_total = 0.0
         self.reward_components: Dict[str, float] = {
-            "shaping": 0.0, "time_cost": 0.0, "success_bonus": 0.0, "failure_penalty": 0.0}
+            "progress": 0.0, "distance_cost": 0.0, "time_cost": 0.0,
+            "success_bonus": 0.0, "failure_penalty": 0.0}
         self._episode_events: List[Dict[str, object]] = []
+        # kinematic heading state of the oriented prototype; unused when oriented=False
+        self.heading = [float(pose.angle) for pose in instance.robot_poses]
+        self.heading_rate = [0.0, 0.0]
+        mode = self.config.oriented_mode or ("full" if self.config.oriented else "off")
+        self.orient_mode = mode
+        self.orient_rotate = mode in ("lidar_only", "full")
+        self.orient_gate = mode in ("scale_only", "full")
 
     # -- privileged truth, reward and evaluation only -----------------------
     def object_state(self):
@@ -154,9 +206,6 @@ class RandomStartEnv:
         state = self.object_state()
         return float(math.hypot(state.x - self.instance.goal_centre[0],
                                 state.y - self.instance.goal_centre[1]))
-
-    def potential(self) -> float:
-        return -self.object_distance()
 
     def success_conditions(self) -> Dict[str, object]:
         state = self.object_state()
@@ -182,8 +231,18 @@ class RandomStartEnv:
                                             float(entry["point"][0]), float(entry["point"][1])))
         return out
 
+    def _legal_robot_states(self) -> List[Tuple[float, ...]]:
+        """Robot states as the controller may use them: the kinematic heading when oriented."""
+
+        states = [list(state.as_tuple()) for state in self.robot_states()]
+        if self.orient_rotate:
+            for robot_id in (0, 1):
+                states[robot_id][2] = float(self.heading[robot_id])
+                states[robot_id][5] = float(self.heading_rate[robot_id])
+        return [tuple(state) for state in states]
+
     def scan_for(self, robot_id: int, tick: int, time: float) -> LidarScan:
-        states = [state.as_tuple() for state in self.robot_states()]
+        states = self._legal_robot_states()
         return scan_lidar(self.instance.arena, self.obstacle_polygons,
                           (self.object_state().x, self.object_state().y, self.object_state().angle),
                           states, robot_id, tick, time)
@@ -196,6 +255,11 @@ class RandomStartEnv:
         states = self.robot_states()
         own = _kinematics(states[robot_id])
         mate = _kinematics(states[1 - robot_id])
+        if self.orient_rotate:
+            own = replace(own, angle=float(self.heading[robot_id]),
+                          omega=float(self.heading_rate[robot_id]))
+            mate = replace(mate, angle=float(self.heading[1 - robot_id]),
+                           omega=float(self.heading_rate[1 - robot_id]))
         scan = self.scan_for(robot_id, tick, time)
         patches = tuple(scan_patches(scan, (own.x, own.y)))
         patch = None
@@ -272,7 +336,7 @@ class RandomStartEnv:
                        1.0 if observation.contacting_teammate else 0.0]
         elapsed = self.total_periods * CONTROL_DT
         values += [min(1.0, elapsed / self.config.time_budget),
-                   self.skills_used / max(1, self.config.skill_budget),
+                    0.0,  # reserved former skill-budget fraction; no action-count budget in v3
                    max(0.0, self.config.time_budget - elapsed) / self.config.time_budget]
         for observation in (observation_0, observation_1):
             scan = observation.scan
@@ -294,7 +358,7 @@ class RandomStartEnv:
         for robot_id in (0, 1):
             fields += [f"r{robot_id}_contact_object", f"r{robot_id}_contact_static",
                        f"r{robot_id}_contact_teammate"]
-        fields += ["elapsed_fraction", "skills_fraction", "remaining_fraction"]
+        fields += ["elapsed_fraction", "reserved_zero", "remaining_fraction"]
         for robot_id in (0, 1):
             fields += [f"r{robot_id}_lidar_{index:02d}" for index in range(72)]
             fields += [f"r{robot_id}_class_{index:02d}" for index in range(72)]
@@ -309,14 +373,15 @@ class RandomStartEnv:
                 "may not be extended (it must not be used as a branchable parent)")
         action_0 = ROBOT_ACTIONS[action_index_0]
         action_1 = ROBOT_ACTIONS[action_index_1]
-        skills: Dict[int, Skill] = {0: make_skill(action_0, MAX_FORCE),
-                                    1: make_skill(action_1, MAX_FORCE)}
+        skills: Dict[int, Skill] = {0: self.skill_factory(action_0, MAX_FORCE),
+                                    1: self.skill_factory(action_1, MAX_FORCE)}
         holds: Dict[int, HoldBrake] = {0: HoldBrake(MAX_FORCE), 1: HoldBrake(MAX_FORCE)}
         skill_ends: Dict[int, Optional[Dict[str, object]]] = {0: None, 1: None}
         skill_index = self.skills_used + 1
         start_period = self.total_periods
         start_time = start_period * CONTROL_DT
-        phi_before = self.potential()
+        distance_before = self.object_distance()
+        distances = [distance_before]
         periods = 0
         infos: Dict[int, Dict[str, object]] = {}
         success_period: Optional[int] = None
@@ -349,6 +414,42 @@ class RandomStartEnv:
                 forces[robot_id] = force
                 infos[robot_id] = info
 
+            if self.orient_rotate or self.orient_gate:
+                for robot_id in (0, 1):
+                    force = forces[robot_id]
+                    magnitude = math.hypot(force[0], force[1])
+                    if magnitude > 1e-9:
+                        desired = math.atan2(force[1], force[0])
+                        error = _wrap_angle(desired - self.heading[robot_id])
+                        omega = 0.0
+                        if self.orient_rotate:
+                            omega = max(-self.config.max_omega,
+                                        min(self.config.max_omega,
+                                            self.config.align_gain * error))
+                            self.heading_rate[robot_id] = omega
+                            self.heading[robot_id] = _wrap_angle(
+                                self.heading[robot_id] + omega * CONTROL_DT)
+                        else:
+                            self.heading_rate[robot_id] = 0.0
+                        scale = 1.0
+                        if self.orient_gate:
+                            tolerance = math.radians(self.config.align_tolerance_deg)
+                            scale = 1.0 if abs(error) <= tolerance else max(0.0, math.cos(error))
+                        forces[robot_id] = (force[0] * scale, force[1] * scale)
+                        infos[robot_id] = {**infos[robot_id],
+                                           "heading": self.heading[robot_id],
+                                           "heading_rate": omega,
+                                           "align_error_deg": math.degrees(error),
+                                           "force_scale": scale,
+                                           "force_gated": list(forces[robot_id]),
+                                           "oriented_mode": self.orient_mode}
+                    else:
+                        self.heading_rate[robot_id] = 0.0
+                        infos[robot_id] = {**infos[robot_id],
+                                           "heading": self.heading[robot_id],
+                                           "heading_rate": 0.0, "align_error_deg": None,
+                                           "force_scale": 1.0, "force_gated": [0.0, 0.0],
+                                           "oriented_mode": self.orient_mode}
             self.env.step_control((forces[0], forces[1]))
             self.world_advances += 1
             self.total_periods += 1
@@ -356,6 +457,7 @@ class RandomStartEnv:
             elapsed = start_time + periods * CONTROL_DT
 
             conditions = self.success_conditions()
+            distances.append(float(conditions["distance"]))
             if (conditions["distance_ok"] and conditions["linear_ok"]
                     and conditions["angular_ok"]):
                 self.hold_seconds += CONTROL_DT
@@ -413,27 +515,22 @@ class RandomStartEnv:
                     "residual_motion": bool(final_observation.own.speed > 0.03)}
 
         # -- termination -----------------------------------------------------
-        terminated = False
         truncated = False
         if success_period is not None:
             self.success = True
-            terminated = True
             self.termination = TERMINATION_SUCCESS
         elif anomaly is not None:
-            terminated = True
             self.termination = anomaly
-        elif self.total_periods * CONTROL_DT >= self.config.time_budget \
-                or self.skills_used + 1 >= self.config.skill_budget:
+        elif self.total_periods * CONTROL_DT >= self.config.time_budget:
             truncated = True
             self.termination = TERMINATION_BUDGET
 
-        phi_next = 0.0 if (terminated or truncated) else self.potential()
-        terms = self._reward_terms(periods, phi_before, phi_next,
+        terms = self._reward_terms(distances,
                                    success=success_period is not None,
                                    budget=bool(truncated))
         self.discount_prefix = terms["discount_after"]
         self.reward_total += terms["total"]
-        for key in ("shaping", "time_cost", "success_bonus", "failure_penalty"):
+        for key in self.reward_components:
             self.reward_components[key] += terms[key]
         self.skills_used += 1
 
@@ -448,8 +545,8 @@ class RandomStartEnv:
             "end_time": start_time + periods * CONTROL_DT,
             "skill_ends": skill_ends,
             "joint_end_period": start_period + periods,
-            "phi_before": phi_before,
-            "phi_next_used": phi_next,
+            "distance_before": distance_before,
+            "distance_after": distances[-1],
             "discount_prefix_before": terms["discount_before"],
             "discount_prefix_after": terms["discount_after"],
             "reward": terms,
@@ -470,39 +567,33 @@ class RandomStartEnv:
         return boundary
 
     # -- reward ------------------------------------------------------------
-    def _reward_terms(self, periods: int, phi_before: float, phi_next: float,
-                      *, success: bool, budget: bool) -> Dict[str, float]:
-        """The single reward implementation of section 5.2.
+    def _reward_terms(self, distances: Sequence[float],
+                       *, success: bool, budget: bool) -> Dict[str, float]:
+        """Sum real per-control-period dense rewards, retaining real terminal distance.
 
-        ``R = gamma^n Phi_next - Phi_current - c * sum_{j<n} gamma^j + gamma^(n-1) B``
-        evaluated at this joint boundary, then weighted by the episode's discount prefix so
-        the same formula is valid for every boundary of a long episode.
+        r_k = b*(d_k-d_(k+1)) - a*d_(k+1)*dt - c + terminal_event.
+        No absorbing potential, enabling bonus, evidence bonus or per-skill reward.
         """
-
-        gamma = self.config.gamma
-        prefix = self.discount_prefix
-        discount_to_end = gamma ** periods
-        geometric = sum(gamma ** j for j in range(periods))
-        shaping = prefix * self.config.potential_weight * (discount_to_end * phi_next - phi_before)
-        time_cost = -prefix * self.config.time_cost * geometric
-        event = 0.0
-        if success:
-            event = self.config.success_bonus
-        elif budget:
-            event = self.config.failure_penalty
-        event_term = prefix * (gamma ** (periods - 1)) * event if periods > 0 else prefix * event
+        if len(distances) < 2 or not all(math.isfinite(d) and d >= 0 for d in distances):
+            raise ValueError("Reward requires finite non-negative initial and post-period distances")
+        periods = len(distances) - 1
+        progress = self.config.progress_weight * (distances[0] - distances[-1])
+        distance_cost = -self.config.distance_cost * CONTROL_DT * sum(distances[1:])
+        time_cost = -self.config.time_cost * periods
+        event = self.config.success_bonus if success else (self.config.failure_penalty if budget else 0.0)
         return {
-            "shaping": float(shaping),
+            "progress": float(progress),
+            "distance_cost": float(distance_cost),
             "time_cost": float(time_cost),
-            "success_bonus": float(event_term if success else 0.0),
-            "failure_penalty": float(event_term if budget else 0.0),
-            "event": float(event_term),
-            "total": float(shaping + time_cost + event_term),
+            "success_bonus": float(event if success else 0.0),
+            "failure_penalty": float(event if budget and not success else 0.0),
+            "event": float(event),
+            "total": float(progress + distance_cost + time_cost + event),
             "periods": int(periods),
-            "discount_before": float(prefix),
-            "discount_after": float(prefix * discount_to_end),
-            "phi_before": float(phi_before),
-            "phi_next_used": float(phi_next),
+            "discount_before": 1.0,
+            "discount_after": 1.0,
+            "distance_before": float(distances[0]),
+            "distance_after": float(distances[-1]),
         }
 
     # -- rows and logs -----------------------------------------------------
@@ -510,6 +601,11 @@ class RandomStartEnv:
              conditions, penetration) -> Dict[str, object]:
         true_states = self.robot_states()
         object_state = self.object_state()
+        robot_tuples = [list(state.as_tuple()) for state in true_states]
+        if self.orient_rotate:
+            for robot_id in (0, 1):
+                robot_tuples[robot_id][2] = float(self.heading[robot_id])
+                robot_tuples[robot_id][5] = float(self.heading_rate[robot_id])
         row: Dict[str, object] = {
             "tick": int(self.env.tick),
             "period": int(period),
@@ -520,7 +616,7 @@ class RandomStartEnv:
             "forces": [list(forces[0]), list(forces[1])],
             "true": {
                 "object": list(object_state.as_tuple()),
-                "robots": [list(state.as_tuple()) for state in true_states],
+                "robots": robot_tuples,
             },
             "goal": list(self.instance.goal_centre),
             "goal_radius": float(self.instance.goal_radius),
@@ -529,6 +625,7 @@ class RandomStartEnv:
             "penetration": float(penetration),
             "diagnostic_only": "true state, goal distance and hold timer are diagnostic truth",
             "true_goal_distance": self.object_distance(),
+            "oriented": bool(self.config.oriented), "oriented_mode": self.orient_mode,
         }
         for robot_id in (0, 1):
             info = infos[robot_id]
@@ -581,6 +678,10 @@ class RandomStartEnv:
                 "safety_trigger": (list(info["safety_trigger"])
                                    if info.get("safety_trigger") else None),
                 "skill_time": info.get("skill_time"),
+                "heading": info.get("heading"), "heading_rate": info.get("heading_rate"),
+                "align_error_deg": info.get("align_error_deg"),
+                "force_scale": info.get("force_scale"),
+                "force_gated": info.get("force_gated"),
                 "find_direction": (list(info["find_direction"])
                                    if info.get("find_direction") else None),
                 "patch_points_world": ([list(point) for point in patch.points_world]
@@ -598,6 +699,7 @@ class RandomStartEnv:
     # -- branching ---------------------------------------------------------
     def export_branch_state(self) -> Dict[str, object]:
         return {
+            "env_version": ENV_VERSION,
             "snapshot": self.env.export_state(),
             "total_periods": self.total_periods,
             "skills_used": self.skills_used,
@@ -611,9 +713,16 @@ class RandomStartEnv:
             "history": list(self.history),
             "rows": len(self.rows),
             "boundaries": len(self.boundaries),
+            "oriented": bool(self.config.oriented),
+            "oriented_mode": self.orient_mode,
+            "heading": list(self.heading), "heading_rate": list(self.heading_rate),
         }
 
     def restore_branch_state(self, state: Dict[str, object]) -> None:
+        if state.get("env_version") != ENV_VERSION:
+            raise ValueError("Cannot restore a branch from a different reward contract")
+        if "oriented" in state and bool(state["oriented"]) != bool(self.config.oriented):
+            raise ValueError("Cannot restore an oriented branch into a different actuation model")
         self.env.restore(state["snapshot"], exact=True)  # type: ignore[arg-type]
         self.total_periods = int(state["total_periods"])  # type: ignore[arg-type]
         self.skills_used = int(state["skills_used"])  # type: ignore[arg-type]
@@ -627,6 +736,9 @@ class RandomStartEnv:
         self.history = list(state["history"])  # type: ignore[arg-type]
         self.rows = self.rows[: int(state["rows"])]  # type: ignore[arg-type]
         self.boundaries = self.boundaries[: int(state["boundaries"])]  # type: ignore[arg-type]
+        if "heading" in state:
+            self.heading = [float(value) for value in state["heading"]]  # type: ignore[arg-type]
+            self.heading_rate = [float(value) for value in state["heading_rate"]]  # type: ignore[arg-type]
 
 
 def recompute_episode_reward(rows: Sequence[Dict[str, object]],
@@ -636,48 +748,42 @@ def recompute_episode_reward(rows: Sequence[Dict[str, object]],
     """Independent recomputation of the episode return from the raw physical log.
 
     It consumes the per-period log (which carries the true object position, the goal and the
-    period count of each boundary) and re-derives the potential, the discount prefix and the
+    period count of each boundary) and re-derives the distances, integrated costs and the
     event terms from scratch. It never reads the reward back out of the log, so a bug in the
     environment's reward path cannot hide here.
     """
 
     config = config or EnvConfig()
-    gamma = config.gamma
     total = 0.0
-    prefix = 1.0
-    shaping_total = 0.0
+    progress_total = 0.0
+    distance_total = 0.0
     time_total = 0.0
     event_total = 0.0
     index = 0
     previous_object = (float(initial_object_xy[0]), float(initial_object_xy[1]))
     for boundary in boundaries:
         periods = int(boundary["periods"])
-        goal = rows[index]["goal"]
-        phi_before = -math.hypot(previous_object[0] - goal[0], previous_object[1] - goal[1])
-        last = rows[index + periods - 1]
         success = bool(boundary["success"])
         truncated = bool(boundary["truncated"])
-        anomaly = boundary.get("anomaly")
-        terminated = bool(success or anomaly is not None or truncated)
-        if terminated:
-            phi_next = 0.0
-        else:
-            object_pose = last["true"]["object"]
-            phi_next = -math.hypot(object_pose[0] - goal[0], object_pose[1] - goal[1])
-        geometric = sum(gamma ** j for j in range(periods))
-        shaping = prefix * config.potential_weight * (gamma ** periods * phi_next - phi_before)
-        time_cost = -prefix * config.time_cost * geometric
+        progress = 0.0
+        distance_cost = 0.0
+        for row in rows[index:index + periods]:
+            goal = row["goal"]
+            object_pose = row["true"]["object"]
+            before = math.hypot(previous_object[0] - goal[0], previous_object[1] - goal[1])
+            after = math.hypot(object_pose[0] - goal[0], object_pose[1] - goal[1])
+            progress += config.progress_weight * (before - after)
+            distance_cost -= config.distance_cost * CONTROL_DT * after
+            previous_object = (float(object_pose[0]), float(object_pose[1]))
+        time_cost = -config.time_cost * periods
         event = config.success_bonus if success else (
             config.failure_penalty if truncated else 0.0)
-        event_term = (prefix * (gamma ** (periods - 1)) * event if periods > 0
-                      else prefix * event)
-        shaping_total += shaping
+        progress_total += progress
+        distance_total += distance_cost
         time_total += time_cost
-        event_total += event_term
-        total += shaping + time_cost + event_term
-        prefix *= gamma ** periods
-        previous_object = (float(last["true"]["object"][0]), float(last["true"]["object"][1]))
+        event_total += event
+        total += progress + distance_cost + time_cost + event
         index += periods
-    return {"total": float(total), "shaping": float(shaping_total),
-            "time_cost": float(time_total), "event": float(event_total),
-            "discount_prefix": float(prefix)}
+    return {"total": float(total), "progress": float(progress_total), "distance_cost": float(distance_total),
+             "time_cost": float(time_total), "event": float(event_total),
+             "discount_prefix": 1.0}
