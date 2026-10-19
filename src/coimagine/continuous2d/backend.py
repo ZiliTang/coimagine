@@ -205,6 +205,18 @@ class PymunkBackend:
     def robot_states(self) -> Tuple[BodyState, BodyState]:
         return (_body_state(self.robot_bodies[0]), _body_state(self.robot_bodies[1]))
 
+    def set_robot_heading(self, robot_id: int, angle: float, omega: float) -> None:
+        """Make the rigid body's angle follow the authoritative kinematic heading.
+
+        The robot is a disc, so this changes no collision geometry today; it keeps the body,
+        the scan, the diagnostics and the future front pushing face on **one** heading.
+        """
+
+        body = self.robot_bodies[robot_id]
+        body.angle = float(angle)
+        body.angular_velocity = float(omega)
+        body.torque = 0.0
+
     def export_state(
         self,
         *,
