@@ -146,8 +146,8 @@ OPTION_PREPARE_SECONDS: float = 3.0   # covers FIND + ALIGN + approach, not the 
 OPTION_TIMEOUT_SLACK: float = 2.5
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
-APPROACH_TIMEOUT: float = 6.0         # s, raised from the inherited 5.0 s (see CHANGELOG)
-APPROACH_MIN_SPEED: float = 0.05      # m/s, v4.2: less crawl/braking at the end
+APPROACH_TIMEOUT: float = 8.0         # s, v4.2: the 6 s cap clipped slow approaches
+APPROACH_MIN_SPEED: float = 0.10      # m/s, v4.2: no crawl at the end of the approach
 #: Raised from the inherited 0.08 m/s. The inherited value was tuned for a fixed 0.35 m
 #: staging standoff; a random start may be up to 0.50 m clear of the object, and 0.08 m/s
 #: cannot close that inside the 8 s skill at all. The physics, the force limit and the

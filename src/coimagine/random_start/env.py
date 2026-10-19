@@ -218,6 +218,7 @@ class RandomStartEnv:
         #: v4.1 anchor tracking: legal corner candidates only, with an explicit status
         self.anchor_trackers = {0: AnchorTracker(), 1: AnchorTracker()}
         self._last_anchor = {0: None, 1: None}
+        self._hold_time = {0: 0.0, 1: 0.0}
         # v4: there is exactly one actuation model. The robot turns towards the heading its
         # skill declares; the force is never gated, so braking, safety and avoidance stay fully
         # effective. The old diagnostic modes are gone.
@@ -465,9 +466,18 @@ class RandomStartEnv:
                 both_pushing = all(getattr(skills[robot_id], "stage", None) == "push"
                                    for robot_id in (0, 1))
                 for robot_id in (0, 1):
-                    if hasattr(skills[robot_id], "hold"):
-                        skills[robot_id].hold = (not both_pushing
-                                                 and skills[robot_id].stage == "push")
+                    if not hasattr(skills[robot_id], "hold"):
+                        continue
+                    if both_pushing:
+                        skills[robot_id].hold = False
+                        self._hold_time[robot_id] = 0.0
+                    elif getattr(skills[robot_id], "stage", None) == "push":
+                        # bounded wait (1.5 s): if the teammate never reaches its push stage
+                        # (blocked, short face, contact lost), release instead of freezing
+                        self._hold_time[robot_id] += CONTROL_DT
+                        skills[robot_id].hold = self._hold_time[robot_id] < 1.5
+                    else:
+                        self._hold_time[robot_id] = 0.0
             observations = {robot_id: self.observe(robot_id, self.total_periods, now, contacts)
                             for robot_id in (0, 1)}
             # the policy-facing vector of this period must be built *before* the world advances
