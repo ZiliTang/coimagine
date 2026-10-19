@@ -711,6 +711,11 @@ class RandomStartEnv:
                 "progress_target_distance": info.get("progress_target_distance"),
                 "option_timeout_seconds": info.get("option_timeout_seconds"),
                 "face_switches": info.get("face_switches"),
+                "follow_offset": info.get("follow_offset"),
+                "follow_reference_offset": info.get("follow_reference_offset"),
+                "follow_pose_error": info.get("follow_pose_error"),
+                "follow_time": info.get("follow_time"),
+                "force_peak": info.get("force_peak"),
                 "anchor_status": (self._last_anchor[robot_id].status
                                   if self._last_anchor[robot_id] else None),
                 "anchor_candidates": ([list(point) for point in

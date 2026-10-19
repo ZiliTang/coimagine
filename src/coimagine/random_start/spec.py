@@ -113,13 +113,22 @@ REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
 PUSH_DISTANCES: Tuple[float, ...] = (0.05, 0.10, 0.20, 0.40)
 REPOSITION_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
 WAIT_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
+#: SUPPORT_FOLLOW v1 is a *duration* option: hold the relative pose for this long. It never
+#: applies a sustained push; the scale is the follow budget, not a force.
+FOLLOW_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 OPTION_SCALE_COUNT: int = 4
 AGENTS: Tuple[int, int] = (0, 1)
-#: 12 types (9 PUSH + 2 REPOSITION + 1 WAIT_BRAKE) x 4 scales, type-major:
-#: index = type_index * OPTION_SCALE_COUNT + scale_index
-ROBOT_ACTION_TYPE_COUNT: int = 12
-ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * OPTION_SCALE_COUNT   # 48
-JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 2304
+#: 13 types (9 PUSH + 2 REPOSITION + 1 WAIT_BRAKE + 1 SUPPORT_FOLLOW) x 4 scales, type-major:
+#: index = type_index * OPTION_SCALE_COUNT + scale_index. FOLLOW is appended last so the
+#: historical type indices (and the testbench baselines) are unchanged.
+ROBOT_ACTION_TYPE_COUNT: int = 13
+ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * OPTION_SCALE_COUNT   # 52
+JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 2704
+#: the follow keeps a clearance (it does not press); the normal term is a gap servo
+FOLLOW_GAP: float = 0.05
+FOLLOW_GAP_GAIN: float = 1.5
+FOLLOW_TANGENT_GAIN: float = 1.5
+FOLLOW_POSE_TOLERANCE: float = 0.06
 
 SKILL_MAX_SECONDS: float = 8.0        # seek + approach stage before the option timeout
 JOINT_MAX_SECONDS: float = 24.0       # v4: joint window = the option timeout (max 24 s)
@@ -235,8 +244,9 @@ def action_table() -> Tuple[RobotAction, ...]:
             kind="reposition", direction=direction,
             label=f"REPOSITION_{direction}"))
     types.append(RobotAction(kind="wait", label="WAIT_BRAKE"))
+    types.append(RobotAction(kind="follow", label="SUPPORT_FOLLOW"))
     levels = {"push": PUSH_DISTANCES, "reposition": REPOSITION_DISTANCES,
-              "wait": WAIT_DURATIONS}
+              "wait": WAIT_DURATIONS, "follow": FOLLOW_DURATIONS}
     out = []
     for type_index, action in enumerate(types):
         for scale_index, scale in enumerate(levels[action.kind]):
@@ -270,7 +280,7 @@ def option_timeout(action: RobotAction) -> float:
     so a distance is never silently folded into the approach budget.
     """
 
-    if action.kind == "wait":
+    if action.kind in ("wait", "follow"):
         return min(JOINT_MAX_SECONDS, float(action.duration))
     distance = float(action.distance)
     if action.kind == "push":

@@ -64,6 +64,10 @@ from .spec import (
     ROBOT_RADIUS,
     SAFETY_GAP,
     SKILL_MAX_SECONDS,
+    FOLLOW_GAP,
+    FOLLOW_GAP_GAIN,
+    FOLLOW_POSE_TOLERANCE,
+    FOLLOW_TANGENT_GAIN,
     OPTION_BUDGET_EXIT,
     FACE_SWITCH_EXIT,
     option_timeout,
@@ -813,11 +817,122 @@ class RepositionSkill(_VisionSkill):
         }
 
 
+class SupportFollowSkill(_VisionSkill):
+    """SUPPORT_FOLLOW v1: hold the relative pose to the visible surface; never push.
+
+    The normal term is a **gap servo** (at the target clearance it commands no normal force),
+    and the tangential term nulls the offset to the reference point, so the robot follows the
+    object as it moves without adding sustained push. The force is additionally capped low.
+    """
+
+    kind = "follow"
+
+    def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE):
+        super().__init__(action, force_limit)
+        self.stage = "find"
+        self.reference_offset: Optional[float] = None
+        self.follow_time = 0.0
+        self.gap: Optional[float] = None
+        self.offset: Optional[float] = None
+        self.pose_error: Optional[float] = None
+        self.force_peak = 0.0
+
+    def _frame(self, observation: SkillObservation, patch: SurfacePatch):
+        tangent = patch.tangent_world
+        projections = [point[0] * tangent[0] + point[1] * tangent[1]
+                       for point in patch.points_world]
+        low, high = min(projections), max(projections)
+        robot = observation.own.x * tangent[0] + observation.own.y * tangent[1]
+        return (float(patch.distance), robot - 0.5 * (low + high),
+                tangent, patch.normal_world)
+
+    def step(self, observation: SkillObservation, dt: float):
+        self.skill_time += dt
+        self.no_progress_seconds += dt
+        self._note_position(observation)
+        patch = observation.patch if (observation.patch is not None
+                                      and observation.patch.valid) else None
+        raw: Vec = (0.0, 0.0)
+        reason: Optional[str] = None
+        if patch is None:
+            raw = self._find(observation)
+            self.patch_missing_seconds += dt
+            if self.patch_missing_seconds >= OBSERVATION_FAIL_TOLERANCE:
+                reason = "patch_lost"
+        else:
+            self.patch_missing_seconds = 0.0
+            gap, offset, tangent, normal = self._frame(observation, patch)
+            self.gap, self.offset = gap, offset
+            radial = FOLLOW_GAP_GAIN * (gap - FOLLOW_GAP)
+            if self.stage == "find":
+                self.stage = "align"
+            if self.stage == "align":
+                raw = (radial * normal[0], radial * normal[1])
+                # enter FOLLOW once the gap is workably close; the gap servo finishes the
+                # approach, so a 0.02 m entry would burn most of the follow budget
+                if abs(gap - FOLLOW_GAP) <= 0.15:
+                    self.reference_offset = offset
+                    self.stage = "follow"
+            if self.stage == "follow":
+                self.follow_time += dt
+                error = offset - (self.reference_offset or 0.0)
+                tangential = -FOLLOW_TANGENT_GAIN * error
+                raw = (radial * normal[0] + tangential * tangent[0],
+                       radial * normal[1] + tangential * tangent[1])
+                self.pose_error = math.hypot(gap - FOLLOW_GAP, error)
+                if self.pose_error <= FOLLOW_POSE_TOLERANCE:
+                    self._mark_progress()
+                if self.follow_time >= (self.time_budget or 0.0):
+                    reason = "follow_complete"
+        if reason is None:
+            reason = self._common_checks(observation, dt)
+        raw = self._obstacle_avoidance(observation, raw)
+        raw = _clip_velocity(raw, REPOSITION_SPEED_MAX)
+        reference = self._drive(raw, dt)
+        force, saturated = self._force_from_reference(reference, observation)
+        force = (force[0] * 0.35, force[1] * 0.35)      # v1: bounded, no sustained push
+        self.force_peak = max(self.force_peak, math.hypot(*force))
+        if reason is not None:
+            self._finish(reason, observation)
+        info = self._info(observation, force, saturated, reference, raw)
+        return force, info
+
+    def _info(self, observation, force, saturated, reference, raw) -> Dict[str, object]:
+        patch = observation.patch
+        return {
+            "skill": self.action.label, "kind": self.kind, "stage": self.stage,
+            "exit_reason": self.exit_reason, "done": self.done,
+            "desired_velocity": raw, "reference_velocity": reference, "force": force,
+            "force_norm": math.hypot(*force), "force_saturated": saturated,
+            "normal_world": patch.normal_world if patch is not None else None,
+            "normal_valid": bool(patch is not None and patch.valid),
+            "tangent_world": patch.tangent_world if patch is not None else None,
+            "gap": self.gap, "follow_offset": self.offset,
+            "follow_reference_offset": self.reference_offset,
+            "follow_pose_error": self.pose_error, "follow_time": self.follow_time,
+            "force_peak": self.force_peak,
+            "contacting_object": observation.contacting_object,
+            "contact_point_robot": observation.contact_point_robot,
+            "obstacle_nearest_distance": (observation.static_nearest[0]
+                                          if observation.static_nearest else None),
+            "teammate_nearest_distance": (observation.teammate_nearest[0]
+                                          if observation.teammate_nearest else None),
+            "avoidance_active": self.avoidance_active,
+            "avoidance_direction": self.avoidance_direction,
+            "patch_valid": bool(patch is not None and patch.valid),
+            "safety_trigger": self.safety_trigger, "speed_at_exit": self.speed_at_exit,
+            "residual_motion": bool(self.done and self.speed_at_exit > BRAKE_SPEED),
+            **self._progress_info(),
+        }
+
+
 def make_skill(action: RobotAction, force_limit: float = MAX_FORCE) -> Skill:
     if action.kind == "push":
         return PushSkill(action, force_limit)
     if action.kind == "reposition":
         return RepositionSkill(action, force_limit)
+    if action.kind == "follow":
+        return SupportFollowSkill(action, force_limit)
     if action.kind == "wait":
         return WaitBrakeSkill(action, force_limit)
     raise ValueError(f"unknown skill kind {action.kind!r}")
