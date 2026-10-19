@@ -131,6 +131,20 @@ timeout --signal=TERM --kill-after=2s 30s .venv/bin/python -m pytest tests/test_
 - **推荐下一步**：Round 005 最小候选“技能指定期望朝向 + 制动/避障不受门控”，前端推面与转向
   力矩核验放后续独立轮。详见 `outputs/option_testbench_v1/round_004/DIAGNOSTICS.md` 与 `REVIEW.md`。
 
+### Round 005 — 最小候选（技能指定期望朝向、不门控）与负结果
+
+实现 `oriented_mode="heading_target"`：技能声明 `desired_heading`（PUSH 法向 / REPOSITION 切向 /
+WAIT_BRAKE 为 None），环境据此转动朝向，**不做力缩放**。12 分支、批量 4.53 s、渲染 2.51 s。
+
+- **制动不受门控：通过**（WAIT_BRAKE 与 v3.1 逐值相同）。
+- **`corner_plus` 未复现改善（重要负结果）**：`heading_target` 转到 +89.8° 仍 `contact_lost`；
+  只有按**力方向**转的 `lidar_only`/`full` 转到 +126.4° 才成功。→ **Round 004 的“转朝向+随体
+  雷达带来 corner_plus 改善”应更正为：改善依赖“从最终反馈力反推朝向”（含接近/避障分量），
+  属于诊断假象，不是合法技能目标的收益。**
+- **任务中性**：`face`/`teammate`/`corridor_wide` 的物体位移、转角、目标进展与 v3.1 逐值相同。
+- **建议**：把 `heading_target` 作为朝向模型的**行为基线**；`corner_plus` 类问题继续用接触目标
+  语义（Round 001 线段内接触点 / 后续前端推面几何）解决。详见 `round_005/REVIEW.md`。
+
 ## 4. 代码改动清单（本轮新增/修改）
 
 新增（测台）：

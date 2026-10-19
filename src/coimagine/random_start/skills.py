@@ -331,6 +331,7 @@ class WaitBrakeSkill(Skill):
             "desired_velocity": raw, "reference_velocity": reference, "force": force,
             "force_norm": math.hypot(*force), "force_saturated": saturated,
             "progress": self.progress, "progress_target": self.duration,
+            "desired_heading": None,
             "push_time": self.skill_time, "speed_at_exit": self.speed_at_exit,
             "residual_motion": bool(self.done and self.speed_at_exit > BRAKE_SPEED),
         }
@@ -502,6 +503,8 @@ class PushSkill(_VisionSkill):
             "force_norm": math.hypot(*force), "force_saturated": saturated,
             "normal_world": patch.normal_world if patch is not None else None,
             "normal_valid": bool(patch is not None and patch.valid),
+            "desired_heading": (patch.normal_world
+                                if patch is not None and patch.valid else None),
             "normal_source": "fitted_returns" if patch is not None else None,
             "tangent_world": patch.tangent_world if patch is not None else None,
             "tangent_direction": None,
@@ -726,6 +729,7 @@ class RepositionSkill(_VisionSkill):
             "push_alpha_deg": None, "push_speed": None, "effective_contact_seconds": None,
             "push_wall_seconds": None,
             "progress": self.progress, "progress_target": self.distance_target,
+            "desired_heading": self.tangent,
             "no_progress_seconds": self.no_progress_seconds,
             "find_direction": self.find_direction if self.stage == "find" else None,
             "skill_time": self.skill_time,

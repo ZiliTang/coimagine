@@ -117,9 +117,10 @@ class EnvConfig:
                                     round(self.time_budget / CONTROL_DT), abs_tol=1e-8)):
             raise ValueError("time_budget must be a positive integer number of control periods")
         if self.oriented_mode and self.oriented_mode not in ("off", "lidar_only",
-                                                              "scale_only", "full"):
+                                                              "scale_only", "full",
+                                                              "heading_target"):
             raise ValueError(f"unknown oriented_mode {self.oriented_mode!r}")
-        if self.oriented_mode in ("lidar_only", "scale_only", "full"):
+        if self.oriented_mode in ("lidar_only", "scale_only", "full", "heading_target"):
             self.oriented = True
         if self.oriented:
             if self.max_omega <= 0 or self.align_gain <= 0:
@@ -192,8 +193,11 @@ class RandomStartEnv:
         self.heading_rate = [0.0, 0.0]
         mode = self.config.oriented_mode or ("full" if self.config.oriented else "off")
         self.orient_mode = mode
-        self.orient_rotate = mode in ("lidar_only", "full")
+        self.orient_rotate = mode in ("lidar_only", "full", "heading_target")
         self.orient_gate = mode in ("scale_only", "full")
+        #: minimal candidate: turn towards the heading the *skill* declares; never gate the force
+        #: (braking, safety and avoidance stay fully effective)
+        self.orient_target = mode == "heading_target"
 
     # -- privileged truth, reward and evaluation only -----------------------
     def object_state(self):
@@ -414,7 +418,33 @@ class RandomStartEnv:
                 forces[robot_id] = force
                 infos[robot_id] = info
 
-            if self.orient_rotate or self.orient_gate:
+            if self.orient_target:
+                for robot_id in (0, 1):
+                    target = infos[robot_id].get("desired_heading")
+                    if target is not None:
+                        desired = math.atan2(float(target[1]), float(target[0]))
+                        error = _wrap_angle(desired - self.heading[robot_id])
+                        omega = max(-self.config.max_omega,
+                                    min(self.config.max_omega, self.config.align_gain * error))
+                        self.heading_rate[robot_id] = omega
+                        self.heading[robot_id] = _wrap_angle(
+                            self.heading[robot_id] + omega * CONTROL_DT)
+                        infos[robot_id] = {**infos[robot_id],
+                                           "heading": self.heading[robot_id],
+                                           "heading_rate": omega,
+                                           "align_error_deg": math.degrees(error),
+                                           "force_scale": 1.0,
+                                           "force_gated": list(forces[robot_id]),
+                                           "oriented_mode": self.orient_mode}
+                    else:
+                        self.heading_rate[robot_id] = 0.0
+                        infos[robot_id] = {**infos[robot_id],
+                                           "heading": self.heading[robot_id],
+                                           "heading_rate": 0.0, "align_error_deg": None,
+                                           "force_scale": 1.0,
+                                           "force_gated": list(forces[robot_id]),
+                                           "oriented_mode": self.orient_mode}
+            elif self.orient_rotate or self.orient_gate:
                 for robot_id in (0, 1):
                     force = forces[robot_id]
                     magnitude = math.hypot(force[0], force[1])
@@ -679,6 +709,7 @@ class RandomStartEnv:
                                    if info.get("safety_trigger") else None),
                 "skill_time": info.get("skill_time"),
                 "heading": info.get("heading"), "heading_rate": info.get("heading_rate"),
+                "desired_heading": info.get("desired_heading"),
                 "align_error_deg": info.get("align_error_deg"),
                 "force_scale": info.get("force_scale"),
                 "force_gated": info.get("force_gated"),
