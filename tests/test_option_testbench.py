@@ -74,7 +74,9 @@ def test_information_boundary_hidden_truth_is_not_used(prepared, tmp_path):
 
 def test_independent_recompute_of_push_and_reposition(prepared, tmp_path):
     import metrics
-    push = runner.run_branch(prepared, 0, tmp_path)          # face__push_push
+    # v4.1: the push promise is *robot travel* after contact, so use the same-side teammate
+    # branch where the object actually moves; the symmetric face push is contact_only by design.
+    push = runner.run_branch(prepared, 18, tmp_path)         # teammate__push_push
     reposition = runner.run_branch(prepared, 1, tmp_path)    # face__push_reposition_ccw
     contract = json.loads((prepared / "contracts" / "contracts.json").read_text())
     push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 17, contract)
@@ -82,9 +84,9 @@ def test_independent_recompute_of_push_and_reposition(prepared, tmp_path):
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["contact_established_seconds"]
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["full_push_seconds"]
     reposition_option = metrics.recompute_option(
-        reposition, reposition["boundaries"][0], 1, 37, contract)
+        reposition, reposition["boundaries"][0], 1, 36, contract)
     assert reposition_option["status"] == "fulfilled"
-    assert abs(reposition_option["tangential_progress"]) >= (
+    assert abs(reposition_option["signed_progress"]) >= (
         contract["reposition"]["thresholds"]["progress_fraction_min"] * 0.25 - 1e-9)
 
 
@@ -142,13 +144,19 @@ def test_timeout_kills_process_group_and_preserves_log(tmp_path):
 
 
 def test_baseline_menu_and_no_implicit_monkeypatch(prepared, tmp_path):
-    assert spec.ENV_VERSION == "random-start-oriented-v4"
+    assert spec.ENV_VERSION == "random-start-oriented-v4.1"
     assert spec.ROBOT_ACTION_COUNT == 48 and spec.JOINT_ACTION_COUNT == 2304
     assert spec.ROBOT_ACTIONS[16].label.startswith("PUSH(a=+0deg,v=0.16)")
     assert spec.ROBOT_ACTIONS[36].label.startswith("REPOSITION_CCW")
     assert spec.ROBOT_ACTIONS[40].label.startswith("REPOSITION_CW")
     assert spec.ROBOT_ACTIONS[44].label.startswith("WAIT_BRAKE")
-    assert spec.ROBOT_ACTIONS[16].scale == 2.0 and spec.ROBOT_ACTIONS[19].scale == 24.0
+    # v4.1: PUSH/REPOSITION scales are requested distances (m); WAIT stays a duration (s)
+    assert spec.ROBOT_ACTIONS[16].scale == spec.PUSH_DISTANCES[0]
+    assert spec.ROBOT_ACTIONS[19].scale == spec.PUSH_DISTANCES[-1]
+    assert spec.ROBOT_ACTIONS[16].scale_kind == "distance"
+    assert spec.ROBOT_ACTIONS[44].scale_kind == "duration"
+    timeout = spec.option_timeout(spec.ROBOT_ACTIONS[19])
+    assert spec.OPTION_PREPARE_SECONDS < timeout <= spec.JOINT_MAX_SECONDS
     metadata = json.loads((prepared / "panel.json").read_text())
     before = E.make_skill
     runner.build_world(metadata, "face", prepared)

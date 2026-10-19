@@ -29,12 +29,12 @@ METRIC_VERSION = "option-metric-v2"  # v2: six calibration fixes; v1 outputs pre
 # The three pre-registered baseline options, in the frozen action-table order:
 # v4 type-major menu: index = type_index * 4 + scale_index; scales are (2, 6, 12, 24) s.
 #  17 = PUSH(alpha=0 deg, speed=0.16 m/s) at scale 6 s (type 4)
-#  37 = REPOSITION_CCW at scale 6 s (type 9)
-#  41 = REPOSITION_CW at scale 6 s (type 10)
+#  36 = REPOSITION_CCW at the 0.25 m requested distance (type 9)
+#  40 = REPOSITION_CW at the 0.25 m requested distance (type 10)
 #  44 = WAIT_BRAKE at scale 2 s (type 11), the explicit teammate brake/hold condition
 PUSH_0_016 = 17      # type 4 (PUSH a=0, v=0.16) at scale 6 s: approach + 2 s contact fits
-REPOSITION_CCW = 37  # type 9 at scale 6 s
-REPOSITION_CW = 41   # type 10 at scale 6 s
+REPOSITION_CCW = 36  # type 9 at the 0.25 m requested distance (the historical baseline)
+REPOSITION_CW = 40   # type 10 at the 0.25 m requested distance
 WAIT_BRAKE = 44      # type 11 at scale 2 s
 BASELINE_OPTIONS = {"PUSH_0_016": PUSH_0_016, "REPOSITION_CCW": REPOSITION_CCW,
                     "REPOSITION_CW": REPOSITION_CW, "WAIT_BRAKE": WAIT_BRAKE}
@@ -380,11 +380,12 @@ def contracts():
             "option": "PUSH", "action_contract": "keep real object contact and push along the "
             "surface normal the controller selected from its own scan",
             "legal_inputs": "robot's own lidar/patch/contact history and the public clock",
-            "completion": "accumulated real object-contact time >= 2.00 s (PUSH_ACTIVE_SECONDS) "
-                          "inside the 8 s window",
+            "completion": "contact established and signed push travel along the direction "
+                          "declared at execution start >= 0.80 * requested distance, before the "
+                          "derived timeout",
             "contact_established": "accumulated real object-contact time >= 0.50 s",
             "claim_exits": ["push_complete"],
-            "benign_exits": ["joint_window_end", "option_budget", "contact_lost",
+            "benign_exits": ["joint_window_end", "option_budget", "face_switch", "contact_lost",
                              "blocked_no_progress",
                              "patch_lost", "not_observed", "push_wall_timeout",
                              "evaluation_horizon"],
@@ -392,6 +393,7 @@ def contracts():
             "window_seconds": 8.0,
             "thresholds": {"contact_established_seconds": 0.50,
                            "full_push_seconds": spec.PUSH_ACTIVE_SECONDS,
+                           "progress_fraction_min": 0.80,
                            "direction_error_speed_min": 0.02,
                            "direction_error_deg_max": 45.0},
             "note": "the PUSH promise is contact pushing, not a world-direction object "
@@ -401,12 +403,11 @@ def contracts():
             "option": "REPOSITION", "action_contract": "move along the locally estimated "
             "visible-boundary tangent by the requested distance while holding the target gap",
             "legal_inputs": "robot's own lidar/patch/contact history and the public clock",
-            "completion": "the MOVE stage ran for >= 0.80 * option scale seconds with positive "
-                          "tangential progress in the requested direction, or the requested "
-                          "distance was reached",
+            "completion": "signed tangential travel along the direction declared at execution "
+                          "start >= 0.80 * requested distance, before the derived timeout",
             "claim_exits": ["reposition_complete"],
-            "benign_exits": ["joint_window_end", "option_budget", "blocked_no_progress",
-                             "blocked_contact",
+            "benign_exits": ["joint_window_end", "option_budget", "face_switch",
+                             "blocked_no_progress", "blocked_contact",
                              "patch_lost", "not_observed", "evaluation_horizon"],
             "violation_exits": ["safety_abort", "environment_termination"],
             "window_seconds": 8.0,

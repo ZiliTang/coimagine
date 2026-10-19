@@ -65,6 +65,8 @@ from .spec import (
     SAFETY_GAP,
     SKILL_MAX_SECONDS,
     OPTION_BUDGET_EXIT,
+    FACE_SWITCH_EXIT,
+    option_timeout,
     RobotAction,
 )
 
@@ -150,9 +152,17 @@ class Skill:
     def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE):
         self.action = action
         self.force_limit = force_limit
-        #: v4 option scale: the skill's own time budget in seconds (None = no budget)
-        self.time_budget: Optional[float] = (float(action.scale)
-                                             if getattr(action, "scale", 0.0) else None)
+        #: v4.1: the option timeout is *derived* (T_prepare + slack*D/v_ref); the requested
+        #: distance is the target and this is only the exit bound when it is not reached.
+        self.time_budget: Optional[float] = option_timeout(action)
+        #: signed push/transfer progress along the direction declared at execution start
+        self.declared_direction: Optional[Vec] = None
+        self.signed_progress = 0.0
+        self.positive_travel = 0.0
+        self.backward_travel = 0.0
+        self.face_switches = 0
+        self.previous_position: Optional[Vec] = None
+        self.step_vector: Vec = (0.0, 0.0)
         self.stage = "find"
         self.exit_reason: Optional[str] = None
         self.done = False
@@ -176,6 +186,50 @@ class Skill:
         self.safety_trigger: Optional[Tuple[str, float]] = None
 
     # -- helpers -----------------------------------------------------------
+    def _note_position(self, observation: SkillObservation) -> None:
+        """One per period: remember this robot's displacement since the previous period."""
+
+        current = (observation.own.x, observation.own.y)
+        self.step_vector = ((current[0] - self.previous_position[0],
+                             current[1] - self.previous_position[1])
+                            if self.previous_position is not None else (0.0, 0.0))
+        self.previous_position = current
+
+    def _accumulate_signed_progress(self, direction: Vec) -> float:
+        """Signed projection of this period's displacement on the declared direction."""
+
+        if self.declared_direction is None:
+            self.declared_direction = direction
+        norm = math.hypot(direction[0], direction[1])
+        if norm < 1e-9 or self.declared_direction is None:
+            return 0.0
+        anchor = self.declared_direction
+        anchor_norm = math.hypot(anchor[0], anchor[1])
+        if anchor_norm < 1e-9:
+            return 0.0
+        advance = (self.step_vector[0] * anchor[0]
+                   + self.step_vector[1] * anchor[1]) / anchor_norm
+        self.signed_progress += advance
+        if advance > 0.0:
+            self.positive_travel += advance
+        else:
+            self.backward_travel += -advance
+        return advance
+
+    def _progress_info(self) -> Dict[str, object]:
+        return {
+            "declared_direction": (list(self.declared_direction)
+                                   if self.declared_direction is not None else None),
+            "signed_progress": self.signed_progress,
+            "positive_travel": self.positive_travel,
+            "backward_travel": self.backward_travel,
+            "progress_target_distance": (float(self.action.distance)
+                                         if getattr(self.action, "scale_kind", "")
+                                         == "distance" else None),
+            "option_timeout_seconds": self.time_budget,
+            "face_switches": self.face_switches,
+        }
+
     def _mark_progress(self) -> None:
         self.no_progress_seconds = 0.0
 
@@ -466,6 +520,13 @@ class PushSkill(_VisionSkill):
                 self.effective_contact += dt
                 self.contact_seen = True
                 self.contact_loss_seconds = 0.0
+                direction = (patch.normal_world if patch is not None and patch.valid
+                             else (normal if normal is not None else None))
+                if direction is not None:
+                    self._accumulate_signed_progress(direction)
+                if self.normal.jump:
+                    self.face_switches += 1
+                    reason = FACE_SWITCH_EXIT
                 self._mark_progress()
             else:
                 self.contact_loss_seconds += dt
@@ -474,9 +535,12 @@ class PushSkill(_VisionSkill):
                 elif (not self.contact_seen
                       and self.contact_loss_seconds >= CONTACT_SEEK_SECONDS):
                     reason = "blocked_no_progress"
-            if reason is None and self.effective_contact >= PUSH_ACTIVE_SECONDS:
+            if (reason is None and self.action.scale_kind == "distance"
+                    and self.signed_progress >= float(self.action.distance)):
                 reason = "push_complete"
-            if reason is None and self.push_wall >= PUSH_WALL_SECONDS:
+            # v4.1: the push stage is bounded by the *derived option timeout*, not the fixed
+            # 3 s wall; otherwise a 1.00 m requested distance could never be reached.
+            if reason is None and self.push_wall >= (self.time_budget or PUSH_WALL_SECONDS):
                 reason = "push_wall_timeout"
         else:
             raw = (0.0, 0.0)
@@ -536,6 +600,7 @@ class PushSkill(_VisionSkill):
             "effective_contact_seconds": self.effective_contact,
             "push_wall_seconds": self.push_wall,
             "progress": self.progress, "progress_target": PUSH_ACTIVE_SECONDS,
+            **self._progress_info(),
             "no_progress_seconds": self.no_progress_seconds,
             "find_direction": self.find_direction if self.stage == "find" else None,
             "skill_time": self.skill_time, "corner_event": False, "corner_events": 0,
@@ -586,6 +651,7 @@ class RepositionSkill(_VisionSkill):
         self.skill_time += dt
         self.no_progress_seconds += dt
         self.corner_event_now = False
+        self._note_position(observation)
         normal_raw = self.normal.update(
             observation.patch.normal_world if (observation.patch is not None
                                                and observation.patch.valid) else None, dt)
@@ -671,17 +737,16 @@ class RepositionSkill(_VisionSkill):
                         reason = "blocked_contact"
                 else:
                     self.unintended_contact = 0.0
-                    previous = self.previous_position
-                    if previous is not None and self.tangent is not None:
-                        step_vector = (observation.own.x - previous[0],
-                                       observation.own.y - previous[1])
-                        advance = (step_vector[0] * self.tangent[0]
-                                   + step_vector[1] * self.tangent[1])
+                    if self.tangent is not None:
+                        advance = self._accumulate_signed_progress(self.tangent)
                         if advance > 0.0 and not self.corner_event_now:
                             self.progress += advance
                             self._mark_progress()
-                self.previous_position = (observation.own.x, observation.own.y)
-            if reason is None and self.progress >= self.distance_target:
+                    if self.corner_event_now:
+                        self.face_switches += 1
+                        reason = FACE_SWITCH_EXIT
+            if (reason is None and self.action.scale_kind == "distance"
+                    and self.signed_progress >= float(self.action.distance)):
                 reason = "reposition_complete"
         else:
             raw = (0.0, 0.0)
@@ -735,6 +800,7 @@ class RepositionSkill(_VisionSkill):
             "push_alpha_deg": None, "push_speed": None, "effective_contact_seconds": None,
             "push_wall_seconds": None,
             "progress": self.progress, "progress_target": self.distance_target,
+            **self._progress_info(),
             "desired_heading": self.tangent,
             "no_progress_seconds": self.no_progress_seconds,
             "find_direction": self.find_direction if self.stage == "find" else None,

@@ -46,6 +46,7 @@ from .skills import (
     make_skill,
 )
 from .spec import (
+    option_timeout,
     CONTROL_DT,
     ENV_VERSION,
     FAILURE_PENALTY,
@@ -383,7 +384,7 @@ class RandomStartEnv:
         action_1 = ROBOT_ACTIONS[action_index_1]
         # v4: the joint window is the option's own time budget (the longer of the two), capped
         window_seconds = min(self.config.joint_max_seconds,
-                             max(float(action_0.scale), float(action_1.scale)))
+                             max(option_timeout(action_0), option_timeout(action_1)))
         skills: Dict[int, Skill] = {0: self.skill_factory(action_0, MAX_FORCE),
                                     1: self.skill_factory(action_1, MAX_FORCE)}
         holds: Dict[int, HoldBrake] = {0: HoldBrake(MAX_FORCE), 1: HoldBrake(MAX_FORCE)}
@@ -679,6 +680,14 @@ class RandomStartEnv:
                 "safety_trigger": (list(info["safety_trigger"])
                                    if info.get("safety_trigger") else None),
                 "skill_time": info.get("skill_time"),
+                "declared_direction": (list(info["declared_direction"])
+                                       if info.get("declared_direction") else None),
+                "signed_progress": info.get("signed_progress"),
+                "positive_travel": info.get("positive_travel"),
+                "backward_travel": info.get("backward_travel"),
+                "progress_target_distance": info.get("progress_target_distance"),
+                "option_timeout_seconds": info.get("option_timeout_seconds"),
+                "face_switches": info.get("face_switches"),
                 "heading": info.get("heading"), "heading_rate": info.get("heading_rate"),
                 "desired_heading": info.get("desired_heading"),
                 "align_error_deg": info.get("align_error_deg"),

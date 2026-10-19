@@ -134,11 +134,48 @@ def recompute_option(branch, boundary, robot_id, action_index, contract):
     ended = last["true"]["robots"][robot_id]
     displacement = (float(ended[0]) - float(started[0]), float(ended[1]) - float(started[1]))
     metrics["robot_displacement"] = list(displacement)
+    def signed_travel(is_active, direction_of):
+        """Signed projection of this robot's displacement on the direction declared at start."""
+        declared = None
+        signed = positive = backward = 0.0
+        for previous, current in zip(rows, rows[1:]):
+            if not is_active(previous):
+                continue
+            if declared is None:
+                declared = direction_of(previous)
+                if declared is None:
+                    continue
+            norm = math.hypot(float(declared[0]), float(declared[1]))
+            if norm < 1e-9:
+                continue
+            before = previous["true"]["robots"][robot_id]
+            after = current["true"]["robots"][robot_id]
+            advance = ((float(after[0]) - float(before[0])) * float(declared[0])
+                       + (float(after[1]) - float(before[1])) * float(declared[1])) / norm
+            signed += advance
+            if advance > 0.0:
+                positive += advance
+            else:
+                backward += -advance
+        return declared, signed, positive, backward
+
+    metrics["requested_distance"] = float(action.distance)
+    metrics["option_scale"] = float(action.scale)
+    metrics["option_scale_kind"] = getattr(action, "scale_kind", "")
+    metrics["option_timeout_seconds"] = float(spec.option_timeout(action))
     if option == "push":
         metrics["contact_established"] = contact_seconds >= terms["thresholds"][
             "contact_established_seconds"]
-        metrics["full_push_fulfilled"] = contact_seconds >= terms["thresholds"]["full_push_seconds"]
-        metrics["completion_met"] = metrics["full_push_fulfilled"]
+        declared, signed, positive, backward = signed_travel(
+            lambda row: row[key]["contacting_object"],
+            lambda row: row[key].get("normal_world"))
+        metrics["declared_direction"] = list(declared) if declared else None
+        metrics["signed_progress"] = signed
+        metrics["positive_travel"] = positive
+        metrics["backward_travel"] = backward
+        metrics["completion_met"] = bool(
+            metrics["contact_established"]
+            and signed >= terms["thresholds"]["progress_fraction_min"] * float(action.distance))
         direction_errors = []
         for row in rows:
             if _robot_speed(row, robot_id) < terms["thresholds"]["direction_error_speed_min"]:
@@ -155,37 +192,16 @@ def recompute_option(branch, boundary, robot_id, action_index, contract):
                                                         if direction_errors else None)
         metrics["reference_direction_error_samples"] = len(direction_errors)
     else:
-        # Fix 3: positive accumulated progress along the skill's own tangent (the row's
-        # tangent_world is the skill tangent for REPOSITION), skipping contact/corner periods
-        # exactly like the controller. No abs().
-        progress = 0.0
-        samples = 0
-        for previous, current in zip(rows, rows[1:]):
-            tangent = previous[key].get("tangent_world")
-            if (tangent is None or previous[key]["contacting_object"]
-                    or previous[key]["corner_event"]):
-                continue
-            norm = math.hypot(float(tangent[0]), float(tangent[1]))
-            if norm < 1e-9:
-                continue
-            before = previous["true"]["robots"][robot_id]
-            after = current["true"]["robots"][robot_id]
-            advance = ((float(after[0]) - float(before[0])) * float(tangent[0])
-                       + (float(after[1]) - float(before[1])) * float(tangent[1])) / norm
-            if advance > 0.0:
-                progress += advance
-                samples += 1
-        move_seconds = sum(DT for row in rows if row[key].get("stage") == "move")
-        metrics["requested_distance"] = float(action.distance)
-        metrics["tangential_progress"] = progress
-        metrics["tangential_samples"] = samples
-        metrics["move_seconds"] = move_seconds
-        metrics["option_scale_seconds"] = float(getattr(action, "scale", 0.0))
-        metrics["completion_met"] = (
-            progress >= terms["thresholds"]["progress_fraction_min"] * float(action.distance)
-            or (float(getattr(action, "scale", 0.0)) > 0 and move_seconds
-                >= terms["thresholds"].get("move_seconds_fraction_min", 0.80)
-                * float(action.scale)))
+        declared, signed, positive, backward = signed_travel(
+            lambda row: row[key].get("stage") == "move" and not row[key]["contacting_object"],
+            lambda row: row[key].get("tangent_world"))
+        metrics["declared_direction"] = list(declared) if declared else None
+        metrics["signed_progress"] = signed
+        metrics["positive_travel"] = positive
+        metrics["backward_travel"] = backward
+        metrics["move_seconds"] = sum(DT for row in rows if row[key].get("stage") == "move")
+        metrics["completion_met"] = bool(
+            signed >= terms["thresholds"]["progress_fraction_min"] * float(action.distance))
     # layer 3: offline task effect only
     object_before = [float(value) for value in first["true"]["object"]]
     object_after = [float(value) for value in last["true"]["object"]]
