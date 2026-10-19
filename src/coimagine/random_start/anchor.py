@@ -41,6 +41,7 @@ class RunReport:
     boundary_after: int
     before_is_occlusion: bool
     after_is_occlusion: bool
+    points: List[Vec] = field(default_factory=list)
 
 
 @dataclass
@@ -118,7 +119,8 @@ def object_runs(scan) -> List[RunReport]:
             end_a_world=start_point, end_b_world=end_point,
             span_m=math.dist(start_point, end_point),
             boundary_before=before, boundary_after=after,
-            before_is_occlusion=before == 3, after_is_occlusion=after == 3))
+            before_is_occlusion=before == 3, after_is_occlusion=after == 3,
+            points=[point(index) for index in run]))
     return reports
 
 
@@ -135,11 +137,38 @@ class AnchorTracker:
         self.face_length_priors = tuple(float(value) for value in face_length_priors)
         self.face_switch_deg = float(face_switch_deg)
         self.min_visible_span_m = float(min_visible_span_m)
+        self.prior_tolerance_m = 0.15
+        self.straightness_tolerance_m = 0.02
         self.face_direction: Optional[Vec] = None
         self.last_observable_time: Optional[float] = None
         self.updates = 0
+        self.last_key: Optional[Tuple[float, Optional[int]]] = None
+        self.last_estimate: Optional["AnchorEstimate"] = None
 
-    def update(self, scan, time: float, dt: float) -> AnchorEstimate:
+    def state(self) -> Dict[str, object]:
+        """Everything a branch restore needs to keep the tracker consistent."""
+        return {"face_direction": (list(self.face_direction)
+                                   if self.face_direction is not None else None),
+                "last_observable_time": self.last_observable_time,
+                "updates": self.updates,
+                "last_key": (list(self.last_key) if self.last_key is not None else None)}
+
+    def load_state(self, state: Dict[str, object]) -> None:
+        direction = state.get("face_direction")
+        self.face_direction = (tuple(direction) if direction is not None else None)
+        self.last_observable_time = state.get("last_observable_time")
+        self.updates = int(state.get("updates", 0))
+        key = state.get("last_key")
+        self.last_key = (float(key[0]), key[1]) if key is not None else None
+        self.last_estimate = None
+
+    def update(self, scan, time: float, dt: float, tick=None) -> AnchorEstimate:
+        # one update per physical period: a second observe() at the same tick must not reset the
+        # observation age or re-count a face switch
+        key = (float(time), None if tick is None else int(tick))
+        if self.last_key == key and self.last_estimate is not None:
+            return self.last_estimate
+        self.last_key = key
         self.updates += 1
         reports = object_runs(scan)
         legal: List[Vec] = []
@@ -160,6 +189,30 @@ class AnchorTracker:
             norm = math.hypot(chord[0], chord[1])
             if norm > 1e-9:
                 direction = (chord[0] / norm, chord[1] / norm)
+        # a run that spans two faces is not a face: do not read its endpoints as corners
+        if reports:
+            main = max(reports, key=lambda report: report.span_m)
+            if len(main.points) >= 3 and main.span_m > 1e-6:
+                start, end = main.points[0], main.points[-1]
+                chord = (end[0] - start[0], end[1] - start[1])
+                chord_norm = math.hypot(*chord)
+                if chord_norm > 1e-9:
+                    for point in main.points[1:-1]:
+                        cross = abs((point[0] - start[0]) * chord[1]
+                                    - (point[1] - start[1]) * chord[0]) / chord_norm
+                        if cross > self.straightness_tolerance_m:
+                            estimate = AnchorEstimate(
+                                status=STATUS_UNCERTAIN,
+                                observed_corners=list(legal),
+                                face_direction=None, legal_candidates=len(legal),
+                                shadow_boundaries=shadow,
+                                object_rays=sum(report.rays for report in reports),
+                                reason="run_not_straight")
+                            estimate.observation_age_s = (
+                                None if self.last_observable_time is None
+                                else time - self.last_observable_time)
+                            self.last_estimate = estimate
+                            return estimate
         face_switch = False
         if direction is not None and self.face_direction is not None:
             cosine = max(-1.0, min(1.0, direction[0] * self.face_direction[0]
@@ -179,10 +232,14 @@ class AnchorTracker:
             estimate.observation_age_s = (None if self.last_observable_time is None
                                           else time - self.last_observable_time)
             return estimate
-        prior = min(self.face_length_priors,
-                    key=lambda length: abs(length - max(span, 1e-6)))
-        estimate.face_length_prior = prior
-        if len(legal) >= 2:
+        # ``object -> none`` is a *candidate* corner, never a proof; and the edge length is not
+        # silently chosen by the closest prior: if no prior matches the observed span the
+        # estimate stays uncertain instead of claiming a long/short edge.
+        matches = [length for length in self.face_length_priors
+                   if abs(length - max(span, 1e-6)) <= self.prior_tolerance_m]
+        prior = (min(matches, key=lambda length: abs(length - span)) if matches else None)
+        estimate.face_length_prior = prior or 0.0
+        if len(legal) >= 2 and prior is not None:
             # both ends of a face are visible and legal: report them as observed candidates
             estimate.status = STATUS_OBSERVABLE
             estimate.candidates = list(legal[:2])
@@ -190,10 +247,17 @@ class AnchorTracker:
             estimate.reason = "two_legal_corners"
             self.last_observable_time = time
             estimate.observation_age_s = 0.0
+            self.last_estimate = estimate
             return estimate
         # exactly one legal corner: recover the other end from the prior along the observed
         # run direction; report it as an inferred candidate, not as observed geometry
         recovered = []
+        if prior is None:
+            estimate.reason = "prior_mismatch"
+            estimate.observation_age_s = (None if self.last_observable_time is None
+                                          else time - self.last_observable_time)
+            self.last_estimate = estimate
+            return estimate
         for report in reports:
             for end_key, occlusion_key, other_key in (
                     ("end_a_world", "before_is_occlusion", "end_b_world"),
@@ -219,8 +283,10 @@ class AnchorTracker:
             estimate.reason = "one_legal_corner_plus_prior"
             self.last_observable_time = time
             estimate.observation_age_s = 0.0
+            self.last_estimate = estimate
             return estimate
         estimate.reason = "legal_corner_without_direction"
         estimate.observation_age_s = (None if self.last_observable_time is None
                                       else time - self.last_observable_time)
+        self.last_estimate = estimate
         return estimate

@@ -293,7 +293,7 @@ class RandomStartEnv:
                            omega=float(self.heading_rate[1 - robot_id]))
         scan = self.scan_for(robot_id, tick, time)
         self._last_anchor[robot_id] = self.anchor_trackers[robot_id].update(
-            scan, float(time), CONTROL_DT)
+            scan, float(time), CONTROL_DT, tick=tick)
         patches = tuple(scan_patches(scan, (own.x, own.y)))
         patch = None
         for candidate in patches:
@@ -812,6 +812,8 @@ class RandomStartEnv:
             "boundaries": len(self.boundaries),
             "oriented": True,
             "oriented_mode": self.orient_mode,
+            "anchor_state": {str(robot_id): self.anchor_trackers[robot_id].state()
+                             for robot_id in (0, 1)},
             "heading": list(self.heading), "heading_rate": list(self.heading_rate),
         }
 
@@ -833,6 +835,8 @@ class RandomStartEnv:
         self.history = list(state["history"])  # type: ignore[arg-type]
         self.rows = self.rows[: int(state["rows"])]  # type: ignore[arg-type]
         self.boundaries = self.boundaries[: int(state["boundaries"])]  # type: ignore[arg-type]
+        for robot_id, tracker_state in (state.get("anchor_state") or {}).items():
+            self.anchor_trackers[int(robot_id)].load_state(tracker_state)
         if "heading" in state:
             self.heading = [float(value) for value in state["heading"]]  # type: ignore[arg-type]
             self.heading_rate = [float(value) for value in state["heading_rate"]]  # type: ignore[arg-type]
