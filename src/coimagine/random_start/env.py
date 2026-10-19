@@ -184,6 +184,8 @@ class RandomStartEnv:
         # kinematic heading state of the oriented prototype; unused when oriented=False
         self.heading = [float(pose.angle) for pose in instance.robot_poses]
         self.heading_rate = [0.0, 0.0]
+        #: v4.1 option progress of the previous period, per robot: (signed travel, target)
+        self._last_progress = {0: (0.0, 0.0), 1: (0.0, 0.0)}
         # v4: there is exactly one actuation model. The robot turns towards the heading its
         # skill declares; the force is never gated, so braking, safety and avoidance stay fully
         # effective. The old diagnostic modes are gone.
@@ -309,7 +311,8 @@ class RandomStartEnv:
 
     # -- policy-facing vector ----------------------------------------------
     def observation_vector(self, observation_0: SkillObservation,
-                           observation_1: SkillObservation) -> np.ndarray:
+                           observation_1: SkillObservation,
+                           progress=None) -> np.ndarray:
         """The joint legal feature vector of one control period (both robots' own views)."""
 
         values: List[float] = []
@@ -331,6 +334,11 @@ class RandomStartEnv:
             values += [1.0 if observation.contacting_object else 0.0,
                        1.0 if observation.contacting_static else 0.0,
                        1.0 if observation.contacting_teammate else 0.0]
+        progress = progress if progress is not None else self._last_progress
+        for robot_id in (0, 1):
+            signed, target = progress.get(robot_id, (0.0, 0.0))
+            values += [(min(1.0, signed / target) if target > 0 else 0.0),
+                       min(1.0, target / 2.0)]
         elapsed = self.total_periods * CONTROL_DT
         values += [min(1.0, elapsed / self.config.time_budget),
                     0.0,  # reserved former skill-budget fraction; no action-count budget in v3
@@ -363,6 +371,9 @@ class RandomStartEnv:
         for robot_id in (0, 1):
             fields += [f"r{robot_id}_contact_object", f"r{robot_id}_contact_static",
                        f"r{robot_id}_contact_teammate"]
+        for robot_id in (0, 1):
+            fields += [f"r{robot_id}_option_progress_fraction",
+                       f"r{robot_id}_option_target_fraction"]
         fields += ["elapsed_fraction", "reserved_zero", "remaining_fraction"]
         for robot_id in (0, 1):
             for index in range(72):
@@ -408,7 +419,8 @@ class RandomStartEnv:
             # the policy-facing vector of this period must be built *before* the world advances
             # and before ``total_periods`` is incremented, otherwise its clock columns describe
             # the next period and a boundary frame would disagree with the skill that owns it
-            observation_vector = self.observation_vector(observations[0], observations[1])
+            observation_vector = self.observation_vector(observations[0], observations[1],
+                                                          self._last_progress)
             forces: List[Vec] = [(0.0, 0.0), (0.0, 0.0)]
             for robot_id in (0, 1):
                 if skills[robot_id].done:
@@ -452,6 +464,11 @@ class RandomStartEnv:
                                            "force_scale": 1.0,
                                            "force_gated": list(forces[robot_id]),
                                            "oriented_mode": self.orient_mode}
+            for robot_id in (0, 1):
+                target = infos[robot_id].get("progress_target_distance")
+                self._last_progress[robot_id] = (
+                    float(infos[robot_id].get("signed_progress") or 0.0),
+                    float(target) if target else 0.0)
             self.env.step_control((forces[0], forces[1]))
             self.world_advances += 1
             self.total_periods += 1

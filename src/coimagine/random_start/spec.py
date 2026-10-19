@@ -106,8 +106,12 @@ REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
 #: "after contact is established, complete this robot push travel along the declared direction".
 #: WAIT_BRAKE stays a **duration** (s). The timeout is *derived*, never a learned dimension
 #: (see ``option_timeout``); distances and durations are independent of it.
-PUSH_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
-REPOSITION_DISTANCES: Tuple[float, ...] = (0.25, 0.50, 1.00, 1.50)
+#: Calibrated against the measured achievable travel (round_007: PUSH median 0.005 m / max
+#: 0.459 m; REPOSITION median 0.251 m): the low levels are reachable, the high levels stay
+#: deliberately ambitious so "requested but not reached" remains visible instead of being tuned
+#: away.
+PUSH_DISTANCES: Tuple[float, ...] = (0.05, 0.10, 0.20, 0.40)
+REPOSITION_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
 WAIT_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 OPTION_SCALE_COUNT: int = 4
 AGENTS: Tuple[int, int] = (0, 1)

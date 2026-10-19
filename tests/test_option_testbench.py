@@ -82,12 +82,15 @@ def test_independent_recompute_of_push_and_reposition(prepared, tmp_path):
     push_option = metrics.recompute_option(push, push["boundaries"][0], 0, 17, contract)
     assert push_option["status"] == "fulfilled"
     assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["contact_established_seconds"]
-    assert push_option["contact_seconds"] >= contract["push"]["thresholds"]["full_push_seconds"]
+    # v4.1: the push promise is the signed travel, not a 2 s contact accumulation
+    assert push_option["signed_progress"] >= (
+        contract["push"]["thresholds"]["progress_fraction_min"] * push_option["requested_distance"])
     reposition_option = metrics.recompute_option(
         reposition, reposition["boundaries"][0], 1, 36, contract)
     assert reposition_option["status"] == "fulfilled"
     assert abs(reposition_option["signed_progress"]) >= (
-        contract["reposition"]["thresholds"]["progress_fraction_min"] * 0.25 - 1e-9)
+        contract["reposition"]["thresholds"]["progress_fraction_min"]
+        * reposition_option["requested_distance"] - 1e-9)
 
 
 def test_coverage_denominator_handles_zero_accepted(prepared, tmp_path):
