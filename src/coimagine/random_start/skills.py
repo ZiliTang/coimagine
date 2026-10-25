@@ -476,14 +476,36 @@ class PushSkill(_VisionSkill):
 
     def _tangential_reference(self, observation: SkillObservation,
                               patch: SurfacePatch) -> Vec:
-        """Candidate extension point: extra reference velocity along the visible tangent.
+        """Aim the contact point at the face centre, separated from the teammate.
 
-        The default is a no-op, so the frozen baseline controller is unchanged. A candidate
-        controller may override it (for example to aim the contact point inside the visible
-        segment instead of at a corner). It never changes the observation or the safety gate.
+        Pushing off the face centre creates a torque: the object rotates instead of translating
+        (measured: 72-109 deg in the both-push scenes). The reference therefore pulls the robot's
+        projection towards the visible-segment midpoint, and - when the teammate is on the same
+        face - towards a point offset to the opposite side, so the two robots take symmetric
+        contact points instead of crowding into each other (measured collision at 0.195 m).
         """
 
-        return (0.0, 0.0)
+        if patch is None or not patch.valid:
+            return (0.0, 0.0)
+        low, high, tangent = self._segment_extent(patch)
+        robot_proj = (observation.own.x * tangent[0] + observation.own.y * tangent[1])
+        centre = 0.5 * (low + high)
+        target = centre
+        teammate = observation.teammate_nearest
+        if teammate is not None:
+            distance, point = teammate
+            teammate_proj = point[0] * tangent[0] + point[1] * tangent[1]
+            on_face = (low - 0.10) <= teammate_proj <= (high + 0.10)
+            if on_face and distance < 0.70:
+                # the teammate already shares this face: keep the current lateral position so the
+                # pair stays symmetric; recentring both to the middle would make them crowd and
+                # the two offsets would no longer cancel
+                return (0.0, 0.0)
+        target = max(low + ROBOT_RADIUS, min(high - ROBOT_RADIUS, target))
+        error = target - robot_proj
+        speed = max(-REPOSITION_SPEED_MAX,
+                    min(REPOSITION_SPEED_MAX, 2.0 * error))
+        return (speed * tangent[0], speed * tangent[1])
 
     def step(self, observation: SkillObservation, dt: float) -> Tuple[Vec, Dict[str, object]]:
         self.skill_time += dt
@@ -617,7 +639,7 @@ class PushSkill(_VisionSkill):
         else:
             raw = (0.0, 0.0)
 
-        if reason is None and patch is not None and self.stage in ("approach", "push"):
+        if reason is None and patch is not None and self.stage == "approach":
             correction = self._tangential_reference(observation, patch)
             raw = (raw[0] + correction[0], raw[1] + correction[1])
         if reason is None:
@@ -625,7 +647,8 @@ class PushSkill(_VisionSkill):
         if reason is None and self.stage != "find" and self.no_progress_seconds >= NO_PROGRESS_SECONDS:
             reason = "blocked_no_progress"
 
-        raw = self._obstacle_avoidance(observation, raw)
+        raw = self._obstacle_avoidance(observation, raw,
+                                       include_teammate=self.stage in ("approach", "push"))
         raw = _clip_velocity(raw, self.speed_command if self.stage == "push"
                              else max(APPROACH_MAX_SPEED, self.speed_command))
         reference = self._drive(raw, dt)
