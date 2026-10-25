@@ -498,8 +498,8 @@ class PushSkill(_VisionSkill):
             on_face = (low - 0.10) <= teammate_proj <= (high + 0.10)
             if on_face and distance < 0.70:
                 # the teammate already shares this face: keep the current lateral position so the
-                # pair stays symmetric; recentring both to the middle would make them crowd and
-                # the two offsets would no longer cancel
+                # pair stays symmetric; recentring both to the middle would make them crowd, and
+                # moving both to fixed offsets measured worse than keeping the approach geometry
                 return (0.0, 0.0)
         target = max(low + ROBOT_RADIUS, min(high - ROBOT_RADIUS, target))
         error = target - robot_proj

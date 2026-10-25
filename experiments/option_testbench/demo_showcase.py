@@ -37,7 +37,7 @@ def labels(title_zh, title_en):
 
 
 def main():
-    out = ROOT / "outputs/option_testbench_v1/round_031"; out.mkdir(parents=True, exist_ok=True)
+    out = ROOT / "outputs/option_testbench_v1/round_032"; out.mkdir(parents=True, exist_ok=True)
     P.prepare(out)
     panel = json.loads((out / "panel.json").read_text())
     snapshots = {name: panel["snapshots"][name] for name in TYPICAL}
