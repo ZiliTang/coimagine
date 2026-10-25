@@ -15,7 +15,7 @@ import panel as P  # noqa: E402
 from coimagine.random_start import env as E, spec  # noqa: E402
 
 DT = spec.CONTROL_DT
-PUSH = 17; WAIT6 = 45; FOLLOW6 = 49
+PUSH = 6; WAIT6 = 21; FOLLOW6 = 25
 FOLLOW_DURATION = spec.ROBOT_ACTIONS[FOLLOW6].duration
 TOLERANCE = spec.FOLLOW_POSE_TOLERANCE
 CASES = {"double_push": (PUSH, PUSH), "push_brake": (PUSH, WAIT6), "push_follow": (PUSH, FOLLOW6)}

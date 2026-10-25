@@ -885,6 +885,7 @@ class SupportFollowSkill(_VisionSkill):
         self.stage = "find"
         self.reference_offset: Optional[float] = None
         self.follow_time = 0.0
+        self.last_gap: Optional[float] = None
         self.gap: Optional[float] = None
         self.centre_gap: Optional[float] = None
         self.offset: Optional[float] = None
@@ -903,12 +904,14 @@ class SupportFollowSkill(_VisionSkill):
         tangent = patch.tangent_world
         projections = [point[0] * tangent[0] + point[1] * tangent[1]
                        for point in patch.points_world]
-        low, high = min(projections), max(projections)
+        # the centroid is far more stable than the min/max midpoint when occlusion changes the
+        # visible span (the midpoint drifts and creates a fictitious tangential error)
+        reference = sum(projections) / max(1, len(projections))
         robot = observation.own.x * tangent[0] + observation.own.y * tangent[1]
         centre_gap = float(patch.nearest_distance)
         edge_gap = centre_gap - ROBOT_RADIUS
         self.centre_gap = centre_gap
-        return (edge_gap, robot - 0.5 * (low + high), tangent, patch.normal_world)
+        return (edge_gap, robot - reference, tangent, patch.normal_world)
 
     def step(self, observation: SkillObservation, dt: float):
         self.skill_time += dt
@@ -934,13 +937,19 @@ class SupportFollowSkill(_VisionSkill):
                 raw = (radial * normal[0], radial * normal[1])
                 # enter FOLLOW once the gap is workably close; the gap servo finishes the
                 # approach, so a 0.02 m entry would burn most of the follow budget
-                if abs(gap - FOLLOW_GAP) <= 0.15:
+                if abs(gap - FOLLOW_GAP) <= 0.08:
                     self.reference_offset = offset
                     self.stage = "follow"
             if self.stage == "follow":
                 self.follow_time += dt
                 error = offset - (self.reference_offset or 0.0)
                 tangential = -FOLLOW_TANGENT_GAIN * error
+                # radial velocity feedforward from the robot's own gap measurement: without it
+                # the P term lags a moving object and the gap error grows over a long follow
+                if self.last_gap is not None and dt > 0.0:
+                    radial += 0.6 * (gap - self.last_gap) / dt
+                self.last_gap = gap
+                radial = max(-REPOSITION_SPEED_MAX, min(REPOSITION_SPEED_MAX, radial))
                 raw = (radial * normal[0] + tangential * tangent[0],
                        radial * normal[1] + tangential * tangent[1])
                 self.pose_error = math.hypot(gap - FOLLOW_GAP, error)

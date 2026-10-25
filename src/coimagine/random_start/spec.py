@@ -129,8 +129,8 @@ ROBOT_ACTION_COUNT: int = ROBOT_ACTION_TYPE_COUNT * OPTION_SCALE_COUNT   # 28
 JOINT_ACTION_COUNT: int = ROBOT_ACTION_COUNT ** 2                        # 784
 #: the follow keeps a clearance (it does not press); the normal term is a gap servo
 FOLLOW_GAP: float = 0.05
-FOLLOW_GAP_GAIN: float = 1.5
-FOLLOW_TANGENT_GAIN: float = 1.5
+FOLLOW_GAP_GAIN: float = 4.0   # v4.3: tighter tracking
+FOLLOW_TANGENT_GAIN: float = 4.0   # v4.3: tighter tracking
 FOLLOW_POSE_TOLERANCE: float = 0.06
 
 SKILL_MAX_SECONDS: float = 8.0        # seek + approach stage before the option timeout
@@ -283,8 +283,12 @@ def option_timeout(action: RobotAction) -> float:
     so a distance is never silently folded into the approach budget.
     """
 
-    if action.kind in ("wait", "follow"):
+    if action.kind == "wait":
         return min(JOINT_MAX_SECONDS, float(action.duration))
+    if action.kind == "follow":
+        # the declared follow duration is *maintenance* time; the preparation must not consume
+        # it, so the timeout is prepare + duration
+        return min(JOINT_MAX_SECONDS, OPTION_PREPARE_SECONDS + float(action.duration))
     distance = float(action.distance)
     if action.kind == "push":
         reference = float(action.speed) or APPROACH_MAX_SPEED
