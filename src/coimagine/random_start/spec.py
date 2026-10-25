@@ -87,11 +87,11 @@ PATCH_RELATIVE_FACTOR: float = 2.5
 MAX_FIT_RMS: float = 0.005
 NORMAL_FILTER_TAU: float = 0.10    # s
 NORMAL_JUMP_LIMIT_DEG: float = 30.0  # a larger change is a corner/face transition
-CONTACT_LOSS_TOLERANCE: float = 0.60  # s of continuous contact loss inside PUSH -> abort (v4.2: re-contact grace)
+CONTACT_LOSS_TOLERANCE: float = 2.50  # s of continuous contact loss inside PUSH -> abort (v4.4: seek window)
 #: How long PUSH may keep pressing the visible surface without the contact sensor ever
 #: reporting the object before it gives up. PUSH is entered on a *sensed contact*, so this
 #: only fires when the surface is visible but physically unreachable.
-CONTACT_SEEK_SECONDS: float = 1.00
+CONTACT_SEEK_SECONDS: float = 2.00
 PATCH_LOSS_TOLERANCE: float = 1.00    # s of continuous object-patch loss before giving up
 OBSERVATION_FAIL_TOLERANCE: float = 1.00  # s, "lost the object" re-acquisition budget
 
@@ -143,7 +143,7 @@ FACE_SWITCH_EXIT: str = "face_switch"
 OPTION_PREPARE_SECONDS: float = 3.0   # covers FIND + ALIGN + approach, not the distance term
 #: The effective speed is below the reference (alignment and radial correction share the
 #: window), so the slack must cover that inefficiency or distance targets become unreachable.
-OPTION_TIMEOUT_SLACK: float = 4.0   # v4.2: long pushes need the extra time
+OPTION_TIMEOUT_SLACK: float = 6.0   # v4.4: approach + seek + push need the time
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
 APPROACH_TIMEOUT: float = 8.0         # s, v4.2: the 6 s cap clipped slow approaches
@@ -171,6 +171,8 @@ REPOSITION_GAP_GAIN: float = 1.0      # 1/s, radial gap correction gain
 REPOSITION_GAP_DEADBAND: float = 0.012
 A_REF_MAX: float = 0.5                # m/s^2, inherited reference-velocity ramp limit
 KV: float = 40.0                      # N s / m, inherited velocity feedback gain
+#: v4.4: cap of the contact-maintenance push reference (speed + gap P + gap-rate feedforward)
+PUSH_MAINTENANCE_MAX: float = 0.60    # m/s
 FIND_SECONDS: float = 1.50            # s, bounded local seek before not_observed
 FIND_SPEED: float = 0.06              # m/s, seek speed (same force interface, no new actuator)
 SAFETY_GAP: float = 0.02              # m, robot-to-static/teammate measured gap -> safety abort

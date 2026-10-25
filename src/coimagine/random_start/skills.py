@@ -37,6 +37,7 @@ from .spec import (
     APPROACH_GAIN,
     REPOSITION_ALIGN_ENTRY,
     REPOSITION_GAP_DEADBAND,
+    PUSH_MAINTENANCE_MAX,
     CONTACT_SEEK_SECONDS,
     APPROACH_MAX_SPEED,
     APPROACH_MIN_SPEED,
@@ -465,6 +466,9 @@ class PushSkill(_VisionSkill):
         self.contact_loss_seconds = 0.0
         self.push_wall = 0.0
         self.approach_time = 0.0
+        self.last_push_gap: Optional[float] = None
+        self.push_gap_gain = 4.0
+        self.push_gap_ff = 1.5
         self.corner_rejected = False
         self.reobserve_time = 0.0
         #: set by the environment while a cooperative push waits for the teammate to start
@@ -484,6 +488,9 @@ class PushSkill(_VisionSkill):
     def step(self, observation: SkillObservation, dt: float) -> Tuple[Vec, Dict[str, object]]:
         self.skill_time += dt
         self.no_progress_seconds += dt
+        # the push contract is the robot's own travel along the declared direction; without this
+        # the step_vector stays zero and the claimed signed progress never accumulates
+        self._note_position(observation)
         normal = self._track_patch(observation, dt)
         patch = observation.patch if (observation.patch is not None
                                       and observation.patch.valid) else None
@@ -546,6 +553,7 @@ class PushSkill(_VisionSkill):
                     self.stage = "push"
                     self.contact_seen = True
                     self.push_wall = 0.0
+                    self.last_push_gap = None
                     self._mark_progress()
                 elif self.approach_time >= APPROACH_TIMEOUT:
                     reason = "blocked_no_progress"
@@ -558,16 +566,25 @@ class PushSkill(_VisionSkill):
                 elif normal is not None:
                     raw = raw_reference(normal, self.alpha, self.speed_command)
             else:
-                raw = raw_reference(patch.normal_world if normal is None else normal,
-                                    self.alpha, self.speed_command)
+                # contact-maintenance push: the reference is not a fixed speed. It is the
+                # commanded speed plus a gap-closing proportional term and the gap-rate
+                # feedforward, so the robot accelerates when the object pulls away instead of
+                # trailing it until the contact-loss timeout fires.
+                direction = patch.normal_world if normal is None else normal
+                gap = float(patch.nearest_distance) - ROBOT_RADIUS
+                rate = ((gap - self.last_push_gap) / dt
+                        if self.last_push_gap is not None and dt > 0.0 else 0.0)
+                self.last_push_gap = gap
+                radial = self.speed_command + self.push_gap_gain * gap + self.push_gap_ff * rate
+                radial = max(0.0, min(PUSH_MAINTENANCE_MAX, radial))
+                raw = (radial * direction[0], radial * direction[1])
             if self.hold:
                 # keep a light contact while waiting for the teammate: a zero-force hold loses
                 # the contact (the object keeps moving) and the branch then aborts contact_lost
                 direction = (patch.normal_world if patch is not None and patch.valid
                              else normal)
                 if direction is not None:
-                    raw = raw_reference(direction, self.alpha,
-                                        min(0.05, self.speed_command))
+                    raw = raw_reference(direction, self.alpha, self.speed_command)
                 else:
                     raw = (0.0, 0.0)
             if observation.contacting_object and not self.hold:
@@ -579,8 +596,9 @@ class PushSkill(_VisionSkill):
                 if direction is not None:
                     self._accumulate_signed_progress(direction)
                 if self.normal.jump:
+                    # a face change is not a reason to abort: keep the contact and continue with
+                    # the new normal (continuity over a silent retraction)
                     self.face_switches += 1
-                    reason = FACE_SWITCH_EXIT
                 self._mark_progress()
             else:
                 self.contact_loss_seconds += dt
