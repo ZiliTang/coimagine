@@ -990,7 +990,9 @@ class SupportFollowSkill(_VisionSkill):
                 if self.last_gap is not None and dt > 0.0:
                     radial += 0.6 * (gap - self.last_gap) / dt
                 self.last_gap = gap
-                radial = max(-REPOSITION_SPEED_MAX, min(REPOSITION_SPEED_MAX, radial))
+                # the retreat may need to be faster than the nominal tangential cap: when the
+                # object is pushed towards the follower, a 0.18 m/s back-off cannot keep clear
+                radial = max(-0.45, min(0.30, radial))
                 raw = (radial * normal[0] + tangential * tangent[0],
                        radial * normal[1] + tangential * tangent[1])
                 self.pose_error = math.hypot(gap - FOLLOW_GAP, error)
