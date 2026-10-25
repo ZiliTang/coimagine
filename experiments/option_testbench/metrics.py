@@ -342,6 +342,7 @@ def summarize(out_dir, contract=None, suffix="_v2"):
     benign_accepted = sum(1 for row in accepted_rows
                           if row["branch_contract_status"] == "not_fulfilled_benign")
     option_rows = [option for row in branch_rows for option in row["options"]]
+    accepted_option_rows = [option for row in accepted_rows for option in row["options"]]
     statuses = ("fulfilled", "contact_only", "violated", "unresolved", "not_fulfilled_benign")
     snapshots = sorted({request["snapshot"] for request in requests})
     covered_states = sorted({row["snapshot"] for row in accepted_rows})
@@ -371,6 +372,10 @@ def summarize(out_dir, contract=None, suffix="_v2"):
                                            if requests else None),
         "option_evaluations": len(option_rows),
         "option_status_counts": {status: sum(1 for row in option_rows if row["status"] == status)
+                                 for status in statuses},
+        "accepted_option_evaluations": len(accepted_option_rows),
+        "accepted_option_status_counts": {
+            status: sum(1 for row in accepted_option_rows if row["status"] == status)
                                  for status in statuses},
         "safety_or_rejection_exits": sum(1 for row in option_rows
                                          if row.get("safety_or_rejection")),

@@ -52,6 +52,15 @@ def _safety_reason(observation):
 def eligibility(world, action_indices):
     """Accept/reject each requested robot option from legal observations only."""
     observations = world.boundary_observations()
+    # both-push on opposite faces is not a cooperative push: the two normal directions oppose,
+    # so the rigid object cannot advance along both robots' declared directions. This is a
+    # *feasibility* filter computed from the initial visible geometry, not a success redefinition.
+    patches = [getattr(observation, "patch", None) for observation in observations]
+    pushing = [spec.ROBOT_ACTIONS[index].kind == "push" for index in action_indices]
+    opposite_pair = False
+    if all(pushing) and all(patch is not None and patch.valid for patch in patches):
+        n0, n1 = patches[0].normal_world, patches[1].normal_world
+        opposite_pair = (n0[0] * n1[0] + n0[1] * n1[1]) < -0.5
     rows = []
     for robot_id, action_index in enumerate(action_indices):
         action = spec.ROBOT_ACTIONS[action_index]
@@ -64,6 +73,8 @@ def eligibility(world, action_indices):
                 reasons.append("no_object_patch")
             if _safety_reason(observation) is not None:
                 reasons.append("safety_trigger")
+            if action.kind == "push" and opposite_pair:
+                reasons.append("opposite_faces_both_push")
         rows.append({
             "robot": robot_id, "action": int(action_index), "label": action.label,
             "kind": action.kind, "accepted": not reasons, "reasons": reasons,
