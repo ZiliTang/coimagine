@@ -561,7 +561,15 @@ class PushSkill(_VisionSkill):
                 raw = raw_reference(patch.normal_world if normal is None else normal,
                                     self.alpha, self.speed_command)
             if self.hold:
-                raw = (0.0, 0.0)
+                # keep a light contact while waiting for the teammate: a zero-force hold loses
+                # the contact (the object keeps moving) and the branch then aborts contact_lost
+                direction = (patch.normal_world if patch is not None and patch.valid
+                             else normal)
+                if direction is not None:
+                    raw = raw_reference(direction, self.alpha,
+                                        min(0.05, self.speed_command))
+                else:
+                    raw = (0.0, 0.0)
             if observation.contacting_object and not self.hold:
                 self.effective_contact += dt
                 self.contact_seen = True

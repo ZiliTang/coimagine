@@ -87,7 +87,7 @@ PATCH_RELATIVE_FACTOR: float = 2.5
 MAX_FIT_RMS: float = 0.005
 NORMAL_FILTER_TAU: float = 0.10    # s
 NORMAL_JUMP_LIMIT_DEG: float = 30.0  # a larger change is a corner/face transition
-CONTACT_LOSS_TOLERANCE: float = 0.15  # s of continuous contact loss inside PUSH -> abort
+CONTACT_LOSS_TOLERANCE: float = 0.60  # s of continuous contact loss inside PUSH -> abort (v4.2: re-contact grace)
 #: How long PUSH may keep pressing the visible surface without the contact sensor ever
 #: reporting the object before it gives up. PUSH is entered on a *sensed contact*, so this
 #: only fires when the surface is visible but physically unreachable.
@@ -143,7 +143,7 @@ FACE_SWITCH_EXIT: str = "face_switch"
 OPTION_PREPARE_SECONDS: float = 3.0   # covers FIND + ALIGN + approach, not the distance term
 #: The effective speed is below the reference (alignment and radial correction share the
 #: window), so the slack must cover that inefficiency or distance targets become unreachable.
-OPTION_TIMEOUT_SLACK: float = 2.5
+OPTION_TIMEOUT_SLACK: float = 4.0   # v4.2: long pushes need the extra time
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
 APPROACH_TIMEOUT: float = 8.0         # s, v4.2: the 6 s cap clipped slow approaches
@@ -156,7 +156,7 @@ APPROACH_MAX_SPEED: float = 0.20      # m/s
 APPROACH_GAIN: float = 2.0            # 1/s, gap-proportional approach speed
 BRAKE_MAX_SECONDS: float = 0.80       # s of braking before the skill ends regardless
 BRAKE_SPEED: float = 0.03             # m/s, below this the robot counts as braked
-NO_PROGRESS_SECONDS: float = 2.0      # continuous seconds without progress -> blocked
+NO_PROGRESS_SECONDS: float = 3.0      # continuous seconds without progress -> blocked (v4.2)
 REPOSITION_GAP: float = 0.10          # m, target robot-edge to object-surface gap
 REPOSITION_SPEED_MAX: float = 0.18    # m/s, tangential speed cap (1.5x, see v4.2)
 REPOSITION_ALIGN_TOLERANCE: float = 0.035  # m, gap error considered aligned
