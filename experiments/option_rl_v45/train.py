@@ -36,6 +36,34 @@ from coimagine.random_start import env as E, layout, spec  # noqa: E402
 
 CONTROL_DT = spec.CONTROL_DT
 ACTION_KINDS = tuple(action.kind for action in spec.ROBOT_ACTIONS)
+#: reduced action space (user-authorised action encoding): push 0.25/0.50 at the middle speed,
+#: reposition CCW/CW 0.25, wait 6 s, follow 6 s. The scale dimension is the main exploration
+#: cost and it is not what "which face to push" needs; 6 x 6 = 36 joint actions instead of 784.
+SUBSET = tuple(index for index in (
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "push" and a.speed == 0.24 and a.scale == 0.25),
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "push" and a.speed == 0.24 and a.scale == 0.50),
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "reposition" and a.label.startswith("REPOSITION_CCW") and a.scale == 0.25),
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "reposition" and a.label.startswith("REPOSITION_CW") and a.scale == 0.25),
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "wait" and a.scale == 6.0),
+    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "follow" and a.scale == 6.0),
+))
+SUB_OF = {index: position for position, index in enumerate(SUBSET)}
+SUBSET_KINDS = tuple(spec.ROBOT_ACTIONS[index].kind for index in SUBSET)
+
+
+def to_subset(env_action: int) -> int:
+    if env_action in SUB_OF:
+        return SUB_OF[env_action]
+    action = spec.ROBOT_ACTIONS[env_action]
+    same = [(position, spec.ROBOT_ACTIONS[index]) for position, index in enumerate(SUBSET)
+            if spec.ROBOT_ACTIONS[index].kind == action.kind]
+    if same:
+        return min(same, key=lambda pair: abs(pair[1].scale - action.scale))[0]
+    return SUB_OF[next(index for index in SUBSET if spec.ROBOT_ACTIONS[index].kind == "wait")]
+
+
+def subset_mask(mask28) -> np.ndarray:
+    return np.asarray([mask28[index] for index in SUBSET], dtype=bool)
 GAMMA_STEP = 0.99 ** CONTROL_DT
 HIDDEN = 256
 #: Hard safety cap only. The task budget is 90 s and the shortest option is 2 s, so a normal
@@ -72,7 +100,7 @@ class RunningMeanStd:
 
 
 class Policy(nn.Module):
-    def __init__(self, obs_dim: int, hidden: int = HIDDEN, act: int = spec.ROBOT_ACTION_COUNT):
+    def __init__(self, obs_dim: int, hidden: int = HIDDEN, act: int = len(SUBSET)):
         super().__init__()
         self.body = nn.Sequential(nn.Linear(obs_dim, hidden), nn.Tanh(),
                                   nn.Linear(hidden, hidden), nn.Tanh())
@@ -116,8 +144,8 @@ def observe_vector(env):
     # when ``record=False``. Reading ``env.rows`` here used to feed zeros to both progress
     # columns because the training runner never records, so pass ``None`` and let the env use
     # its own legal per-robot signed progress / target.
-    mask0 = action_mask(obs0, ACTION_KINDS)
-    mask1 = action_mask(obs1, ACTION_KINDS)
+    mask0 = subset_mask(action_mask(obs0, ACTION_KINDS))
+    mask1 = subset_mask(action_mask(obs1, ACTION_KINDS))
     return np.asarray(env.observation_vector(obs0, obs1, None), dtype=np.float32), mask0, mask1
 
 
@@ -143,7 +171,8 @@ def run_episode(policy: Policy, instance, rng: np.random.Generator,
             d1 = torch.distributions.Categorical(logits=logits1)
             a0, a1 = int(d0.sample()), int(d1.sample())
             logp = float(d0.log_prob(torch.tensor(a0)) + d1.log_prob(torch.tensor(a1)))
-        boundary = env.joint_step(a0, a1, record=False)
+        env_a0, env_a1 = SUBSET[a0], SUBSET[a1]
+        boundary = env.joint_step(env_a0, env_a1, record=False)
         periods = int(boundary["periods"])
         reward = float(boundary["reward"]["total"])
         success = bool(boundary["success"])
@@ -200,8 +229,8 @@ def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
         env = E.RandomStartEnv(instance)
         for _ in range(8):
             observations = env.boundary_observations()
-            a0 = int(_goal_action(observations[0]))
-            a1 = int(_goal_action(observations[1]))
+            a0 = to_subset(int(_goal_action(observations[0])))
+            a1 = to_subset(int(_goal_action(observations[1])))
             obs, _m0, _m1 = observe_vector(env)
             samples.append((obs, a0, a1))
             env.joint_step(a0, a1, record=False)
@@ -274,7 +303,7 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
                     logits0 = logits0.masked_fill(~torch.as_tensor(mask0), -1e9)
                     logits1 = logits1.masked_fill(~torch.as_tensor(mask1), -1e9)
                     a0, a1 = int(torch.argmax(logits0)), int(torch.argmax(logits1))
-                boundary = env.joint_step(a0, a1, record=False)
+                boundary = env.joint_step(SUBSET[a0], SUBSET[a1], record=False)
                 success = bool(boundary["success"])
                 if boundary["termination"] is not None:
                     break
