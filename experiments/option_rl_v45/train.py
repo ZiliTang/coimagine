@@ -188,13 +188,19 @@ def returns_and_advantages(steps: List[Step]) -> Tuple[np.ndarray, np.ndarray]:
 
 
 def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: int,
-          out_dir: Path, eval_roots: int, lr: float = 3e-4, epochs: int = 4,
+          out_dir: Path, eval_roots: int, simple_scene: bool = False, lr: float = 3e-4, epochs: int = 4,
           minibatch: int = 256, clip: float = 0.2, value_coef: float = 0.5,
           entropy_coef: float = 0.01, eval_every: int = 5) -> Dict:
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     train_instances = layout.build_split("L0", "train", count=64)[0]
-    eval_instances = (layout.build_split("L0", "test", count=eval_roots)[0] if eval_roots else [])
+    if simple_scene:
+        from experiments.option_rl_v45.scenes import sample_scenes
+        train_instances = sample_scenes(seed * 1000 + 1, 64, "train")
+        eval_instances = (sample_scenes(seed * 1000 + 2, eval_roots, "test") if eval_roots else [])
+    else:
+        train_instances = layout.build_split("L0", "train", count=64)[0]
+        eval_instances = (layout.build_split("L0", "test", count=eval_roots)[0] if eval_roots else [])
     obs_dim = len(observe_vector(E.RandomStartEnv(train_instances[0]))[0])
     obs_stats = RunningMeanStd(obs_dim)
     policy = Policy(obs_dim)
@@ -278,27 +284,29 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
                 stats["updates"] += 1
         for key in ("policy_loss", "value_loss", "entropy"):
             stats[key] /= max(1, stats["updates"])
+        components = {f"reward_{key}": float(np.mean([e["components"][key] for _, e in episodes]))
+                      for key in ("progress", "distance_cost", "time_cost",
+                                  "success_bonus", "failure_penalty")}
+        entry = {"iteration": iteration,
+                 "explore_return": float(np.mean([e["return"] for _, e in episodes])),
+                 "explore_success": float(np.mean([e["success"] for _, e in episodes])),
+                 "explore_progress": float(np.mean([e["progress"] for _, e in episodes])),
+                 "success_rate": None, "mean_progress": None, **stats, **components,
+                 "steps": n, "seconds": time.time() - started}
         if iteration % eval_every == 0 or iteration == 1:
-            evaluation = evaluate()
-            components = {f"reward_{key}": float(np.mean([e["components"][key] for _, e in episodes]))
-                          for key in ("progress", "distance_cost", "time_cost",
-                                      "success_bonus", "failure_penalty")}
-            entry = {"iteration": iteration,
-                     "explore_return": float(np.mean([e["return"] for _, e in episodes])),
-                     "explore_success": float(np.mean([e["success"] for _, e in episodes])),
-                     "explore_progress": float(np.mean([e["progress"] for _, e in episodes])),
-                     **evaluation, **stats, **components,
-                     "steps": n, "seconds": time.time() - started}
-            history.append(entry)
+            entry.update(evaluate())
             save(out_dir / "checkpoint.pt")
-            try:
-                from experiments.option_rl_v45.monitor import write_dashboard
-                write_dashboard(history, out_dir / "dashboard.html", subtitle=str(out_dir))
-            except Exception as error:      # the dashboard must never stop a training run
-                print(f"dashboard skipped: {error}", flush=True)
+        history.append(entry)
+        try:
+            from experiments.option_rl_v45.monitor import write_dashboard
+            write_dashboard(history, out_dir / "dashboard.html", subtitle=str(out_dir))
+        except Exception as error:      # the dashboard must never stop a training run
+            print(f"dashboard skipped: {error}", flush=True)
+        if entry["success_rate"] is not None:
             print(f"iter {iteration:4d} return={entry['explore_return']:+.3f} "
                   f"success={entry['explore_success']:.3f} progress={entry['explore_progress']:+.3f} "
-                  f"val_success={entry['success_rate']} ({entry['seconds']:.0f}s)", flush=True)
+                  f"val_success={entry['success_rate']} val_prog={entry['mean_progress']:+.3f} "
+                  f"({entry['seconds']:.0f}s)", flush=True)
         if time.time() - started >= hours * 3600.0:
             print(f"time budget reached at iteration {iteration}", flush=True)
             break
@@ -321,11 +329,18 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--eval-roots", type=int, default=16)
     parser.add_argument("--eval-every", type=int, default=5)
+    parser.add_argument("--entropy", type=float, default=0.01,
+                        help="entropy coefficient (0.05-0.1 recommended until PUSH appears)")
+    parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--simple-scene", action="store_true",
+                        help="one empty 4x3 arena, random starts and a random goal centre away "
+                             "from the walls (the training scenario recommended for v4.6)")
     parser.add_argument("--out", type=Path, default=ROOT / "outputs/option_rl_v45/run")
     args = parser.parse_args()
     train(iterations=args.iterations, episodes_per_iteration=args.episodes, hours=args.hours,
           seed=args.seed, out_dir=args.out, eval_roots=args.eval_roots,
-          eval_every=args.eval_every)
+          simple_scene=args.simple_scene, eval_every=args.eval_every,
+          entropy_coef=args.entropy, lr=args.lr)
 
 
 if __name__ == "__main__":

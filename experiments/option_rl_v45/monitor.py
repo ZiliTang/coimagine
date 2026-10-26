@@ -28,7 +28,7 @@ CHARTS = [
 ]
 
 TEMPLATE = """<!doctype html>
-<html><head><meta charset="utf-8"><title>{title}</title>
+<html><head><meta charset="utf-8"><meta http-equiv="refresh" content="10"><title>{title}</title>
 <style>
 body{{margin:0;background:#0b0f14;color:#dfe6f3;font:13px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}}
 header{{padding:18px 22px 6px}}h1{{font-size:18px;margin:0 0 4px}}h1 span{{color:#8b93a7;font-weight:400}}
@@ -40,7 +40,7 @@ header{{padding:18px 22px 6px}}h1{{font-size:18px;margin:0 0 4px}}h1 span{{color
 canvas{{width:100%;height:190px;display:block}}
 </style></head><body>
 <header><h1>option RL training <span>{subtitle}</span></h1>
-<div class="legend">x = evaluation iteration · y = value · curves are redrawn after every evaluation</div></header>
+<div class="legend">x = iteration · y = value · page auto-refreshes every 10 s (trainer rewrites this file every iteration)</div></header>
 <div class="wrap" id="wrap"></div>
 <script>
 const H = {data};
