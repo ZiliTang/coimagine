@@ -226,7 +226,7 @@ def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
 
 def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: int,
           out_dir: Path, eval_roots: int, simple_scene: bool = False, easy_goal=None,
-          bc_steps: int = 0, lr: float = 3e-4, epochs: int = 4,
+          anneal_iterations: int = 0, bc_steps: int = 0, lr: float = 3e-4, epochs: int = 4,
           minibatch: int = 256, clip: float = 0.2, value_coef: float = 0.5,
           entropy_coef: float = 0.01, eval_every: int = 5) -> Dict:
     torch.manual_seed(seed)
@@ -285,6 +285,14 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
                 "mean_progress": float(np.mean(progresses))}
 
     for iteration in range(1, iterations + 1):
+        if simple_scene and anneal_iterations > 0:
+            # annealing curriculum: the goal distance grows towards the full arena so the
+            # policy does not overfit the near-goal distribution; the evaluation stays full
+            from experiments.option_rl_v45.scenes import sample_scenes
+            fraction = min(1.0, iteration / float(anneal_iterations))
+            max_distance = 0.85 + 2.2 * fraction
+            train_instances = sample_scenes(seed * 1000 + 17 + iteration, 64, "train",
+                                            (0.35, max_distance))
         episodes = []
         for _ in range(episodes_per_iteration):
             instance = train_instances[int(rng.integers(0, len(train_instances)))]
@@ -378,6 +386,9 @@ def main() -> None:
     parser.add_argument("--easy-goal", action="store_true",
                         help="curriculum: train with the goal centre 0.35-0.85 m from the object; "
                              "the evaluation still uses the full random goal")
+    parser.add_argument("--anneal-iterations", type=int, default=0,
+                        help="annealing curriculum: grow the train goal distance over this many "
+                             "iterations (0 = fixed --easy-goal)")
     parser.add_argument("--bc-steps", type=int, default=0,
                         help="behaviour-cloning warm start from the legal goal heuristic")
     parser.add_argument("--simple-scene", action="store_true",
@@ -389,7 +400,7 @@ def main() -> None:
           seed=args.seed, out_dir=args.out, eval_roots=args.eval_roots,
           simple_scene=args.simple_scene, eval_every=args.eval_every,
           easy_goal=(0.35, 0.85) if args.easy_goal else None,
-          bc_steps=args.bc_steps,
+          anneal_iterations=args.anneal_iterations, bc_steps=args.bc_steps,
           entropy_coef=args.entropy, lr=args.lr)
 
 
