@@ -25,6 +25,7 @@ from typing import Dict, List, Tuple
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 ROOT = Path(__file__).resolve().parents[2]
 for _p in (ROOT / "src", ROOT):
@@ -187,8 +188,44 @@ def returns_and_advantages(steps: List[Step]) -> Tuple[np.ndarray, np.ndarray]:
     return returns, returns - values
 
 
+def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
+    """Behaviour-cloning initialisation from the *legal* goal heuristic.
+
+    The heuristic reads only the robot's own observation (patch normal + goal direction) and the
+    public menu; it is an initialisation, never an oracle input to the policy.
+    """
+    from experiments.option_rl_v45.fixed_policies import _goal_action
+    samples = []
+    for instance in instances:
+        env = E.RandomStartEnv(instance)
+        for _ in range(8):
+            observations = env.boundary_observations()
+            a0 = int(_goal_action(observations[0]))
+            a1 = int(_goal_action(observations[1]))
+            obs, _m0, _m1 = observe_vector(env)
+            samples.append((obs, a0, a1))
+            env.joint_step(a0, a1, record=False)
+            if env.termination is not None:
+                break
+    if not samples:
+        return 0
+    obs_stats.update(np.stack([sample[0] for sample in samples]))
+    optimiser = torch.optim.Adam(policy.parameters(), lr=lr)
+    for _ in range(steps):
+        index = rng.integers(0, len(samples), size=min(batch, len(samples)))
+        x = torch.as_tensor(np.stack([obs_stats.normalise(samples[i][0]) for i in index])).float()
+        a0 = torch.tensor([samples[i][1] for i in index])
+        a1 = torch.tensor([samples[i][2] for i in index])
+        logits0, logits1, _ = policy(x)
+        loss = F.cross_entropy(logits0, a0) + F.cross_entropy(logits1, a1)
+        optimiser.zero_grad()
+        loss.backward()
+        optimiser.step()
+    return len(samples)
+
+
 def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: int,
-          out_dir: Path, eval_roots: int, simple_scene: bool = False, lr: float = 3e-4, epochs: int = 4,
+          out_dir: Path, eval_roots: int, simple_scene: bool = False, bc_steps: int = 0, lr: float = 3e-4, epochs: int = 4,
           minibatch: int = 256, clip: float = 0.2, value_coef: float = 0.5,
           entropy_coef: float = 0.01, eval_every: int = 5) -> Dict:
     torch.manual_seed(seed)
@@ -209,6 +246,9 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
     out_dir.mkdir(parents=True, exist_ok=True)
     started = time.time()
     history: List[Dict] = []
+    if bc_steps > 0:
+        count = warm_start(policy, obs_stats, train_instances, bc_steps, rng)
+        print(f"warm start: {count} heuristic samples, {bc_steps} steps", flush=True)
 
     def save(path: Path) -> None:
         torch.save({"state_dict": policy.state_dict(), "obs_dim": obs_dim,
@@ -333,6 +373,8 @@ def main() -> None:
     parser.add_argument("--entropy", type=float, default=0.01,
                         help="entropy coefficient (0.05-0.1 recommended until PUSH appears)")
     parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--bc-steps", type=int, default=0,
+                        help="behaviour-cloning warm start from the legal goal heuristic")
     parser.add_argument("--simple-scene", action="store_true",
                         help="one empty 4x3 arena, random starts and a random goal centre away "
                              "from the walls (the training scenario recommended for v4.6)")
@@ -341,6 +383,7 @@ def main() -> None:
     train(iterations=args.iterations, episodes_per_iteration=args.episodes, hours=args.hours,
           seed=args.seed, out_dir=args.out, eval_roots=args.eval_roots,
           simple_scene=args.simple_scene, eval_every=args.eval_every,
+          bc_steps=args.bc_steps,
           entropy_coef=args.entropy, lr=args.lr)
 
 
