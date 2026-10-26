@@ -297,6 +297,8 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
             entry.update(evaluate())
             save(out_dir / "checkpoint.pt")
         history.append(entry)
+        # persist every iteration so an interrupted run keeps the dense record
+        (out_dir / "history.json").write_text(json.dumps(history, indent=1) + "\n")
         try:
             from experiments.option_rl_v45.monitor import write_dashboard
             write_dashboard(history, out_dir / "dashboard.html", subtitle=str(out_dir))
@@ -310,7 +312,6 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
         if time.time() - started >= hours * 3600.0:
             print(f"time budget reached at iteration {iteration}", flush=True)
             break
-    (out_dir / "history.json").write_text(json.dumps(history, indent=1) + "\n")
     checkpoint = out_dir / "policy.pt"
     save(checkpoint)
     final = evaluate()
