@@ -37,7 +37,14 @@ CONTROL_DT = spec.CONTROL_DT
 ACTION_KINDS = tuple(action.kind for action in spec.ROBOT_ACTIONS)
 GAMMA_STEP = 0.99 ** CONTROL_DT
 HIDDEN = 256
-MAX_SKILLS = 24
+#: Hard safety cap only. The task budget is 90 s and the shortest option is 2 s, so a normal
+#: episode terminates far below this. Previously the runner stopped silently at 24 skills and
+#: skipped the env's failure penalty, so ``WAIT[2 s] x 24`` ended at 48 s for roughly -2.9
+#: while every honest 90 s failure cost about -7.4: early exit was cheaper than the task
+#: budget. Hitting the cap now charges the truncation failure explicitly, so no policy can
+#: buy return by ending the episode early.
+MAX_SKILLS = 120
+TRUNCATION_PENALTY = spec.FAILURE_PENALTY
 
 
 class RunningMeanStd:
@@ -89,6 +96,7 @@ class Step:
     value: float
     reward: float
     discount: float
+    terminal: bool = False
 
 
 def action_mask(observation, action_kinds) -> np.ndarray:
@@ -99,36 +107,30 @@ def action_mask(observation, action_kinds) -> np.ndarray:
     return mask
 
 
-def observe_vector(env, fraction: float = 0.0):
+def observe_vector(env):
     """Returns (vector, mask0, mask1) from the robot's own legal observations."""
     obs0 = env.observe(0, env.total_periods, env.total_periods * CONTROL_DT)
     obs1 = env.observe(1, env.total_periods, env.total_periods * CONTROL_DT)
-    """The legal 760-dim joint view; ``fraction`` is unused (kept for call compatibility)."""
-    obs0 = env.observe(0, env.total_periods, env.total_periods * CONTROL_DT)
-    obs1 = env.observe(1, env.total_periods, env.total_periods * CONTROL_DT)
-    progress = {}
-    if env.rows:
-        last = env.rows[-1]
-        for robot in (0, 1):
-            info = last.get(f"r{robot}", {})
-            progress[robot] = (float(info.get("signed_progress") or 0.0),
-                               float(info.get("progress_target_distance") or 0.0))
+    # ``env._last_progress`` is updated on every control period inside ``joint_step``, even
+    # when ``record=False``. Reading ``env.rows`` here used to feed zeros to both progress
+    # columns because the training runner never records, so pass ``None`` and let the env use
+    # its own legal per-robot signed progress / target.
     mask0 = action_mask(obs0, ACTION_KINDS)
     mask1 = action_mask(obs1, ACTION_KINDS)
-    return np.asarray(env.observation_vector(obs0, obs1, progress), dtype=np.float32), mask0, mask1
+    return np.asarray(env.observation_vector(obs0, obs1, None), dtype=np.float32), mask0, mask1
 
 
 def run_episode(policy: Policy, instance, rng: np.random.Generator,
                 obs_stats: RunningMeanStd) -> Tuple[List[Step], Dict]:
     env = E.RandomStartEnv(instance)
     initial = max(env.object_distance(), 1e-6)
-    progress = 0.0
-    obs, mask0, mask1 = observe_vector(env, progress)
+    obs, mask0, mask1 = observe_vector(env)
     steps: List[Step] = []
     total_reward = 0.0
     components = {key: 0.0 for key in
                   ("progress", "distance_cost", "time_cost", "success_bonus", "failure_penalty")}
     success = False
+    terminated = False
     for _ in range(MAX_SKILLS):
         obs_stats.update(obs[None, :])
         x = torch.as_tensor(obs_stats.normalise(obs)).float().unsqueeze(0)
@@ -147,23 +149,39 @@ def run_episode(policy: Policy, instance, rng: np.random.Generator,
         total_reward += reward
         for key in components:
             components[key] += float(boundary["reward"].get(key, 0.0))
+        terminated = boundary["termination"] is not None
         steps.append(Step(obs=obs_stats.normalise(obs), a0=a0, a1=a1, logp=logp,
                           value=float(value.item()), reward=reward,
-                          discount=GAMMA_STEP ** periods))
-        if boundary["termination"] is not None:
+                          discount=GAMMA_STEP ** periods, terminal=terminated))
+        if terminated:
             break
-        progress = float(np.clip((initial - env.object_distance()) / initial, -1.0, 1.0))
-        obs, mask0, mask1 = observe_vector(env, progress)
+        obs, mask0, mask1 = observe_vector(env)
+    exit_reason = env.termination
+    if not terminated:
+        # Loop guard only: never let the runner end an episode uncharged. The skill cap is
+        # far above what a 90 s budget can reach with 2 s options, so this branch is a safety
+        # net; if it ever fires, the missing task-budget failure is charged here.
+        assert steps, "an episode must contain at least one skill"
+        steps[-1].reward += TRUNCATION_PENALTY
+        steps[-1].terminal = True
+        total_reward += TRUNCATION_PENALTY
+        components["failure_penalty"] += TRUNCATION_PENALTY
+        exit_reason = "trainer_skill_cap"
     return steps, {"return": total_reward, "success": success,
                    "progress": float(np.clip((initial - env.object_distance()) / initial, -1.0, 1.0)),
-                   "components": components}
+                   "exit_reason": exit_reason, "components": components}
 
 
 def returns_and_advantages(steps: List[Step]) -> Tuple[np.ndarray, np.ndarray]:
     returns = np.zeros(len(steps), dtype=np.float32)
     running = 0.0
     for index in range(len(steps) - 1, -1, -1):
-        running = steps[index].reward + steps[index].discount * running
+        if steps[index].terminal:
+            # a terminal step has no successor: this also resets the accumulator at every
+            # episode boundary, so one episode's return cannot leak into the previous one
+            running = steps[index].reward
+        else:
+            running = steps[index].reward + steps[index].discount * running
         returns[index] = running
     values = np.asarray([step.value for step in steps], dtype=np.float32)
     return returns, returns - values
@@ -177,7 +195,7 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
     rng = np.random.default_rng(seed)
     train_instances = layout.build_split("L0", "train", count=64)[0]
     eval_instances = (layout.build_split("L0", "test", count=eval_roots)[0] if eval_roots else [])
-    obs_dim = len(observe_vector(E.RandomStartEnv(train_instances[0]), 0.0)[0])
+    obs_dim = len(observe_vector(E.RandomStartEnv(train_instances[0]))[0])
     obs_stats = RunningMeanStd(obs_dim)
     policy = Policy(obs_dim)
     optimiser = torch.optim.Adam(policy.parameters(), lr=lr)
@@ -199,7 +217,7 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
         for instance in eval_instances:
             env = E.RandomStartEnv(instance)
             initial = max(env.object_distance(), 1e-6)
-            obs, mask0, mask1 = observe_vector(env, 0.0)
+            obs, mask0, mask1 = observe_vector(env)
             success = False
             for _ in range(MAX_SKILLS):
                 x = torch.as_tensor(obs_stats.normalise(obs)).float().unsqueeze(0)
@@ -212,8 +230,7 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
                 success = bool(boundary["success"])
                 if boundary["termination"] is not None:
                     break
-                obs, mask0, mask1 = observe_vector(env, float(np.clip(
-                    (initial - env.object_distance()) / initial, -1.0, 1.0)))
+                obs, mask0, mask1 = observe_vector(env)
             successes.append(float(success))
             progresses.append(float(np.clip((initial - env.object_distance()) / initial, -1.0, 1.0)))
         return {"success_rate": float(np.mean(successes)),
@@ -285,7 +302,7 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
         if time.time() - started >= hours * 3600.0:
             print(f"time budget reached at iteration {iteration}", flush=True)
             break
-        (out_dir / "history.json").write_text(json.dumps(history, indent=1) + "\n")
+    (out_dir / "history.json").write_text(json.dumps(history, indent=1) + "\n")
     checkpoint = out_dir / "policy.pt"
     save(checkpoint)
     final = evaluate()

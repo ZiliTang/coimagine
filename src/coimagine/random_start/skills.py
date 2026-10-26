@@ -57,6 +57,11 @@ from .spec import (
     OBSTACLE_AVOID_MARGIN,
     PUSH_ACTIVE_SECONDS,
     PUSH_WALL_SECONDS,
+    COOP_READY_GAP,
+    COOP_READY_BRAKE_GAP,
+    COOP_READY_ALIGN_DEG,
+    SHORT_FACE_MIN_FRACTION,
+    SHORT_FACE_CORNER_FRACTION,
     REPOSITION_ALIGN_TOLERANCE,
     REPOSITION_GAP,
     REPOSITION_GAP_GAIN,
@@ -77,7 +82,7 @@ from .spec import (
 
 Vec = Tuple[float, float]
 
-STAGES = ("find", "approach", "push", "align", "move", "brake", "done", "wait")
+STAGES = ("find", "approach", "ready", "push", "align", "move", "brake", "done", "wait")
 
 EXITS = ("push_complete", "reposition_complete", "wait_complete", "blocked_no_progress",
          "not_observed", "patch_lost", "contact_lost", "push_wall_timeout", "timeout",
@@ -135,6 +140,10 @@ class SkillObservation:
 
 def _clip_velocity(value: Vec, limit: float) -> Vec:
     return clip_norm(value, limit)
+
+
+def _wrap_angle(value: float) -> float:
+    return (value + math.pi) % (2.0 * math.pi) - math.pi
 
 
 def patch_gap(patch: SurfacePatch) -> float:
@@ -471,8 +480,28 @@ class PushSkill(_VisionSkill):
         self.push_gap_ff = 1.5
         self.corner_rejected = False
         self.reobserve_time = 0.0
-        #: set by the environment while a cooperative push waits for the teammate to start
+        #: v4.6 cooperative staging: each robot approaches to COOP_READY_GAP, aligns its
+        #: heading to the contact normal, then holds at zero force.  ``release`` is set by
+        #: the environment only when both robots are ready; both then enter ``push`` in the
+        #: same control period.
+        self.cooperative = False
+        self.ready = False
+        self.release = False
+        #: kept for the frozen info schema / older logs; the v4.6 cooperative path does not
+        #: use the old light-contact hold.
         self.hold = False
+
+    @staticmethod
+    def _contact_inset(low: float, high: float) -> float:
+        """Soft inset of the contact point from the visible-segment ends.
+
+        Wide faces keep the conservative ``R + 0.02`` inset.  As the face narrows, the inset
+        shrinks; a face down to ``0.1 * R`` is still a valid contact target (target centre).
+        This deliberately prioritises contact over refusing a narrow face.
+        """
+        half = 0.5 * (high - low)
+        corner_inset = SHORT_FACE_CORNER_FRACTION * ROBOT_RADIUS
+        return min(ROBOT_RADIUS + 0.02, max(0.0, half - corner_inset))
 
     def _tangential_reference(self, observation: SkillObservation,
                               patch: SurfacePatch) -> Vec:
@@ -501,7 +530,8 @@ class PushSkill(_VisionSkill):
                 # pair stays symmetric; recentring both to the middle would make them crowd, and
                 # moving both to fixed offsets measured worse than keeping the approach geometry
                 return (0.0, 0.0)
-        target = max(low + ROBOT_RADIUS, min(high - ROBOT_RADIUS, target))
+        inset = self._contact_inset(low, high)
+        target = max(low + inset, min(high - inset, target))
         error = target - robot_proj
         speed = max(-REPOSITION_SPEED_MAX,
                     min(REPOSITION_SPEED_MAX, 2.0 * error))
@@ -537,18 +567,14 @@ class PushSkill(_VisionSkill):
             else:
                 gap = patch_gap(patch)
                 self._track_gap_progress(gap)
-                raw = self._approach(observation, patch, 0.0)
-                # v4.2/M2: never approach a corner. The contact region is the visible segment
-                # inset by R; while the projection is outside it the tangential correction gets
-                # priority and the radial speed is reduced, so the robot enters the face instead
-                # of driving into the corner.
                 low, high, tangent = self._segment_extent(patch)
                 robot_proj = (observation.own.x * tangent[0]
                               + observation.own.y * tangent[1])
-                margin = ROBOT_RADIUS + 0.02
-                if high - low < 2.0 * margin:
-                    # too short to know a face: do not push, move along the boundary to
-                    # re-observe; only give up after a bounded attempt
+                half = 0.5 * (high - low)
+                min_half = 0.5 * SHORT_FACE_MIN_FRACTION * ROBOT_RADIUS
+                if half < min_half:
+                    # only a genuinely unidentifiable sliver is rejected now; a 0.25 m short
+                    # face is a valid target even though it is shorter than the robot diameter
                     self.reobserve_time += dt
                     midpoint = 0.5 * (low + high)
                     sign = 1.0 if midpoint >= robot_proj else -1.0
@@ -557,28 +583,59 @@ class PushSkill(_VisionSkill):
                     self.corner_rejected = True
                     if self.reobserve_time >= 2.0:
                         reason = "insufficient_visible_segment"
-                elif not (low + margin <= robot_proj <= high - margin):
-                    # only a *near-boundary* projection is treated as a corner; being far
-                    # outside the interval is a normal approach along the face
-                    outside = min(abs(robot_proj - (low + margin)),
-                                  abs(robot_proj - (high - margin)))
-                    self.corner_rejected = outside <= 0.10
-                    if self.corner_rejected:
-                        raw = (0.35 * raw[0], 0.35 * raw[1])
                 else:
-                    self.corner_rejected = False
-                # PUSH starts on a sensed contact, not on a range threshold: the range is the
-                # distance to the *fitted plane*, which a convex corner can make look closed
-                # while the surfaces are still a few millimetres apart. The approach keeps a
-                # minimum inward speed, so the last millimetres are always closed.
-                if observation.contacting_object:
-                    self.stage = "push"
-                    self.contact_seen = True
-                    self.push_wall = 0.0
-                    self.last_push_gap = None
-                    self._mark_progress()
-                elif self.approach_time >= APPROACH_TIMEOUT:
-                    reason = "blocked_no_progress"
+                    self.reobserve_time = 0.0
+                    heading = math.atan2(patch.normal_world[1], patch.normal_world[0])
+                    align_error = abs(_wrap_angle(heading - observation.own.angle))
+                    if self.cooperative and (gap <= COOP_READY_GAP + COOP_READY_BRAKE_GAP
+                                             or observation.contacting_object):
+                        # v4.6 staging: a slow radial servo settles at COOP_READY_GAP instead
+                        # of coasting into contact.  While the heading is not aligned the robot
+                        # stays at the staging clearance with zero force; the environment
+                        # releases both robots together once both report ready.
+                        error = gap - COOP_READY_GAP
+                        speed = max(-0.05, min(0.05, error))
+                        raw = (speed * patch.normal_world[0],
+                               speed * patch.normal_world[1])
+                        if (gap <= COOP_READY_GAP + 0.005
+                                and math.degrees(align_error) <= COOP_READY_ALIGN_DEG):
+                            self.stage = "ready"
+                            self.ready = True
+                            raw = (0.0, 0.0)
+                            self._mark_progress()
+                    else:
+                        raw = self._approach(observation, patch, 0.0)
+                        # soft inset: wide faces keep the conservative R+0.02 target;
+                        # narrow faces shrink the inset instead of being rejected
+                        inset = self._contact_inset(low, high)
+                        if not (low + inset <= robot_proj <= high - inset):
+                            outside = min(abs(robot_proj - (low + inset)),
+                                          abs(robot_proj - (high - inset)))
+                            self.corner_rejected = outside <= 0.10
+                            if self.corner_rejected:
+                                raw = (0.35 * raw[0], 0.35 * raw[1])
+                        else:
+                            self.corner_rejected = False
+                        # PUSH starts on a sensed contact, not on a range threshold.
+                        if observation.contacting_object and not self.cooperative:
+                            self.stage = "push"
+                            self.contact_seen = True
+                            self.push_wall = 0.0
+                            self.last_push_gap = None
+                            self._mark_progress()
+                        elif self.approach_time >= APPROACH_TIMEOUT:
+                            reason = "blocked_no_progress"
+        elif self.stage == "ready":
+            raw = (0.0, 0.0)
+            # waiting at the staging clearance applies no force and must not trip the
+            # no-progress / contact-loss timers while the teammate approaches
+            self.no_progress_seconds = 0.0
+            self.contact_loss_seconds = 0.0
+            if self.release:
+                self.stage = "push"
+                self.push_wall = 0.0
+                self.last_push_gap = None
+                self._mark_progress()
         elif self.stage == "push":
             if not self.hold:
                 self.push_wall += dt
@@ -644,7 +701,8 @@ class PushSkill(_VisionSkill):
             raw = (raw[0] + correction[0], raw[1] + correction[1])
         if reason is None:
             reason = self._common_checks(observation, dt)
-        if reason is None and self.stage != "find" and self.no_progress_seconds >= NO_PROGRESS_SECONDS:
+        if (reason is None and self.stage not in ("find", "ready")
+                and self.no_progress_seconds >= NO_PROGRESS_SECONDS):
             reason = "blocked_no_progress"
 
         raw = self._obstacle_avoidance(observation, raw,
@@ -696,6 +754,8 @@ class PushSkill(_VisionSkill):
             "push_wall_seconds": self.push_wall,
             "corner_rejected": self.corner_rejected, "reobserve_time": self.reobserve_time,
             "hold": self.hold, "speed_command": self.speed_command,
+            "ready": bool(self.ready), "release": bool(self.release),
+            "cooperative": bool(self.cooperative),
             "edge_assigned": not self.corner_rejected,
             "progress": self.progress, "progress_target": PUSH_ACTIVE_SECONDS,
             **self._progress_info(),
@@ -851,7 +911,8 @@ class RepositionSkill(_VisionSkill):
 
         if reason is None:
             reason = self._common_checks(observation, dt)
-        if reason is None and self.stage != "find" and self.no_progress_seconds >= NO_PROGRESS_SECONDS:
+        if (reason is None and self.stage not in ("find", "ready")
+                and self.no_progress_seconds >= NO_PROGRESS_SECONDS):
             reason = "blocked_no_progress"
 
         raw = self._obstacle_avoidance(observation, raw, include_teammate=True)

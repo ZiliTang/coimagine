@@ -463,21 +463,16 @@ class RandomStartEnv:
             now = (start_period + periods) * CONTROL_DT
             contacts = self.contacts()
             if cooperative_push:
-                both_pushing = all(getattr(skills[robot_id], "stage", None) == "push"
-                                   for robot_id in (0, 1))
+                # v4.6: both robots stage at COOP_READY_GAP with their heading aligned to
+                # the contact normal.  Only when both report ready do they leave the staging
+                # clearance together; until then both apply zero force.
                 for robot_id in (0, 1):
-                    if not hasattr(skills[robot_id], "hold"):
-                        continue
-                    if both_pushing:
-                        skills[robot_id].hold = False
-                        self._hold_time[robot_id] = 0.0
-                    elif getattr(skills[robot_id], "stage", None) == "push":
-                        # bounded wait (1.5 s): if the teammate never reaches its push stage
-                        # (blocked, short face, contact lost), release instead of freezing
-                        self._hold_time[robot_id] += CONTROL_DT
-                        skills[robot_id].hold = self._hold_time[robot_id] < 1.5
-                    else:
-                        self._hold_time[robot_id] = 0.0
+                    skills[robot_id].cooperative = True
+                    skills[robot_id].hold = False
+                if all(getattr(skills[robot_id], "ready", False)
+                       and not skills[robot_id].done for robot_id in (0, 1)):
+                    for robot_id in (0, 1):
+                        skills[robot_id].release = True
             observations = {robot_id: self.observe(robot_id, self.total_periods, now, contacts)
                             for robot_id in (0, 1)}
             # the policy-facing vector of this period must be built *before* the world advances
@@ -781,6 +776,8 @@ class RandomStartEnv:
                 "option_timeout_seconds": info.get("option_timeout_seconds"),
                 "face_switches": info.get("face_switches"),
                 "hold": info.get("hold"), "speed_command": info.get("speed_command"),
+                "ready": info.get("ready"), "release": info.get("release"),
+                "cooperative": info.get("cooperative"),
                 "corner_rejected": info.get("corner_rejected"),
                 "follow_offset": info.get("follow_offset"),
                 "follow_reference_offset": info.get("follow_reference_offset"),

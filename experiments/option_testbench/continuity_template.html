@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8">
+<title>PUSH 连续性与角点接触点评估 / PUSH continuity &amp; corner contact-point evaluation</title>
+<style>
+:root{--bg:#11151c;--panel:#1a212c;--ink:#e8edf5;--dim:#93a1b5;--acc:#4aa3ff;--warn:#ffb347;
+--bad:#ff6b6b;--ok:#4ad991;--contact:#4ad991;--lost:#ff6b6b;--corner:#ffb347}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);
+font:13px/1.5 -apple-system,"Segoe UI",Roboto,"Noto Sans SC",sans-serif}
+header{padding:10px 16px;background:#0d1117;border-bottom:1px solid #232c3a}
+header h1{font-size:15px;margin:0 0 2px}header .en{color:#b9c6d8;font-size:12px;font-weight:400}
+header .tag{color:var(--dim);font-size:12px;margin-right:18px}
+main{display:grid;grid-template-columns:350px 1fr;gap:12px;padding:12px;align-items:start}
+.card{background:var(--panel);border:1px solid #232c3a;border-radius:8px;padding:10px;margin-bottom:10px}
+.card h2{font-size:13px;margin:0 0 6px}.card h2 .en{color:var(--dim);font-weight:400;font-size:11px}
+#sceneList{max-height:300px;overflow:auto}
+.scene{padding:5px 6px;border-radius:6px;cursor:pointer;font-size:12px}
+.scene:hover,.branch:hover{background:#222c3a}
+.scene.sel,.branch.sel{background:#1d3a5c;outline:1px solid var(--acc)}
+.scene .en{color:var(--dim);font-size:11px}
+.branch{padding:5px 6px;border-radius:6px;cursor:pointer;font-size:12px}
+.branch .en{color:var(--dim);font-size:11px}
+.badge{display:inline-block;padding:1px 6px;border-radius:9px;font-size:11px;background:#243244}
+.badge.ok{background:#17402d;color:var(--ok)}.badge.bad{background:#43202a;color:var(--bad)}
+.badge.warn{background:#40331a;color:var(--warn)}
+canvas.view{background:#0b0f14;border:1px solid #232c3a;border-radius:8px;display:block;width:100%}
+#controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 8px}
+button{background:#243244;color:var(--ink);border:1px solid #33435a;border-radius:6px;
+padding:4px 10px;cursor:pointer}button:hover{background:#2d3d52}
+input[type=range]{width:260px}
+.layers{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;font-size:12px;margin:6px 0}
+.layers .ly{color:var(--dim)}.layers .ly b{color:var(--ink)}
+#status{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:4px 14px;
+font-size:12px;color:var(--dim);margin-top:6px}
+#status b{color:var(--ink);font-weight:600}
+#status .en{display:block;color:#8fa0b6;font-size:10.5px}
+#sceneInfo,#metrics{font-size:12px;color:#c7d2e0}
+#sceneInfo .row,#metrics .row{margin:3px 0}
+#sceneInfo .k,#metrics .k{color:var(--acc);font-weight:600}
+#sceneInfo .en{color:#8fa0b6}
+#metrics table{width:100%;border-collapse:collapse;font-size:12px}
+#metrics td{padding:2px 0;border-bottom:1px solid #222c3a}
+#metrics td.v{text-align:right;font-variant-numeric:tabular-nums}
+#metrics .good{color:var(--ok)}#metrics .mid{color:var(--warn)}#metrics .bad{color:var(--bad)}
+.legend{color:var(--dim);font-size:11px;margin-top:6px;line-height:1.7}
+.truth{color:var(--warn)}
+details{margin-top:8px;background:#141b25;border:1px solid #232c3a;border-radius:6px;padding:6px 10px}
+summary{cursor:pointer;color:var(--acc);font-size:12.5px}
+details .body{font-size:12px;color:#c7d2e0;margin-top:6px}
+details h3{margin:8px 0 2px;font-size:12.5px;color:var(--ink)}
+details .en{color:#8fa0b6}
+code{background:#0d1117;padding:0 4px;border-radius:3px}
+</style></head><body>
+<header>
+  <h1>PUSH 连续性与角点接触点评估
+    <span class="en">PUSH continuity &amp; corner contact-point evaluation</span></h1>
+  <span class="tag">面板 / panel: continuity-eval-v1</span>
+  <span class="tag">本地日志回放，无外部服务 / local log replay, no external service</span>
+  <span class="tag">真值层用 <span class="truth">橙色</span> 标注 / truth in <span class="truth">orange</span></span>
+</header>
+<main>
+<div>
+  <div class="card"><h2>场景 / scenes</h2><div id="sceneList"></div></div>
+  <div class="card"><h2>分支 / branches</h2><div id="branchList"></div></div>
+  <div class="card"><h2>当前分支指标 / branch metrics</h2><div id="metrics"></div></div>
+  <div class="card"><h2>场景说明 / scene</h2><div id="sceneInfo"></div></div>
+</div>
+<div>
+  <div class="card">
+    <div id="controls">
+      <button id="play">播放 / Play</button><button id="stepBack">−1 周期 / period</button>
+      <button id="stepFwd">+1 周期 / period</button><button id="reset">复位 / Reset</button>
+      <label>速度 / Speed <select id="speed"><option value="1">1×</option><option value="2">2×</option>
+        <option value="4">4×</option><option value="0.5">0.5×</option></select></label>
+      <input type="range" id="scrub" min="0" max="1" value="0">
+      <span id="clock"></span>
+    </div>
+    <div class="layers" id="layers"></div>
+    <canvas class="view" id="cv" width="880" height="560"></canvas>
+    <canvas class="view" id="tl" width="880" height="96" style="margin-top:8px"></canvas>
+    <div class="legend" id="legend"></div>
+    <div id="status"></div>
+    <details open><summary>如何阅读本页 / How to read this page</summary>
+      <div class="body">
+        <h3>1. 两条问题 / Two questions</h3>
+        <div>① <b>连续性</b>：PUSH 进入 push 阶段后，真实物体接触是否连续；时间条绿色=接触、红色=丢失，
+          黄色竖线=face switch，橙色竖线=corner_rejected。<br>
+          <span class="en">① Continuity: after the PUSH enters its push stage, is real object
+          contact continuous? Timeline blue=ready, green=contact, red=lost, yellow=face switch,
+          orange=corner_rejected.</span></div>
+        <div>② <b>角点接触点</b>：绿线是当前可见片段，白点是<b>可见片段中点</b>，绿圈是切向修正
+          目标（可见片段中点内缩 R 后的位置），青点为首次/当前接触点。注意：只看到部分面时，
+          可见片段中点本身会偏向角点，不等于真实物体面的中心；橙色十字是真值层的完整面中心，
+          用于对照。
+          若机器人从角点附近起步，观察投影是否向白点移动、首次接触点是否落在角点。<br>
+          <span class="en">② Corner contact point: the green line is the visible segment, the
+          white dot the <b>visible-segment midpoint</b>, the green ring the tangential target
+          (that midpoint inset by R), the cyan dot the contact point. With a partially visible
+          face the visible midpoint itself is biased towards the corner and is not the true
+          object-face centre; the orange cross marks the true full-face centre (truth) for
+          comparison. Starting near a
+          corner, watch the projection move towards the white dot and whether the first contact
+          sits on the corner.</span></div>
+        <h3>2. 图层 / Layers</h3>
+        <div>片段点（红点）、可见线段/面中心/目标（绿）、接触点（青）、当前轨迹（细线）、
+          物体轮廓（橙，真值）。<br>
+          <span class="en">Patch samples (red), visible segment / face centre / target (green),
+          contact point (cyan), current trajectory (thin), object outline (orange, truth).</span></div>
+        <h3>3. 指标 / Metrics</h3>
+        <div><code>contact fraction</code> = push 阶段真实接触周期 / push 阶段周期；
+          <code>longest loss</code> = push 阶段最长连续丢失；<code>first offset</code> =
+          首次接触时机器人投影相对面中心的偏移；<code>projection shift</code> =
+          首次接触投影 − approach 起始投影；<code>min corner margin</code> &lt; 0 表示投影
+          在可见面内缩区之外（角点侧）。<br>
+          <span class="en"><code>contact fraction</code> = contacting push periods / push
+          periods; <code>longest loss</code> = longest consecutive loss in the push stage;
+          <code>first offset</code> = robot projection minus face centre at first contact;
+          <code>projection shift</code> = first-contact projection minus approach-start
+          projection; <code>min corner margin</code> &lt; 0 means the projection is outside
+          the inset segment (corner side).</span></div>
+      </div>
+    </details>
+  </div>
+</div>
+</main>
+<script src="data/manifest.js"></script>
+<!--FRAME_SCRIPTS-->
+<script>
+window.onerror=function(m,src,line,col){var el=document.getElementById('status');
+  if(el)el.innerHTML='<b style="color:#ff6b6b">JS 错误 / JS error</b>: '+m+' @'+line+':'+col;};
+const DATA=window.__DATA__.manifest, PANEL=DATA.panel, BRANCHES=DATA.branches, CONST=DATA.constants;
+const framesOf=id=>(window.__DATA__.frames&&window.__DATA__.frames[id]&&
+  window.__DATA__.frames[id].frames)||[];
+const state={scene:null,branch:null,index:0,playing:false,last:0,speed:1,
+  layers:{patch:true,segment:true,contact:true,trail:true,truth:true,labels:true,
+          force:false,refvel:false}};
+const cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+const tl=document.getElementById('tl'),tctx=tl.getContext('2d');
+const LAYER_LABELS={
+ patch:['片段点','patch samples'],segment:['可见线段/面中心/目标','segment / centre / target'],
+ contact:['接触点与接触状态','contact point & state'],trail:['轨迹','trajectory'],
+ truth:['物体轮廓（真值）','object outline (truth)'],labels:['文字标注','labels'],
+ force:['实际力（紫）','applied force (purple)'],refvel:['参考速度（蓝）','reference velocity (blue)']};
+function fmt(v,d=3){return v===null||v===undefined?'—':Number(v).toFixed(d);}
+function pct(v){return v===null||v===undefined?'—':(100*Number(v)).toFixed(0)+'%';}
+function cls(v,good,mid){if(v===null||v===undefined)return '';return v>=good?'good':(v>=mid?'mid':'bad');}
+function scaleFor(arena,w,h){const s=Math.min((w-36)/arena[0],(h-36)/arena[1]);
+  return {s,ox:(w-arena[0]*s)/2,oy:h-(h-arena[1]*s)/2};}
+function toPx(sc,x,y){return [sc.ox+x*sc.s,sc.oy-y*sc.s];}
+function drawArrow(c,x,y,dx,dy,color,length){const m=Math.hypot(dx,dy);if(!m)return;
+  const ux=dx/m,uy=dy/m;const ex=x+ux*length,ey=y-uy*length;
+  c.strokeStyle=color;c.lineWidth=1.5;c.beginPath();c.moveTo(x,y);c.lineTo(ex,ey);c.stroke();
+  c.beginPath();c.moveTo(ex,ey);c.lineTo(ex-ux*6-uy*4,ey+uy*6-ux*4);
+  c.lineTo(ex-ux*6+uy*4,ey+uy*6+ux*4);c.closePath();c.fillStyle=color;c.fill();}
+function drawScene(branch,frameIndex){
+  const snap=PANEL.snapshots[branch.snapshot],inst=snap.instance;
+  const sc=scaleFor(inst.arena,cv.width,cv.height);
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.strokeStyle='#1b2331';ctx.lineWidth=8;
+  ctx.strokeRect(...toPx(sc,0,inst.arena[1]),inst.arena[0]*sc.s,inst.arena[1]*sc.s);
+  ctx.strokeStyle='#2a3547';ctx.lineWidth=2;
+  ctx.strokeRect(...toPx(sc,0,inst.arena[1]),inst.arena[0]*sc.s,inst.arena[1]*sc.s);
+  (inst.obstacles||[]).forEach(box=>{const [x,y]=toPx(sc,box.cx,box.cy);
+    ctx.save();ctx.translate(x,y);ctx.rotate(-(box.angle||0));ctx.fillStyle='#2a3547';
+    ctx.fillRect(-box.half_w*sc.s,-box.half_h*sc.s,2*box.half_w*sc.s,2*box.half_h*sc.s);
+    ctx.restore();});
+  const goal=inst.goal_centre;const [gx,gy]=toPx(sc,goal[0],goal[1]);
+  ctx.strokeStyle='#4aa3ff';ctx.lineWidth=2;ctx.beginPath();
+  ctx.arc(gx,gy,inst.goal_radius*sc.s,0,7);ctx.stroke();
+  ctx.fillStyle='#4aa3ff';ctx.font='11px sans-serif';
+  if(state.layers.labels)ctx.fillText('goal 目标',gx+6,gy-6);
+  const F=framesOf(state.branch);if(!F.length)return;
+  const f=F[Math.max(0,Math.min(frameIndex,F.length-1))];
+  if(state.layers.trail){
+    ctx.strokeStyle='#ffb34755';ctx.lineWidth=1.5;ctx.beginPath();
+    for(let i=0;i<=frameIndex;i++){const [x,y]=toPx(sc,F[i].o[0],F[i].o[1]);
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+    ctx.strokeStyle='#4ad99133';ctx.beginPath();
+    for(let i=0;i<=frameIndex;i++){const [x,y]=toPx(sc,F[i].r[0][0],F[i].r[0][1]);
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);}ctx.stroke();
+  }
+  if(state.layers.truth){const [x,y]=toPx(sc,f.o[0],f.o[1]);
+    ctx.save();ctx.translate(x,y);ctx.rotate(-f.o[2]);ctx.fillStyle='#ffb347';
+    ctx.fillRect(-CONST.object_width/2*sc.s,-CONST.object_height/2*sc.s,
+      CONST.object_width*sc.s,CONST.object_height*sc.s);
+    ctx.strokeStyle='#ffcf8a';ctx.lineWidth=1;ctx.strokeRect(
+      -CONST.object_width/2*sc.s,-CONST.object_height/2*sc.s,
+      CONST.object_width*sc.s,CONST.object_height*sc.s);ctx.restore();}
+  for(let rid=0;rid<2;rid++){
+    const r=f.r[rid];const [x,y]=toPx(sc,r[0],r[1]);
+    ctx.fillStyle=rid===0?'#4ad991':'#c792ea';ctx.beginPath();
+    ctx.arc(x,y,CONST.robot_radius*sc.s,0,7);ctx.fill();
+    ctx.strokeStyle='#0b0f14';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y);
+    ctx.lineTo(x+Math.cos(r[2])*CONST.robot_radius*sc.s*1.2,
+      y-Math.sin(r[2])*CONST.robot_radius*sc.s*1.2);ctx.stroke();
+    if(state.layers.labels){ctx.fillStyle=rid===0?'#4ad991':'#c792ea';
+      ctx.font='11px sans-serif';ctx.fillText('r'+rid,x+0.20*sc.s,y-0.20*sc.s);}
+  }
+  if(state.layers.patch){for(let rid=0;rid<2;rid++){ctx.fillStyle='#ff6b6b';
+    (f.pp[rid]||[]).forEach(p=>{const [x,y]=toPx(sc,p[0],p[1]);ctx.fillRect(x-1.5,y-1.5,3,3);});}}
+  if(state.layers.segment){for(let rid=0;rid<2;rid++){
+    const seg=f.seg[rid],mid=f.mid[rid],tgt=f.tgt[rid];
+    if(seg){const [x1,y1]=toPx(sc,seg[0],seg[1]),[x2,y2]=toPx(sc,seg[2],seg[3]);
+      ctx.strokeStyle='#4ad991';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x1,y1);
+      ctx.lineTo(x2,y2);ctx.stroke();
+      if(mid){const [mx,my]=toPx(sc,mid[0],mid[1]);ctx.fillStyle='#e8edf5';ctx.beginPath();
+        ctx.arc(mx,my,4,0,7);ctx.fill();}
+      if(tgt){const [tx,ty]=toPx(sc,tgt[0],tgt[1]);ctx.strokeStyle='#4ad991';ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(tx,ty,7,0,7);ctx.stroke();const r=f.r[rid];const [rx,ry]=toPx(sc,r[0],r[1]);
+        ctx.setLineDash([4,4]);ctx.strokeStyle='#4ad99188';ctx.beginPath();ctx.moveTo(rx,ry);
+        ctx.lineTo(tx,ty);ctx.stroke();ctx.setLineDash([]);
+        if(state.layers.labels){ctx.fillStyle='#4ad991';ctx.font='10px sans-serif';
+          ctx.fillText('visible centre',tx+8,ty-8);}}
+    }
+  }}
+  if(state.layers.segment){for(let rid=0;rid<2;rid++){
+    const tfc=f.tfc?f.tfc[rid]:null;
+    if(tfc){const [x,y]=toPx(sc,tfc[0],tfc[1]);ctx.strokeStyle='#ffb347';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.moveTo(x-5,y);ctx.lineTo(x+5,y);ctx.moveTo(x,y-5);ctx.lineTo(x,y+5);
+      ctx.stroke();if(state.layers.labels){ctx.fillStyle='#ffb347';ctx.font='10px sans-serif';
+        ctx.fillText('true face centre (truth)',x+7,y+14);}}
+  }}
+  if(state.layers.contact){for(let rid=0;rid<2;rid++){
+    const cp=f.cp[rid];if(cp){const [x,y]=toPx(sc,cp[0],cp[1]);ctx.fillStyle='#5ee7ff';
+      ctx.beginPath();ctx.arc(x,y,5,0,7);ctx.fill();ctx.strokeStyle='#0b0f14';ctx.lineWidth=1.5;
+      ctx.stroke();if(state.layers.labels){ctx.fillStyle='#5ee7ff';ctx.font='10px sans-serif';
+        ctx.fillText('contact',x+7,y+12);}}}}
+  if(state.layers.labels){for(let rid=0;rid<2;rid++){
+    const r=f.r[rid];const [x,y]=toPx(sc,r[0],r[1]);
+    if(f.fs[rid]){ctx.strokeStyle='#ffb347';ctx.lineWidth=2;ctx.beginPath();
+      ctx.arc(x,y,0.26*sc.s,0,7);ctx.stroke();ctx.fillStyle='#ffb347';ctx.font='10px sans-serif';
+      ctx.fillText('face switch',x+0.24*sc.s,y-0.24*sc.s);}
+    if(f.cr[rid]){ctx.fillStyle='#ff8c42';ctx.font='10px sans-serif';
+      ctx.fillText('corner rejected',x+0.22*sc.s,y+0.30*sc.s);}
+    if(f.rd[rid]&&!f.rl[rid]){ctx.fillStyle='#4aa3ff';ctx.font='10px sans-serif';
+      ctx.fillText('ready',x+0.22*sc.s,y-0.34*sc.s);}
+  }}
+  if(state.layers.force){for(let rid=0;rid<2;rid++){const r=f.r[rid],fo=f.fl[rid];
+    const [x,y]=toPx(sc,r[0],r[1]);drawArrow(ctx,x,y,fo[0]/15,fo[1]/15,'#c792ea',40);}}
+  if(state.layers.refvel){for(let rid=0;rid<2;rid++){const r=f.r[rid],v=f.rv[rid];
+    const [x,y]=toPx(sc,r[0],r[1]);drawArrow(ctx,x,y,v[0],v[1],'#4aa3ff',120);}}
+  if(state.layers.labels){ctx.fillStyle='#93a1b5';ctx.font='11px sans-serif';
+    ctx.fillText('t='+fmt(f.t,2)+' s   period '+f.p,12,20);}
+}
+function drawTimeline(branch){
+  const F=framesOf(state.branch);tctx.clearRect(0,0,tl.width,tl.height);
+  if(!F.length)return;
+  const W=tl.width-110,H=tl.height,rowH=30,y0=8;
+  tctx.fillStyle='#93a1b5';tctx.font='11px sans-serif';
+  tctx.fillText('r0 contact',8,y0+12);tctx.fillText('r1 contact',8,y0+rowH+12);
+  const n=F.length;const step=W/n;
+  for(let rid=0;rid<2;rid++){
+    const top=y0+rid*rowH+4;
+    for(let i=0;i<n;i++){
+      const f=F[i];let color='#2a3547';
+      if(f.st[rid]==='push')color=f.ct[rid]?'#4ad991':'#ff6b6b';
+      else if(f.st[rid]==='ready')color='#4aa3ff';
+      else if(f.st[rid]==='approach')color='#33435a';
+      tctx.fillStyle=color;tctx.fillRect(110+i*step,top,Math.max(1,step),rowH-10);
+      if(f.fs[rid]){tctx.fillStyle='#ffd166';tctx.fillRect(110+i*step,top-3,1.5,4);}
+      if(f.cr[rid]){tctx.fillStyle='#ff8c42';tctx.fillRect(110+i*step,top+rowH-9,1.5,4);}
+    }
+  }
+  const x=110+(state.index+0.5)*step;
+  tctx.strokeStyle='#e8edf5';tctx.lineWidth=1.5;tctx.beginPath();
+  tctx.moveTo(x,y0);tctx.lineTo(x,tl.height-6);tctx.stroke();
+  tctx.fillStyle='#93a1b5';tctx.font='10px sans-serif';
+  tctx.fillText('blue=ready · green=contact · red=lost · yellow=face switch · orange=corner rejected',110,tl.height-2);
+}
+function updateStatus(branch){
+  const F=framesOf(state.branch);const f=F[state.index];if(!f)return;
+  const s=branch.summary||{};
+  document.getElementById('clock').textContent='t='+fmt(f.t,2)+' s  period '+f.p+'/'+(F.length-1);
+  document.getElementById('scrub').max=Math.max(0,F.length-1);
+  document.getElementById('scrub').value=state.index;
+  document.getElementById('status').innerHTML=
+    '<div>场景 / scene: <b>'+branch.snapshot+'</b></div>'+
+    '<div>分支 / branch: <b>'+branch.branch_id+'</b></div>'+
+    '<div>动作 / action: <b>r0='+f.sk[0]+' / r1='+f.sk[1]+'</b></div>'+
+    '<div>阶段 / stage: <b>r0='+f.st[0]+' / r1='+f.st[1]+'</b></div>'+
+    '<div>接触 / contact: <b>r0='+f.ct[0]+' / r1='+f.ct[1]+'</b></div>'+
+    '<div>间隙 / gap: <b>'+fmt(f.g[0])+' / '+fmt(f.g[1])+' m</b></div>'+
+    '<div>signed progress: <b>'+fmt(f.si[0])+' / '+fmt(f.si[1])+' m</b></div>'+
+    '<div>角点标记 / corner flags: <b>r0 corner_rejected='+f.cr[0]+' / edge_assigned='+f.ea[0]+'</b></div>'+
+    '<div>ready / release: <b>r0='+f.rd[0]+'/'+f.rl[0]+' · r1='+f.rd[1]+'/'+f.rl[1]+'</b></div>'+
+    '<div>退出 / exit: <b>'+String(f.ex[0]||'—')+' / '+String(f.ex[1]||'—')+'</b></div>'+
+    '<div>本分支 / branch: contact '+pct(s.contact_fraction)+' · longest loss '+
+      fmt(s.longest_loss_seconds,2)+' s · faces '+fmt(s.face_switches,0)+'</div>';
+  const pr=s.pair||{};
+  const pairRows=pr.is_pair?(
+    '<tr><td colspan="2" style="color:#4aa3ff;padding-top:6px">pair / 协同</td></tr>'+
+    '<tr><td>r0 / r1 contact</td><td class="v">'+pct(pr.r0_contact_fraction)+' / '+
+      pct(pr.r1_contact_fraction)+'</td></tr>'+
+    '<tr><td>after engage r0/r1/both</td><td class="v">'+
+      pct(pr.r0_contact_after_engage_fraction)+' / '+
+      pct(pr.r1_contact_after_engage_fraction)+' / '+
+      pct(pr.both_contact_after_engage_fraction)+'</td></tr>'+
+    '<tr><td>both contact fraction</td><td class="v '+cls(pr.both_contact_fraction,0.95,0.7)+'">'+
+      pct(pr.both_contact_fraction)+'</td></tr>'+
+    '<tr><td>both push / contact</td><td class="v">'+fmt(pr.both_push_seconds,2)+' / '+
+      fmt(pr.both_contact_seconds,2)+' s</td></tr>'+
+    '<tr><td>sync delay</td><td class="v">'+fmt(pr.sync_delay_seconds,2)+' s</td></tr>'+
+    '<tr><td>staging gaps</td><td class="v">'+fmt(pr.staging_gap0_m,3)+' / '+
+      fmt(pr.staging_gap1_m,3)+' m</td></tr>'+
+    '<tr><td>both ready / release</td><td class="v">'+fmt(pr.both_ready_time,2)+' / '+
+      fmt(pr.release_time,2)+' s</td></tr>'+
+    '<tr><td>ready wait</td><td class="v">'+fmt(pr.ready_wait_seconds,2)+' s</td></tr>'+
+    '<tr><td>force before both contact</td><td class="v">'+
+      fmt(pr.force_before_both_contact_seconds,2)+' s</td></tr>'+
+    '<tr><td>r1 signed / exit</td><td class="v">'+fmt(pr.r1_signed_m,3)+' m / '+
+      String(pr.r1_exit||'—')+'</td></tr>'):'';
+  let html='<table><tr><td>contact fraction</td><td class="v '+cls(s.contact_fraction,0.95,0.7)+'">'+
+    pct(s.contact_fraction)+'</td></tr>'+
+    '<tr><td>after engagement</td><td class="v '+cls(s.contact_after_engage_fraction,0.95,0.7)+'">'+
+    pct(s.contact_after_engage_fraction)+'</td></tr>'+
+    '<tr><td>contact / push time</td><td class="v">'+fmt(s.contact_seconds,2)+' / '+
+    fmt(s.push_seconds,2)+' s</td></tr>'+
+    '<tr><td>longest contact loss</td><td class="v '+cls(-(s.longest_loss_seconds||0),-0.2,-0.6)+'">'+
+    fmt(s.longest_loss_seconds,2)+' s</td></tr>'+
+    '<tr><td>contact transitions</td><td class="v">'+fmt(s.contact_transitions,0)+'</td></tr>'+
+    '<tr><td>face switches</td><td class="v">'+fmt(s.face_switches,0)+'</td></tr>'+
+    '<tr><td>corner rejected</td><td class="v">'+fmt(s.corner_rejected_seconds,2)+' s</td></tr>'+
+    '<tr><td>min corner margin</td><td class="v">'+fmt(s.min_corner_margin_m,3)+' m</td></tr>'+
+    '<tr><td>first contact vs visible centre</td><td class="v">'+fmt(s.first_contact_offset_m,3)+' m</td></tr>'+
+    '<tr><td>first contact vs true face centre</td><td class="v">'+fmt(s.first_contact_true_offset_m,3)+' m</td></tr>'+
+    '<tr><td>projection shift</td><td class="v">'+fmt(s.contact_shift_m,3)+' m</td></tr>'+
+    '<tr><td>signed / requested</td><td class="v">'+fmt(s.signed_progress_m,3)+' / '+
+    fmt(s.requested_m,2)+' m</td></tr>'+
+    '<tr><td>push_complete</td><td class="v">'+(s.push_complete?'yes':'no')+'</td></tr>'+
+    '<tr><td>contact_lost exits</td><td class="v">'+fmt(s.contact_lost_count,0)+'</td></tr>'+
+    '<tr><td>object displacement</td><td class="v">'+fmt(s.object_displacement_m,3)+' m</td></tr>'+
+    '<tr><td>object rotation</td><td class="v">'+fmt(s.object_rotation_deg,1)+'°</td></tr>'+
+    '<tr><td>goal progress</td><td class="v">'+fmt(s.goal_progress_m,3)+' m</td></tr>'+pairRows+
+    '<tr><td>exit</td><td class="v">'+String(s.exit_reason||'—')+'</td></tr></table>';
+  document.getElementById('metrics').innerHTML=html;
+}
+function updateSceneInfo(branch){
+  const fixture=PANEL.fixtures[branch.snapshot]||{},labels=fixture.labels||{};
+  document.getElementById('sceneInfo').innerHTML=
+    '<div class="row"><span class="k">'+(labels.title_zh||branch.snapshot)+'</span><br>'+
+    '<span class="en">'+(labels.title_en||'')+'</span></div>'+
+    '<div class="row">'+(labels.problem_zh||'')+'</div>'+
+    '<div class="row" style="color:#8fa0b6">'+(labels.geometry_zh||'')+'</div>'+
+    '<div class="row">观察 / watch: '+(labels.watch_zh||'')+'</div>';
+}
+function buildLists(){
+  const scenes=[...new Set(BRANCHES.map(b=>b.snapshot))];
+  const list=document.getElementById('sceneList');list.innerHTML='';
+  scenes.forEach(name=>{
+    const labels=(PANEL.fixtures[name]||{}).labels||{};
+    const el=document.createElement('div');el.className='scene';el.dataset.scene=name;
+    el.innerHTML='<div>'+((labels.title_zh)||name)+'</div><div class="en">'+
+      ((labels.family)||'')+' · '+name+'</div>';
+    el.onclick=()=>selectScene(name);list.appendChild(el);});
+}
+function buildBranches(){
+  const list=document.getElementById('branchList');list.innerHTML='';
+  BRANCHES.filter(b=>b.snapshot===state.scene).forEach(branch=>{
+    const el=document.createElement('div');el.className='branch';el.dataset.branch=branch.branch_id;
+    el.innerHTML='<div>'+((branch.focus_zh)||branch.focus)+'</div><div class="en">'+
+      branch.branch_id+'</div>';
+    el.onclick=()=>selectBranch(branch.branch_id);list.appendChild(el);});
+}
+function selectScene(name){
+  state.scene=name;state.playing=false;
+  document.querySelectorAll('.scene').forEach(el=>el.classList.toggle('sel',el.dataset.scene===name));
+  const first=BRANCHES.find(b=>b.snapshot===name);
+  if(first)selectBranch(first.branch_id);else buildBranches();
+}
+function ensureFrames(id,callback){
+  const store=window.__DATA__.frames=window.__DATA__.frames||{};
+  if(store[id])return callback();
+  const script=document.createElement('script');
+  script.src='data/frames/'+id+'.js';
+  script.onload=()=>callback();
+  script.onerror=()=>{document.getElementById('status').innerHTML=
+    '<b style="color:#ff6b6b">帧加载失败 / frames failed to load</b>: '+id;};
+  document.head.appendChild(script);
+}
+function selectBranch(id){
+  state.branch=id;state.index=0;state.playing=false;
+  document.querySelectorAll('.branch').forEach(el=>el.classList.toggle('sel',el.dataset.branch===id));
+  const branch=BRANCHES.find(b=>b.branch_id===id);if(!branch)return;
+  updateSceneInfo(branch);buildBranches();
+  document.querySelectorAll('.branch').forEach(el=>el.classList.toggle('sel',el.dataset.branch===id));
+  ensureFrames(id,()=>{render();});
+}
+function render(){
+  const branch=BRANCHES.find(b=>b.branch_id===state.branch);if(!branch)return;
+  const F=framesOf(state.branch);
+  if(!F.length){document.getElementById('status').innerHTML=
+    '<b style="color:#ffb347">正在加载帧 / loading frames</b>: '+state.branch;return;}
+  state.index=Math.max(0,Math.min(state.index,F.length-1));
+  drawScene(branch,state.index);drawTimeline(branch);updateStatus(branch);
+}
+function tick(ts){if(!state.playing)return;const F=framesOf(state.branch);if(!F.length)return;
+  if(ts-state.last>120/state.speed){state.index++;
+    if(state.index>=F.length){state.index=F.length-1;state.playing=false;
+      document.getElementById('play').textContent='播放 / Play';}
+    state.last=ts;render();}
+  requestAnimationFrame(tick);}
+function init(){
+  buildLists();
+  const layerBox=document.getElementById('layers');
+  Object.entries(LAYER_LABELS).forEach(([key,label])=>{
+    const el=document.createElement('label');el.className='ly';
+    el.innerHTML='<input type="checkbox" '+(state.layers[key]?'checked':'')+'> <b>'+label[0]+
+      '</b> <span class="en">'+label[1]+'</span>';
+    layerBox.appendChild(el);
+    el.querySelector('input').onchange=e=>{state.layers[key]=e.target.checked;render();};});
+  document.getElementById('play').onclick=e=>{state.playing=!state.playing;
+    e.target.textContent=state.playing?'暂停 / Pause':'播放 / Play';state.last=0;
+    if(state.playing)requestAnimationFrame(tick);};
+  document.getElementById('stepFwd').onclick=()=>{state.playing=false;state.index++;render();};
+  document.getElementById('stepBack').onclick=()=>{state.playing=false;state.index--;render();};
+  document.getElementById('reset').onclick=()=>{state.playing=false;state.index=0;render();};
+  document.getElementById('scrub').oninput=e=>{state.playing=false;
+    state.index=Number(e.target.value);render();};
+  document.getElementById('speed').onchange=e=>{state.speed=Number(e.target.value);};
+  tl.onclick=e=>{const F=framesOf(state.branch);if(!F.length)return;
+    const rect=tl.getBoundingClientRect();const x=(e.clientX-rect.left)*(tl.width/rect.width);
+    const W=tl.width-110;state.playing=false;state.index=Math.max(0,Math.min(F.length-1,
+      Math.floor((x-110)/W*F.length)));render();};
+  document.getElementById('legend').innerHTML=
+    '绿线 / segment=<span style="color:#4ad991">可见片段 visible segment</span>；白点 / centre='+
+    '<span style="color:#e8edf5">面中心 face centre</span>；绿圈 / target='+
+    '<span style="color:#4ad991">切向目标 tangential target</span>；青点 / contact='+
+    '<span style="color:#5ee7ff">接触点 contact point</span>；黄圈 / face switch；'+
+    '橙字 / corner rejected；力 / force=<span style="color:#c792ea">紫 purple</span>；'+
+    '参考速度 / ref. vel=<span style="color:#4aa3ff">蓝 blue</span>；'+
+    '<span class="truth">橙框 object outline = 真值 truth</span>。';
+  const first=BRANCHES[0];if(first)selectScene(first.snapshot);
+}
+init();
+</script></body></html>

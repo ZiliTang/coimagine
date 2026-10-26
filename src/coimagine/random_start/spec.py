@@ -144,6 +144,18 @@ OPTION_PREPARE_SECONDS: float = 3.0   # covers FIND + ALIGN + approach, not the 
 #: The effective speed is below the reference (alignment and radial correction share the
 #: window), so the slack must cover that inefficiency or distance targets become unreachable.
 OPTION_TIMEOUT_SLACK: float = 6.0   # v4.4: approach + seek + push need the time
+#: v4.6 cooperative push: both robots approach to this edge gap and align their heading
+#: with the contact normal, then hold at zero force until both are ready.  Only then do the
+#: two PUSH skills start applying force together.
+COOP_READY_GAP: float = 0.03          # m, edge-to-edge staging clearance
+COOP_READY_BRAKE_GAP: float = 0.03    # m, start the slow staging servo this far out
+COOP_READY_ALIGN_DEG: float = 10.0    # deg, heading vs contact-normal tolerance
+#: v4.6 soft short-face rule: the contact point is inset from a corner by at most R+0.02,
+#: but a narrow face is never rejected just because it is shorter than 2R.  A face down to
+#: 0.1R (18 mm for R=0.18) is still a valid contact target; the inset shrinks to fit it.
+SHORT_FACE_MIN_FRACTION: float = 0.1  # of ROBOT_RADIUS
+SHORT_FACE_CORNER_FRACTION: float = 0.1  # target at least 0.1R from a corner when possible
+
 PUSH_ACTIVE_SECONDS: float = 2.0      # accumulated *object-contact* seconds (PUSH_TARGET_ACTIVE)
 PUSH_WALL_SECONDS: float = 3.0        # wall-clock cap of the PUSH stage (PUSH_WALL_LIMIT)
 APPROACH_TIMEOUT: float = 8.0         # s, v4.2: the 6 s cap clipped slow approaches

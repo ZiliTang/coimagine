@@ -1,5 +1,8 @@
 # 换机接续指引
 
+**最新一轮交接（2026-10-27，v4.6 + RL）：`20261027_Session_Handoff_Option_v46_RL.md`。**
+先读这份；下面三步是环境接续。
+
 仓库已经推到 GitHub。以 `origin/main` 为准（`git log --oneline -1` 看当前头），另一台 PC 按下面三步接上。
 
 ## 1. 另一台 PC 拉取
