@@ -33,7 +33,8 @@ def _support_radius(angle: float) -> float:
     return min(OBJECT_HALF[0] / ca, OBJECT_HALF[1] / sa)
 
 
-def sample_scene(rng: np.random.Generator, index: int, split: str = "train") -> layout.InstanceSpec:
+def sample_scene(rng: np.random.Generator, index: int, split: str = "train",
+                 goal_distance_range=None) -> layout.InstanceSpec:
     width, height = ARENA
     # object centre keeps the whole box + margin inside the arena
     ox = float(rng.uniform(0.30 + OBJECT_HALF[0], width - 0.30 - OBJECT_HALF[0]))
@@ -57,8 +58,18 @@ def sample_scene(rng: np.random.Generator, index: int, split: str = "train") -> 
         robots.append(Pose(x, y, facing))
 
     margin = 0.60
-    gx = float(rng.uniform(margin + spec.GOAL_RADIUS, width - margin - spec.GOAL_RADIUS))
-    gy = float(rng.uniform(margin + spec.GOAL_RADIUS, height - margin - spec.GOAL_RADIUS))
+    low, high = margin + spec.GOAL_RADIUS, width - margin - spec.GOAL_RADIUS
+    lowy, highy = margin + spec.GOAL_RADIUS, height - margin - spec.GOAL_RADIUS
+    if goal_distance_range is not None:
+        # curriculum: the goal centre a short, known distance from the object in a random
+        # direction (still inside the wall margin), so a successful push is discoverable
+        distance = float(rng.uniform(*goal_distance_range))
+        angle = float(rng.uniform(-math.pi, math.pi))
+        gx = min(max(ox + distance * math.cos(angle), low), high)
+        gy = min(max(oy + distance * math.sin(angle), lowy), highy)
+    else:
+        gx = float(rng.uniform(low, high))
+        gy = float(rng.uniform(lowy, highy))
     return layout.InstanceSpec(
         name=f"simple_{split}_{index:04d}", map="L0", split=split, index=index,
         seed=int(rng.integers(0, 1 << 30)), arena=ARENA, obstacles=(),
@@ -66,6 +77,6 @@ def sample_scene(rng: np.random.Generator, index: int, split: str = "train") -> 
         goal_radius=spec.GOAL_RADIUS, env_version=spec.ENV_VERSION)
 
 
-def sample_scenes(seed: int, count: int, split: str = "train"):
+def sample_scenes(seed: int, count: int, split: str = "train", goal_distance_range=None):
     rng = np.random.default_rng(seed)
-    return [sample_scene(rng, index, split) for index in range(count)]
+    return [sample_scene(rng, index, split, goal_distance_range) for index in range(count)]

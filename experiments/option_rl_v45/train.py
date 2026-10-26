@@ -225,7 +225,8 @@ def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
 
 
 def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: int,
-          out_dir: Path, eval_roots: int, simple_scene: bool = False, bc_steps: int = 0, lr: float = 3e-4, epochs: int = 4,
+          out_dir: Path, eval_roots: int, simple_scene: bool = False, easy_goal=None,
+          bc_steps: int = 0, lr: float = 3e-4, epochs: int = 4,
           minibatch: int = 256, clip: float = 0.2, value_coef: float = 0.5,
           entropy_coef: float = 0.01, eval_every: int = 5) -> Dict:
     torch.manual_seed(seed)
@@ -233,7 +234,8 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
     train_instances = layout.build_split("L0", "train", count=64)[0]
     if simple_scene:
         from experiments.option_rl_v45.scenes import sample_scenes
-        train_instances = sample_scenes(seed * 1000 + 1, 64, "train")
+        train_instances = sample_scenes(seed * 1000 + 1, 64, "train", easy_goal)
+        # the evaluation always uses the full random goal, never the curriculum distribution
         eval_instances = (sample_scenes(seed * 1000 + 2, eval_roots, "test") if eval_roots else [])
     else:
         train_instances = layout.build_split("L0", "train", count=64)[0]
@@ -373,6 +375,9 @@ def main() -> None:
     parser.add_argument("--entropy", type=float, default=0.01,
                         help="entropy coefficient (0.05-0.1 recommended until PUSH appears)")
     parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--easy-goal", action="store_true",
+                        help="curriculum: train with the goal centre 0.35-0.85 m from the object; "
+                             "the evaluation still uses the full random goal")
     parser.add_argument("--bc-steps", type=int, default=0,
                         help="behaviour-cloning warm start from the legal goal heuristic")
     parser.add_argument("--simple-scene", action="store_true",
@@ -383,6 +388,7 @@ def main() -> None:
     train(iterations=args.iterations, episodes_per_iteration=args.episodes, hours=args.hours,
           seed=args.seed, out_dir=args.out, eval_roots=args.eval_roots,
           simple_scene=args.simple_scene, eval_every=args.eval_every,
+          easy_goal=(0.35, 0.85) if args.easy_goal else None,
           bc_steps=args.bc_steps,
           entropy_coef=args.entropy, lr=args.lr)
 
