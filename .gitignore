@@ -1,3 +1,4 @@
+# --- Python -----------------------------------------------------------------
 __pycache__/
 *.py[cod]
 .pytest_cache/
@@ -5,13 +6,44 @@ __pycache__/
 build/
 dist/
 *.egg-info/
-outputs/
-data/
+
+# --- local / editor ---------------------------------------------------------
 .vscode/
 .idea/
 **:Zone.Identifier
-# local packaged snapshot
+
+# --- experiment outputs and local data --------------------------------------
+outputs/
+data/
 coimagine.zip
 
-# review bundles and animation packages: regenerable from the committed code and scripts
+# review bundles and animation packages are regenerable from code + scripts
 *.zip
+
+# --- data and model artefacts: NOT committed by default ---------------------
+# Every dataset/checkpoint/weight lives outside the repository history. To commit
+# one specific file, add an explicit `!path` line in the whitelist section at the
+# bottom (later rules win over earlier ones).
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npz
+*.npy
+*.jsonl
+*.parquet
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.tar
+*.tgz
+*.gz
+*.bin
+checkpoints/
+models/
+weights/
+
+# --- explicit whitelist (add `!` lines below to track a file) ---------------
+# Example: !night_repair_optionrl_v1_review/checkpoints/policy_seed0.pt
