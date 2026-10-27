@@ -44,7 +44,7 @@
 |---|---|---|---|
 | 平坦 28 路 softmax | 28 路 | 0（515+ iters） | 探索太贵，学不动 |
 | 6 固定动作（推 .25/.50、绕行 .25、等待/跟随 6 s） | 6 路 | 峰值 **0.1875（3/16）**；最终 0.0625 | 能学会近/中距；尺度维度丢失，长推不可用 |
-| **因子化 type(7)+scale(4)**（当前 run9） | 7+4 | 训练中（2026-10-27 启动，6 h） | 恢复 28 动作 + 可探索；结论待出 |
+| **因子化 type(7)+scale(4)**（run9，已结束） | 7+4 | 峰值 **0.1875（3/16）**；val_prog 正值 65/125 次评估（最高 +0.166）；624 轮 / ≈5.2 h 后最终 0 | 恢复 28 动作 + 可探索；与 6 动作同为 0.1875 峰值，但正进度评估占比更高；仍只覆盖近/中距 |
 
 关键点：
 - “6 动作能学、28 平坦不能学”**不是尺度没用**，是平坦 28 路的探索太贵；因子化头正是为了解决这
@@ -89,13 +89,14 @@
   每 5 轮评估、10 s 自动刷新 dashboard、每评估 checkpoint）
 - 场景：`experiments/option_rl_v45/scenes.py`（4.0×3.0 空场、随机初始/目标、离墙余量 0.6 m）
 - 监控：`experiments/option_rl_v45/monitor.py`
-- 当前训练：`outputs/option_rl_v45/run9/`（`history.json` / `dashboard.html` / `policy.pt`）
+- run9（已结束，624 轮 / ≈5.2 h）：`outputs/option_rl_v45/run9/`（`history.json` / `dashboard.html` / `checkpoint.pt` / `episodes.html` 动画）
 - 历史对照：`run7/`、`run8/`（6 动作 + 退火；**不与 run9 直接可比**）、`run8/dashboard.html`
 - 测台：`experiments/option_testbench/`（`demo_showcase.py` / `metrics.py` / `continuity_eval.py`）
 - 本报告提交：见 commit 消息中的 "Report:" 行。
 
 ## 7. 诚实的边界
 
-- run9 尚未跑完，本文不宣称因子化头一定有效；如果 6 h 后仍只覆盖近/中距，结论是“因子化头解决了
-  探索，但没解决远距规划”，而不是“option 不可用”。
+- run9 已跑完（624 轮）：结论是“因子化头解决了尺度/探索问题，但没有解决远距规划”，不是“option
+  不可用”；其动画（8 个按目标距离均匀取样的 episode）显示策略仍偏向 FOLLOW/REPOSITION，远距首帧
+  会触发穿透上限，近距也未稳定成功。
 - 所有数字来自本仓库 `outputs/` 的 history/测台日志；`outputs/` 不入库，换机需重跑。
