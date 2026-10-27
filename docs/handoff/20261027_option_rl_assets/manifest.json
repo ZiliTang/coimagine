@@ -1,0 +1,14 @@
+{
+  "report": "20261027_Option优化与RL训练_导师汇报.md",
+  "code_revision": "3e03431592362dd581c54fe32d7c82a2bb54a148",
+  "history_source": "outputs/option_rl_v45/run9/history.json",
+  "capture_time": "2026-10-27T11:00:44.407667+08:00",
+  "option_replays": "two focused executions of existing v4.6 test cases; not an aggregate benchmark",
+  "sha256": {
+    "build_figures.py": "91b1ef8ba673249233df9491ccaa493115db1e1f82553a75da0bc5d47166ed28",
+    "option_examples.png": "49702a548c1f9699984b13b461100a7db7e3c7622eeed9da810e77ef55eb4883",
+    "option_replay_snapshots.json": "895c93d94c9adf68d33c26d1eee9302e5c21ff767e6b532ede4a12726d92df5f",
+    "run9_history_snapshot.json": "53a18c8096b3e469e6238bb469c37723f9b4f5efbdafdca37e79ae8420353454",
+    "run9_training.png": "096fbd0327b343515917ac8529276b14e27af8786da6020e087b82aedf1f011a"
+  }
+}
