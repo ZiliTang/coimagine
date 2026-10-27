@@ -188,7 +188,13 @@ def render_episodes(policy, normalise, out_dir, scene_seed: int = 2, count: int 
     scenes = sample_scenes(scene_seed, 16, "test")
     scenes = sorted(scenes, key=lambda s: math.hypot(s.goal_centre[0] - s.object_pose.x,
                                                      s.goal_centre[1] - s.object_pose.y))
-    chosen = scenes[: count - 1] + [scenes[-1]] if count > 1 else scenes[:1]
+    if count <= 1:
+        chosen = scenes[:1]
+    else:
+        # spread the sample across the whole goal-distance distribution (near -> far) so the
+        # animation is representative rather than only the easiest scenes
+        indices = np.linspace(0, len(scenes) - 1, count).round().astype(int)
+        chosen = [scenes[index] for index in indices]
     episodes = [run_episode(policy, normalise, scene) for scene in chosen]
     out = Path(out_dir) / "episodes.html"
     html = TEMPLATE.replace("__DATA__", json.dumps({
