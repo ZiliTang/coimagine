@@ -36,34 +36,21 @@ from coimagine.random_start import env as E, layout, spec  # noqa: E402
 
 CONTROL_DT = spec.CONTROL_DT
 ACTION_KINDS = tuple(action.kind for action in spec.ROBOT_ACTIONS)
-#: reduced action space (user-authorised action encoding): push 0.25/0.50 at the middle speed,
-#: reposition CCW/CW 0.25, wait 6 s, follow 6 s. The scale dimension is the main exploration
-#: cost and it is not what "which face to push" needs; 6 x 6 = 36 joint actions instead of 784.
-SUBSET = tuple(index for index in (
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "push" and a.speed == 0.24 and a.scale == 0.25),
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "push" and a.speed == 0.24 and a.scale == 0.50),
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "reposition" and a.label.startswith("REPOSITION_CCW") and a.scale == 0.25),
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "reposition" and a.label.startswith("REPOSITION_CW") and a.scale == 0.25),
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "wait" and a.scale == 6.0),
-    next(a.index for a in spec.ROBOT_ACTIONS if a.kind == "follow" and a.scale == 6.0),
-))
-SUB_OF = {index: position for position, index in enumerate(SUBSET)}
-SUBSET_KINDS = tuple(spec.ROBOT_ACTIONS[index].kind for index in SUBSET)
+#: factorised action: the type one-hot (7) and the scale one-hot (4) are separate policy
+#: heads, exactly the contract's ``index = type * SCALE_COUNT + scale``. Exploration is 7 + 4
+#: decisions per robot instead of a flat 28-way softmax, while every PUSH/REPOSITION distance
+#: (including the 1.0 m long push and the 1.0 m reposition) stays available.
+TYPE_COUNT = spec.ROBOT_ACTION_TYPE_COUNT
+SCALE_COUNT = spec.OPTION_SCALE_COUNT
 
 
-def to_subset(env_action: int) -> int:
-    if env_action in SUB_OF:
-        return SUB_OF[env_action]
-    action = spec.ROBOT_ACTIONS[env_action]
-    same = [(position, spec.ROBOT_ACTIONS[index]) for position, index in enumerate(SUBSET)
-            if spec.ROBOT_ACTIONS[index].kind == action.kind]
-    if same:
-        return min(same, key=lambda pair: abs(pair[1].scale - action.scale))[0]
-    return SUB_OF[next(index for index in SUBSET if spec.ROBOT_ACTIONS[index].kind == "wait")]
+def type_mask(mask28) -> np.ndarray:
+    """A type is feasible when at least one of its scale entries is feasible."""
+    mask28 = np.asarray(mask28, dtype=bool)
+    return np.asarray([bool(mask28[t * SCALE_COUNT:(t + 1) * SCALE_COUNT].any())
+                       for t in range(TYPE_COUNT)], dtype=bool)
 
 
-def subset_mask(mask28) -> np.ndarray:
-    return np.asarray([mask28[index] for index in SUBSET], dtype=bool)
 GAMMA_STEP = 0.99 ** CONTROL_DT
 HIDDEN = 256
 #: Hard safety cap only. The task budget is 90 s and the shortest option is 2 s, so a normal
@@ -100,31 +87,38 @@ class RunningMeanStd:
 
 
 class Policy(nn.Module):
-    def __init__(self, obs_dim: int, hidden: int = HIDDEN, act: int = len(SUBSET)):
+    """Two factorised heads per robot: the option type (7) and its scale (4)."""
+
+    def __init__(self, obs_dim: int, hidden: int = HIDDEN):
         super().__init__()
         self.body = nn.Sequential(nn.Linear(obs_dim, hidden), nn.Tanh(),
                                   nn.Linear(hidden, hidden), nn.Tanh())
-        self.pi0 = nn.Linear(hidden, act)
-        self.pi1 = nn.Linear(hidden, act)
+        self.type0 = nn.Linear(hidden, TYPE_COUNT)
+        self.scale0 = nn.Linear(hidden, SCALE_COUNT)
+        self.type1 = nn.Linear(hidden, TYPE_COUNT)
+        self.scale1 = nn.Linear(hidden, SCALE_COUNT)
         self.value = nn.Linear(hidden, 1)
-        # the two heads share the trunk so each robot can use the other's view (the joint state)
-        for head in (self.pi0, self.pi1):
+        # the heads share the trunk so each robot can use the other's view (the joint state)
+        for head in (self.type0, self.scale0, self.type1, self.scale1):
             nn.init.orthogonal_(head.weight, 0.01)
 
     def forward(self, x: torch.Tensor):
         h = self.body(x)
-        return self.pi0(h), self.pi1(h), self.value(h).squeeze(-1)
+        return (self.type0(h), self.scale0(h)), (self.type1(h), self.scale1(h)), \
+               self.value(h).squeeze(-1)
 
 
 @dataclass
 class Step:
     obs: np.ndarray
-    a0: int
+    a0: int              # env action index = type * SCALE_COUNT + scale
     a1: int
     logp: float
     value: float
     reward: float
     discount: float
+    mask0: np.ndarray
+    mask1: np.ndarray
     terminal: bool = False
 
 
@@ -144,8 +138,8 @@ def observe_vector(env):
     # when ``record=False``. Reading ``env.rows`` here used to feed zeros to both progress
     # columns because the training runner never records, so pass ``None`` and let the env use
     # its own legal per-robot signed progress / target.
-    mask0 = subset_mask(action_mask(obs0, ACTION_KINDS))
-    mask1 = subset_mask(action_mask(obs1, ACTION_KINDS))
+    mask0 = action_mask(obs0, ACTION_KINDS)
+    mask1 = action_mask(obs1, ACTION_KINDS)
     return np.asarray(env.observation_vector(obs0, obs1, None), dtype=np.float32), mask0, mask1
 
 
@@ -163,16 +157,19 @@ def run_episode(policy: Policy, instance, rng: np.random.Generator,
     for _ in range(MAX_SKILLS):
         obs_stats.update(obs[None, :])
         x = torch.as_tensor(obs_stats.normalise(obs)).float().unsqueeze(0)
+        tm0, tm1 = type_mask(mask0), type_mask(mask1)
         with torch.no_grad():
-            logits0, logits1, value = policy(x)
-            logits0 = logits0.masked_fill(~torch.as_tensor(mask0), -1e9)
-            logits1 = logits1.masked_fill(~torch.as_tensor(mask1), -1e9)
-            d0 = torch.distributions.Categorical(logits=logits0)
-            d1 = torch.distributions.Categorical(logits=logits1)
-            a0, a1 = int(d0.sample()), int(d1.sample())
-            logp = float(d0.log_prob(torch.tensor(a0)) + d1.log_prob(torch.tensor(a1)))
-        env_a0, env_a1 = SUBSET[a0], SUBSET[a1]
-        boundary = env.joint_step(env_a0, env_a1, record=False)
+            (ty0, sc0), (ty1, sc1), value = policy(x)
+            d_ty0 = torch.distributions.Categorical(logits=ty0.masked_fill(~torch.as_tensor(tm0), -1e9))
+            d_sc0 = torch.distributions.Categorical(logits=sc0)
+            d_ty1 = torch.distributions.Categorical(logits=ty1.masked_fill(~torch.as_tensor(tm1), -1e9))
+            d_sc1 = torch.distributions.Categorical(logits=sc1)
+            t0, s0 = int(d_ty0.sample()), int(d_sc0.sample())
+            t1, s1 = int(d_ty1.sample()), int(d_sc1.sample())
+            a0, a1 = t0 * SCALE_COUNT + s0, t1 * SCALE_COUNT + s1
+            logp = float(d_ty0.log_prob(torch.tensor(t0)) + d_sc0.log_prob(torch.tensor(s0))
+                         + d_ty1.log_prob(torch.tensor(t1)) + d_sc1.log_prob(torch.tensor(s1)))
+        boundary = env.joint_step(a0, a1, record=False)
         periods = int(boundary["periods"])
         reward = float(boundary["reward"]["total"])
         success = bool(boundary["success"])
@@ -182,7 +179,8 @@ def run_episode(policy: Policy, instance, rng: np.random.Generator,
         terminated = boundary["termination"] is not None
         steps.append(Step(obs=obs_stats.normalise(obs), a0=a0, a1=a1, logp=logp,
                           value=float(value.item()), reward=reward,
-                          discount=GAMMA_STEP ** periods, terminal=terminated))
+                          discount=GAMMA_STEP ** periods,
+                          mask0=tm0, mask1=tm1, terminal=terminated))
         if terminated:
             break
         obs, mask0, mask1 = observe_vector(env)
@@ -229,8 +227,8 @@ def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
         env = E.RandomStartEnv(instance)
         for _ in range(8):
             observations = env.boundary_observations()
-            a0 = to_subset(int(_goal_action(observations[0])))
-            a1 = to_subset(int(_goal_action(observations[1])))
+            a0 = int(_goal_action(observations[0]))
+            a1 = int(_goal_action(observations[1]))
             obs, _m0, _m1 = observe_vector(env)
             samples.append((obs, a0, a1))
             env.joint_step(a0, a1, record=False)
@@ -245,8 +243,9 @@ def warm_start(policy, obs_stats, instances, steps, rng, batch=128, lr=1e-3):
         x = torch.as_tensor(np.stack([obs_stats.normalise(samples[i][0]) for i in index])).float()
         a0 = torch.tensor([samples[i][1] for i in index])
         a1 = torch.tensor([samples[i][2] for i in index])
-        logits0, logits1, _ = policy(x)
-        loss = F.cross_entropy(logits0, a0) + F.cross_entropy(logits1, a1)
+        (ty0, sc0), (ty1, sc1), _ = policy(x)
+        loss = (F.cross_entropy(ty0, a0 // SCALE_COUNT) + F.cross_entropy(sc0, a0 % SCALE_COUNT)
+                + F.cross_entropy(ty1, a1 // SCALE_COUNT) + F.cross_entropy(sc1, a1 % SCALE_COUNT))
         optimiser.zero_grad()
         loss.backward()
         optimiser.step()
@@ -299,11 +298,12 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
             for _ in range(MAX_SKILLS):
                 x = torch.as_tensor(obs_stats.normalise(obs)).float().unsqueeze(0)
                 with torch.no_grad():
-                    logits0, logits1, _ = policy(x)
-                    logits0 = logits0.masked_fill(~torch.as_tensor(mask0), -1e9)
-                    logits1 = logits1.masked_fill(~torch.as_tensor(mask1), -1e9)
-                    a0, a1 = int(torch.argmax(logits0)), int(torch.argmax(logits1))
-                boundary = env.joint_step(SUBSET[a0], SUBSET[a1], record=False)
+                    (ty0, sc0), (ty1, sc1), _ = policy(x)
+                    ty0 = ty0.masked_fill(~torch.as_tensor(type_mask(mask0)), -1e9)
+                    ty1 = ty1.masked_fill(~torch.as_tensor(type_mask(mask1)), -1e9)
+                    a0 = int(torch.argmax(ty0)) * SCALE_COUNT + int(torch.argmax(sc0))
+                    a1 = int(torch.argmax(ty1)) * SCALE_COUNT + int(torch.argmax(sc1))
+                boundary = env.joint_step(a0, a1, record=False)
                 success = bool(boundary["success"])
                 if boundary["termination"] is not None:
                     break
@@ -333,6 +333,8 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
         obs_t = torch.as_tensor(np.stack([step.obs for step in steps]))
         a0_t = torch.tensor([step.a0 for step in steps])
         a1_t = torch.tensor([step.a1 for step in steps])
+        mask0_t = torch.as_tensor(np.stack([step.mask0 for step in steps]))
+        mask1_t = torch.as_tensor(np.stack([step.mask1 for step in steps]))
         old_logp = torch.tensor([step.logp for step in steps], dtype=torch.float32)
         ret_t = torch.as_tensor(returns)
         adv_t = torch.as_tensor(advantages)
@@ -342,16 +344,24 @@ def train(*, iterations: int, episodes_per_iteration: int, hours: float, seed: i
             order = torch.randperm(n)
             for start in range(0, n, minibatch):
                 idx = order[start:start + minibatch]
-                logits0, logits1, value = policy(obs_t[idx])
-                d0 = torch.distributions.Categorical(logits=logits0)
-                d1 = torch.distributions.Categorical(logits=logits1)
-                logp = d0.log_prob(a0_t[idx]) + d1.log_prob(a1_t[idx])
+                (ty0, sc0), (ty1, sc1), value = policy(obs_t[idx])
+                d_ty0 = torch.distributions.Categorical(
+                    logits=ty0.masked_fill(~mask0_t[idx], -1e9))
+                d_sc0 = torch.distributions.Categorical(logits=sc0)
+                d_ty1 = torch.distributions.Categorical(
+                    logits=ty1.masked_fill(~mask1_t[idx], -1e9))
+                d_sc1 = torch.distributions.Categorical(logits=sc1)
+                t0_l, s0_l = a0_t[idx] // SCALE_COUNT, a0_t[idx] % SCALE_COUNT
+                t1_l, s1_l = a1_t[idx] // SCALE_COUNT, a1_t[idx] % SCALE_COUNT
+                logp = (d_ty0.log_prob(t0_l) + d_sc0.log_prob(s0_l)
+                        + d_ty1.log_prob(t1_l) + d_sc1.log_prob(s1_l))
                 ratio = torch.exp(logp - old_logp[idx])
                 unclipped = ratio * adv_t[idx]
                 clipped = torch.clamp(ratio, 1 - clip, 1 + clip) * adv_t[idx]
                 policy_loss = -torch.min(unclipped, clipped).mean()
                 value_loss = (value - ret_t[idx]).pow(2).mean()
-                entropy = d0.entropy().mean() + d1.entropy().mean()
+                entropy = (d_ty0.entropy().mean() + d_sc0.entropy().mean()
+                           + d_ty1.entropy().mean() + d_sc1.entropy().mean())
                 loss = policy_loss + value_coef * value_loss - entropy_coef * entropy
                 optimiser.zero_grad()
                 loss.backward()
