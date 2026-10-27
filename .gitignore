@@ -41,9 +41,11 @@ coimagine.zip
 *.tgz
 *.gz
 *.bin
-checkpoints/
-models/
-weights/
+checkpoints/**
+models/**
+weights/**
 
 # --- explicit whitelist (add `!` lines below to track a file) ---------------
+# The negation must come after the ignore rules. Directory ignores use `dir/**` (not `dir/`)
+# so a single `!dir/file.pt` line can re-include that file.
 # Example: !night_repair_optionrl_v1_review/checkpoints/policy_seed0.pt
