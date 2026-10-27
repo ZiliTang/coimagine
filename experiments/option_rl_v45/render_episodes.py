@@ -101,6 +101,7 @@ input[type=range]{width:340px}
 </style></head><body>
 <header><h1>option RL · greedy episodes <span id="sub"></span></h1>
 <div class="mono">blue = object trail · orange = goal · green/magenta = robots (brighter = contacting object) · labels = the option requested at that decision</div></header>
+<div id="eps" style="display:flex;gap:8px;flex-wrap:wrap;padding:4px 20px 10px"></div>
 <div class="row"><div class="panel">
   <div><button id="play">pause</button> <input type="range" id="slider" min="0" max="1" value="0">
   <span id="t" class="mono"></span></div>
@@ -161,6 +162,21 @@ function tick(ts) {
 playBtn.onclick = () => { state.playing = !state.playing; playBtn.textContent = state.playing ? 'pause' : 'play'; };
 slider.oninput = () => { state.i = parseInt(slider.value, 10); draw(); };
 sub.textContent = DATA.checkpoint;
+function selectEpisode(k) {
+  state.ep = k; state.i = 0;
+  slider.max = DATA.episodes[k].frames.length - 1; slider.value = 0;
+  [...document.querySelectorAll('#eps button')].forEach((b, j) => {
+    b.style.outline = j === k ? '2px solid #4aa3ff' : 'none';
+  });
+  draw();
+}
+DATA.episodes.forEach((ep, k) => {
+  const b = document.createElement('button');
+  b.textContent = `${k + 1}. ${ep.name} · ${ep.start_goal_distance} m · ${ep.success ? 'success' : (ep.termination || '?')}`;
+  b.style.outline = k === 0 ? '2px solid #4aa3ff' : 'none';
+  b.onclick = () => selectEpisode(k);
+  document.getElementById('eps').appendChild(b);
+});
 slider.max = DATA.episodes[0].frames.length - 1;
 draw(); requestAnimationFrame(tick);
 </script></body></html>
