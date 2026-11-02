@@ -1,0 +1,22 @@
+{
+ "task": "D006",
+ "version": 1,
+ "implementation_version": "v19-testbed-ui-v1",
+ "created_by": "DeepSeek under explicit user instruction (GPT quota exhausted, 2026-10-29)",
+ "backend": "experiments.option_rl_v19/session.py::TestbedSession",
+ "tables": [
+  "docs/agent_exchange/state/option_table.csv",
+  "docs/agent_exchange/state/state_table.csv",
+  "docs/agent_exchange/state/param_table.csv"
+ ],
+ "scenes": "outputs/option_rl_v14/learnability_002/panel.json",
+ "host": "127.0.0.1",
+ "port": 8765,
+ "outputs": "outputs/testbed",
+ "budget": {
+  "ui_run_seconds": 30,
+  "test_seconds": 120,
+  "no_training": true,
+  "no_new_physics": true
+ }
+}

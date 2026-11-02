@@ -1,0 +1,1171 @@
+{
+  "task": "D009",
+  "version": 1,
+  "date": "2026-10-30",
+  "status": "ready_for_handoff",
+  "implementation_version": "unknown-shape-edge-v1",
+  "files": {
+    "outputs/agent_exchange/D007_20261030_002/runs/001_baseline.json": {
+      "sha256": "c04730bc8a6beda0ee43c689be4c183d50fb2dfa6f7d000c87b23c8d8b51c0af",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7019901
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/002_baseline.json": {
+      "sha256": "aa9cdf644dccbc5af1f09d6009529244b7bf5fa221a71d7132d049e6f8e2dac6",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7012252
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/003_baseline.json": {
+      "sha256": "77bc2f3f2e0ac6c42ab3e06eaed41c5c6ef2b577d7916d8d34a1b53486b7652e",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7025870
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/004_baseline.json": {
+      "sha256": "f73f7eb66b8ed03cf2591e104f8574d43230b15d7d9fbd30a7e0b6ce52ce42ce",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7025100
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/005_baseline.json": {
+      "sha256": "9871b0718b87697db78c41df1feafbb78c78b6e02eb7e6d054a9a02356fba8ff",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7021334
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/006_baseline.json": {
+      "sha256": "503c59709bfbf2a6df775fa774115859834b58322f1b4ab5ef1662c0e3343cad",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7027248
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/007_baseline.json": {
+      "sha256": "0d8d0c6a2f22560556660ac720c61a16ac4605ec5c1a0746b3681a46ec6b01de",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 11971711
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/008_baseline.json": {
+      "sha256": "0007e1db40798c1ef5968e37f021e00fa6c8fdb135050ec31ec54859d507eb70",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 11989056
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/009_baseline.json": {
+      "sha256": "35af0c359e5b4f552ba539d99f6c8c7f23198352205d3f5c28e755e937c14a23",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 11984088
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/010_baseline.json": {
+      "sha256": "b0e8d88dd95b36e59b2f9c8f7b7a5ebaafe6ae428c8df84544f8f57c97b2648a",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 12007497
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/011_baseline.json": {
+      "sha256": "ce0c395020a93aba8ffcaed4ef45b4fbcfdd459277f3e764ff085525d2148323",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 12046871
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/012_baseline.json": {
+      "sha256": "36234d97d2356d27130bd78a20bb584951cdeb160ced2578d67f12c8b0dea477",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 12010260
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/013_probe.json": {
+      "sha256": "dc35329072d7fe68f148ab856ad9f313c3fc26b312fc588ac994f339050219e1",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 6996443
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/014_probe.json": {
+      "sha256": "2479531fcf324c9e3abea7e2aa705c65735543a14eb504ada053adec186f6e87",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7024405
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/015_probe.json": {
+      "sha256": "d2e1692aedf18ea3004b91b3c06313a5da30237cfcb39a85c03374863a8512cf",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7020110
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/016_probe.json": {
+      "sha256": "476e87a17a492e1980f9536a5cbdce4f0f91d0f5ab5a865f4e5c9d5bfca6f4f7",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7007237
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/017_probe.json": {
+      "sha256": "745baf9322d41cc2fac13050532ada59558c37bd2ae491acaa4c2e69a22fe4a0",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7000490
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/018_probe.json": {
+      "sha256": "9a08925b0966bc1c7949e535253db8484deada1b75922dbc246d4c9b9b978663",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7025964
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/019_probe.json": {
+      "sha256": "3ea95191e2ebd0d5dd426ddc105b348d162395da6946940227ecd756df98f5d1",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7024627
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/020_probe.json": {
+      "sha256": "b1e39d3af578705f776bbae9499391d8c9f7681ee697c7ed675b1d88c2be4b9b",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7027149
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/021_probe.json": {
+      "sha256": "ae8791f71ab5e00ede8e4eb30ddee84763d775c91de00b9e56926a011cb7f5de",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7033227
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/022_probe.json": {
+      "sha256": "3220316a545e47a19e75f84540285cc47a3fb707a8523e900ad7fc879f79153b",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7004021
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/023_probe.json": {
+      "sha256": "629a371c162c6877e40caf1c1fca76d6fa18e5b5e256ac06449ab98ed2af9c2e",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7016311
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/024_probe.json": {
+      "sha256": "27e1aa3a9700f7c93be57d93eb4f81d7fb0dabac54c9e51eaf21472063d6db94",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7028415
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/025_probe.json": {
+      "sha256": "cd578fbc69072154e7415801e1ef2f6036a09a97edea542e590e8824d9b5879c",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7026693
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/026_probe.json": {
+      "sha256": "4575c4f92441ffdd90f7ef94b2b9604a3763de026e475f338c8467d2f1ec33a0",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7001225
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/027_probe.json": {
+      "sha256": "ffe3f150f82a3cee4751b7fea344f4ed76ec9c3fada703ead28075f804f5e2c2",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7028806
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/028_probe.json": {
+      "sha256": "6e830052c47a8b0770d89aa3a41d75f817ec6e4f5abd6a92946436dab2540b68",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 7026916
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/029_witness.json": {
+      "sha256": "bd71d52a7e40423824dea229d801d29e523ec5cf6912db27d0ed1bec79acf1ae",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8732858
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/030_witness.json": {
+      "sha256": "26df8dbc31f5a906e7b4349ceca96ad2185fd91ac17a8cbbe9cffb4ed061c309",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8741548
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/031_witness.json": {
+      "sha256": "11dda1bf71550cb5d7c2424f8d48c90f5a4dd93fa8ff37c96abdbfc2c1959bdc",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8735386
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/032_witness.json": {
+      "sha256": "556c498396c00ef254d8c032dceead1c0abf9cee158909dcb5a197bbd22572e4",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8790431
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/033_witness.json": {
+      "sha256": "39493a4ba2a0bdcb571313b501f9b4dca16a68cbd9a62a90f2e472e7d7d31cc2",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8791606
+    },
+    "outputs/agent_exchange/D007_20261030_002/runs/034_witness.json": {
+      "sha256": "7b2f3edb84b8427314d9b6b747b824255fa6d6ee3d745203563c569d4a860ee8",
+      "role": "offline_recorded_sensor_evidence",
+      "bytes": 8791032
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/analyze_d007.py": {
+      "sha256": "dc7c06e62c00a183db68adc3ff8c8050ec2d8debe895a0e847a4024360f712d3",
+      "role": "historical_candidate_snapshot",
+      "bytes": 11107
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/contact_timing_audit.py": {
+      "sha256": "9170fc444b42d9cc4e9b8a0d52439b1f50b68aedfe0331592f7c85e9ceb56fcc",
+      "role": "historical_candidate_snapshot",
+      "bytes": 64367
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/effect_push.py": {
+      "sha256": "bc54eb154aca73b76a7d616a7c9c1a714c2e1a332ab2a5176a5552bca72ea736",
+      "role": "historical_candidate_snapshot",
+      "bytes": 69816
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/endpoint_tracking.py": {
+      "sha256": "fc29a3dda0781f0019c6dd7879d189819770b808299b73672a1343e4e7cb7c81",
+      "role": "historical_candidate_snapshot",
+      "bytes": 13299
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/push_controller.py": {
+      "sha256": "f0453c41b0222b2bc59d10e531073b879fc32801637eb23cbed2ecbf61ef253a",
+      "role": "historical_candidate_snapshot",
+      "bytes": 29641
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/run_d007.py": {
+      "sha256": "b8e0aeb2c8593c0d7c40710bae1791b6fedf77973ee721fbea249bfa6b0a1e7d",
+      "role": "historical_candidate_snapshot",
+      "bytes": 11837
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/same_face.py": {
+      "sha256": "ae5601faba06a9bc84d04d9f485dc289f4cfa6b8a55816f2bfb144e0b11a5cff",
+      "role": "historical_candidate_snapshot",
+      "bytes": 7180
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/skills.py": {
+      "sha256": "e844f04658aaae52f699083d8695e82a0af47ea0ca330e929ec3d0ed59af1fa4",
+      "role": "historical_candidate_snapshot",
+      "bytes": 65525
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/spec.py": {
+      "sha256": "bab07c284978eb7db54116b31808c0d2e1b7660dc882a13a81c5ca6d161a031e",
+      "role": "historical_candidate_snapshot",
+      "bytes": 19074
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/system.py": {
+      "sha256": "db668f3acf9e310fac6d1c3f744b9b0dad529114bf8b0f6ee61e63574f28962e",
+      "role": "historical_candidate_snapshot",
+      "bytes": 6964
+    },
+    "outputs/agent_exchange/D007_20261030_002/source_snapshot/test_d007_lateral_calibration.py": {
+      "sha256": "e2b72c31af9c3ce006db353be6c0287d0e63bd3f6c343c0ac11f0575f9c64e22",
+      "role": "historical_candidate_snapshot",
+      "bytes": 3626
+    },
+    "outputs/agent_exchange/D007_20261030_002/manifest.json": {
+      "sha256": "a9e74b259b2e9ac689e35d85fa5a62ce197fd7b7b0e9054ad940042160cb371f",
+      "role": "context_and_scoring_corrections",
+      "bytes": 5416
+    },
+    "outputs/agent_exchange/D007_20261030_002/analysis_corrected.json": {
+      "sha256": "181e11b66e9c111e900aaafae413ae2695fafb8da31f3bcc04bbd936a37f2977",
+      "role": "context_and_scoring_corrections",
+      "bytes": 15409
+    },
+    "docs/agent_exchange/tasks/D007_config.json": {
+      "sha256": "7cfa96c8bd0aef626e5b74f582fbf3d44bd5a4a7724518e4c423554eeae2d5a1",
+      "role": "context_and_scoring_corrections",
+      "bytes": 7708
+    },
+    "docs/agent_exchange/reviews/D007_Lateral_Transfer_Review.md": {
+      "sha256": "41c90612b204900d10de5220b690c264a3bb76e8f53e3cb8cdd8d77632b8624a",
+      "role": "context_and_scoring_corrections",
+      "bytes": 7713
+    },
+    "docs/agent_exchange/results/D008_Endpoint_Reference_Audit.md": {
+      "sha256": "28baff5959ad5b1362bf3fbd123b1e361e31fcd892a865c094fbed16e1d31f52",
+      "role": "context_and_scoring_corrections",
+      "bytes": 6373
+    },
+    "outputs/agent_exchange/D008_20261030_003/summary.json": {
+      "sha256": "8688b099f2f3cbaea5e5f650fd43309d800cd26fca6efcd55a0c8752e5511066",
+      "role": "context_and_scoring_corrections",
+      "bytes": 1162
+    },
+    "docs/agent_exchange/reviews/Unknown_Shape_Edge_State_Design.md": {
+      "sha256": "f662961db0ee548badac5f9519478c9a1b2ee332d839e56bfd910fdf6c4d2ac4",
+      "role": "context_and_scoring_corrections",
+      "bytes": 4555
+    },
+    "src/coimagine/random_start/endpoint_tracking.py": {
+      "sha256": "fc29a3dda0781f0019c6dd7879d189819770b808299b73672a1343e4e7cb7c81",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 13299
+    },
+    "src/coimagine/random_start/effect_push.py": {
+      "sha256": "bc54eb154aca73b76a7d616a7c9c1a714c2e1a332ab2a5176a5552bca72ea736",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 69816
+    },
+    "src/coimagine/random_start/anchor.py": {
+      "sha256": "2842dfc448463900ec8172e9cf3a76fd258e501d61aaca181042b2263e94d4fe",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 13837
+    },
+    "src/coimagine/random_start/lidar.py": {
+      "sha256": "c7e26e65fb54c4e337486a8f6cf7940d7fc5fafb5b4593e62cdf9ef6ee05ccb5",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 21783
+    },
+    "src/coimagine/random_start/geometry.py": {
+      "sha256": "34dc5a7e2f49ad94666d2de53baec6a7a0262d505a34d7887bca145088107739",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 6404
+    },
+    "src/coimagine/random_start/same_face.py": {
+      "sha256": "ae5601faba06a9bc84d04d9f485dc289f4cfa6b8a55816f2bfb144e0b11a5cff",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 7180
+    },
+    "src/coimagine/random_start/skills.py": {
+      "sha256": "e844f04658aaae52f699083d8695e82a0af47ea0ca330e929ec3d0ed59af1fa4",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 65525
+    },
+    "src/coimagine/random_start/env.py": {
+      "sha256": "5fb5503044be089ad7b36de7ce052170b59c6515b2ec4cc87137dacb8aa3ba87",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 67398
+    },
+    "src/coimagine/random_start/spec.py": {
+      "sha256": "bab07c284978eb7db54116b31808c0d2e1b7660dc882a13a81c5ca6d161a031e",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 19074
+    },
+    "src/coimagine/random_start/efficient_profile.py": {
+      "sha256": "3b8c279f7aa1e4d8d099a101dfa7046a23a8f08a31410faf5ff2feb5a2ad51e6",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 2349
+    },
+    "src/coimagine/random_start/progress_guard.py": {
+      "sha256": "4404b4b0bdfd34801509b9106de75af0d0c22e47d5f9e24d7217184a4fcfd3d0",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 1385
+    },
+    "src/coimagine/random_start/boundary_follow.py": {
+      "sha256": "e730ee71e647a4879ac8f5793420d78ddc2817acc72a8d524e53f1ae6679a5d0",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 7274
+    },
+    "src/coimagine/random_start/peer_clearance.py": {
+      "sha256": "b8ffc54c9b879e9687b17777427560978b20a875077259c8a1478f7bdd4fb972",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 8741
+    },
+    "src/coimagine/local_contact_option/control.py": {
+      "sha256": "cd50f2b9dac89762f8ff58ec464a407fd8437628af20d3d41964d3ab8501b97e",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 25403
+    },
+    "src/coimagine/continuous2d/backend.py": {
+      "sha256": "3281584946c9441ef9c1df3e2875199ef1f44e4e9586a0f8d652cae2c0f31296",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 19404
+    },
+    "src/coimagine/continuous2d/config.py": {
+      "sha256": "ba141c8de6896b4fbeaf4bac2a2cd1301e2f153e76a1d09baab973519e81e79f",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 5056
+    },
+    "experiments/option_rl_v13/controller.py": {
+      "sha256": "af88a7853badbf3a9e60379fa112ce61748762dc8aea9c85ba7acb302c7ab076",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 3843
+    },
+    "experiments/option_rl_v13/push_controller.py": {
+      "sha256": "f0453c41b0222b2bc59d10e531073b879fc32801637eb23cbed2ecbf61ef253a",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 29641
+    },
+    "experiments/option_rl_v13/mode_env.py": {
+      "sha256": "25ef750f31c14f4cb888eada029fb8f5d56fb3ceacf7e44f8232fe729cd8121e",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 17160
+    },
+    "experiments/option_rl_v14/mode_env.py": {
+      "sha256": "a9c29d63f901a7552493236793f16a453c0d36d942188caae3f77c4821fb2ef4",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 4381
+    },
+    "experiments/option_rl_v19/spec.py": {
+      "sha256": "0f3d37fff6230724d071d20f62a8a22229708b3f95187c01734672bb0969b01c",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 10623
+    },
+    "experiments/option_rl_v19/system.py": {
+      "sha256": "db668f3acf9e310fac6d1c3f744b9b0dad529114bf8b0f6ee61e63574f28962e",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 6964
+    },
+    "experiments/option_rl_v19/session.py": {
+      "sha256": "d6afe1cf706112d5f4595751b9bbbe0c4ade475e18e619a117c330a97ef78c74",
+      "role": "baseline_source_before_D009_edits",
+      "bytes": 5230
+    },
+    "outputs/option_rl_v14/learnability_002/panel.json": {
+      "sha256": "a60bdcc120923a8091d8e8930eb4717406075aeeb55b5291e3f924dd48227126",
+      "role": "fixed_closed_loop_input",
+      "bytes": 18781
+    },
+    "outputs/option_rl_v14/learnability_002/logs/dual_2.json": {
+      "sha256": "e5534cea6ed87438de8ebddae586a8f985e8142f80943e0ee55cb604afbf9a0d",
+      "role": "fixed_closed_loop_input",
+      "bytes": 3024624
+    },
+    "outputs/option_rl_v14/learnability_002/logs/dual_0.json": {
+      "sha256": "bac8ebfa6b174ecf55dcfc02937323966fc87d2cf2486e145310a17ac50250ac",
+      "role": "fixed_closed_loop_input",
+      "bytes": 3065401
+    },
+    "outputs/testbed/presets/20261029_224105_6ef27d.json": {
+      "sha256": "404bf0c967f6d09c9efddafb98da6dd6a653c8be8c95772dfddc81e2db7b1608",
+      "role": "fixed_closed_loop_input",
+      "bytes": 1997
+    },
+    "outputs/testbed/presets/20261029_213734_011394.json": {
+      "sha256": "06538d07815de5af68f64e88ba5dd703ee56366ba0f06fb7bfc7ac012388f0c0",
+      "role": "fixed_closed_loop_input",
+      "bytes": 1941
+    },
+    "outputs/testbed/presets/20261029_223506_e5fa20.json": {
+      "sha256": "6ad5b921c665c229ffd96b8ab487bbfe8b0f41b5df8faca47c7831d684714eb7",
+      "role": "fixed_closed_loop_input",
+      "bytes": 1987
+    },
+    "docs/agent_exchange/designs/D009_Unknown_Shape_Edge_Filter.md": {
+      "sha256": "bb53e1e6644605b6adbda604cc951b56ccc899c351c102456ac7aaae256e4469",
+      "role": "D009_specification",
+      "bytes": 14562
+    },
+    "docs/agent_exchange/tasks/D009_Unknown_Shape_Edge_Implementation.md": {
+      "sha256": "e01559a28cc1ed1fc0deda2314543a528009e675948459345b20b623898cf356",
+      "role": "D009_specification",
+      "bytes": 9657
+    },
+    "docs/agent_exchange/briefs/D009_Why_This_Filter.md": {
+      "sha256": "5b2bf7bab35474798d70a442bb72f467c29613cc539e81b8fd17d635eb0ea3fc",
+      "role": "D009_specification",
+      "bytes": 2155
+    }
+  },
+  "offline_runs": [
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/001_baseline.json",
+      "id": "001_baseline",
+      "tag": "baseline",
+      "case": "adjacent",
+      "profile": "A",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/002_baseline.json",
+      "id": "002_baseline",
+      "tag": "baseline",
+      "case": "adjacent",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/003_baseline.json",
+      "id": "003_baseline",
+      "tag": "baseline",
+      "case": "adjacent",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/004_baseline.json",
+      "id": "004_baseline",
+      "tag": "baseline",
+      "case": "adjacent_mirror",
+      "profile": "A",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/005_baseline.json",
+      "id": "005_baseline",
+      "tag": "baseline",
+      "case": "adjacent_mirror",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/006_baseline.json",
+      "id": "006_baseline",
+      "tag": "baseline",
+      "case": "adjacent_mirror",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/007_baseline.json",
+      "id": "007_baseline",
+      "tag": "baseline",
+      "case": "same_face",
+      "profile": "A",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/008_baseline.json",
+      "id": "008_baseline",
+      "tag": "baseline",
+      "case": "same_face",
+      "profile": "B",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/009_baseline.json",
+      "id": "009_baseline",
+      "tag": "baseline",
+      "case": "same_face",
+      "profile": "C",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/010_baseline.json",
+      "id": "010_baseline",
+      "tag": "baseline",
+      "case": "same_face_closer",
+      "profile": "A",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/011_baseline.json",
+      "id": "011_baseline",
+      "tag": "baseline",
+      "case": "same_face_closer",
+      "profile": "B",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/012_baseline.json",
+      "id": "012_baseline",
+      "tag": "baseline",
+      "case": "same_face_closer",
+      "profile": "C",
+      "ticks": 160
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/013_probe.json",
+      "id": "013_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/014_probe.json",
+      "id": "014_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/015_probe.json",
+      "id": "015_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/016_probe.json",
+      "id": "016_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/017_probe.json",
+      "id": "017_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/018_probe.json",
+      "id": "018_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/019_probe.json",
+      "id": "019_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/020_probe.json",
+      "id": "020_probe",
+      "tag": "probe",
+      "case": "adjacent",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/021_probe.json",
+      "id": "021_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/022_probe.json",
+      "id": "022_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/023_probe.json",
+      "id": "023_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/024_probe.json",
+      "id": "024_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "B",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/025_probe.json",
+      "id": "025_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/026_probe.json",
+      "id": "026_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/027_probe.json",
+      "id": "027_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/028_probe.json",
+      "id": "028_probe",
+      "tag": "probe",
+      "case": "adjacent_mirror",
+      "profile": "C",
+      "ticks": 100
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/029_witness.json",
+      "id": "029_witness",
+      "tag": "witness",
+      "case": "W_N",
+      "profile": "A",
+      "ticks": 129
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/030_witness.json",
+      "id": "030_witness",
+      "tag": "witness",
+      "case": "W_N",
+      "profile": "B",
+      "ticks": 129
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/031_witness.json",
+      "id": "031_witness",
+      "tag": "witness",
+      "case": "W_N",
+      "profile": "C",
+      "ticks": 129
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/032_witness.json",
+      "id": "032_witness",
+      "tag": "witness",
+      "case": "W_E",
+      "profile": "A",
+      "ticks": 129
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/033_witness.json",
+      "id": "033_witness",
+      "tag": "witness",
+      "case": "W_E",
+      "profile": "B",
+      "ticks": 129
+    },
+    {
+      "path": "outputs/agent_exchange/D007_20261030_002/runs/034_witness.json",
+      "id": "034_witness",
+      "tag": "witness",
+      "case": "W_E",
+      "profile": "C",
+      "ticks": 129
+    }
+  ],
+  "expected_inventory": {
+    "full_runs": 34,
+    "control_ticks": 3934,
+    "side_ticks": 7868,
+    "historical_endpoint_rows": 7568
+  },
+  "filter": {
+    "base_state": [
+      "a_x",
+      "a_y",
+      "phi",
+      "v_x",
+      "v_y",
+      "omega"
+    ],
+    "endpoint_coordinates": "dynamic s_low/s_high, absent until observed; no object length/centre prior",
+    "initial_std": [
+      0.01,
+      0.01,
+      0.05235987755982989,
+      0.2,
+      0.2,
+      0.4
+    ],
+    "q_acceleration": 0.36,
+    "q_angular_acceleration": 2.25,
+    "q_endpoint_shape": 1e-06,
+    "sigma_plane_floor": 0.003,
+    "sigma_angle_floor_rad": 0.012217304763960306,
+    "sigma_endpoint_noise": 0.005,
+    "cov_position_std_floor": 0.002,
+    "cov_angle_std_floor_rad": 0.005235987755982988,
+    "cov_endpoint_s_std_floor": 0.003,
+    "line_gate_NIS": 9.21,
+    "endpoint_min_probability": 1e-09,
+    "narrow_interval_m": 1e-05,
+    "duplicate_endpoint_min_interval_s": 0.2,
+    "duplicate_endpoint_bound_change_m": 0.002,
+    "duplicate_endpoint_narrowing_m": 0.005,
+    "duplicate_override_outside_m": 0.01,
+    "max_tracks_per_robot": 8,
+    "track_confirmation_frames": 3,
+    "association_angle_deg": 20,
+    "association_plane_m": 0.1,
+    "association_support_gap_m": 0.15,
+    "association_tie_cost": 2,
+    "max_measurement_angle_std_deg": 10,
+    "fresh_age_s": 0.1,
+    "expiry_s": 0.25,
+    "inactive_delete_s": 0.5,
+    "control_angle_std_max_deg": 5,
+    "control_plane_std_max_m": 0.02,
+    "control_tangent_std_max_m": 0.04,
+    "min_patch_points": 3,
+    "min_patch_span_m": 0.04,
+    "safe_support_inset_m": 0.01,
+    "unknown_tangent_normal_speed_cap": 0.04,
+    "corner_min_angle_deg": 20,
+    "unknown_geometry_inputs": false,
+    "self_shadow_nearer_m": 0.02,
+    "velocity_invalid_above_m_s": 1.0,
+    "omega_invalid_above_rad_s": 4.0
+  },
+  "controller": {
+    "heading_gain": 0.2,
+    "angular_rate_gain": 0.1,
+    "lateral_gain": 0.35,
+    "point_rate": 0.16,
+    "rotation_feedback_gain": 0,
+    "contact_tangent_damping": 0.7,
+    "rotation_local_bias_m": 0.08,
+    "rotation_required_room_m": 0.04,
+    "contact_ready_gap_m": 0.05,
+    "recovery_enter_gap_m": 0.07,
+    "own_robot_radius_is_public": true,
+    "fake_object_centre_or_length": false
+  },
+  "fixture_common": {
+    "frames_each": 101,
+    "times": "0:.05:5",
+    "object_reference_world": [
+      2.5,
+      2.0
+    ],
+    "initial_angle": 0,
+    "lidar_rays": 72,
+    "lidar_range_m": 1.2,
+    "same_sensor_angle_semantics_as_LidarScan": true,
+    "unseen_robot": [
+      4.6,
+      0.3
+    ],
+    "physics_runs": 0,
+    "purpose": "test observations and scoring only, no fixture geometry passed to filter"
+  },
+  "fixtures": [
+    {
+      "id": "S0",
+      "purpose": "static object, observer ego-motion",
+      "polygon_local": [
+        [
+          -0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          0.185
+        ],
+        [
+          -0.315,
+          0.185
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0,
+      "observer_rule": "x=2.5+.08*sin(2*pi*t/5), y=1.35, heading=pi/2+.1*sin(2*pi*t/5)"
+    },
+    {
+      "id": "S1",
+      "purpose": "translation",
+      "polygon_local": [
+        [
+          -0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          0.185
+        ],
+        [
+          -0.315,
+          0.185
+        ]
+      ],
+      "translation_velocity": [
+        0.08,
+        0.03
+      ],
+      "omega": 0,
+      "observer_rule": "x=2.5+.08*t,y=1.35+.03*t,heading=pi/2"
+    },
+    {
+      "id": "S2",
+      "purpose": "rigid rotation",
+      "polygon_local": [
+        [
+          -0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          0.185
+        ],
+        [
+          -0.315,
+          0.185
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0.15,
+      "observer_rule": "x=2.5,y=1.35,heading=pi/2"
+    },
+    {
+      "id": "S3",
+      "purpose": "both endpoints shadow-censored",
+      "polygon_local": [
+        [
+          -0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          -0.185
+        ],
+        [
+          0.315,
+          0.185
+        ],
+        [
+          -0.315,
+          0.185
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0,
+      "observer_rule": "x=2.5,y=1.35,heading=pi/2",
+      "occluders": "only .5<=t<=1.2: teammate/static discs r=.08 at (2.26,1.65),(2.74,1.65); label=3/2 respectively; simulator contact state not fabricated"
+    },
+    {
+      "id": "S4",
+      "purpose": "nonorthogonal physical corner",
+      "polygon_local": [
+        [
+          -0.5,
+          0
+        ],
+        [
+          0.5,
+          0
+        ],
+        [
+          0.2705694254595815,
+          0.3276608177155967
+        ],
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0,
+      "observer_rule": "x=3.35,y=1.6,heading=atan2(.4,-.85)"
+    },
+    {
+      "id": "S5",
+      "purpose": "same front, shallow back",
+      "polygon_local": [
+        [
+          -0.5,
+          0
+        ],
+        [
+          0.5,
+          0
+        ],
+        [
+          0.5,
+          0.25
+        ],
+        [
+          -0.5,
+          0.25
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0,
+      "observer_rule": "t<=2: (2.5,1.5,pi/2); 2<t<=3: interpolate to (3.5,1.5); 3<t<=4: interpolate to (3.5,2.5); t>4 hold; heading faces (2.5,2) after2"
+    },
+    {
+      "id": "S6",
+      "purpose": "same front, deep back",
+      "polygon_local": [
+        [
+          -0.5,
+          0
+        ],
+        [
+          0.5,
+          0
+        ],
+        [
+          0.5,
+          0.75
+        ],
+        [
+          -0.5,
+          0.75
+        ]
+      ],
+      "translation_velocity": [
+        0,
+        0
+      ],
+      "omega": 0,
+      "observer_rule": "identical to S5"
+    },
+    {
+      "id": "S7",
+      "purpose": "mirror coordinate semantics",
+      "mirror_of": "S2",
+      "transform": {
+        "x": "5-x",
+        "y": "y",
+        "heading": "wrap(pi-heading)",
+        "omega_sign": -1
+      }
+    }
+  ],
+  "offline_gate": {
+    "finite_and_PSD": true,
+    "no_hidden_input_tests_pass": true,
+    "fresh_line_coverage_relative_U_min": 0.9,
+    "normal_angle_P95_max_deg": 0.5,
+    "normal_distance_P95_max_m": 0.01,
+    "endpoint_P95_increase_max_m": 0.005,
+    "endpoint_coverage_relative_U_min": 0.9
+  },
+  "improvement_screen": {
+    "endpoint_P95_relative_U_max": 0.8,
+    "endpoint_P95_floor_m": 0.005,
+    "max_endpoint_error_increase_m": 0.01,
+    "not_default_promotion": true
+  },
+  "closed_loop": {
+    "preset_cases": [
+      {
+        "id": "adjacent",
+        "preset": "outputs/testbed/presets/20261029_224105_6ef27d.json",
+        "horizon_seconds": 5.0,
+        "sequence": [
+          {
+            "a0": 3,
+            "a1": 11,
+            "decisions": 25
+          }
+        ]
+      },
+      {
+        "id": "adjacent_mirror",
+        "preset": "outputs/testbed/presets/20261029_224105_6ef27d.json",
+        "transform": {
+          "kind": "reflect_world_x",
+          "width": 5.0,
+          "reflect_static_geometry_and_goal": true,
+          "swap_robot_ids": false,
+          "action_map": {
+            "3": 19,
+            "11": 11
+          }
+        },
+        "horizon_seconds": 5.0,
+        "sequence": [
+          {
+            "a0": 19,
+            "a1": 11,
+            "decisions": 25
+          }
+        ]
+      },
+      {
+        "id": "same_face",
+        "preset": "outputs/testbed/presets/20261029_213734_011394.json",
+        "horizon_seconds": 8.0,
+        "sequence": [
+          {
+            "a0": 11,
+            "a1": 11,
+            "decisions": 40
+          }
+        ]
+      },
+      {
+        "id": "same_face_closer",
+        "preset": "outputs/testbed/presets/20261029_223506_e5fa20.json",
+        "horizon_seconds": 8.0,
+        "sequence": [
+          {
+            "a0": 11,
+            "a1": 11,
+            "decisions": 40
+          }
+        ]
+      }
+    ],
+    "versions": [
+      "legacy_A",
+      "unknown_F"
+    ],
+    "witnesses": [
+      {
+        "id": "W_N",
+        "log": "outputs/option_rl_v14/learnability_002/logs/dual_2.json"
+      },
+      {
+        "id": "W_E",
+        "log": "outputs/option_rl_v14/learnability_002/logs/dual_0.json"
+      }
+    ],
+    "first_run": "W_N/unknown_F, counts within 16",
+    "rotation_instance": "W_N",
+    "rotation_sequences": [
+      [
+        {
+          "a0": 32,
+          "a1": 32,
+          "decisions": 20
+        }
+      ],
+      [
+        {
+          "a0": 35,
+          "a1": 35,
+          "decisions": 20
+        }
+      ]
+    ],
+    "mixed_instance": "W_N",
+    "mixed_sequences": [
+      [
+        {
+          "a0": 42,
+          "a1": 44,
+          "decisions": 10
+        },
+        {
+          "a0": 11,
+          "a1": 45,
+          "decisions": 20
+        }
+      ],
+      [
+        {
+          "a0": 11,
+          "a1": 45,
+          "decisions": 10
+        },
+        {
+          "a0": 44,
+          "a1": 44,
+          "decisions": 5
+        },
+        {
+          "a0": 38,
+          "a1": 11,
+          "decisions": 10
+        },
+        {
+          "a0": 44,
+          "a1": 44,
+          "decisions": 5
+        }
+      ]
+    ],
+    "formal_and_test_physics_runs_total_max": 16,
+    "all_attempts_count": true,
+    "smoke_extra_allowance": 0,
+    "retries_without_new_handoff": 0
+  },
+  "budget": {
+    "workers_max": 2,
+    "pure_tests_seconds": 300,
+    "offline_seconds": 1200,
+    "closed_loop_seconds": 300,
+    "total_execution_to_report_seconds": 2400,
+    "analysis_bugfix_retries_max": 1,
+    "kill_grace_seconds": 2
+  },
+  "training_steps": 0,
+  "promote_default": false,
+  "old_checkpoint_compatible": false,
+  "result": "docs/agent_exchange/results/D009_Unknown_Shape_Edge_Implementation.md"
+}

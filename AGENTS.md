@@ -1,5 +1,14 @@
 # AGENTS.md — working rules for the CoImagine repository
 
+## GPT / DeepSeek handoff entry
+
+For the human-mediated planning/execution workflow, read
+`docs/agent_exchange/AGENTS.md` (DeepSeek execution-side protocol),
+`docs/agent_exchange/README.md` and `docs/agent_exchange/CURRENT.md` first.
+GPT prepares diagnostic plans and reviews evidence; DeepSeek implements and runs
+the task handed over by the human. This entry does not authorize automatic runs,
+agent messaging, or expansion of research scope. Keep historical reports intact.
+
 This repository implements the **2D validation** of the CoImagine v6 research plan.
 The authoritative documents are:
 

@@ -1,0 +1,210 @@
+{
+  "task": "D007",
+  "version": 1,
+  "date": "2026-10-30",
+  "status": "ready_for_handoff",
+  "source_sha256": {
+    "src/coimagine/random_start/effect_push.py": "33c3ca6bf83c5a5cd7671d3a63c29c64bb8702f230a704eafec905affb1fe6f3",
+    "src/coimagine/random_start/skills.py": "e844f04658aaae52f699083d8695e82a0af47ea0ca330e929ec3d0ed59af1fa4",
+    "src/coimagine/random_start/same_face.py": "ae5601faba06a9bc84d04d9f485dc289f4cfa6b8a55816f2bfb144e0b11a5cff",
+    "src/coimagine/random_start/endpoint_tracking.py": "fc29a3dda0781f0019c6dd7879d189819770b808299b73672a1343e4e7cb7c81",
+    "src/coimagine/random_start/efficient_profile.py": "3b8c279f7aa1e4d8d099a101dfa7046a23a8f08a31410faf5ff2feb5a2ad51e6",
+    "src/coimagine/random_start/spec.py": "bab07c284978eb7db54116b31808c0d2e1b7660dc882a13a81c5ca6d161a031e",
+    "src/coimagine/random_start/lidar.py": "c7e26e65fb54c4e337486a8f6cf7940d7fc5fafb5b4593e62cdf9ef6ee05ccb5",
+    "src/coimagine/local_contact_option/control.py": "cd50f2b9dac89762f8ff58ec464a407fd8437628af20d3d41964d3ab8501b97e",
+    "src/coimagine/continuous2d/backend.py": "3281584946c9441ef9c1df3e2875199ef1f44e4e9586a0f8d652cae2c0f31296",
+    "src/coimagine/continuous2d/config.py": "ba141c8de6896b4fbeaf4bac2a2cd1301e2f153e76a1d09baab973519e81e79f",
+    "experiments/option_rl_v13/push_controller.py": "39de9d09d8a97519a6ab2a4d93b014f7a0887d197c166557e85631839d915aea",
+    "experiments/option_rl_v13/controller.py": "af88a7853badbf3a9e60379fa112ce61748762dc8aea9c85ba7acb302c7ab076",
+    "experiments/option_rl_v13/mode_env.py": "25ef750f31c14f4cb888eada029fb8f5d56fb3ceacf7e44f8232fe729cd8121e",
+    "experiments/option_rl_v14/mode_env.py": "a9c29d63f901a7552493236793f16a453c0d36d942188caae3f77c4821fb2ef4",
+    "experiments/option_rl_v17/contact_timing_audit.py": "5bad456e35ce3baf5908928f5fc6e30c99ca52b5d02bb6de1223ebda185a0424",
+    "experiments/option_rl_v19/spec.py": "0f3d37fff6230724d071d20f62a8a22229708b3f95187c01734672bb0969b01c",
+    "experiments/option_rl_v19/system.py": "94c0391c701668c88204e08ff70978b3dcef23804b9b9a4a5fbf0954499cf7d0",
+    "experiments/option_rl_v19/session.py": "d6afe1cf706112d5f4595751b9bbbe0c4ade475e18e619a117c330a97ef78c74",
+    "experiments/option_rl_v19/testbed_server.py": "95c29fb4e096f31477724d2f2efe31a27c5b39e649bab7c17a4ac518fb3b3cb4",
+    "experiments/option_rl_v19/diag_rotation_feedback.py": "f526f1a417a8e288b59b1b27ba8d46e38854454614008da949d3e9872018be2a",
+    "outputs/option_rl_v14/learnability_002/panel.json": "a60bdcc120923a8091d8e8930eb4717406075aeeb55b5291e3f924dd48227126",
+    "outputs/option_rl_v14/learnability_002/logs/dual_2.json": "e5534cea6ed87438de8ebddae586a8f985e8142f80943e0ee55cb604afbf9a0d",
+    "outputs/option_rl_v14/learnability_002/logs/dual_0.json": "bac8ebfa6b174ecf55dcfc02937323966fc87d2cf2486e145310a17ac50250ac",
+    "outputs/testbed/presets/20261029_224105_6ef27d.json": "404bf0c967f6d09c9efddafb98da6dd6a653c8be8c95772dfddc81e2db7b1608",
+    "outputs/testbed/presets/20261029_213734_011394.json": "06538d07815de5af68f64e88ba5dd703ee56366ba0f06fb7bfc7ac012388f0c0",
+    "outputs/testbed/presets/20261029_223506_e5fa20.json": "6ad5b921c665c229ffd96b8ab487bbfe8b0f41b5df8faca47c7831d684714eb7",
+    "outputs/testbed/runs/20261030_001755_86122b.json": "d45c25d69eebfd4562b3ce2ba0446a24936a77da1ffc3aad6ecff5a7bf5a5c3f",
+    "outputs/testbed/diagnostics/rotation_feedback_20261030_001901.json": "bcd8543234ec45149beec3c618094f2f313939786f235590fdb0ac25bfaff9d6",
+    "docs/agent_exchange/results/D006_Control_Equations.md": "c4fe97a030f368f743a8caa8b16b7af8b6ab7fa16a018074b0aaaa0bf09b948e",
+    "docs/agent_exchange/results/D006_Lateral_Offset_Report.md": "49682881f76b86643599a4a58ede7b037280d30469fb0b6fd44f074510d0d71c"
+  },
+  "profiles": {
+    "A": {
+      "name": "legacy",
+      "push_overrides": {
+        "rotation_feedback_gain": 0.0
+      }
+    },
+    "B": {
+      "name": "outer_off",
+      "push_overrides": {
+        "feedback": false,
+        "heading_gain": 0.0,
+        "angular_rate_gain": 0.0,
+        "lateral_gain": 0.0,
+        "rotation_feedback_gain": 0.0,
+        "contact_tangent_damping": 0.7
+      }
+    },
+    "C": {
+      "name": "minimal",
+      "push_overrides": {
+        "feedback": false,
+        "heading_gain": 0.0,
+        "angular_rate_gain": 0.0,
+        "lateral_gain": 0.0,
+        "rotation_feedback_gain": 0.0,
+        "contact_tangent_damping": 0.0
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "adjacent",
+      "preset": "outputs/testbed/presets/20261029_224105_6ef27d.json",
+      "horizon_seconds": 5.0,
+      "sequence": [
+        {
+          "a0": 3,
+          "a1": 11,
+          "decisions": 25
+        }
+      ]
+    },
+    {
+      "id": "adjacent_mirror",
+      "preset": "outputs/testbed/presets/20261029_224105_6ef27d.json",
+      "transform": {
+        "kind": "reflect_world_x",
+        "width": 5.0,
+        "reflect_static_geometry_and_goal": true,
+        "swap_robot_ids": false,
+        "action_map": {
+          "3": 19,
+          "11": 11
+        }
+      },
+      "horizon_seconds": 5.0,
+      "sequence": [
+        {
+          "a0": 19,
+          "a1": 11,
+          "decisions": 25
+        }
+      ]
+    },
+    {
+      "id": "same_face",
+      "preset": "outputs/testbed/presets/20261029_213734_011394.json",
+      "horizon_seconds": 8.0,
+      "sequence": [
+        {
+          "a0": 11,
+          "a1": 11,
+          "decisions": 40
+        }
+      ]
+    },
+    {
+      "id": "same_face_closer",
+      "preset": "outputs/testbed/presets/20261029_223506_e5fa20.json",
+      "horizon_seconds": 8.0,
+      "sequence": [
+        {
+          "a0": 11,
+          "a1": 11,
+          "decisions": 40
+        }
+      ]
+    }
+  ],
+  "probe": {
+    "cases": [
+      "adjacent",
+      "adjacent_mirror"
+    ],
+    "profiles": [
+      "B",
+      "C"
+    ],
+    "robot_ids": [
+      0,
+      1
+    ],
+    "offset_m": [
+      -0.04,
+      0.04
+    ],
+    "start_seconds": 2.0,
+    "end_seconds": 3.0,
+    "response_mean_window_seconds": [
+      2.8,
+      3.0
+    ],
+    "inject_before_point_rate_and_projection": true,
+    "zero_reference": "reuse same-case same-profile baseline",
+    "truth_inputs": false
+  },
+  "witnesses": [
+    {
+      "id": "W_N",
+      "log": "outputs/option_rl_v14/learnability_002/logs/dual_2.json"
+    },
+    {
+      "id": "W_E",
+      "log": "outputs/option_rl_v14/learnability_002/logs/dual_0.json"
+    }
+  ],
+  "instrumentation_repeats": {
+    "case": "adjacent",
+    "profiles": [
+      "A",
+      "C"
+    ],
+    "logging": false
+  },
+  "timing": {
+    "control_dt": 0.05,
+    "decision_dt": 0.2,
+    "change_rl_actor_hold": false
+  },
+  "budget": {
+    "formal_trajectories": 36,
+    "baseline": 12,
+    "probe": 16,
+    "witness": 6,
+    "noninterference": 2,
+    "workers_max": 4,
+    "formal_wall_seconds": 600,
+    "tests_wall_seconds": 180,
+    "total_execution_analysis_wall_seconds": 900,
+    "kill_grace_seconds": 2,
+    "extra_physics_probes": 0
+  },
+  "gates": {
+    "prefix_and_noninterference_max_abs_error": 1e-09,
+    "min_common_valid_probe_pairs": 6,
+    "candidate_gain_median_delta_min": 0.1,
+    "candidate_error_rms_median_ratio_max": 0.9,
+    "progress_loss_abs_m": 0.02,
+    "progress_loss_relative": 0.05,
+    "peak_angle_increase_max_rad": 0.05,
+    "contact_retention_ratio_min": 0.9,
+    "contact_retention_slack_seconds": 0.1,
+    "witness_time_slack_seconds": 0.5,
+    "witness_time_slack_ratio": 0.1,
+    "valid_probe_target_delta_m": 0.02,
+    "valid_probe_target_delta_duration_seconds": 0.5,
+    "valid_probe_physical_contact_seconds": 0.5
+  },
+  "no_training": true,
+  "promote_default": false,
+  "result": "docs/agent_exchange/results/D007_Lateral_Transfer_Calibration.md"
+}

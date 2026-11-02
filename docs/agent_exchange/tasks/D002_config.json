@@ -1,0 +1,62 @@
+{
+  "task": "D002",
+  "version": 1,
+  "implementation_version": "v17-age-decay-switch-cost-v1",
+  "parent_checkpoint": "outputs/option_rl_v15/joint_ablation_002/joint_types/joint_types/checkpoint.pt",
+  "parent_sha256": "dac637e6d21f64d6fa3bf98c658c176d12b1ac7409b66fe6ff84186e5121e6c5",
+  "panel": "outputs/option_rl_v14/learnability_002/panel.json",
+  "panel_sha256": "a60bdcc120923a8091d8e8930eb4717406075aeeb55b5291e3f924dd48227126",
+  "stage_a": {
+    "window_seconds": 3.2,
+    "branches": ["recorded", "hold"],
+    "state_tolerance": 0.00001,
+    "selected_sources": [
+      {"root": "dual_2", "seed": 1006, "decision_index": 3, "t_start": 2.4, "a0": 10, "a1": 9},
+      {"root": "dual_2", "seed": 1008, "decision_index": 76, "t_start": 60.2, "a0": 16, "a1": 19},
+      {"root": "dual_2", "seed": 1010, "decision_index": 62, "t_start": 49.6, "a0": 11, "a1": 10},
+      {"root": "dual_2", "seed": 1011, "decision_index": 2, "t_start": 1.6, "a0": 11, "a1": 9},
+      {"root": "dual_2", "seed": 1012, "decision_index": 104, "t_start": 83.2, "a0": 25, "a1": 25},
+      {"root": "dual_2", "seed": 1013, "decision_index": 10, "t_start": 8.0, "a0": 9, "a1": 8},
+      {"root": "dual_0", "seed": 1001, "decision_index": 17, "t_start": 13.6, "a0": 5, "a1": 6},
+      {"root": "dual_0", "seed": 1002, "decision_index": 103, "t_start": 82.4, "a0": 5, "a1": 4},
+      {"root": "dual_0", "seed": 1004, "decision_index": 21, "t_start": 16.8, "a0": 3, "a1": 1},
+      {"root": "dual_0", "seed": 1006, "decision_index": 3, "t_start": 2.4, "a0": 3, "a1": 3},
+      {"root": "dual_0", "seed": 1010, "decision_index": 43, "t_start": 34.4, "a0": 5, "a1": 4},
+      {"root": "dual_0", "seed": 1011, "decision_index": 3, "t_start": 2.4, "a0": 3, "a1": 2}
+    ],
+    "gate": {
+      "complete_pairs": 12,
+      "min_improved_pairs": 6,
+      "min_improved_per_root": 2,
+      "improvement_m": 0.01,
+      "min_median_delta_m": 0.01,
+      "severe_regression_m": -0.02,
+      "max_severe_regressions": 2,
+      "min_engagement_improved_pairs": 4,
+      "engagement_improvement_seconds": 0.4,
+      "max_new_anomalies": 0
+    }
+  },
+  "stage_b": {
+    "hold_seconds": 0.8,
+    "decay_seconds": 2.4,
+    "arms": {"A0": 0.0, "A1": 0.08},
+    "ledger_family_order": ["NONE", "TRANSLATE", "ROTATE_CCW", "ROTATE_CW", "REPOSITION", "FOLLOW"],
+    "observation_dim": 960,
+    "added_dimensions_per_robot": 8,
+    "fork_seeds": [200, 201],
+    "run_order": [["A0", 200], ["A1", 200], ["A0", 201], ["A1", 201]],
+    "iterations": 20,
+    "episodes_per_iteration": 8,
+    "optimizer": {"name": "Adam", "reset_for_both_arms": true, "lr": 0.0003, "betas": [0.9, 0.999], "eps": 1e-8, "weight_decay": 0},
+    "ppo": {"gamma": 1, "trace_seconds": 10, "epochs": 4, "minibatch": 256, "clip": 0.2, "entropy_coef": 0.02, "value_coef": 0.5, "grad_clip": 1.0, "target_kl": 0.03},
+    "greedy_eval_iterations": [5, 10, 15, 20],
+    "random_eval_seeds": [1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1013, 1014, 1015],
+    "max_training_episodes": 640,
+    "max_evaluation_episodes": 400,
+    "initial_function_tolerance": 0.000002,
+    "logp_tolerance": 0.00002
+  },
+  "budget": {"total_execution_seconds": 1200, "stage_a_seconds": 120, "each_training_run_seconds": 210, "final_analysis_eval_seconds": 240, "focused_test_seconds": 180, "total_workers": 4},
+  "no_auto_next_round": true
+}

@@ -1,0 +1,151 @@
+{
+ "task": "D005",
+ "version": 1,
+ "implementation_version": "v19-option-system-v1",
+ "created_by": "DeepSeek under explicit user instruction (GPT quota exhausted, 2026-10-29)",
+ "samples": [
+  {
+   "id": "W_N",
+   "kind": "witness",
+   "root": "dual_2",
+   "role": "\u6210\u529f\u63a7\u5236\u5668\u6b63\u5bf9\u7167",
+   "log": "outputs/option_rl_v14/learnability_002/logs/dual_2.json",
+   "expected_seconds": 6.45,
+   "expected_ticks": 129
+  },
+  {
+   "id": "W_E",
+   "kind": "witness",
+   "root": "dual_0",
+   "role": "\u6210\u529f\u63a7\u5236\u5668\u6b63\u5bf9\u7167",
+   "log": "outputs/option_rl_v14/learnability_002/logs/dual_0.json",
+   "expected_seconds": 6.45,
+   "expected_ticks": 129
+  },
+  {
+   "id": "N_E_gap",
+   "kind": "failure",
+   "root": "dual_0",
+   "seed": 1001,
+   "decision_index": 17,
+   "t_start": 13.6,
+   "source_action": [
+    5,
+    6
+   ],
+   "role": "\u539f3.2 s\u672a\u53cc\u63a5\u89e6\u3001\u53cc\u4fa7\u63a5\u8fd1\u672a\u5b8c\u6210",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1001.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1001.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_0__random__1001__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  },
+  {
+   "id": "N_E_one",
+   "kind": "failure",
+   "root": "dual_0",
+   "seed": 1011,
+   "decision_index": 3,
+   "t_start": 2.4,
+   "source_action": [
+    3,
+    2
+   ],
+   "role": "\u539f3.2 s\u4ec5\u5355\u4fa7\u63a5\u89e6",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1011.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1011.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_0__random__1011__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  },
+  {
+   "id": "N_N_far",
+   "kind": "failure",
+   "root": "dual_2",
+   "seed": 1006,
+   "decision_index": 3,
+   "t_start": 2.4,
+   "source_action": [
+    10,
+    9
+   ],
+   "role": "\u4e00\u4fa7\u8fd1\u3001\u4e00\u4fa7\u8fdc\u7684\u51c6\u5907\u72b6\u6001",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1006.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1006.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_2__random__1006__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  },
+  {
+   "id": "N_N_direction",
+   "kind": "failure",
+   "root": "dual_2",
+   "seed": 1010,
+   "decision_index": 62,
+   "t_start": 49.6,
+   "source_action": [
+    11,
+    10
+   ],
+   "role": "\u539f3.2 s\u672a\u53cc\u63a5\u89e6\u3001\u63a8\u8fdb\u65b9\u5411\u9700\u6838\u67e5",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1010.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1010.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_2__random__1010__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  },
+  {
+   "id": "L_E",
+   "kind": "failure",
+   "root": "dual_0",
+   "seed": 1002,
+   "decision_index": 103,
+   "t_start": 82.4,
+   "source_action": [
+    5,
+    4
+   ],
+   "role": "\u539f\u7a97\u53e3\u77ed\u63a5\u89e6\u540e\u4e22\u5931\uff0cactive\u66fe\u89e6\u53d1",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1002.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_0__random__1002.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_0__random__1002__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  },
+  {
+   "id": "C_N",
+   "kind": "failure",
+   "root": "dual_2",
+   "seed": 1012,
+   "decision_index": 104,
+   "t_start": 83.2,
+   "source_action": [
+    25,
+    25
+   ],
+   "role": "\u539f\u7a97\u53e3\u672b\u62cd\u624d\u63a5\u89e6\uff0c\u53f3\u5220\u5931",
+   "d001_episode_json": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1012.json",
+   "d001_episode_npz": "outputs/agent_exchange/D001_20261029_1644/episodes/joint_types__dual_2__random__1012.npz",
+   "d002_hold_branch": "outputs/agent_exchange/D002_20261029_1757/A/branches/joint_types__dual_2__random__1012__hold.json",
+   "window_seconds": 4.8,
+   "reproduce_seconds": 3.2
+  }
+ ],
+ "d003_output": "outputs/agent_exchange/D003_20261029_1843",
+ "d004_output": "outputs/agent_exchange/D004_20261029_2045",
+ "tables": [
+  "docs/agent_exchange/state/option_table.csv",
+  "docs/agent_exchange/state/state_table.csv",
+  "docs/agent_exchange/state/param_table.csv"
+ ],
+ "budget": {
+  "total_execution_seconds": 300,
+  "focused_test_seconds": 120,
+  "workers": 4,
+  "gate_replays": 8,
+  "session_runs": 1
+ },
+ "no_training": true,
+ "no_ui": true,
+ "no_auto_next": true
+}

@@ -1,0 +1,27 @@
+family,name,default,low,high,unit,description
+PUSH,approach_normal_speed,0.3,0.0,1.2,,PUSH controller parameter
+PUSH,approach_tangential_speed,0.3,0.0,1.2,,PUSH controller parameter
+PUSH,approach_tangential_gain,4.5,0.0,18.0,,PUSH controller parameter
+PUSH,approach_settle_speed,0.04,0.0,0.16,,PUSH controller parameter
+PUSH,joint_engage_speed,0.04,0.0,0.16,,PUSH controller parameter
+PUSH,gap_gain,3.0,0.0,12.0,,PUSH controller parameter
+PUSH,tangential_gain,4.8,0.0,19.2,,PUSH controller parameter
+PUSH,tangential_speed,0.213333333333,0.0,0.853333333332,,PUSH controller parameter
+PUSH,contact_tangent_damping,0.7,0.0,2.8,,PUSH controller parameter
+PUSH,recovery_enter_gap,0.01,0.0,0.04,,PUSH controller parameter
+PUSH,recovery_ready_seconds,0.1,0.0,0.4,,PUSH controller parameter
+PUSH,recovery_timeout,2.0,0.0,8.0,,PUSH controller parameter
+PUSH,recovery_approach_speed,0.04,0.0,0.16,,PUSH controller parameter
+PUSH,rotation_feedback_gain,0.0,-2.0,2.0,,"contact-point tangent gain from face-normal rotation; + = CCW->left, CW->right"
+ROTATE,approach_normal_speed,0.1,0.0,0.4,,ROTATE controller parameter
+ROTATE,approach_tangential_speed,0.2,0.0,0.8,,ROTATE controller parameter
+ROTATE,rotation_trim_speed,0.035,0.0,0.14,,ROTATE controller parameter
+ROTATE,rotation_engage_speed,0.04,0.0,0.16,,ROTATE controller parameter
+ROTATE,cooperative_rotation_speed,0.06,0.0,0.24,,ROTATE controller parameter
+ROTATE,rotation_brake_seconds,0.3,0.0,1.2,,ROTATE controller parameter
+ROTATE,settle_angular_speed,0.025,0.0,0.1,,ROTATE controller parameter
+FOLLOW,target_gap,0.02,0.0,0.2,m,follow target gap
+FOLLOW,speed_limit,0.32,0.0,0.5,m/s,follow speed limit
+FOLLOW,follow_normal_force,0.75,0.0,3.0,N,follow normal force
+FOLLOW,follow_force,3.0,0.0,8.0,N,follow force
+FOLLOW,follow_max_seconds,8.0,0.5,20.0,s,follow timeout
