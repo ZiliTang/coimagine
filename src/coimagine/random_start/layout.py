@@ -83,6 +83,7 @@ class InstanceSpec:
     goal_centre: Tuple[float, float]
     goal_radius: float = GOAL_RADIUS
     env_version: str = ENV_VERSION
+    object_polygon: Optional[Tuple[Tuple[float, float], ...]] = None
 
     def to_scene(self) -> SceneSpec:
         """The engine-facing scene. ``goal`` is a square of the goal radius, used for
@@ -98,7 +99,7 @@ class InstanceSpec:
             description=f"random-start {self.map} instance {self.index}",
             scene_version=ENV_VERSION,
             object_width=OBJECT_WIDTH, object_height=OBJECT_HEIGHT,
-            robot_radius=ROBOT_RADIUS,
+            robot_radius=ROBOT_RADIUS, object_polygon=self.object_polygon,
         )
 
     def as_dict(self) -> Dict[str, object]:
@@ -109,6 +110,7 @@ class InstanceSpec:
             "object": asdict(self.object_pose),
             "robots": [asdict(pose) for pose in self.robot_poses],
             "goal_centre": list(self.goal_centre), "goal_radius": self.goal_radius,
+            "object_polygon": None if self.object_polygon is None else [list(v) for v in self.object_polygon],
             "env_version": self.env_version,
         }
 

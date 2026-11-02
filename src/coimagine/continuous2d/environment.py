@@ -218,35 +218,37 @@ class Continuous2DEnv:
 
     # -- stepping ----------------------------------------------------------
     def step_control(self, joint_control: Tuple[Vec, Vec],
-                     headings=None) -> Tuple[Observation, Dict[str, object]]:
+                     headings=None, *, minimal=False) -> Tuple[Optional[Observation], Dict[str, object]]:
+        """Advance the same physics; minimal skips unused observation/debug materialization."""
         if self.termination is not None:
             # A terminated episode never advances: explicit zero-increment terminal result.
-            return self.observation(), {
+            diagnostics = {
                 "penetration": self.backend.max_penetration(),
-                "penetration_by_pair": self.backend.penetration_by_pair(),
                 "finite": self.backend.finite(),
                 "in_bounds": self.backend.in_bounds(),
-                "contacts": self.backend.contacts(),
                 "success_hold": self.success_counter,
                 "already_terminated": True,
                 "termination": self.termination,
             }
+            if not minimal:
+                diagnostics.update(penetration_by_pair=self.backend.penetration_by_pair(),contacts=self.backend.contacts())
+            return (None if minimal else self.observation()),diagnostics
         self.backend.apply_and_step(joint_control, headings)
         self.tick += 1
         diagnostics: Dict[str, object] = {
             "penetration": self.backend.max_penetration(),
-            "penetration_by_pair": self.backend.penetration_by_pair(),
             "finite": self.backend.finite(),
             "in_bounds": self.backend.in_bounds(),
-            "contacts": self.backend.contacts(),
             "already_terminated": False,
         }
+        if not minimal:
+            diagnostics.update(penetration_by_pair=self.backend.penetration_by_pair(),contacts=self.backend.contacts())
         if self.object_in_goal() and self.object_slow():
             self.success_counter += self.config.physics.control_dt
         else:
             self.success_counter = 0.0
         diagnostics["success_hold"] = self.success_counter
-        return self.observation(), diagnostics
+        return (None if minimal else self.observation()), diagnostics
 
     def object_in_goal(self) -> bool:
         """All four object corners inside the goal rectangle (not a single-frame centre test)."""

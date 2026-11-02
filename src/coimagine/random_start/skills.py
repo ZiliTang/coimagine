@@ -20,7 +20,7 @@ therefore a translation of the disc along the observed surface, not a rotation i
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple
 
 from ..local_contact_option.control import (
@@ -32,6 +32,8 @@ from ..local_contact_option.control import (
 )
 from . import geometry as G
 from .lidar import CATEGORY_STATIC, CATEGORY_TEAMMATE, LidarScan, SurfacePatch
+from .boundary_follow import RoundedBoundary, PeerOuterDetour
+from .progress_guard import ProgressGuard
 from .spec import (
     A_REF_MAX,
     APPROACH_GAIN,
@@ -75,7 +77,6 @@ from .spec import (
     FOLLOW_POSE_TOLERANCE,
     FOLLOW_TANGENT_GAIN,
     OPTION_BUDGET_EXIT,
-    FACE_SWITCH_EXIT,
     option_timeout,
     RobotAction,
 )
@@ -86,7 +87,7 @@ STAGES = ("find", "approach", "ready", "push", "align", "move", "brake", "done",
 
 EXITS = ("push_complete", "reposition_complete", "wait_complete", "blocked_no_progress",
          "not_observed", "patch_lost", "contact_lost", "push_wall_timeout", "timeout",
-         "safety_abort", "blocked_contact", "environment_termination")
+         "safety_abort", "blocked_contact", "blocked_static_route", "environment_termination")
 
 
 @dataclass(frozen=True)
@@ -779,15 +780,36 @@ class RepositionSkill(_VisionSkill):
       only from returns.
     * the CCW tangent is ``rotate90_ccw(n) = (-n_y, n_x)``; the CW tangent is its negation.
       Going CW therefore means orbiting the object in the clockwise direction seen from above.
-    * progress is the accumulated positive projection of this robot's own displacement on the
-      tangent that was valid in that period. It is not accumulated while the object is in
-      contact, while the fit is invalid, or when the displacement is backwards.
+    * progress is signed boundary-path travel: project this robot's displacement onto the
+      tangent commanded in the previous period. Reverse travel is subtracted. Contact and
+      unobserved intervals do not contribute. A face change updates the tangent, not the goal.
     """
 
     kind = "reposition"
 
-    def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE):
+    def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE, *, boundary_mode="legacy_face",
+                 peer_detour="off", progress_guard=False):
         super().__init__(action, force_limit)
+        self.progress_guard = progress_guard
+        self.phase_progress = ProgressGuard()
+        self.budget_m = None
+        self.time_budget_s = None
+        self.progress_m = 0.0
+        self.budget_reached = False
+        self.budget_start_time = None
+        self.budget_last_own = None
+        if boundary_mode not in ("legacy_face", "rounded_scan"):
+            raise ValueError("unknown reposition boundary mode")
+        self.boundary_mode = boundary_mode
+        if peer_detour not in ("off", "outer_arc"):
+            raise ValueError("unknown reposition peer detour")
+        if peer_detour != "off" and boundary_mode != "rounded_scan":
+            raise ValueError("peer detour requires finite rounded boundary")
+        self.peer_detour = peer_detour
+        self.peer_router = PeerOuterDetour()
+        self.static_route_guard = None
+        self.boundary_tracker = RoundedBoundary()
+        self.boundary_reference = None
         self.stage = "find"
         self.cw = str(action.direction) == "CW"
         self.distance_target = float(action.distance)
@@ -799,17 +821,74 @@ class RepositionSkill(_VisionSkill):
         self.unintended_contact = 0.0
         self.gap = None
         self.move_time = 0.0
+        self._progress_tangent: Optional[Vec] = None
+        self._normal_jump_active = False
+
+    def _accumulate_boundary_progress(self) -> float:
+        """Credit realised motion using the preceding command, never a future face normal.
+
+        PUSH retains its fixed-direction projection. REPOSITION follows a boundary, so its
+        direction can turn through corners; projecting all travel onto the first direction
+        would stop counting after a quarter turn and subtract forward travel after a half turn.
+        """
+        direction = self._progress_tangent
+        if direction is None:
+            return 0.0
+        norm = math.hypot(*direction)
+        if norm < 1e-9:
+            return 0.0
+        if self.declared_direction is None:
+            self.declared_direction = direction
+        advance = (self.step_vector[0] * direction[0]
+                   + self.step_vector[1] * direction[1]) / norm
+        self.signed_progress += advance
+        self.positive_travel += max(0.0, advance)
+        self.backward_travel += max(0.0, -advance)
+        return advance
 
     def _tangent_from(self, patch: SurfacePatch) -> Vec:
         outward = patch.normal_outward
         ccw = G.rotate90(outward)
         return (-ccw[0], -ccw[1]) if self.cw else ccw
 
+    def set_option_budget(self, progress_m=None, time_s=None, progress_kind='robot_path'):
+        self.progress_kind = progress_kind
+        self.budget_m = None if progress_m is None else float(progress_m)
+        self.time_budget_s = None if time_s is None else float(time_s)
+        self.progress_m = 0.0
+        self.budget_reached = False
+        self.budget_start_time = float(self.skill_time)
+        self.budget_last_own = None
+
     def step(self, observation: SkillObservation, dt: float) -> Tuple[Vec, Dict[str, object]]:
+        force, info = self._step_impl(observation, dt)
+        if self.budget_m is not None or self.time_budget_s is not None:
+            own = (float(observation.own.x), float(observation.own.y))
+            if self.budget_last_own is None:
+                self.budget_last_own = own
+            if self.budget_m is not None:
+                self.progress_m += math.hypot(own[0]-self.budget_last_own[0], own[1]-self.budget_last_own[1])
+                if self.progress_m >= self.budget_m - 1e-9:
+                    self.budget_reached = True
+                    self.exit_reason = 'progress_budget'
+            if self.time_budget_s is not None and self.budget_start_time is not None:
+                if self.skill_time - self.budget_start_time >= self.time_budget_s - 1e-9:
+                    self.budget_reached = True
+                    self.exit_reason = self.exit_reason or 'time_budget'
+            self.budget_last_own = own
+            info = {**info, 'progress_m': self.progress_m, 'budget_m': self.budget_m,
+                    'budget_reached': self.budget_reached, 'time_budget_s': self.time_budget_s}
+        return force, info
+
+    def _step_impl(self, observation: SkillObservation, dt: float) -> Tuple[Vec, Dict[str, object]]:
         self.skill_time += dt
         self.no_progress_seconds += dt
         self.corner_event_now = False
         self._note_position(observation)
+        if self.boundary_mode == "rounded_scan":
+            self.boundary_reference = self.boundary_tracker.update(observation,dt)
+            if self.boundary_reference is not None:
+                observation = replace(observation,patch=self.boundary_reference.patch)
         normal_raw = self.normal.update(
             observation.patch.normal_world if (observation.patch is not None
                                                and observation.patch.valid) else None, dt)
@@ -842,7 +921,7 @@ class RepositionSkill(_VisionSkill):
                     reason = "patch_lost"
             else:
                 outward = patch.normal_outward
-                gap = patch_gap(patch)
+                gap = self._boundary_gap(patch)
                 self.gap = gap
                 error = gap - REPOSITION_GAP
                 if abs(error) <= REPOSITION_ALIGN_ENTRY:
@@ -859,34 +938,47 @@ class RepositionSkill(_VisionSkill):
                     self._mark_progress()
         elif self.stage == "move":
             self.move_time += dt
+            if patch is not None and not observation.contacting_object:
+                advance = self._accumulate_boundary_progress()
+                self.progress = self.signed_progress
+                if advance > 0.0:
+                    self._mark_progress()
+            # Missing/contact intervals cannot later be credited on reacquisition.
+            self._progress_tangent = None
             if patch is None:
+                self._normal_jump_active = False
                 if self.unobserved_seconds >= OBSERVATION_FAIL_TOLERANCE:
                     reason = "patch_lost"
                 elif self.patch_missing_seconds >= OBSERVATION_FAIL_TOLERANCE:
                     reason = "patch_lost"
             else:
-                candidate = self._tangent_from(patch)
-                if jump or (self.last_tangent is not None
-                            and candidate[0] * self.last_tangent[0]
-                            + candidate[1] * self.last_tangent[1] < 0.0):
-                    # a corner: keep the previous direction, count the transition, do not
-                    # accumulate progress from a normal that just jumped
-                    self.corner_event_now = True
+                outward = (self.boundary_reference.outward if self.boundary_reference is not None else patch.normal_outward)
+                gap = self._boundary_gap(patch)
+                self.gap = gap
+                error = gap - REPOSITION_GAP
+                if self.peer_detour == "outer_arc" and (self.boundary_reference is not None
+                                                        or self.peer_router.info.get("active")):
+                    outward, error = self.peer_router.update(
+                        observation, self.boundary_reference, error)
+                ccw = G.rotate90(outward)
+                candidate = ((-ccw[0],-ccw[1]) if self.cw else ccw)
+                turning = jump or (self.last_tangent is not None
+                                   and candidate[0] * self.last_tangent[0]
+                                   + candidate[1] * self.last_tangent[1] < 0.0)
+                self.corner_event_now = bool(turning and not self._normal_jump_active)
+                self._normal_jump_active = bool(turning)
+                if self.corner_event_now:
                     self.corner_events += 1
-                    candidate = self.last_tangent if self.last_tangent is not None else candidate
-                    self.tangent = candidate
-                    raw = (REPOSITION_SPEED * candidate[0], REPOSITION_SPEED * candidate[1])
-                else:
-                    self.last_tangent = candidate
-                    self.tangent = candidate
-                    gap = patch_gap(patch)
-                    self.gap = gap
-                    error = gap - REPOSITION_GAP
-                    if abs(error) <= REPOSITION_GAP_DEADBAND:
-                        error = 0.0
-                    correction = REPOSITION_GAP_GAIN * error
-                    raw = (REPOSITION_SPEED * candidate[0] - correction * patch.normal_outward[0],
-                           REPOSITION_SPEED * candidate[1] - correction * patch.normal_outward[1])
+                    self.face_switches += 1
+                # Continue on the newly observed face. ReferenceVelocity still bounds the
+                # change in velocity, and the usual safety/contact/timeout checks still apply.
+                self.last_tangent = candidate
+                self.tangent = candidate
+                if abs(error) <= REPOSITION_GAP_DEADBAND:
+                    error = 0.0
+                correction = REPOSITION_GAP_GAIN * error
+                raw = (REPOSITION_SPEED * candidate[0] - correction * outward[0],
+                       REPOSITION_SPEED * candidate[1] - correction * outward[1])
                 if observation.contacting_object:
                     # the skill intends non-contact motion; a real contact is recorded and the
                     # progress is frozen, so object motion can never be booked as repositioning
@@ -895,27 +987,54 @@ class RepositionSkill(_VisionSkill):
                         reason = "blocked_contact"
                 else:
                     self.unintended_contact = 0.0
-                    if self.tangent is not None:
-                        advance = self._accumulate_signed_progress(self.tangent)
-                        if advance > 0.0 and not self.corner_event_now:
-                            self.progress += advance
-                            self._mark_progress()
-                    if self.corner_event_now:
-                        self.face_switches += 1
-                        reason = FACE_SWITCH_EXIT
+                    self._progress_tangent = candidate
             if (reason is None and self.action.scale_kind == "distance"
                     and self.signed_progress >= float(self.action.distance)):
                 reason = "reposition_complete"
         else:
             raw = (0.0, 0.0)
 
+        if reason is None and self.progress_guard:
+            phase=None;value=0.;minimum=.005
+            if self.stage=='align' and patch is not None:
+                phase='reposition_align';value=-abs(self._boundary_gap(patch)-REPOSITION_GAP)
+            elif self.stage=='move':
+                phase='reposition_move';value=self.signed_progress;minimum=.01
+            if self.phase_progress.update(phase,value,dt,minimum):
+                reason='reposition_prepare_stalled' if phase=='reposition_align' else 'reposition_stalled'
         if reason is None:
             reason = self._common_checks(observation, dt)
         if (reason is None and self.stage not in ("find", "ready")
                 and self.no_progress_seconds >= NO_PROGRESS_SECONDS):
             reason = "blocked_no_progress"
 
+        self.static_route_guard = None
+        if (reason is None and self.peer_detour == "outer_arc" and self.stage in ("align", "move")
+                and math.hypot(*raw) > 1e-8):
+            # The enlarged peer orbit is optional; it must not squeeze through
+            # a static obstacle. Check a short swept disc against CURRENT own
+            # static returns. Missing returns are not a proof of a free route.
+            start = (observation.own.x, observation.own.y)
+            speed = min(math.hypot(*raw), REPOSITION_SPEED_MAX)
+            unit = G.unit(raw)
+            length = max(speed, observation.own.speed) * .6
+            for valid, category, distance, angle in zip(observation.scan.valid,
+                    observation.scan.category, observation.scan.distances, observation.scan.ray_angles):
+                if not valid or category != CATEGORY_STATIC:
+                    continue
+                offset = (distance*math.cos(angle), distance*math.sin(angle))
+                along = max(0., min(length, offset[0]*unit[0]+offset[1]*unit[1]))
+                clearance = math.hypot(offset[0]-along*unit[0], offset[1]-along*unit[1])-ROBOT_RADIUS
+                if clearance <= .04:
+                    self.static_route_guard = {"status":"blocked", "lookahead_seconds":.6,
+                        "clearance_margin":.04, "swept_return_gap":clearance,
+                        "point":(start[0]+offset[0],start[1]+offset[1])}
+                    reason = "blocked_static_route"
+                    raw = (0., 0.)
+                    break
+
         raw = self._obstacle_avoidance(observation, raw, include_teammate=True)
+        if reason is not None and self.progress_guard:raw=(0.,0.)
         raw = _clip_velocity(raw, REPOSITION_SPEED_MAX if self.stage == "move"
                              else max(APPROACH_MAX_SPEED, REPOSITION_SPEED_MAX))
         reference = self._drive(raw, dt)
@@ -924,6 +1043,10 @@ class RepositionSkill(_VisionSkill):
             self._finish(reason, observation)
         info = self._info(observation, force, saturated, reference, raw)
         return force, info
+
+    def _boundary_gap(self, patch):
+        b = self.boundary_reference
+        return b.distance - ROBOT_RADIUS - b.uncertainty if b is not None else patch_gap(patch)
 
     def _info(self, observation, force, saturated, reference, raw) -> Dict[str, object]:
         patch = observation.patch
@@ -969,6 +1092,20 @@ class RepositionSkill(_VisionSkill):
             "safety_trigger": self.safety_trigger,
             "speed_at_exit": self.speed_at_exit,
             "residual_motion": bool(self.done and self.speed_at_exit > BRAKE_SPEED),
+            "boundary_follow": ({"version":"rounded-scan-v1", "mode":self.boundary_reference.mode,
+                "point":self.boundary_reference.point, "outward":self.boundary_reference.outward,
+                "reference_radius":ROBOT_RADIUS+REPOSITION_GAP+self.boundary_reference.uncertainty,
+                "uncertainty":self.boundary_reference.uncertainty, "evidence":self.boundary_reference.evidence,
+                "support_points":self.boundary_reference.patch.points_world}
+                if self.boundary_reference is not None else {"version":self.boundary_mode,"mode":"legacy_face"}),
+            "peer_detour": ({**self.peer_router.info,
+                "active": bool(self.peer_router.info.get("active") and patch is not None
+                               and self.stage == "move" and not self.done
+                               and self.peer_router.info.get("estimate_time") == observation.time),
+                "estimate_stale": self.peer_router.info.get("estimate_time") != observation.time}
+                if self.peer_detour != "off" else None),
+            "static_route_guard": self.static_route_guard,
+            "progress_guard": self.phase_progress.info if self.progress_guard else None,
         }
 
 
@@ -982,8 +1119,27 @@ class SupportFollowSkill(_VisionSkill):
 
     kind = "follow"
 
-    def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE):
+    def __init__(self, action: RobotAction, force_limit: float = MAX_FORCE, *, completion_clock="legacy_window",
+                 target_gap=FOLLOW_GAP, peer_guard="off", speed_limit=REPOSITION_SPEED_MAX):
         super().__init__(action, force_limit)
+        if completion_clock not in ("legacy_window", "maintenance_duration", "peer_push"):
+            raise ValueError("unknown FOLLOW completion clock")
+        self.completion_clock = completion_clock
+        if not math.isfinite(target_gap) or target_gap < 0:
+            raise ValueError("invalid FOLLOW gap")
+        if peer_guard not in ("off", "scan_projection_v1"):
+            raise ValueError("unknown FOLLOW peer guard")
+        self.target_gap = target_gap
+        self.peer_guard = peer_guard
+        if not math.isfinite(speed_limit) or speed_limit <= 0:
+            raise ValueError('invalid FOLLOW speed limit')
+        self.speed_limit = speed_limit
+        self.peer_guard_info = None
+        self.bound_push = None
+        self.bound_push_phase = "prepare"
+        self.bound_push_stop = None
+        self.bound_push_follow_time = 0.
+        self.bound_brake_time = 0.
         self.stage = "find"
         self.reference_offset: Optional[float] = None
         self.follow_time = 0.0
@@ -993,6 +1149,29 @@ class SupportFollowSkill(_VisionSkill):
         self.offset: Optional[float] = None
         self.pose_error: Optional[float] = None
         self.force_peak = 0.0
+
+    def bind_push(self, robot_id, time_budget):
+        if self.completion_clock != 'peer_push':
+            raise ValueError('only peer-push FOLLOW can be bound')
+        self.bound_push = robot_id
+        self.time_budget = time_budget
+
+    def _bound_brake(self, observation, dt):
+        self.bound_brake_time += dt
+        raw = (0.,0.)
+        reference = self._drive(raw, dt)
+        force,saturated = self._force_from_reference(reference, observation)
+        force = (force[0]*.35,force[1]*.35)
+        self.force_peak = max(self.force_peak,math.hypot(*force))
+        reason = self._safety(observation)
+        if reason is None and observation.own.speed <= BRAKE_SPEED and math.hypot(*reference) <= BRAKE_SPEED:
+            reason = self.bound_push_stop
+        elif reason is None and self.bound_brake_time >= BRAKE_MAX_SECONDS-1e-9:
+            reason = 'follow_push_brake_timeout'
+        self.stage = 'peer_brake'
+        self.peer_guard_info = None
+        if reason is not None:self._finish(reason, observation)
+        return force,self._info(observation,force,saturated,reference,raw)
 
     def _frame(self, observation: SkillObservation, patch: SurfacePatch):
         """The control gap is the **edge** clearance, not the centre-to-line distance.
@@ -1019,6 +1198,9 @@ class SupportFollowSkill(_VisionSkill):
         self.skill_time += dt
         self.no_progress_seconds += dt
         self._note_position(observation)
+        if self.completion_clock == 'peer_push':
+            if self.bound_push is None:raise RuntimeError('peer-push FOLLOW must be bound before execution')
+            if self.bound_push_stop is not None:return self._bound_brake(observation, dt)
         patch = observation.patch if (observation.patch is not None
                                       and observation.patch.valid) else None
         raw: Vec = (0.0, 0.0)
@@ -1032,14 +1214,14 @@ class SupportFollowSkill(_VisionSkill):
             self.patch_missing_seconds = 0.0
             gap, offset, tangent, normal = self._frame(observation, patch)
             self.gap, self.offset = gap, offset
-            radial = FOLLOW_GAP_GAIN * (gap - FOLLOW_GAP)
+            radial = FOLLOW_GAP_GAIN * (gap - self.target_gap)
             if self.stage == "find":
                 self.stage = "align"
             if self.stage == "align":
                 raw = (radial * normal[0], radial * normal[1])
                 # enter FOLLOW once the gap is workably close; the gap servo finishes the
                 # approach, so a 0.02 m entry would burn most of the follow budget
-                if abs(gap - FOLLOW_GAP) <= 0.08:
+                if abs(gap - self.target_gap) <= 0.08:
                     self.reference_offset = offset
                     self.stage = "follow"
             if self.stage == "follow":
@@ -1056,15 +1238,38 @@ class SupportFollowSkill(_VisionSkill):
                 radial = max(-0.45, min(0.30, radial))
                 raw = (radial * normal[0] + tangential * tangent[0],
                        radial * normal[1] + tangential * tangent[1])
-                self.pose_error = math.hypot(gap - FOLLOW_GAP, error)
+                self.pose_error = math.hypot(gap - self.target_gap, error)
                 if self.pose_error <= FOLLOW_POSE_TOLERANCE:
                     self._mark_progress()
-                if self.follow_time >= (self.time_budget or 0.0):
+                target = (self.action.duration if self.completion_clock == "maintenance_duration"
+                          else self.time_budget or 0.0)
+                elapsed = (self.follow_time + 1e-9 if self.completion_clock == "maintenance_duration"
+                           else self.follow_time)
+                if self.completion_clock != 'peer_push' and elapsed >= target:
                     reason = "follow_complete"
         if reason is None:
             reason = self._common_checks(observation, dt)
         raw = self._obstacle_avoidance(observation, raw)
-        raw = _clip_velocity(raw, REPOSITION_SPEED_MAX)
+        raw = _clip_velocity(raw, self.speed_limit)
+        self.peer_guard_info = None
+        if self.peer_guard == "scan_projection_v1":
+            from .peer_clearance import guard_follow_velocity
+            raw, self.peer_guard_info = guard_follow_velocity(observation, raw)
+            if self.peer_guard_info['active'] and self.stage == "follow":
+                # A projected command can still maintain the surface pose. Count that
+                # holding time, but not approach/retreat while the target is unsettled.
+                held = (self.pose_error is not None and self.pose_error <= FOLLOW_POSE_TOLERANCE
+                        and abs(self.gap - self.target_gap) <= .01
+                        and self.peer_guard_info['public_gap'] >= .05)
+                self.peer_guard_info['maintenance_held'] = held
+                if not held:
+                    self.follow_time = max(0., self.follow_time - dt)
+                    if reason == "follow_complete":
+                        reason = self._common_checks(observation, dt)
+        if self.completion_clock == 'peer_push' and self.stage == 'follow' and self.bound_push_phase in ('push','brake'):
+            self.bound_push_follow_time += dt
+        if self.completion_clock == 'peer_push' and reason is not None:
+            raw = (0.,0.)
         reference = self._drive(raw, dt)
         force, saturated = self._force_from_reference(reference, observation)
         force = (force[0] * 0.35, force[1] * 0.35)      # v1: bounded, no sustained push
@@ -1087,6 +1292,13 @@ class SupportFollowSkill(_VisionSkill):
             "gap": self.gap, "centre_gap": self.centre_gap, "follow_offset": self.offset,
             "follow_reference_offset": self.reference_offset,
             "follow_pose_error": self.pose_error, "follow_time": self.follow_time,
+            "follow_completion_clock": self.completion_clock,
+            "follow_target_gap": self.target_gap,
+            "follow_peer_guard": self.peer_guard_info,
+            "follow_binding": ({"version":"push-bound-follow-v1", "push_robot":self.bound_push,
+                "push_phase":self.bound_push_phase, "stop_reason":self.bound_push_stop,
+                "during_push_seconds":self.bound_push_follow_time, "brake_seconds":self.bound_brake_time,
+                "effective_timeout":self.time_budget} if self.completion_clock == 'peer_push' else None),
             "force_peak": self.force_peak,
             "contacting_object": observation.contacting_object,
             "contact_point_robot": observation.contact_point_robot,

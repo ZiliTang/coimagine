@@ -73,7 +73,7 @@ SPLIT_SEEDS: Dict[str, int] = {"L0": 20261015, "L1": 20261016}
 # sensing (task book section 3.1)
 # ---------------------------------------------------------------------------
 
-LIDAR_RANGE: float = 1.20        # m
+LIDAR_RANGE: float = 5.00        # m
 LIDAR_RAYS: int = 72             # equal angular spacing over 360 degrees
 LIDAR_HZ: float = 20.0           # Hz, one full scan per control period
 PATCH_GAP_TOLERANCE: float = 0.03  # m, range continuity for grouping returns into a surface
@@ -115,6 +115,8 @@ REPOSITION_DIRECTIONS: Tuple[str, ...] = ("CCW", "CW")
 #: away.
 PUSH_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
 REPOSITION_DISTANCES: Tuple[float, ...] = (0.10, 0.25, 0.50, 1.00)
+# v4.7: REPOSITION distances are signed boundary-path lengths. Observed face changes
+# update the local travel tangent without terminating the option.
 WAIT_DURATIONS: Tuple[float, ...] = (2.0, 6.0, 12.0, 24.0)
 #: SUPPORT_FOLLOW v1 is a *duration* option: hold the relative pose for this long. It never
 #: applies a sustained push; the scale is the follow budget, not a force.
@@ -137,7 +139,8 @@ SKILL_MAX_SECONDS: float = 8.0        # seek + approach stage before the option 
 JOINT_MAX_SECONDS: float = 24.0       # v4: joint window = the option timeout (max 24 s)
 #: exit reason when the option's own timeout is reached before the requested distance
 OPTION_BUDGET_EXIT: str = "option_budget"
-#: exit reason when the contacted/tracked face changes materially mid-option
+#: legacy exit label retained for interpreting old logs; v4.7 REPOSITION records
+#: face changes as events and continues following the newly observed boundary.
 FACE_SWITCH_EXIT: str = "face_switch"
 #: derived-timeout constants: T_max = T_prepare + slack * D / v_ref, capped
 OPTION_PREPARE_SECONDS: float = 3.0   # covers FIND + ALIGN + approach, not the distance term
@@ -170,9 +173,9 @@ BRAKE_MAX_SECONDS: float = 0.80       # s of braking before the skill ends regar
 BRAKE_SPEED: float = 0.03             # m/s, below this the robot counts as braked
 NO_PROGRESS_SECONDS: float = 3.0      # continuous seconds without progress -> blocked (v4.2)
 REPOSITION_GAP: float = 0.10          # m, target robot-edge to object-surface gap
-REPOSITION_SPEED_MAX: float = 0.18    # m/s, tangential speed cap (1.5x, see v4.2)
+REPOSITION_SPEED_MAX: float = 0.30    # m/s, D011 requested faster reposition
 REPOSITION_ALIGN_TOLERANCE: float = 0.035  # m, gap error considered aligned
-REPOSITION_SPEED: float = 0.18        # m/s, tangential command (equal to the contract cap)
+REPOSITION_SPEED: float = 0.30        # m/s, D011 requested faster reposition
 #: The MOVE stage may start while the gap is still converging: the radial correction runs
 #: inside MOVE as well, so waiting for exact alignment first would waste most of the 8 s
 #: window on a 0.50 m reposition (0.50 m / 0.12 m/s is already 4.2 s of pure travel).
@@ -207,10 +210,10 @@ FAILURE_PENALTY: float = -2.0
 PROGRESS_WEIGHT: float = 1.0          # reward / m, real distance decrease (including final period)
 DISTANCE_COST: float = 0.02           # reward / (m s), integrated at CONTROL_DT
 
-# v3.1 repairs PUSH's seek timeout (skill-local time, never episode elapsed time).
-# Rewards, physical horizon and observation layout are unchanged. Old weights may
-# be evaluated explicitly, but training/branch restores must not cross versions.
-ENV_VERSION: str = "random-start-oriented-v4.1"
+# v4.7 repairs REPOSITION corner continuation and signed boundary-path accounting.
+# Costs, physical horizon, action IDs and observation layout are unchanged. Behaviour
+# has changed: do not silently restore old branches or compare against old run9 curves.
+ENV_VERSION: str = "random-start-oriented-v4.7"
 
 # ---------------------------------------------------------------------------
 # the 15 discrete robot actions and the 225 joint actions

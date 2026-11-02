@@ -112,6 +112,44 @@ def _compare_body(expected: BodyState, actual: BodyState) -> Dict[str, float]:
     }
 
 
+
+
+def _triangulate_polygon(vertices):
+    """Ear-clipping triangulation for a simple polygon; returns triangles."""
+    pts = [(float(v[0]), float(v[1])) for v in vertices]
+    area = sum(pts[i][0]*pts[(i+1)%len(pts)][1]-pts[(i+1)%len(pts)][0]*pts[i][1] for i in range(len(pts)))
+    if area < 0:
+        pts.reverse()
+    idx = list(range(len(pts)))
+    out = []
+    guard = 0
+    while len(idx) > 3 and guard < len(pts)*len(pts) + 10:
+        guard += 1
+        ear = None
+        for k in range(len(idx)):
+            ia, ib, ic = idx[k-1], idx[k], idx[(k+1)%len(idx)]
+            a, b, c = pts[ia], pts[ib], pts[ic]
+            cross = (b[0]-a[0])*(c[1]-a[1]) - (b[1]-a[1])*(c[0]-a[0])
+            if cross <= 1e-12:
+                continue
+            inside = False
+            for j in idx:
+                if j in (ia, ib, ic):
+                    continue
+                p = pts[j]
+                c1 = (b[0]-a[0])*(p[1]-a[1])-(b[1]-a[1])*(p[0]-a[0])
+                c2 = (c[0]-b[0])*(p[1]-b[1])-(c[1]-b[1])*(p[0]-b[0])
+                c3 = (a[0]-c[0])*(p[1]-c[1])-(a[1]-c[1])*(p[0]-c[0])
+                if c1 >= -1e-12 and c2 >= -1e-12 and c3 >= -1e-12:
+                    inside = True; break
+            if not inside:
+                ear = (ia, ib, ic); idx.pop(k); out.append([a, b, c]); break
+        if ear is None:
+            break
+    if len(idx) == 3:
+        out.append([pts[i] for i in idx])
+    return out
+
 class PymunkBackend:
     """A single stepped world plus its reset/restore/step interface."""
 
@@ -170,15 +208,42 @@ class PymunkBackend:
         self.static_shapes: List[pymunk.Shape] = [*self.boundary_shapes, *self.obstacle_shapes]
 
         object_mass = physics.object_mass
-        object_moment = pymunk.moment_for_box(object_mass, self.object_size)
+        polygon = getattr(scene, 'object_polygon', None)
+        self.object_shapes = []
+        if polygon:
+            triangles = _triangulate_polygon(polygon)
+            if not triangles:
+                raise ValueError('object_polygon could not be triangulated')
+            # Sum triangle moments about the local origin; the body origin is the
+            # polygon's placement origin, matching lidar/render coordinates.
+            total_area = 0.0; object_moment = 0.0
+            areas = []
+            for tri in triangles:
+                a = 0.0
+                for i in range(len(tri)):
+                    x0,y0=tri[i]; x1,y1=tri[(i+1)%len(tri)]; a += x0*y1-x1*y0
+                a = abs(a)*.5; areas.append(a); total_area += a
+            for tri, a in zip(triangles, areas):
+                mi = object_mass * (a/total_area if total_area else 1.0/len(triangles))
+                object_moment += pymunk.moment_for_poly(mi, [tuple(v) for v in tri])
+        else:
+            object_moment = pymunk.moment_for_box(object_mass, self.object_size)
         self.object_body = pymunk.Body(object_mass, object_moment)
         self.object_body.position = (scene.object_pose.x, scene.object_pose.y)
         self.object_body.angle = scene.object_pose.angle
-        self.object_shape = pymunk.Poly.create_box(self.object_body, self.object_size)
-        self.object_shape.friction = physics.friction
-        self.object_shape.elasticity = physics.elasticity
-        self.object_shape.collision_type = 2
-        space.add(self.object_body, self.object_shape)
+        space.add(self.object_body)
+        if polygon:
+            for tri in triangles:
+                shp = pymunk.Poly(self.object_body, [tuple(v) for v in tri])
+                shp.friction = physics.friction; shp.elasticity = physics.elasticity
+                shp.collision_type = 2
+                space.add(shp); self.object_shapes.append(shp)
+        else:
+            shp = pymunk.Poly.create_box(self.object_body, self.object_size)
+            shp.friction = physics.friction; shp.elasticity = physics.elasticity
+            shp.collision_type = 2
+            space.add(shp); self.object_shapes.append(shp)
+        self.object_shape = self.object_shapes[0]
 
         self.robot_bodies: List[pymunk.Body] = []
         self.robot_shapes: List[pymunk.Shape] = []
@@ -385,8 +450,9 @@ class PymunkBackend:
             )
 
         for robot_id, shape in enumerate(self.robot_shapes):
-            for point in shape.shapes_collide(self.object_shape).points:
-                _record("robot_object", robot_id, point)
+            for obj_shape in self.object_shapes:
+                for point in shape.shapes_collide(obj_shape).points:
+                    _record("robot_object", robot_id, point)
         for point in self.robot_shapes[0].shapes_collide(self.robot_shapes[1]).points:
             _record("robot_robot", -1, point)
         for robot_id, shape in enumerate(self.robot_shapes):
@@ -394,8 +460,9 @@ class PymunkBackend:
                 for point in shape.shapes_collide(wall).points:
                     _record("robot_wall", robot_id, point)
         for wall in self.static_shapes:
-            for point in self.object_shape.shapes_collide(wall).points:
-                _record("object_wall", -1, point)
+            for obj_shape in self.object_shapes:
+                for point in obj_shape.shapes_collide(wall).points:
+                    _record("object_wall", -1, point)
         return out
 
     def penetration_by_pair(self) -> Dict[str, float]:
@@ -415,18 +482,19 @@ class PymunkBackend:
         return max(depths) if depths else 0.0
 
     def object_corners(self) -> Tuple[VecTuple, ...]:
+        poly = getattr(self.scene, 'object_polygon', None)
+        if poly:
+            angle = self.object_body.angle
+            cos, sin = math.cos(angle), math.sin(angle)
+            return tuple((self.object_body.position.x + float(v[0])*cos - float(v[1])*sin,
+                          self.object_body.position.y + float(v[0])*sin + float(v[1])*cos)
+                         for v in poly)
         half_w, half_h = self.object_size[0] / 2.0, self.object_size[1] / 2.0
         angle = self.object_body.angle
         cos, sin = math.cos(angle), math.sin(angle)
-        corners = []
-        for dx, dy in ((-half_w, -half_h), (half_w, -half_h), (half_w, half_h), (-half_w, half_h)):
-            corners.append(
-                (
-                    self.object_body.position.x + dx * cos - dy * sin,
-                    self.object_body.position.y + dx * sin + dy * cos,
-                )
-            )
-        return tuple(corners)
+        return tuple((self.object_body.position.x + dx * cos - dy * sin,
+                      self.object_body.position.y + dx * sin + dy * cos)
+                     for dx, dy in ((-half_w, -half_h), (half_w, -half_h), (half_w, half_h), (-half_w, half_h)))
 
     def finite(self) -> bool:
         values = [self.object_state().as_tuple(), *(state.as_tuple() for state in self.robot_states())]

@@ -17,8 +17,10 @@ controller while its teammate continues. The world is never frozen, teleported o
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import math
-from dataclasses import dataclass, field, replace
+from dataclasses import asdict, dataclass, field, replace
 from typing import Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -35,6 +37,7 @@ from .lidar import (
     SurfacePatch,
     best_patch,
     scan_lidar,
+    scan_lidar_batch,
     scan_patches,
 )
 from .layout import InstanceSpec
@@ -45,9 +48,10 @@ from .skills import (
     SkillObservation,
     make_skill,
 )
+from .peer_clearance import PeerClearancePrefix
 from .anchor import AnchorTracker
 from .spec import (
-    option_timeout,
+    BRAKE_MAX_SECONDS,
     CONTROL_DT,
     ENV_VERSION,
     FAILURE_PENALTY,
@@ -55,6 +59,7 @@ from .spec import (
     JOINT_MAX_SECONDS,
     LIDAR_RANGE,
     MAX_FORCE,
+    NO_PROGRESS_SECONDS,
     OBJECT_HEIGHT,
     OBJECT_WIDTH,
     PROGRESS_WEIGHT,
@@ -68,7 +73,6 @@ from .spec import (
     SUCCESS_LINEAR,
     TIME_BUDGET_SECONDS,
     TIME_COST,
-    joint_action_index,
 )
 
 Vec = Tuple[float, float]
@@ -109,8 +113,16 @@ class EnvConfig:
     align_gain: float = 3.0           # heading-rate proportional gain
     align_tolerance_deg: float = 20.0  # full force inside this heading error
     base: Continuous2DConfig = field(default_factory=Continuous2DConfig)
+    peer_clearance_recovery: str = "off"
+    lidar_backend: str = "scalar"
 
     def __post_init__(self):
+        if not math.isclose(self.base.physics.control_dt,CONTROL_DT,rel_tol=0.,abs_tol=1e-12):
+            raise ValueError('random-start clocks currently require 20 Hz control; changing physics_dt alone is supported')
+        if self.lidar_backend not in ('scalar','numpy_batch'):
+            raise ValueError('unknown lidar backend')
+        if self.peer_clearance_recovery not in ("off", "boundary_v1"):
+            raise ValueError("unknown peer clearance recovery mode")
         if self.gamma != 1.0:
             raise ValueError("time-budget-v3 uses undiscounted finite-horizon returns (gamma=1)")
         if (self.time_budget <= 0 or not math.isfinite(self.time_budget)
@@ -124,6 +136,8 @@ class EnvConfig:
 
     def as_dict(self) -> Dict[str, object]:
         return {"env_version": ENV_VERSION, "time_budget": self.time_budget,
+                "peer_clearance_recovery": self.peer_clearance_recovery,
+                "lidar_backend": self.lidar_backend,
                 "gamma": self.gamma, "time_cost": self.time_cost,
                 "success_bonus": self.success_bonus,
                 "failure_penalty": self.failure_penalty,
@@ -183,13 +197,20 @@ class RandomStartEnv:
     """One task instance, one living world, and a sequence of synchronous joint skills."""
 
     def __init__(self, instance: InstanceSpec, config: Optional[EnvConfig] = None,
-                 skill_factory=None):
+                 skill_factory=None, *, action_table=None, action_version=None):
         self.instance = instance
         self.config = config or EnvConfig()
         # Explicit controller injection point. The default is the frozen baseline factory, so
         # every existing caller keeps the identical behaviour; a candidate controller is passed
         # here by name and is recorded in the branch log. No implicit global monkeypatch.
         self.skill_factory = skill_factory if skill_factory is not None else make_skill
+        self.actions = tuple(ROBOT_ACTIONS if action_table is None else action_table)
+        if not self.actions or any(a.index != i for i, a in enumerate(self.actions)):
+            raise ValueError("action_table must have contiguous, explicit action IDs")
+        self.action_version = action_version or ENV_VERSION
+        self.action_codebook_hash = hashlib.sha256(json.dumps(
+            [asdict(action) for action in self.actions], sort_keys=True).encode()).hexdigest()
+        self._legacy_action_table = self.actions == tuple(ROBOT_ACTIONS)
         self.env = Continuous2DEnv(self.config.base)
         self.env.reset(instance.to_scene())
         self.obstacle_polygons = tuple(
@@ -217,6 +238,10 @@ class RandomStartEnv:
         self._last_progress = {0: (0.0, 0.0), 1: (0.0, 0.0)}
         #: v4.1 anchor tracking: legal corner candidates only, with an explicit status
         self.anchor_trackers = {0: AnchorTracker(), 1: AnchorTracker()}
+        # Single-entry sensor caches per robot. The key includes the requested
+        # timestamp and complete ray-casting geometry, not merely the tick.
+        self._scan_cache = {}
+        self._patch_cache = {}
         self._last_anchor = {0: None, 1: None}
         self._hold_time = {0: 0.0, 1: 0.0}
         # v4: there is exactly one actuation model. The robot turns towards the heading its
@@ -275,9 +300,19 @@ class RandomStartEnv:
 
     def scan_for(self, robot_id: int, tick: int, time: float) -> LidarScan:
         states = self._legal_robot_states()
-        return scan_lidar(self.instance.arena, self.obstacle_polygons,
-                          (self.object_state().x, self.object_state().y, self.object_state().angle),
-                          states, robot_id, tick, time)
+        obj = self.object_state()
+        pose = (obj.x, obj.y, obj.angle)
+        key = (tick, time, pose, tuple(states), self.instance.arena,
+               self.obstacle_polygons, self.instance.object_polygon, self.config.lidar_backend)
+        previous = self._scan_cache.get(robot_id)
+        if previous is not None and previous[0] == key:
+            return previous[1]
+        scanner=scan_lidar_batch if self.config.lidar_backend=='numpy_batch' else scan_lidar
+        scan = scanner(self.instance.arena, self.obstacle_polygons, pose,
+                       states, robot_id, tick, time,
+                       object_polygon=self.instance.object_polygon)
+        self._scan_cache[robot_id] = (key, scan)
+        return scan
 
     def observe(self, robot_id: int, tick: int, time: float,
                 contacts: Optional[Dict[str, List[Tuple[str, int, float, float]]]] = None
@@ -295,7 +330,12 @@ class RandomStartEnv:
         scan = self.scan_for(robot_id, tick, time)
         self._last_anchor[robot_id] = self.anchor_trackers[robot_id].update(
             scan, float(time), CONTROL_DT, tick=tick)
-        patches = tuple(scan_patches(scan, (own.x, own.y)))
+        previous = self._patch_cache.get(robot_id)
+        if previous is not None and previous[0] is scan and previous[1] == (own.x, own.y):
+            patches = previous[2]
+        else:
+            patches = tuple(scan_patches(scan, (own.x, own.y)))
+            self._patch_cache[robot_id] = (scan, (own.x, own.y), patches)
         patch = None
         for candidate in patches:
             if candidate.valid and (patch is None or candidate.distance < patch.distance):
@@ -420,30 +460,104 @@ class RandomStartEnv:
         return fields
 
     # -- one synchronous joint skill ---------------------------------------
+    def _joint_action_index(self, first: int, second: int) -> int:
+        if not (0 <= first < len(self.actions) and 0 <= second < len(self.actions)):
+            raise ValueError("joint action ID outside this world's action table")
+        return int(first * len(self.actions) + second)
+
     def joint_step(self, action_index_0: int, action_index_1: int,
                    record: bool = True) -> Dict[str, object]:
         if self.termination is not None:
             raise RuntimeError(
                 f"episode already terminated with {self.termination!r}; a terminated episode "
                 "may not be extended (it must not be used as a branchable parent)")
-        action_0 = ROBOT_ACTIONS[action_index_0]
-        action_1 = ROBOT_ACTIONS[action_index_1]
+        self._joint_action_index(action_index_0, action_index_1)
+        action_0 = self.actions[action_index_0]
+        action_1 = self.actions[action_index_1]
         # v4: the joint window is the option's own time budget (the longer of the two), capped
-        window_seconds = min(self.config.joint_max_seconds,
-                             max(option_timeout(action_0), option_timeout(action_1)))
         skills: Dict[int, Skill] = {0: self.skill_factory(action_0, MAX_FORCE),
                                     1: self.skill_factory(action_1, MAX_FORCE)}
-        # v4.2: a cooperative push shares one time budget T = max(A, B) / v_ref; each robot's
-        # reference speed becomes A/T, B/T so they start together and finish together. The
-        # slower/earlier one is held by the environment until both are in the push stage.
-        cooperative_push = action_0.kind == action_1.kind == "push"
+        bound_followers = [i for i in (0,1) if getattr(skills[i],'completion_clock',None)=='peer_push']
+        if bound_followers and (len(bound_followers)!=1 or skills[1-bound_followers[0]].kind!='push'):
+            raise ValueError('push-bound FOLLOW requires a PUSH partner')
+        clearance_prefix = (PeerClearancePrefix() if self.config.peer_clearance_recovery == "boundary_v1"
+                            else None)
+        window_seconds = min(self.config.joint_max_seconds,
+                             max(skills[0].time_budget, skills[1].time_budget))
+        if bound_followers:
+            follower = bound_followers[0]
+            pusher = 1-follower
+            # PUSH keeps its original timeout. Only the follower's bounded brake
+            # handoff may extend the joint window, at the original physical cost.
+            window_seconds = min(self.config.joint_max_seconds,
+                skills[pusher].time_budget + BRAKE_MAX_SECONDS + CONTROL_DT)
+            skills[follower].bind_push(pusher, window_seconds)
+        # Proportional propulsion biases use T = max(A, B) / v_ref. Actual normal
+        # travel is measured independently: rigid contact can couple the velocities,
+        # so this does not guarantee simultaneous exits for different distances.
+        both_push = action_0.kind == action_1.kind == "push"
+        requested_protocols = [getattr(skills[i], "execution_protocol", "legacy_v3") for i in (0, 1)]
+        paired_reference = both_push and requested_protocols == ["proportional_normal_v1"] * 2
+        if both_push and len(set(requested_protocols)) > 1:
+            raise ValueError("dual PUSH skills must use the same execution protocol")
+        cooperative_push = paired_reference or (both_push
+                            and getattr(action_0, "coordination_key", None)
+                            == getattr(action_1, "coordination_key", None))
+        proportional_translation_pair = paired_reference and all(
+            getattr(a, "effect_kind", None) == "translate" for a in (action_0, action_1))
+        if proportional_translation_pair and len({skills[i].config.translation_completion for i in (0, 1)}) > 1:
+            raise ValueError("dual translations must use the same completion measure")
+        normal_reference_pair = proportional_translation_pair and all(
+            getattr(skills[i], "normal_reference_mode", False) for i in (0, 1))
+        normal_travel_pair = proportional_translation_pair and all(
+            getattr(skills[i], "normal_travel_mode", False) for i in (0, 1))
+        if normal_travel_pair and len({skills[i].config.post_push for i in (0, 1)}) > 1:
+            raise ValueError("dual translations must use the same post-push protocol")
+        post_follow_pair = normal_travel_pair and all(
+            skills[i].config.post_push == "contact_follow" for i in (0, 1))
+        if post_follow_pair and len({skills[i].config.contact_recovery for i in (0, 1)}) > 1:
+            raise ValueError("dual translations must use the same contact recovery protocol")
+        joint_recovery_pair = post_follow_pair and all(
+            skills[i].config.contact_recovery == "joint_approach" for i in (0, 1))
+        if joint_recovery_pair and any(getattr(skills[0].config, name) != getattr(skills[1].config, name)
+                for name in ("recovery_enter_gap", "recovery_resume_gap", "recovery_ready_seconds",
+                             "recovery_timeout", "recovery_max_attempts")):
+            raise ValueError("joint recovery must share thresholds and budgets")
+        recovery_active = False
+        recovery_started_at = 0.0
+        recovery_ready_seconds = 0.0
+        recovery_attempts = 0
+        post_exit = "contact_follow_then_brake" if post_follow_pair else "hold_brake"
+        follow_stop_released = False
+        for i in (0, 1):
+            if post_follow_pair:
+                skills[i].follow_enabled = True
+                skills[i].recovery_enabled = joint_recovery_pair
+        requested_budgets = [skills[i].time_budget for i in (0, 1)]
+        released = False
+        contact_released = False
+        execution_events = []
+        if bound_followers:
+            execution_events.append({'event':'follow_bound','follower':follower,'pusher':pusher,
+                                     'window_seconds':window_seconds})
+        if paired_reference:
+            window_seconds = min(self.config.joint_max_seconds,
+                                 math.ceil(window_seconds / CONTROL_DT - 1e-9) * CONTROL_DT)
+            for i in (0, 1):
+                skills[i].joint_pair = True
+                # Preparation/handshake shares a bounded clock; a short nominal
+                # scale must not time out solely while its peer is preparing.
+                skills[i].time_budget = window_seconds
         if cooperative_push:
             distances = (float(action_0.distance), float(action_1.distance))
             speeds = (float(action_0.speed), float(action_1.speed))
             reference = max(speeds[0], speeds[1], 1e-6)
             budget = max(distances) / reference
+            if proportional_translation_pair:
+                speeds = tuple(float(skills[i].speed_command) for i in (0, 1))
+                budget = max(distances[i] / max(speeds[i], 1e-6) for i in (0, 1))
             for robot_id in (0, 1):
-                if hasattr(skills[robot_id], "speed_command"):
+                if hasattr(skills[robot_id], "speed_command") and (not paired_reference or proportional_translation_pair):
                     skills[robot_id].speed_command = (distances[robot_id] / budget
                                                       if budget > 0.0 else speeds[robot_id])
         holds: Dict[int, HoldBrake] = {0: HoldBrake(MAX_FORCE), 1: HoldBrake(MAX_FORCE)}
@@ -457,11 +571,72 @@ class RandomStartEnv:
         infos: Dict[int, Dict[str, object]] = {}
         success_period: Optional[int] = None
         anomaly: Optional[str] = None
-        period_rows: List[Dict[str, object]] = []
 
         while True:
             now = (start_period + periods) * CONTROL_DT
             contacts = self.contacts()
+            if bound_followers:
+                # All peer state below was reported on PRECEDING periods. Current
+                # private observations remain separate during the two step calls.
+                follow_skill,push_skill=skills[follower],skills[pusher]
+                follow_skill.bound_push_phase=infos.get(pusher,{}).get('stage','prepare')
+                if push_skill.done and not follow_skill.done and follow_skill.bound_push_stop is None:
+                    successful=push_skill.exit_reason in ('normal_travel_complete','normal_reference_complete',
+                        'effect_complete','local_effect_reached','push_complete')
+                    follow_skill.bound_push_stop='follow_push_complete' if successful else 'peer_push_failed'
+                    execution_events.append({'event':'follow_stop','time':now,'pusher_exit':push_skill.exit_reason,
+                                             'reason':follow_skill.bound_push_stop})
+                elif follow_skill.done and not push_skill.done:
+                    if not any(e['event']=='follow_failed' for e in execution_events):
+                        push_skill.pending_exit_reason='peer_follow_failed'
+                        execution_events.append({'event':'follow_failed','time':now,'reason':follow_skill.exit_reason})
+            if joint_recovery_pair:
+                cfg = skills[0].config
+                if recovery_active:
+                    failure = ("peer_recovery_failed" if any(skills[i].done for i in (0, 1)) else
+                               "joint_recovery_timeout" if now - recovery_started_at >= cfg.recovery_timeout - 1e-9 else None)
+                    if failure:
+                        for i in (0, 1):
+                            if not skills[i].done:
+                                skills[i].pending_exit_reason = failure
+                        execution_events.append({"event": "recovery_failed", "reason": failure, "time": now})
+                        recovery_active = False
+                    else:
+                        recovery_ready_seconds = (recovery_ready_seconds + CONTROL_DT
+                            if all(skills[i].recovery_ready for i in (0, 1)) else 0.0)
+                        if recovery_ready_seconds >= cfg.recovery_ready_seconds - 1e-9:
+                            for i in (0, 1):
+                                skills[i].resume_recovery()
+                            recovery_active = False
+                            execution_events.append({"event": "recovery_resumed", "time": now,
+                                                     "attempt": recovery_attempts})
+                elif (all(not skills[i].done for i in (0, 1))
+                        and not all(skills[i].drive_complete for i in (0, 1))
+                        and any(skills[i].recovery_requested for i in (0, 1))):
+                    recovery_attempts += 1
+                    if recovery_attempts > cfg.recovery_max_attempts:
+                        for i in (0, 1):
+                            skills[i].pending_exit_reason = "joint_recovery_attempt_limit"
+                        execution_events.append({"event": "recovery_failed", "reason": "attempt_limit", "time": now})
+                    else:
+                        requested = [skills[i].recovery_requested for i in (0, 1)]
+                        for i in (0, 1):
+                            skills[i].begin_recovery()
+                        recovery_active = True
+                        recovery_started_at = now
+                        recovery_ready_seconds = 0.0
+                        execution_events.append({"event": "recovery_started", "time": now,
+                                                 "attempt": recovery_attempts, "requested": requested})
+            # Phase flags use PRECEDING-period completion/failure reports only.
+            # No current-period peer observation or future physical result is read.
+            if (post_follow_pair and not recovery_active and not follow_stop_released
+                    and any(skills[i].follow_started for i in (0, 1))
+                    and all(skills[i].drive_complete or skills[i].done for i in (0, 1))):
+                follow_stop_released = True
+                for i in (0, 1):
+                    skills[i].follow_stop = True
+                execution_events.append({"event": "follow_stop_released", "time": now,
+                                         "peer_failure": any(skills[i].done for i in (0, 1))})
             if cooperative_push:
                 # v4.6: both robots stage at COOP_READY_GAP with their heading aligned to
                 # the contact normal.  Only when both report ready do they leave the staging
@@ -469,31 +644,69 @@ class RandomStartEnv:
                 for robot_id in (0, 1):
                     skills[robot_id].cooperative = True
                     skills[robot_id].hold = False
-                if all(getattr(skills[robot_id], "ready", False)
+                if paired_reference and not contact_released and any(skills[i].done for i in (0, 1)):
+                    for i in (0, 1):
+                        if not skills[i].done:
+                            skills[i].pending_exit_reason = "peer_prepare_failed"
+                    if not any(e["event"] == "peer_prepare_failed" for e in execution_events):
+                        execution_events.append({"event": "peer_prepare_failed", "time": now})
+                elif (paired_reference and not contact_released
+                      and all(skills[i].no_progress_seconds >= NO_PROGRESS_SECONDS for i in (0, 1))):
+                    for i in (0, 1):
+                        skills[i].pending_exit_reason = "joint_prepare_stalled"
+                    execution_events.append({"event": "joint_prepare_stalled", "time": now})
+                elif (not paired_reference or not released) and all(getattr(skills[robot_id], "ready", False)
                        and not skills[robot_id].done for robot_id in (0, 1)):
                     for robot_id in (0, 1):
                         skills[robot_id].release = True
+                    if paired_reference:
+                        released = True
+                        execution_events.append({"event": "staging_released", "time": now})
+                if (paired_reference and released and not contact_released
+                        and all(getattr(skills[i], "contact_ready", False) and not skills[i].done for i in (0, 1))):
+                    contact_released = True
+                    for i in (0, 1):
+                        skills[i].joint_active = True
+                    execution_events.append({"event": "contact_released", "time": now})
             observations = {robot_id: self.observe(robot_id, self.total_periods, now, contacts)
                             for robot_id in (0, 1)}
             # the policy-facing vector of this period must be built *before* the world advances
             # and before ``total_periods`` is incremented, otherwise its clock columns describe
             # the next period and a boundary frame would disagree with the skill that owns it
-            observation_vector = self.observation_vector(observations[0], observations[1],
-                                                          self._last_progress)
+            observation_vector = (self.observation_vector(observations[0], observations[1],
+                                                          self._last_progress) if record else None)
             forces: List[Vec] = [(0.0, 0.0), (0.0, 0.0)]
+            separation = clearance_prefix.step(observations, CONTROL_DT) if clearance_prefix else None
             for robot_id in (0, 1):
-                if skills[robot_id].done:
+                if separation is not None:
+                    skill = skills[robot_id]
+                    skill.skill_time += CONTROL_DT
+                    if skill.kind == "wait":
+                        skill.progress += CONTROL_DT
+                    force, info = separation[robot_id]
+                    info.update(skill=skill.action.label, requested_kind=skill.kind,
+                                progress_target=skill.action.distance or skill.action.duration,
+                                progress_target_distance=(skill.action.distance
+                                    if skill.action.scale_kind == "distance" else None),
+                                skill_time=skill.skill_time)
+                    if clearance_prefix.failed:
+                        skill._finish("blocked_peer_clearance", observations[robot_id])
+                        info.update(done=True, exit_reason="blocked_peer_clearance")
+                elif skills[robot_id].done:
                     force, info = holds[robot_id].step(observations[robot_id], CONTROL_DT)
                     info = {**info, "skill": f"HOLD_AFTER({skills[robot_id].action.label})"}
                 else:
                     force, info = skills[robot_id].step(observations[robot_id], CONTROL_DT)
-                    if skills[robot_id].done and skill_ends[robot_id] is None:
-                        skill_ends[robot_id] = {
-                            "period": start_period + periods, "time": now,
-                            "exit_reason": skills[robot_id].exit_reason,
-                            "stage": skills[robot_id].stage,
-                            "speed_at_exit": skills[robot_id].speed_at_exit,
-                            "residual_motion": bool(skills[robot_id].speed_at_exit > 0.03)}
+                if skills[robot_id].done and skill_ends[robot_id] is None:
+                    skill_ends[robot_id] = {
+                        "period": start_period + periods, "time": now,
+                        "exit_reason": skills[robot_id].exit_reason,
+                        "stage": skills[robot_id].stage,
+                        "speed_at_exit": skills[robot_id].speed_at_exit,
+                        "residual_motion": bool(skills[robot_id].speed_at_exit > 0.03)}
+                if getattr(skills[robot_id], "normal_travel_mode", False):
+                    info["completion_progress"] = skills[robot_id].normal_travel
+                    info["completion_target"] = skills[robot_id].action.distance
                 forces[robot_id] = force
                 infos[robot_id] = info
 
@@ -524,14 +737,14 @@ class RandomStartEnv:
                                            "force_gated": list(forces[robot_id]),
                                            "oriented_mode": self.orient_mode}
             for robot_id in (0, 1):
-                target = infos[robot_id].get("progress_target_distance")
+                target = infos[robot_id].get("completion_target", infos[robot_id].get("progress_target_distance"))
                 self._last_progress[robot_id] = (
-                    float(infos[robot_id].get("signed_progress") or 0.0),
+                    float(infos[robot_id].get("completion_progress", infos[robot_id].get("signed_progress")) or 0.0),
                     float(target) if target else 0.0)
-            self.env.step_control(
+            _,step_diagnostics = self.env.step_control(
                 (forces[0], forces[1]),
                 ((self.heading[0], self.heading_rate[0]),
-                 (self.heading[1], self.heading_rate[1])))
+                 (self.heading[1], self.heading_rate[1])),minimal=True)
             self.world_advances += 1
             self.total_periods += 1
             periods += 1
@@ -547,10 +760,9 @@ class RandomStartEnv:
             if self.hold_seconds >= self.config.success_hold:
                 success_period = periods
 
-            diagnostics = self.env.backend
-            penetration = float(diagnostics.max_penetration())
-            finite = bool(diagnostics.finite())
-            in_bounds = bool(diagnostics.in_bounds())
+            penetration = float(step_diagnostics['penetration'])
+            finite = bool(step_diagnostics['finite'])
+            in_bounds = bool(step_diagnostics['in_bounds'])
             if not finite:
                 anomaly = TERMINATION_NUMERIC
             elif penetration > self.config.penetration_limit:
@@ -558,16 +770,33 @@ class RandomStartEnv:
             elif not in_bounds:
                 anomaly = TERMINATION_OUT_OF_BOUNDS
 
-            row = self._row(skill_index, start_period + periods, action_0, action_1,
+            if record:
+                row = self._row(skill_index, start_period + periods, action_0, action_1,
                             infos, observations, forces, conditions, penetration)
-            period_rows.append(row)
+            if record and paired_reference:
+                row["execution"] = {
+                    "protocol": "proportional_normal_v1",
+                    "phase": "recover" if recovery_active else "execute" if contact_released else "engage" if released else "prepare",
+                    "normal_reference_pair": normal_reference_pair,
+                    "normal_travel_pair": normal_travel_pair,
+                    "active": [not skills[i].done for i in (0, 1)],
+                    "normal_reference_budget": [getattr(skills[i], "normal_reference_budget", 0.) for i in (0, 1)],
+                    "normal_travel": [getattr(skills[i], "normal_travel", 0.) for i in (0, 1)],
+                    "drive_complete": [getattr(skills[i], "drive_complete", False) for i in (0, 1)],
+                    "follow_normal_travel": [getattr(skills[i], "follow_normal_travel", 0.) for i in (0, 1)],
+                    "following": [skills[i].stage == "follow" for i in (0, 1)],
+                    "recovery_attempts": recovery_attempts,
+                    "recovery_normal_travel": [getattr(skills[i], "recovery_normal_travel", 0.) for i in (0, 1)],
+                    "exit_reason": [skills[i].exit_reason for i in (0, 1)],
+                    "post_exit": post_exit,
+                }
             if record:
                 self.rows.append(row)
                 self.history.append({
                     "period": self.total_periods,
                     "time": row["time"],
                     "observation": observation_vector,
-                    "action_index": joint_action_index(action_index_0, action_index_1),
+                    "action_index": self._joint_action_index(action_index_0, action_index_1),
                     "skills": [action_0.label, action_1.label],
                     "stages": [infos[0]["stage"], infos[1]["stage"]],
                     "force": [list(forces[0]), list(forces[1])],
@@ -616,6 +845,30 @@ class RandomStartEnv:
         self.skills_used += 1
 
         boundary = {
+            "action_version": self.action_version,
+            "action_codebook_hash": self.action_codebook_hash,
+            "execution": {
+                "protocol": "proportional_normal_v1" if paired_reference else "legacy_v3",
+                "normal_reference_pair": normal_reference_pair,
+                "normal_travel_pair": normal_travel_pair,
+                "proportional_translation_pair": proportional_translation_pair,
+                "requested_time_budgets": requested_budgets,
+                "effective_window_seconds": window_seconds,
+                "normal_speed_references": [getattr(skills[i], "speed_command", None) for i in (0, 1)],
+                "normal_reference_budget": [getattr(skills[i], "normal_reference_budget", None) for i in (0, 1)],
+                "normal_travel": [getattr(skills[i], "normal_travel", None) for i in (0, 1)],
+                "drive_complete_times": [getattr(skills[i], "drive_complete_time", None) for i in (0, 1)],
+                "follow_normal_travel": [getattr(skills[i], "follow_normal_travel", 0.) for i in (0, 1)],
+                "follow_path_length": [getattr(skills[i], "follow_path_length", 0.) for i in (0, 1)],
+                "contact_recovery": "joint_approach" if joint_recovery_pair else "abort",
+                "recovery_attempts": recovery_attempts,
+                "recovery_normal_travel": [getattr(skills[i], "recovery_normal_travel", 0.) for i in (0, 1)],
+                "recovery_path_length": [getattr(skills[i], "recovery_path_length", 0.) for i in (0, 1)],
+                "events": execution_events,
+                "post_exit": post_exit,
+                "bound_follow": ({"version":"push-bound-follow-v1","follower":follower,"pusher":pusher}
+                                 if bound_followers else None),
+            },
             "skill_index": skill_index,
             "action_index": [int(action_index_0), int(action_index_1)],
             "action": [action_0.label, action_1.label],
@@ -638,6 +891,10 @@ class RandomStartEnv:
             "goal_distance_after": self.object_distance(),
             "object_pose_after": list(self.object_state().as_tuple()[:3]),
         }
+        boundary["peer_clearance"] = ({"version":"peer-clearance-prefix-v1",
+            "entered":clearance_prefix.started,"elapsed":clearance_prefix.elapsed,
+            "failed":clearance_prefix.failed,"path_m":clearance_prefix.path}
+            if clearance_prefix is not None else {"version":"off","entered":False})
         if record:
             self.boundaries.append(boundary)
         if success_period is not None or anomaly is not None or truncated:
@@ -682,8 +939,14 @@ class RandomStartEnv:
              conditions, penetration) -> Dict[str, object]:
         true_states = self.robot_states()
         object_state = self.object_state()
-        object_polygon = G.box_polygon(object_state.x, object_state.y, object_state.angle,
-                                       OBJECT_WIDTH / 2.0, OBJECT_HEIGHT / 2.0)
+        if getattr(self.instance, 'object_polygon', None) is not None:
+            local = self.instance.object_polygon
+            c, sn = math.cos(object_state.angle), math.sin(object_state.angle)
+            object_polygon = tuple((object_state.x + c*float(v[0]) - sn*float(v[1]),
+                                    object_state.y + sn*float(v[0]) + c*float(v[1])) for v in local)
+        else:
+            object_polygon = G.box_polygon(object_state.x, object_state.y, object_state.angle,
+                                           OBJECT_WIDTH / 2.0, OBJECT_HEIGHT / 2.0)
         robot_tuples = [list(state.as_tuple()) for state in true_states]
         if self.orient_rotate:
             for robot_id in (0, 1):
@@ -694,7 +957,7 @@ class RandomStartEnv:
             "period": int(period),
             "time": float(period * CONTROL_DT),
             "skill_index": int(skill_index),
-            "joint_action_index": int(joint_action_index(action_0.index, action_1.index)),
+            "joint_action_index": self._joint_action_index(action_0.index, action_1.index),
             "joint_action_label": f"{action_0.label}|{action_1.label}",
             "forces": [list(forces[0]), list(forces[1])],
             "true": {
@@ -731,6 +994,7 @@ class RandomStartEnv:
                 "force_saturated": bool(info.get("force_saturated", False)),
                 "progress": info.get("progress"), "progress_target": info.get("progress_target"),
                 "no_progress_seconds": info.get("no_progress_seconds"),
+                "progress_guard": info.get("progress_guard"),
                 "gap": info.get("gap"), "centre_gap": info.get("centre_gap"),
                 "gap_target": info.get("gap_target"),
                 "gap_error": info.get("gap_error"),
@@ -767,6 +1031,8 @@ class RandomStartEnv:
                 "safety_trigger": (list(info["safety_trigger"])
                                    if info.get("safety_trigger") else None),
                 "skill_time": info.get("skill_time"),
+                "peer_clearance": info.get("peer_clearance"),
+                "requested_kind": info.get("requested_kind"),
                 "declared_direction": (list(info["declared_direction"])
                                        if info.get("declared_direction") else None),
                 "signed_progress": info.get("signed_progress"),
@@ -783,6 +1049,9 @@ class RandomStartEnv:
                 "follow_reference_offset": info.get("follow_reference_offset"),
                 "follow_pose_error": info.get("follow_pose_error"),
                 "follow_time": info.get("follow_time"),
+                "follow_target_gap": info.get("follow_target_gap"),
+                "follow_peer_guard": info.get("follow_peer_guard"),
+                "follow_binding": info.get("follow_binding"),
                 "force_peak": info.get("force_peak"),
                 "anchor_status": (self._last_anchor[robot_id].status
                                   if self._last_anchor[robot_id] else None),
@@ -819,6 +1088,13 @@ class RandomStartEnv:
                     "category": [int(value) for value in scan.category],
                     "origin": list(scan.origin), "heading": float(scan.heading),
                 },
+                "effect": info.get("effect"),
+                "boundary_follow": info.get("boundary_follow"),
+                "peer_detour": info.get("peer_detour"),
+                "static_route_guard": info.get("static_route_guard"),
+                "command_disturbance": info.get("command_disturbance"),
+                "completion_progress": info.get("completion_progress"),
+                "completion_target": info.get("completion_target"),
             }
         return row
 
@@ -826,6 +1102,11 @@ class RandomStartEnv:
     def export_branch_state(self) -> Dict[str, object]:
         return {
             "env_version": ENV_VERSION,
+            "action_version": self.action_version,
+            "peer_clearance_recovery": self.config.peer_clearance_recovery,
+            "lidar_backend": self.config.lidar_backend,
+            "action_labels": [action.label for action in self.actions],
+            "action_codebook_hash": self.action_codebook_hash,
             "snapshot": self.env.export_state(),
             "total_periods": self.total_periods,
             "skills_used": self.skills_used,
@@ -846,9 +1127,24 @@ class RandomStartEnv:
             "heading": list(self.heading), "heading_rate": list(self.heading_rate),
         }
 
-    def restore_branch_state(self, state: Dict[str, object]) -> None:
+    def restore_branch_state(self, state: Dict[str, object], *, allow_execution_change: bool = False) -> None:
+        self._scan_cache.clear()
+        self._patch_cache.clear()
+        if state.get('lidar_backend','scalar') != self.config.lidar_backend and not allow_execution_change:
+            raise ValueError('Cannot restore a branch with a different lidar backend')
+        if (state.get("peer_clearance_recovery", "off") != self.config.peer_clearance_recovery
+                and not allow_execution_change):
+            raise ValueError("Cannot restore a branch with a different peer-clearance controller")
         if state.get("env_version") != ENV_VERSION:
             raise ValueError("Cannot restore a branch from a different reward contract")
+        if (state.get("action_version", ENV_VERSION) != self.action_version
+                or state.get("action_labels", [a.label for a in ROBOT_ACTIONS])
+                != [a.label for a in self.actions]):
+            raise ValueError("Cannot restore a branch with a different action codebook")
+        if state.get("action_codebook_hash", self.action_codebook_hash) != self.action_codebook_hash:
+            raise ValueError("Cannot restore a branch with different action parameters")
+        if "action_codebook_hash" not in state and not self._legacy_action_table:
+            raise ValueError("Cannot restore unversioned parameters into a custom codebook")
         if "oriented" in state and not bool(state["oriented"]):
             raise ValueError("Cannot restore a pre-v4 branch into the v4 actuation model")
         self.env.restore(state["snapshot"], exact=True)  # type: ignore[arg-type]

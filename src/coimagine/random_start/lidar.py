@@ -19,6 +19,7 @@ not a read of the engine's true normal.
 from __future__ import annotations
 
 import math
+from functools import lru_cache
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence, Tuple
 
@@ -79,16 +80,19 @@ class LidarScan:
         return out
 
     def nearest(self, category: int) -> Optional[Tuple[float, Vec, int]]:
-        best: Optional[Tuple[float, Vec, int]] = None
+        best_index = None
         for index, is_valid in enumerate(self.valid):
             if not is_valid or self.category[index] != category:
                 continue
-            angle = self.ray_angles[index]
-            point = (self.origin[0] + self.distances[index] * math.cos(angle),
-                     self.origin[1] + self.distances[index] * math.sin(angle))
-            if best is None or self.distances[index] < best[0]:
-                best = (self.distances[index], point, index)
-        return best
+            if best_index is None or self.distances[index] < self.distances[best_index]:
+                best_index = index
+        if best_index is None:
+            return None
+        angle = self.ray_angles[best_index]
+        distance = self.distances[best_index]
+        point = (self.origin[0] + distance * math.cos(angle),
+                 self.origin[1] + distance * math.sin(angle))
+        return (distance, point, best_index)
 
 
 @dataclass(frozen=True)
@@ -127,6 +131,16 @@ def _segment_hit(origin: Vec, direction: Vec, start: Vec, end: Vec) -> Optional[
     return G.ray_segment(origin, direction, start, end)
 
 
+
+
+def _object_polygon_world(object_pose, local_polygon=None):
+    if local_polygon is None:
+        return G.box_polygon(object_pose[0], object_pose[1], object_pose[2],
+                             OBJECT_WIDTH / 2.0, OBJECT_HEIGHT / 2.0)
+    c, sn = math.cos(object_pose[2]), math.sin(object_pose[2])
+    return tuple((object_pose[0] + c*float(v[0]) - sn*float(v[1]),
+                  object_pose[1] + sn*float(v[0]) + c*float(v[1])) for v in local_polygon)
+
 def _occluder_geometry(arena: Tuple[float, float], obstacles: Sequence[G.Poly],
                        object_poly: G.Poly, robots: Sequence[Tuple[float, ...]],
                        robot_id: int):
@@ -154,7 +168,8 @@ def scan_lidar(arena: Tuple[float, float], obstacles: Sequence[G.Poly],
                robots: Sequence[Tuple[float, ...]], robot_id: int, tick: int,
                sample_time: float, scan_range: float = LIDAR_RANGE,
                scan_rays: int = LIDAR_RAYS,
-               object_angle_override: Optional[float] = None) -> LidarScan:
+               object_angle_override: Optional[float] = None,
+               object_polygon: Optional[tuple] = None) -> LidarScan:
     """One full scan of ``robot_id``. ``object_pose`` and ``robots`` are privileged truth.
 
     ``object_angle_override`` exists for the information-boundary counterfactual test: it
@@ -164,8 +179,7 @@ def scan_lidar(arena: Tuple[float, float], obstacles: Sequence[G.Poly],
 
     if object_angle_override is not None:
         object_pose = (object_pose[0], object_pose[1], object_angle_override)
-    object_poly = G.box_polygon(object_pose[0], object_pose[1], object_pose[2],
-                                OBJECT_WIDTH / 2.0, OBJECT_HEIGHT / 2.0)
+    object_poly = _object_polygon_world(object_pose, object_polygon)
     robot = robots[robot_id]
     origin = (robot[0], robot[1])
     heading = robot[2]
@@ -243,6 +257,89 @@ def scan_lidar(arena: Tuple[float, float], obstacles: Sequence[G.Poly],
     return LidarScan(robot_id=robot_id, tick=tick, sample_time=sample_time, origin=origin,
                      heading=heading, ray_angles=tuple(angles), distances=tuple(distances),
                      valid=tuple(valid), category=tuple(categories), raw_labels=tuple(labels))
+
+
+@lru_cache(maxsize=128)
+def _ray_directions(heading, scan_rays):
+    """Immutable sensor-intrinsic math, not cached scene observations."""
+    angles = tuple(heading + 2.*math.pi*i/scan_rays for i in range(scan_rays))
+    directions = np.array([(math.cos(a), math.sin(a)) for a in angles])
+    directions.setflags(write=False)
+    return angles, directions
+
+
+@lru_cache(maxsize=64)
+def _primitive_groups(entry_ids):
+    """Columns for each occluder are contiguous by construction."""
+    ids = np.asarray(entry_ids)
+    starts = np.flatnonzero(np.r_[True, ids[1:] != ids[:-1]])
+    owners = ids[starts]
+    starts.setflags(write=False)
+    owners.setflags(write=False)
+    return starts, owners
+
+
+def scan_lidar_batch(arena, obstacles, object_pose, robots, robot_id, tick, sample_time,
+                     scan_range=LIDAR_RANGE, scan_rays=LIDAR_RAYS, object_angle_override=None,
+                     object_polygon=None):
+    """NumPy batch of the SAME analytic rays, capsules, edges and ordered ties.
+
+    CPU only. Real ray count, visibility, categories and timestamp are unchanged;
+    this does not interpolate new evidence or ask the physics engine for normals.
+    The scalar scanner is retained as the independent geometry reference.
+    """
+    angle=object_pose[2] if object_angle_override is None else object_angle_override
+    poly=_object_polygon_world((object_pose[0],object_pose[1],angle), object_polygon)
+    robot=robots[robot_id];origin=(robot[0],robot[1]);heading=robot[2]
+    entries=_occluder_geometry(arena,obstacles,poly,robots,robot_id)
+    # Match the scalar angle arithmetic/trig, including body-fixed heading.
+    angles,direction=_ray_directions(heading,scan_rays)
+    starts=[];ends=[];radii=[];segment_entries=[];circles=[];circle_entries=[]
+    for k,(_,_,shape) in enumerate(entries):
+        if shape[0]=='seg':
+            _,a,b,r=shape;starts.append(a);ends.append(b);radii.append(r);segment_entries.append(k)
+            circles.extend([(a,r),(b,r)]);circle_entries.extend([k,k])
+        elif shape[0]=='poly':
+            for a,b in G.polygon_edges(shape[1]):
+                starts.append(a);ends.append(b);radii.append(0.);segment_entries.append(k)
+        else:
+            _,centre,r=shape;circles.append((centre,r));circle_entries.append(k)
+    hits=np.full((scan_rays,len(entries)),np.inf)
+    if starts:
+        a=np.asarray(starts);b=np.asarray(ends);e=b-a;offset=a-np.asarray(origin)
+        dx=direction[:,0,None];dy=direction[:,1,None]
+        denom=dx*e[None,:,1]-dy*e[None,:,0]
+        safe=np.where(np.abs(denom)>=1e-12,denom,1.)
+        t=(offset[None,:,0]*e[None,:,1]-offset[None,:,1]*e[None,:,0])/safe
+        u=(offset[None,:,0]*dy-offset[None,:,1]*dx)/safe
+        valid=(np.abs(denom)>=1e-12)&(t>=0)&(u>=-1e-9)&(u<=1.+1e-9)
+        lengths=np.array([math.hypot(x,y) for x,y in e]);unit=e/np.maximum(lengths[:,None],1e-12)
+        sine=np.abs(dx*unit[None,:,1]-dy*unit[None,:,0]);wall=np.asarray(radii)>0
+        candidate=t-np.asarray(radii)[None,:]/np.maximum(sine,1e-30)
+        px=origin[0]+candidate*dx;py=origin[1]+candidate*dy
+        along=((px-a[None,:,0])*unit[None,:,0]+(py-a[None,:,1])*unit[None,:,1])/np.maximum(lengths[None,:],1e-12)
+        valid &= (~wall[None,:])|((lengths[None,:]>1e-12)&(sine>1e-9)&(along>=-1e-9)&(along<=1.+1e-9))
+        t=np.where(wall[None,:],candidate,t)
+        t=np.where(valid&(t>=0)&(t<=scan_range),t,np.inf)
+        group_starts,owners=_primitive_groups(tuple(segment_entries))
+        hits[:,owners]=np.minimum.reduceat(t,group_starts,axis=1)
+    if circles:
+        centres=np.asarray([c for c,r in circles]);r=np.asarray([r for c,r in circles])
+        f=np.asarray(origin)-centres
+        bb=2.*(direction[:,0,None]*f[None,:,0]+direction[:,1,None]*f[None,:,1])
+        cc=f[:,0]*f[:,0]+f[:,1]*f[:,1]-r*r
+        disc=bb*bb-4.*cc[None,:];root=np.sqrt(np.maximum(disc,0.))
+        first=(-bb-root)/2.;second=(-bb+root)/2.
+        t=np.where(first>=0,first,second)
+        t=np.where((disc>=0)&(t>=0)&(t<=scan_range),t,np.inf)
+        group_starts,owners=_primitive_groups(tuple(circle_entries))
+        hits[:,owners]=np.minimum(hits[:,owners],np.minimum.reduceat(t,group_starts,axis=1))
+    # argmin takes the first entry on ties, matching strict scalar '<'.
+    nearest=np.argmin(hits,axis=1);distance=hits[np.arange(scan_rays),nearest];valid=np.isfinite(distance)
+    return LidarScan(robot_id=robot_id,tick=tick,sample_time=sample_time,origin=origin,heading=heading,
+        ray_angles=angles,distances=tuple(np.where(valid,distance,0.).tolist()),
+        valid=tuple(valid.tolist()),category=tuple(entries[k][1] if v else CATEGORY_NONE for k,v in zip(nearest,valid)),
+        raw_labels=tuple(entries[k][0] if v else None for k,v in zip(nearest,valid)))
 
 
 def _fit_line(points: Sequence[Vec]):
@@ -355,25 +452,31 @@ def scan_patches(scan: LidarScan, robot_xy: Vec,
     mask = [bool(scan.valid[i]) and scan.category[i] == CATEGORY_OBJECT
             for i in range(count)]
 
-    def linked(first: int, second: int) -> bool:
-        if not (mask[first] and mask[second]):
-            return False
-        average = 0.5 * (scan.distances[first] + scan.distances[second])
-        band = (PATCH_GAP_TOLERANCE
-                + PATCH_RELATIVE_FACTOR * average * (2.0 * math.pi / count))
-        return abs(scan.distances[second] - scan.distances[first]) <= band
-
     if not any(mask):
         return []
-    breaks = [index for index in range(count) if not linked((index - 1) % count, index)]
+    # incoming[i] is the same adjacency predicate for (i-1, i). Compute
+    # it once instead of repeating it during run traversal.
+    incoming = [False] * count
+    angular_step = 2.0 * math.pi / count
+    for second in range(count):
+        first = (second - 1) % count
+        if mask[first] and mask[second]:
+            average = 0.5 * (scan.distances[first] + scan.distances[second])
+            band = PATCH_GAP_TOLERANCE + PATCH_RELATIVE_FACTOR * average * angular_step
+            incoming[second] = abs(scan.distances[second] - scan.distances[first]) <= band
+    breaks = [index for index in range(count) if not incoming[index]]
     runs: List[List[int]] = []
     if not breaks:
         runs.append(list(range(count)))
     else:
         for start in breaks:
+            # An invalid ray is always an isolated one-point run, which the
+            # fitter would immediately reject. Avoid building its zero point.
+            if not mask[start] and min_points > 1:
+                continue
             run = [start]
             offset = 1
-            while offset < count and linked((start + offset - 1) % count, (start + offset) % count):
+            while offset < count and incoming[(start + offset) % count]:
                 run.append((start + offset) % count)
                 offset += 1
             runs.append(run)

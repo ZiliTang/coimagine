@@ -50,6 +50,7 @@ class SceneSpec:
     object_width: float = 1.0
     object_height: float = 0.25
     robot_radius: float = 0.18
+    object_polygon: Optional[Tuple[Tuple[float, float], ...]] = None
 
     @property
     def gap_width(self) -> float:
