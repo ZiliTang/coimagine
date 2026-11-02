@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CoImagine · Option Testbed</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header>
+  <div class="brand"><span class="mark"></span>CoImagine <small>option testbed</small></div>
+  <div class="header-controls">
+    <span id="presetLabel" class="preset-label">Unsaved</span>
+    <button id="resetPoses" class="ghost">Reset poses</button>
+    <label class="small">controller <select id="controllerVersion"><option value="m3b">m3b</option></select></label>
+    <span id="serverVersion" class="hint" title="Loaded controller version">version…</span>
+    <button id="runBtn" class="primary">Run sequence</button>
+    <span id="status" class="status"></span>
+  </div>
+</header>
+<main>
+  <section class="left">
+    <div class="card scene-card">
+      <div class="card-head"><span>Scene</span><span class="hint">drag object or robots</span></div>
+      <canvas id="sceneCanvas" width="900" height="340"></canvas>
+      <div id="estimateWindow" class="estimate-window">
+        <canvas id="estimateCanvas" width="260" height="210"></canvas>
+      </div>
+      <div id="m3bDebug" class="m3b-debug">m3b debug: run a sequence</div>
+      <div class="view-controls">
+        <span>view</span>
+        <label><input id="viewLidar" type="checkbox"> lidar</label>
+        <label><input id="viewTarget" type="checkbox"> target</label>
+        <label><input id="viewForce" type="checkbox"> force</label>
+        <label><input id="viewContact" type="checkbox"> contact</label>
+        <label><input id="viewEstimate" type="checkbox" checked> est. window</label>
+      </div>
+    </div>
+    <div class="card playback">
+      <button id="playBtn">Play</button>
+      <button id="prevBtn" class="ghost">◀</button>
+      <button id="nextBtn" class="ghost">▶</button>
+      <input id="frameSlider" type="range" min="0" max="0" value="0">
+      <span id="timeLabel" class="mono">0.00 s</span>
+      <span id="runMeta" class="hint"></span>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>Timeline</span>
+        <span class="timeline-controls">
+          <span class="hint">click / drag to seek</span>
+          <label><input id="curveForce" type="checkbox" checked> force</label>
+          <label><input id="curveSpeed" type="checkbox" checked> speed</label>
+        </span>
+      </div>
+      <div class="timeline-wrap">
+        <canvas id="timelineCanvas" width="900" height="260"></canvas>
+        <div id="timelineTip" class="timeline-tip"></div>
+      </div>
+      <div class="timeline-note">contact = physical tick-start sensor · both_contact/joint_active = contact-ready (gap<=5cm) · phase = coordinator before step · geometry = post-step</div>
+      <div id="legend" class="legend"></div>
+    </div>
+    </div>
+  </section>
+  <aside class="right">
+    <div class="card">
+      <div class="card-head"><span>Option sequence</span><span id="seqMeta" class="hint"></span></div>
+      <div class="segment-form">
+        <label>R0<select id="option0"></select></label>
+        <label>R1<select id="option1"></select></label>
+        <label>sec<input id="duration" type="number" min="0.2" max="10" step="0.2" value="1"></label>
+        <button id="addSegment" class="primary small">Add</button>
+        <button id="clearSequence" class="ghost small">Clear</button>
+      </div>
+      <div id="sequenceList" class="sequence-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>Presets</span><select id="presetSort"><option value="created">newest</option><option value="name">name A-Z</option></select></div>
+      <div class="hint" style="padding:0 11px 4px">Save includes scene + poses + sequence + current parameters.</div>
+      <div class="preset-form">
+        <input id="presetName" placeholder="preset name">
+        <button id="savePreset" class="primary small">Save</button>
+      </div>
+      <div id="presetList" class="preset-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>Parameters</span><button id="saveOverrides" class="ghost small">Save override</button></div>
+      <div class="hint" style="padding:2px 11px 0">Parameter profiles only; Presets also save scene + sequence.</div>
+      <div id="overrideList" class="override-list"></div>
+      <div id="paramList" class="params"></div>
+      <div id="overridePath" class="hint" style="padding:0 11px 7px"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>Runs</span><span id="historyTiming" class="hint"></span><button id="refreshRuns" class="ghost small">Refresh</button></div>
+      <div id="runList" class="run-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-head"><span>State</span></div>
+      <div id="stateInfo" class="state-info"></div>
+    </div>
+  </aside>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>
