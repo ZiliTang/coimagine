@@ -1,0 +1,154 @@
+[
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CCW",
+    "action": "REPOSITION_CCW[0.10m]",
+    "requested_distance": 0.1,
+    "duration": 2.0,
+    "exit": "reposition_complete",
+    "signed_progress": 0.10124143155221432,
+    "face_switches": 0,
+    "robot_final": [
+      2.5682979133241663,
+      1.0875982953149474,
+      -0.23270846881397875,
+      1.2499782806791526e-08,
+      2.3479593665935264e-09,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CCW",
+    "action": "REPOSITION_CCW[0.25m]",
+    "requested_distance": 0.25,
+    "duration": 2.3000000000000003,
+    "exit": "reposition_complete",
+    "signed_progress": 0.2538530114272406,
+    "face_switches": 1,
+    "robot_final": [
+      2.663474102399401,
+      1.1785480094126388,
+      1.0791856588172062,
+      -0.006482880390982325,
+      0.14946668450820128,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CCW",
+    "action": "REPOSITION_CCW[0.50m]",
+    "requested_distance": 0.5,
+    "duration": 4.6000000000000005,
+    "exit": "reposition_complete",
+    "signed_progress": 0.5031075716863049,
+    "face_switches": 3,
+    "robot_final": [
+      2.8037635233576648,
+      1.3488764199499619,
+      1.4031300707975112,
+      -0.02483243453356745,
+      0.14777833651288794,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CCW",
+    "action": "REPOSITION_CCW[1.00m]",
+    "requested_distance": 1.0,
+    "duration": 8.200000000000001,
+    "exit": "reposition_complete",
+    "signed_progress": 1.0009778177121795,
+    "face_switches": 5,
+    "robot_final": [
+      2.6843808108376868,
+      1.7955975648550395,
+      2.804971775301719,
+      -0.1498380737493565,
+      -0.0013792016585668493,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CW",
+    "action": "REPOSITION_CW[0.10m]",
+    "requested_distance": 0.1,
+    "duration": 2.0,
+    "exit": "reposition_complete",
+    "signed_progress": 0.10124143155221477,
+    "face_switches": 0,
+    "robot_final": [
+      1.4317020866758317,
+      1.0875982953149474,
+      -2.9088841847758156,
+      -1.2499782806791548e-08,
+      2.347959366593545e-09,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CW",
+    "action": "REPOSITION_CW[0.25m]",
+    "requested_distance": 0.25,
+    "duration": 2.3000000000000003,
+    "exit": "reposition_complete",
+    "signed_progress": 0.2538530114272416,
+    "face_switches": 1,
+    "robot_final": [
+      1.3365258976006,
+      1.1785480094126388,
+      2.062406994772584,
+      0.0064828803909817104,
+      0.14946668450820136,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CW",
+    "action": "REPOSITION_CW[0.50m]",
+    "requested_distance": 0.5,
+    "duration": 4.6000000000000005,
+    "exit": "reposition_complete",
+    "signed_progress": 0.5031075716863052,
+    "face_switches": 3,
+    "robot_final": [
+      1.1962364766423341,
+      1.3488764199499612,
+      1.738462582792284,
+      0.024832434533567666,
+      0.14777833651288785,
+      0.0
+    ],
+    "max_penetration": 0.0
+  },
+  {
+    "env_version": "random-start-oriented-v4.7",
+    "direction": "CW",
+    "action": "REPOSITION_CW[1.00m]",
+    "requested_distance": 1.0,
+    "duration": 8.200000000000001,
+    "exit": "reposition_complete",
+    "signed_progress": 1.0009778177121813,
+    "face_switches": 5,
+    "robot_final": [
+      1.3156191891623175,
+      1.7955975648550395,
+      0.33662087828807585,
+      0.14983807374935648,
+      -0.0013792016585668487,
+      0.0
+    ],
+    "max_penetration": 0.0
+  }
+]

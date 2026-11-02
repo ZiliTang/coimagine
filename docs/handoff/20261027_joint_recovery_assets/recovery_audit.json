@@ -1,0 +1,4175 @@
+{
+  "version": "joint-contact-recovery-audit-v1",
+  "results": [
+    {
+      "case": "N_E_0.1_0.5",
+      "measured_completion": false,
+      "exits": [
+        "follow_contact_lost",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.1002969501222187,
+        0.5026004118043282
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0060466276491422145,
+        0.007801041356855924
+      ],
+      "independent_follow_path_m": [
+        0.03226932565644904,
+        0.0220175111087686
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.06239999999999999,
+        0.7440000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.5249099878038512,
+        0.1849284878658004
+      ],
+      "object_effect": 0.18492848786580043,
+      "seconds": 9.05,
+      "exit_times_s": [
+        5.4,
+        9.0
+      ],
+      "checked_samples": 290,
+      "positive_intervals": 179,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.2959746043559335e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 9,
+          "contact_frames": 4,
+          "contact_fraction": 0.4444444444444444,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0005204560307539852,
+          "max_command_force_N": 0.848799284699025,
+          "max_command_normal_force_N": 0.07991576669033149,
+          "max_desired_speed_m_s": 0.08814093439016621
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 5.5382292758227036e-05,
+          "max_command_force_N": 0.7423663054671796,
+          "max_command_normal_force_N": 0.39384512572178976,
+          "max_desired_speed_m_s": 0.11624679359008638
+        }
+      ],
+      "rotation_deg": -10.333059236648495,
+      "drive_complete_times_s": [
+        4.95,
+        8.55
+      ],
+      "min_robot_centre_distance_m": 0.534869023258027,
+      "max_object_penetration_m": 5.108334109666926e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.1_0.5",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.1002969501222187,
+        0.5026004118043282
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0060466276491422145,
+        0.007801041356855924
+      ],
+      "independent_follow_path_m": [
+        0.26867621149793025,
+        0.0220175111087686
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.06239999999999999,
+        0.7440000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.5249099878038512,
+        0.1849284878658004
+      ],
+      "object_effect": 0.18492848786580043,
+      "seconds": 9.05,
+      "exit_times_s": [
+        8.9,
+        9.0
+      ],
+      "checked_samples": 360,
+      "positive_intervals": 179,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.2959746043559335e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 73,
+          "contact_frames": 4,
+          "contact_fraction": 0.0547945205479452,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.006394649719101753,
+          "max_command_force_N": 0.848799284699025,
+          "max_command_normal_force_N": 0.26344657406230176,
+          "max_desired_speed_m_s": 0.08814093439016621
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 5.5382292758227036e-05,
+          "max_command_force_N": 0.7423663054671796,
+          "max_command_normal_force_N": 0.39384512572178976,
+          "max_desired_speed_m_s": 0.11624679359008638
+        }
+      ],
+      "rotation_deg": -10.333059236648495,
+      "drive_complete_times_s": [
+        4.95,
+        8.55
+      ],
+      "min_robot_centre_distance_m": 0.6356502630628101,
+      "max_object_penetration_m": 5.108334109666926e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.3_0.3",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.3021475744393125,
+        0.3011085845019382
+      ],
+      "independent_follow_normal_travel_m": [
+        0.010543476351485082,
+        0.007416235961392697
+      ],
+      "independent_follow_path_m": [
+        0.022242422073548162,
+        0.02215276404369972
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.4800000000000003,
+        0.4800000000000003
+      ],
+      "object_displacement_xy_m": [
+        0.28635295592899457,
+        0.37028869280073096
+      ],
+      "object_effect": 0.37028869280073096,
+      "seconds": 6.8500000000000005,
+      "exit_times_s": [
+        6.800000000000001,
+        6.800000000000001
+      ],
+      "checked_samples": 274,
+      "positive_intervals": 163,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -6.404697996156838e-05,
+          "max_command_force_N": 0.637963347419771,
+          "max_command_normal_force_N": 0.5843851280319461,
+          "max_desired_speed_m_s": 0.11142908174676791
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -7.16283681040375e-06,
+          "max_command_force_N": 0.6728351047472632,
+          "max_command_normal_force_N": 0.6071861771454136,
+          "max_desired_speed_m_s": 0.11093867373072776
+        }
+      ],
+      "rotation_deg": 8.509157283203134,
+      "drive_complete_times_s": [
+        6.3500000000000005,
+        6.3500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.653598927011962,
+      "max_object_penetration_m": 6.438494790048822e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.3_0.3",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.3021475744393125,
+        0.3011085845019382
+      ],
+      "independent_follow_normal_travel_m": [
+        0.010543476351485082,
+        0.007416235961392697
+      ],
+      "independent_follow_path_m": [
+        0.022242422073548162,
+        0.02215276404369972
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.4800000000000003,
+        0.4800000000000003
+      ],
+      "object_displacement_xy_m": [
+        0.28635295592899457,
+        0.37028869280073096
+      ],
+      "object_effect": 0.37028869280073096,
+      "seconds": 6.8500000000000005,
+      "exit_times_s": [
+        6.800000000000001,
+        6.800000000000001
+      ],
+      "checked_samples": 274,
+      "positive_intervals": 163,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -6.404697996156838e-05,
+          "max_command_force_N": 0.637963347419771,
+          "max_command_normal_force_N": 0.5843851280319461,
+          "max_desired_speed_m_s": 0.11142908174676791
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -7.16283681040375e-06,
+          "max_command_force_N": 0.6728351047472632,
+          "max_command_normal_force_N": 0.6071861771454136,
+          "max_desired_speed_m_s": 0.11093867373072776
+        }
+      ],
+      "rotation_deg": 8.509157283203134,
+      "drive_complete_times_s": [
+        6.3500000000000005,
+        6.3500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.653598927011962,
+      "max_object_penetration_m": 6.438494790048822e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "follow_contact_lost"
+      ],
+      "independent_normal_travel_m": [
+        0.501005059529873,
+        0.10198053370319135
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004139263811220076,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.01523174680415653,
+        0.025110348156128316
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.06119999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.13732781269308747,
+        0.5495901503425693
+      ],
+      "object_effect": 0.5495901503425693,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        5.2
+      ],
+      "checked_samples": 284,
+      "positive_intervals": 173,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.577252856814094e-05,
+          "max_command_force_N": 0.41383784658114336,
+          "max_command_normal_force_N": 0.37217638505150935,
+          "max_desired_speed_m_s": 0.08464676289775125
+        },
+        {
+          "frames": 6,
+          "contact_frames": 1,
+          "contact_fraction": 0.16666666666666666,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0005340214818320699,
+          "max_command_force_N": 0.5679531984048605,
+          "max_command_normal_force_N": 0.19474459484126624,
+          "max_desired_speed_m_s": 0.09927390227680936
+        }
+      ],
+      "rotation_deg": 10.56494925136951,
+      "drive_complete_times_s": [
+        8.5,
+        4.9
+      ],
+      "min_robot_centre_distance_m": 0.6965100535212615,
+      "max_object_penetration_m": 3.410484134722582e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5009217941309343,
+        0.10198053370319135
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004138832776391425,
+        0.0002821456978749311
+      ],
+      "independent_follow_path_m": [
+        0.015336238016249828,
+        0.2750806595785964
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.06119999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.1383912308904347,
+        0.5497422792801241
+      ],
+      "object_effect": 0.5497422792801241,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        8.85
+      ],
+      "checked_samples": 357,
+      "positive_intervals": 174,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.5166157289396862e-05,
+          "max_command_force_N": 0.4281782502285615,
+          "max_command_normal_force_N": 0.3724010813084196,
+          "max_desired_speed_m_s": 0.08527204937520012
+        },
+        {
+          "frames": 73,
+          "contact_frames": 3,
+          "contact_fraction": 0.0410958904109589,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0033463234840776512,
+          "max_command_force_N": 0.5950384220303621,
+          "max_command_normal_force_N": 0.2556139715003604,
+          "max_desired_speed_m_s": 0.09927390227680936
+        }
+      ],
+      "rotation_deg": 10.746784835356928,
+      "drive_complete_times_s": [
+        8.5,
+        4.9
+      ],
+      "min_robot_centre_distance_m": 0.6965100535212615,
+      "max_object_penetration_m": 5.7801378486643656e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1_dx+0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "follow_contact_lost"
+      ],
+      "independent_normal_travel_m": [
+        0.500597576670749,
+        0.10092052776665786
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00413973615052008,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.01511087320002313,
+        0.02487277646041436
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.06239999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.13707468359049324,
+        0.5489958091839346
+      ],
+      "object_effect": 0.5489958091839346,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        5.25
+      ],
+      "checked_samples": 285,
+      "positive_intervals": 174,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.729655473350135e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.694155446114621e-05,
+          "max_command_force_N": 0.39635334560530094,
+          "max_command_normal_force_N": 0.37195704562443094,
+          "max_desired_speed_m_s": 0.08394400656393389
+        },
+        {
+          "frames": 6,
+          "contact_frames": 1,
+          "contact_fraction": 0.16666666666666666,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0006036243485295079,
+          "max_command_force_N": 0.570089872739513,
+          "max_command_normal_force_N": 0.20138077078979486,
+          "max_desired_speed_m_s": 0.0981293852713215
+        }
+      ],
+      "rotation_deg": 10.444022137822795,
+      "drive_complete_times_s": [
+        8.5,
+        4.95
+      ],
+      "min_robot_centre_distance_m": 0.6950376372217969,
+      "max_object_penetration_m": 3.447623103849376e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1_dx+0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.500597576670749,
+        0.10092052776665786
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00413973615052008,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.01511087320002313,
+        0.27132247046760494
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.06239999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.13707468359049324,
+        0.5489958091839346
+      ],
+      "object_effect": 0.5489958091839346,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        8.85
+      ],
+      "checked_samples": 357,
+      "positive_intervals": 174,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.729655473350135e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.694155446114621e-05,
+          "max_command_force_N": 0.39635334560530094,
+          "max_command_normal_force_N": 0.37195704562443094,
+          "max_desired_speed_m_s": 0.08394400656393389
+        },
+        {
+          "frames": 72,
+          "contact_frames": 1,
+          "contact_fraction": 0.013888888888888888,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.003375474537223838,
+          "max_command_force_N": 0.5944460210369735,
+          "max_command_normal_force_N": 0.25437469164487214,
+          "max_desired_speed_m_s": 0.0981293852713215
+        }
+      ],
+      "rotation_deg": 10.444022137822795,
+      "drive_complete_times_s": [
+        8.5,
+        4.95
+      ],
+      "min_robot_centre_distance_m": 0.6950376372217969,
+      "max_object_penetration_m": 3.447623103849376e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1_dx-0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "follow_contact_lost"
+      ],
+      "independent_normal_travel_m": [
+        0.5011960432386822,
+        0.10298601759202333
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00786293521587958,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.01880726253247298,
+        0.025153614043440103
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.05999999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.14325581927361375,
+        0.5504484176704483
+      ],
+      "object_effect": 0.5504484176704483,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        5.15
+      ],
+      "checked_samples": 283,
+      "positive_intervals": 173,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.382710778154774e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -3.346610527907301e-05,
+          "max_command_force_N": 0.7623979197023872,
+          "max_command_normal_force_N": 0.3728766665842771,
+          "max_desired_speed_m_s": 0.10223464624499864
+        },
+        {
+          "frames": 6,
+          "contact_frames": 1,
+          "contact_fraction": 0.16666666666666666,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0005208839166745138,
+          "max_command_force_N": 0.5668944404581958,
+          "max_command_normal_force_N": 0.19372146204547863,
+          "max_desired_speed_m_s": 0.09942267589418906
+        }
+      ],
+      "rotation_deg": 10.521753331265852,
+      "drive_complete_times_s": [
+        8.5,
+        4.8500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.6955034484505228,
+      "max_object_penetration_m": 4.373504398932899e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1_dx-0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5008450247505868,
+        0.10298601759202333
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00788837674051668,
+        -2.4434242566823876e-05
+      ],
+      "independent_follow_path_m": [
+        0.02013100703441388,
+        0.2808403937126364
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.05999999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.14681985095912964,
+        0.5524137413311605
+      ],
+      "object_effect": 0.5524137413311605,
+      "seconds": 9.0,
+      "exit_times_s": [
+        8.950000000000001,
+        8.85
+      ],
+      "checked_samples": 358,
+      "positive_intervals": 175,
+      "reverse_intervals": 2,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -3.096475136421528e-05,
+          "max_command_force_N": 0.6132242163832266,
+          "max_command_normal_force_N": 0.4177307812204347,
+          "max_desired_speed_m_s": 0.10350191928252687
+        },
+        {
+          "frames": 74,
+          "contact_frames": 6,
+          "contact_fraction": 0.08108108108108109,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.0038231594401476887,
+          "max_command_force_N": 0.6638172045788788,
+          "max_command_normal_force_N": 0.39430570729273795,
+          "max_desired_speed_m_s": 0.09942267589418906
+        }
+      ],
+      "rotation_deg": 11.127590366526617,
+      "drive_complete_times_s": [
+        8.5,
+        4.8500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.6955034484505228,
+      "max_object_penetration_m": 8.324895999149027e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_E_0.5_0.1_outward_pulse",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "follow_contact_lost"
+      ],
+      "independent_normal_travel_m": [
+        0.501005059529873,
+        0.10198053370319135
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004139263811220076,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.01523174680415653,
+        0.02675551414730141
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7380000000000005,
+        0.06119999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.13732781269308747,
+        0.5495901503425693
+      ],
+      "object_effect": 0.5495901503425693,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        5.2
+      ],
+      "checked_samples": 284,
+      "positive_intervals": 173,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.577252856814094e-05,
+          "max_command_force_N": 0.41383784658114336,
+          "max_command_normal_force_N": 0.37217638505150935,
+          "max_desired_speed_m_s": 0.08464676289775125
+        },
+        {
+          "frames": 6,
+          "contact_frames": 1,
+          "contact_fraction": 0.16666666666666666,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 0.009584781452477237,
+          "max_command_force_N": 0.8012216285884431,
+          "max_command_normal_force_N": 0.7500000000000001,
+          "max_desired_speed_m_s": 0.1105307332034199
+        }
+      ],
+      "rotation_deg": 10.56494925136951,
+      "drive_complete_times_s": [
+        8.5,
+        4.9
+      ],
+      "min_robot_centre_distance_m": 0.6965100535212615,
+      "max_object_penetration_m": 3.410484134722582e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": {
+        "robot": 1,
+        "start": 5.0,
+        "end": 5.25,
+        "force_xy": [
+          -4.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "case": "N_E_0.5_0.1_outward_pulse",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5026568140230296,
+        0.10198053370319135
+      ],
+      "independent_follow_normal_travel_m": [
+        0.007811009140972215,
+        -0.008626487741322249
+      ],
+      "independent_follow_path_m": [
+        0.016137173019980685,
+        0.23134577186432287
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.030559306142181147,
+        0.038348825105105226
+      ],
+      "independent_recovery_path_m": [
+        0.0903431458032433,
+        0.11644852494011142
+      ],
+      "reference_budget_m": [
+        0.7500000000000006,
+        0.06119999999999999
+      ],
+      "object_displacement_xy_m": [
+        0.04490377354119168,
+        0.5694373156224617
+      ],
+      "object_effect": 0.5694373156224617,
+      "seconds": 11.05,
+      "exit_times_s": [
+        11.0,
+        10.950000000000001
+      ],
+      "checked_samples": 441,
+      "positive_intervals": 176,
+      "reverse_intervals": 15,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -0.00012751230573887495,
+          "max_command_force_N": 0.6501961379338362,
+          "max_command_normal_force_N": 0.39522093661997665,
+          "max_desired_speed_m_s": 0.08955903588694632
+        },
+        {
+          "frames": 78,
+          "contact_frames": 10,
+          "contact_fraction": 0.1282051282051282,
+          "near_fraction": 0.9871794871794872,
+          "max_follow_gap_m": 0.016166130420604746,
+          "max_command_force_N": 0.8174998554576514,
+          "max_command_normal_force_N": 0.7500000000000001,
+          "max_desired_speed_m_s": 0.11186967093238202
+        }
+      ],
+      "rotation_deg": 9.096477994966865,
+      "drive_complete_times_s": [
+        10.600000000000001,
+        4.9
+      ],
+      "min_robot_centre_distance_m": 0.6965100535212615,
+      "max_object_penetration_m": 0.00012861138668666402,
+      "recovery": true,
+      "recoveries": [
+        {
+          "start_s": 5.25,
+          "end_s": 7.1000000000000005,
+          "duration_s": 1.8500000000000005,
+          "result": "recovery_resumed",
+          "requested": [
+            false,
+            true
+          ],
+          "max_observed_gap_m": 0.034456269220419
+        }
+      ],
+      "diagnostic_disturbance": {
+        "robot": 1,
+        "start": 5.0,
+        "end": 5.25,
+        "force_xy": [
+          -4.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "case": "N_S_0.5_0.1",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "blocked_no_progress"
+      ],
+      "independent_normal_travel_m": [
+        0.5007527347810159,
+        -0.12921427324261758
+      ],
+      "independent_follow_normal_travel_m": [
+        0.006410845159345424,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.007468272476677473,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        1.332000000000001,
+        0.07320000000000004
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5087984369566936
+      ],
+      "object_effect": 0.5087984369566936,
+      "seconds": 13.850000000000001,
+      "exit_times_s": [
+        13.8,
+        5.4
+      ],
+      "checked_samples": 386,
+      "positive_intervals": 225,
+      "reverse_intervals": 60,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.776763850725894e-05,
+          "max_command_force_N": 0.75,
+          "max_command_normal_force_N": 0.75,
+          "max_desired_speed_m_s": 0.04307054323829518
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": -1.3441453855477425e-13,
+      "drive_complete_times_s": [
+        13.450000000000001,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.6099444647145491,
+      "max_object_penetration_m": 2.7767642726717057e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_S_0.5_0.1",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "blocked_no_progress"
+      ],
+      "independent_normal_travel_m": [
+        0.5007527347810159,
+        -0.12921427324261758
+      ],
+      "independent_follow_normal_travel_m": [
+        0.006410845159345424,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.007468272476677473,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        1.332000000000001,
+        0.07320000000000004
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5087984369566936
+      ],
+      "object_effect": 0.5087984369566936,
+      "seconds": 13.850000000000001,
+      "exit_times_s": [
+        13.8,
+        5.4
+      ],
+      "checked_samples": 386,
+      "positive_intervals": 225,
+      "reverse_intervals": 60,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -2.776763850725894e-05,
+          "max_command_force_N": 0.75,
+          "max_command_normal_force_N": 0.75,
+          "max_desired_speed_m_s": 0.04307054323829518
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": -1.3441453855477425e-13,
+      "drive_complete_times_s": [
+        13.450000000000001,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.6099444647145491,
+      "max_object_penetration_m": 2.7767642726717057e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_S_0.5_0.5",
+      "measured_completion": false,
+      "exits": [
+        "blocked_no_progress",
+        "blocked_no_progress"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.3660000000000002,
+        0.3660000000000002
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 5.45,
+      "exit_times_s": [
+        5.4,
+        5.4
+      ],
+      "checked_samples": 218,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 5.974058210595983e-13,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.6099444647145491,
+      "max_object_penetration_m": 2.7767642726717057e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "N_S_0.5_0.5",
+      "measured_completion": true,
+      "exits": [
+        "blocked_no_progress",
+        "blocked_no_progress"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.3660000000000002,
+        0.3660000000000002
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 5.45,
+      "exit_times_s": [
+        5.4,
+        5.4
+      ],
+      "checked_samples": 218,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 5.974058210595983e-13,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.6099444647145491,
+      "max_object_penetration_m": 2.7767642726717057e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "peer_direction_unavailable",
+      "measured_completion": false,
+      "exits": [
+        "peer_prepare_failed",
+        "direction_unavailable"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 0.1,
+      "exit_times_s": [
+        0.05,
+        0.0
+      ],
+      "checked_samples": 3,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 0.0,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.49996835740621975,
+      "max_object_penetration_m": 0.0,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "peer_direction_unavailable",
+      "measured_completion": true,
+      "exits": [
+        "peer_prepare_failed",
+        "direction_unavailable"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 0.1,
+      "exit_times_s": [
+        0.05,
+        0.0
+      ],
+      "checked_samples": 3,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 0.0,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.49996835740621975,
+      "max_object_penetration_m": 0.0,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "rotation_mixed_angles",
+      "measured_completion": false,
+      "exits": [
+        "local_effect_reached",
+        "local_effect_reached"
+      ],
+      "independent_normal_travel_m": [
+        0.012775744265550202,
+        0.156277864978211
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        -0.022846706421417284,
+        -0.08181518499793827
+      ],
+      "object_effect": 0.5059821292719121,
+      "seconds": 6.75,
+      "exit_times_s": [
+        3.0,
+        6.7
+      ],
+      "checked_samples": 196,
+      "positive_intervals": 81,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 1.3877787807814457e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 28.990640516323392,
+      "drive_complete_times_s": [
+        2.7,
+        6.0
+      ],
+      "min_robot_centre_distance_m": 0.676725331194279,
+      "max_object_penetration_m": 0.00023493784772355813,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "rotation_mixed_angles",
+      "measured_completion": true,
+      "exits": [
+        "local_effect_reached",
+        "local_effect_reached"
+      ],
+      "independent_normal_travel_m": [
+        0.012775744265550202,
+        0.156277864978211
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        -0.022846706421417284,
+        -0.08181518499793827
+      ],
+      "object_effect": 0.5059821292719121,
+      "seconds": 6.75,
+      "exit_times_s": [
+        3.0,
+        6.7
+      ],
+      "checked_samples": 196,
+      "positive_intervals": 81,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 1.3877787807814457e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 28.990640516323392,
+      "drive_complete_times_s": [
+        2.7,
+        6.0
+      ],
+      "min_robot_centre_distance_m": 0.676725331194279,
+      "max_object_penetration_m": 0.00023493784772355813,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.1",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.1012343452711395,
+        0.1012343452711395
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00443051690574503,
+        0.00443051690574503
+      ],
+      "independent_follow_path_m": [
+        0.015481168376840087,
+        0.015481168376840087
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.15000000000000005,
+        0.15000000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.1289063764615559
+      ],
+      "object_effect": 0.1289063764615559,
+      "seconds": 4.1000000000000005,
+      "exit_times_s": [
+        4.05,
+        4.05
+      ],
+      "checked_samples": 164,
+      "positive_intervals": 50,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715117622154e-05,
+          "max_command_force_N": 0.12022033042937168,
+          "max_command_normal_force_N": 0.10769697812640425,
+          "max_desired_speed_m_s": 0.0892860001528142
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.65767151178442e-05,
+          "max_command_force_N": 0.12022033042937046,
+          "max_command_normal_force_N": 0.10769697812640586,
+          "max_desired_speed_m_s": 0.08928600015281352
+        }
+      ],
+      "rotation_deg": 1.6926332322160855e-14,
+      "drive_complete_times_s": [
+        3.6500000000000004,
+        3.6500000000000004
+      ],
+      "min_robot_centre_distance_m": 0.46961228085726914,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.1",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.1012343452711395,
+        0.1012343452711395
+      ],
+      "independent_follow_normal_travel_m": [
+        0.00443051690574503,
+        0.00443051690574503
+      ],
+      "independent_follow_path_m": [
+        0.015481168376840087,
+        0.015481168376840087
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.15000000000000005,
+        0.15000000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.1289063764615559
+      ],
+      "object_effect": 0.1289063764615559,
+      "seconds": 4.1000000000000005,
+      "exit_times_s": [
+        4.05,
+        4.05
+      ],
+      "checked_samples": 164,
+      "positive_intervals": 50,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715117622154e-05,
+          "max_command_force_N": 0.12022033042937168,
+          "max_command_normal_force_N": 0.10769697812640425,
+          "max_desired_speed_m_s": 0.0892860001528142
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.65767151178442e-05,
+          "max_command_force_N": 0.12022033042937046,
+          "max_command_normal_force_N": 0.10769697812640586,
+          "max_desired_speed_m_s": 0.08928600015281352
+        }
+      ],
+      "rotation_deg": 1.6926332322160855e-14,
+      "drive_complete_times_s": [
+        3.6500000000000004,
+        3.6500000000000004
+      ],
+      "min_robot_centre_distance_m": 0.46961228085726914,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.2",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10398862374597781,
+        0.2014130704822288
+      ],
+      "independent_follow_normal_travel_m": [
+        0.06937650579762758,
+        0.004384574850308147
+      ],
+      "independent_follow_path_m": [
+        0.07633838904456237,
+        0.015551202022676224
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.07800000000000003,
+        0.28200000000000014
+      ],
+      "object_displacement_xy_m": [
+        0.013807509875107815,
+        0.2094309991080121
+      ],
+      "object_effect": 0.2094309991080121,
+      "seconds": 5.2,
+      "exit_times_s": [
+        5.1000000000000005,
+        5.15
+      ],
+      "checked_samples": 207,
+      "positive_intervals": 94,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 1.3010426069826053e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 22,
+          "contact_frames": 22,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.1442609210230454e-05,
+          "max_command_force_N": 0.6323383455011268,
+          "max_command_normal_force_N": 0.6158479362367214,
+          "max_desired_speed_m_s": 0.08929632869227747
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.633370641760835e-05,
+          "max_command_force_N": 0.28394720060316225,
+          "max_command_normal_force_N": 0.16423340574827675,
+          "max_desired_speed_m_s": 0.07234441498272644
+        }
+      ],
+      "rotation_deg": -4.895062582067269,
+      "drive_complete_times_s": [
+        3.7,
+        4.75
+      ],
+      "min_robot_centre_distance_m": 0.4580126663862904,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.2",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10398862374597781,
+        0.2014130704822288
+      ],
+      "independent_follow_normal_travel_m": [
+        0.06937650579762758,
+        0.004384574850308147
+      ],
+      "independent_follow_path_m": [
+        0.07633838904456237,
+        0.015551202022676224
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.07800000000000003,
+        0.28200000000000014
+      ],
+      "object_displacement_xy_m": [
+        0.013807509875107815,
+        0.2094309991080121
+      ],
+      "object_effect": 0.2094309991080121,
+      "seconds": 5.2,
+      "exit_times_s": [
+        5.1000000000000005,
+        5.15
+      ],
+      "checked_samples": 207,
+      "positive_intervals": 94,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 1.3010426069826053e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 22,
+          "contact_frames": 22,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.1442609210230454e-05,
+          "max_command_force_N": 0.6323383455011268,
+          "max_command_normal_force_N": 0.6158479362367214,
+          "max_desired_speed_m_s": 0.08929632869227747
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.633370641760835e-05,
+          "max_command_force_N": 0.28394720060316225,
+          "max_command_normal_force_N": 0.16423340574827675,
+          "max_desired_speed_m_s": 0.07234441498272644
+        }
+      ],
+      "rotation_deg": -4.895062582067269,
+      "drive_complete_times_s": [
+        3.7,
+        4.75
+      ],
+      "min_robot_centre_distance_m": 0.4580126663862904,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10239639606924622,
+        0.5030353588251151
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25223435831874114,
+        0.004329452768813856
+      ],
+      "independent_follow_path_m": [
+        0.2636912217746401,
+        0.01534202530203396
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6840000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.11186833127050644,
+        0.44433873411233016
+      ],
+      "object_effect": 0.44433873411233016,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.594160143413627e-05,
+          "max_command_force_N": 0.6620857677123289,
+          "max_command_normal_force_N": 0.6219920874855064,
+          "max_desired_speed_m_s": 0.08681138050799034
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.1742564328380842e-05,
+          "max_command_force_N": 0.25828718346742247,
+          "max_command_normal_force_N": 0.21610039840733533,
+          "max_desired_speed_m_s": 0.07489943959696
+        }
+      ],
+      "rotation_deg": -20.048775453080076,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4155988494481105,
+      "max_object_penetration_m": 3.702722224589817e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10239639606924622,
+        0.5030353588251151
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25223435831874114,
+        0.004329452768813856
+      ],
+      "independent_follow_path_m": [
+        0.2636912217746401,
+        0.01534202530203396
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6840000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.11186833127050644,
+        0.44433873411233016
+      ],
+      "object_effect": 0.44433873411233016,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.594160143413627e-05,
+          "max_command_force_N": 0.6620857677123289,
+          "max_command_normal_force_N": 0.6219920874855064,
+          "max_desired_speed_m_s": 0.08681138050799034
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.1742564328380842e-05,
+          "max_command_force_N": 0.25828718346742247,
+          "max_command_normal_force_N": 0.21610039840733533,
+          "max_desired_speed_m_s": 0.07489943959696
+        }
+      ],
+      "rotation_deg": -20.048775453080076,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4155988494481105,
+      "max_object_penetration_m": 3.702722224589817e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5_dx+0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10023525571952588,
+        0.5015553824624072
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25460885833843194,
+        0.004332028185573824
+      ],
+      "independent_follow_path_m": [
+        0.26658190166982576,
+        0.015343155448391503
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.036,
+        0.6780000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.12044335270605888,
+        0.4418565620847503
+      ],
+      "object_effect": 0.4418565620847503,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 228,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.949029909160572e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 86,
+          "contact_frames": 86,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.6425969482130052e-05,
+          "max_command_force_N": 0.6843650760621088,
+          "max_command_normal_force_N": 0.625346327991757,
+          "max_desired_speed_m_s": 0.08731967285812138
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.740483265999515e-05,
+          "max_command_force_N": 0.2557474922503881,
+          "max_command_normal_force_N": 0.21379005408277557,
+          "max_desired_speed_m_s": 0.07475574195879821
+        }
+      ],
+      "rotation_deg": -20.282684380296203,
+      "drive_complete_times_s": [
+        3.85,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4153412673632775,
+      "max_object_penetration_m": 0.0001735614803495705,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5_dx+0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10023525571952588,
+        0.5015553824624072
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25460885833843194,
+        0.004332028185573824
+      ],
+      "independent_follow_path_m": [
+        0.26658190166982576,
+        0.015343155448391503
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.036,
+        0.6780000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.12044335270605888,
+        0.4418565620847503
+      ],
+      "object_effect": 0.4418565620847503,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 228,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.949029909160572e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 86,
+          "contact_frames": 86,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.6425969482130052e-05,
+          "max_command_force_N": 0.6843650760621088,
+          "max_command_normal_force_N": 0.625346327991757,
+          "max_desired_speed_m_s": 0.08731967285812138
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.740483265999515e-05,
+          "max_command_force_N": 0.2557474922503881,
+          "max_command_normal_force_N": 0.21379005408277557,
+          "max_desired_speed_m_s": 0.07475574195879821
+        }
+      ],
+      "rotation_deg": -20.282684380296203,
+      "drive_complete_times_s": [
+        3.85,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4153412673632775,
+      "max_object_penetration_m": 0.0001735614803495705,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5_dx-0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10237462811898665,
+        0.502915072176949
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25246515686061083,
+        0.0043294815466894294
+      ],
+      "independent_follow_path_m": [
+        0.26354769197547345,
+        0.015347548943565754
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6840000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.11596414462814097,
+        0.4439960665303997
+      ],
+      "object_effect": 0.4439960665303997,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.6305952085795576e-05,
+          "max_command_force_N": 0.6430493920238806,
+          "max_command_normal_force_N": 0.6207705624748235,
+          "max_desired_speed_m_s": 0.08681861751028429
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 1.2906571143389556e-05,
+          "max_command_force_N": 0.2593983405955297,
+          "max_command_normal_force_N": 0.21611271733560544,
+          "max_desired_speed_m_s": 0.07490294945872324
+        }
+      ],
+      "rotation_deg": -19.941802468557338,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4159069678687743,
+      "max_object_penetration_m": 3.726171316650859e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5_dx-0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10237462811898665,
+        0.502915072176949
+      ],
+      "independent_follow_normal_travel_m": [
+        0.25246515686061083,
+        0.0043294815466894294
+      ],
+      "independent_follow_path_m": [
+        0.26354769197547345,
+        0.015347548943565754
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6840000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.11596414462814097,
+        0.4439960665303997
+      ],
+      "object_effect": 0.4439960665303997,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.450000000000001,
+        8.5
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.6305952085795576e-05,
+          "max_command_force_N": 0.6430493920238806,
+          "max_command_normal_force_N": 0.6207705624748235,
+          "max_desired_speed_m_s": 0.08681861751028429
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 1.2906571143389556e-05,
+          "max_command_force_N": 0.2593983405955297,
+          "max_command_normal_force_N": 0.21611271733560544,
+          "max_desired_speed_m_s": 0.07490294945872324
+        }
+      ],
+      "rotation_deg": -19.941802468557338,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        8.1
+      ],
+      "min_robot_centre_distance_m": 0.4159069678687743,
+      "max_object_penetration_m": 3.726171316650859e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.1_0.5_outward_pulse",
+      "measured_completion": false,
+      "exits": [
+        "follow_contact_lost",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10239639606924622,
+        0.501041398916049
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004210946757347988,
+        0.00795309882416257
+      ],
+      "independent_follow_path_m": [
+        0.02276983580744496,
+        0.017102158967470006
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6900000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.17889073747896278,
+        0.3912767730487978
+      ],
+      "object_effect": 0.3912767730487978,
+      "seconds": 8.6,
+      "exit_times_s": [
+        4.25,
+        8.55
+      ],
+      "checked_samples": 258,
+      "positive_intervals": 145,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 7,
+          "contact_frames": 2,
+          "contact_fraction": 0.2857142857142857,
+          "near_fraction": 0.7142857142857143,
+          "max_follow_gap_m": 0.02251734578203962,
+          "max_command_force_N": 0.8021900192476401,
+          "max_command_normal_force_N": 0.7500000000000006,
+          "max_desired_speed_m_s": 0.10787309191584231
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 6.059705796063186e-06,
+          "max_command_force_N": 0.603702035602848,
+          "max_command_normal_force_N": 0.3299025934017426,
+          "max_desired_speed_m_s": 0.0871973044735599
+        }
+      ],
+      "rotation_deg": -29.93533196681222,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        8.15
+      ],
+      "min_robot_centre_distance_m": 0.4715589701898644,
+      "max_object_penetration_m": 6.645796777898333e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": {
+        "robot": 0,
+        "start": 3.95,
+        "end": 4.2,
+        "force_xy": [
+          0.0,
+          -4.0
+        ]
+      }
+    },
+    {
+      "case": "same_N_0.1_0.5_outward_pulse",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.10239639606924622,
+        0.5041845132725111
+      ],
+      "independent_follow_normal_travel_m": [
+        0.21253585408023987,
+        0.008125299323663304
+      ],
+      "independent_follow_path_m": [
+        0.2526721999549315,
+        0.015264711860079508
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.03822943713917193,
+        0.03297877750688581
+      ],
+      "independent_recovery_path_m": [
+        0.045697772754523434,
+        0.03527769675280624
+      ],
+      "reference_budget_m": [
+        0.0348,
+        0.6960000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.1391063072221339,
+        0.4607946999629404
+      ],
+      "object_effect": 0.4607946999629404,
+      "seconds": 10.55,
+      "exit_times_s": [
+        10.450000000000001,
+        10.5
+      ],
+      "checked_samples": 421,
+      "positive_intervals": 218,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.382710778154774e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 90,
+          "contact_frames": 74,
+          "contact_fraction": 0.8222222222222222,
+          "near_fraction": 0.9888888888888889,
+          "max_follow_gap_m": 0.014863176503240788,
+          "max_command_force_N": 0.8645105306244805,
+          "max_command_normal_force_N": 0.7500000000000004,
+          "max_desired_speed_m_s": 0.10787309191584231
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -9.613733302007987e-05,
+          "max_command_force_N": 0.2578993158892029,
+          "max_command_normal_force_N": 0.2324957247119019,
+          "max_desired_speed_m_s": 0.07415182835789737
+        }
+      ],
+      "rotation_deg": -24.344560045143464,
+      "drive_complete_times_s": [
+        3.9000000000000004,
+        10.100000000000001
+      ],
+      "min_robot_centre_distance_m": 0.4126806283282022,
+      "max_object_penetration_m": 0.00014517342941250484,
+      "recovery": true,
+      "recoveries": [
+        {
+          "start_s": 4.2,
+          "end_s": 5.95,
+          "duration_s": 1.75,
+          "result": "recovery_resumed",
+          "requested": [
+            true,
+            false
+          ],
+          "max_observed_gap_m": 0.03116333542453545
+        }
+      ],
+      "diagnostic_disturbance": {
+        "robot": 0,
+        "start": 3.95,
+        "end": 4.2,
+        "force_xy": [
+          0.0,
+          -4.0
+        ]
+      }
+    },
+    {
+      "case": "same_N_0.3_0.3",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.3043112611516072,
+        0.3043112611516072
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004430519902537178,
+        0.004430519902537178
+      ],
+      "independent_follow_path_m": [
+        0.015478076604242198,
+        0.015478076604242202
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.41400000000000026,
+        0.41400000000000026
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.3319833033040256
+      ],
+      "object_effect": 0.3319833033040256,
+      "seconds": 6.300000000000001,
+      "exit_times_s": [
+        6.25,
+        6.25
+      ],
+      "checked_samples": 252,
+      "positive_intervals": 138,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715114874352e-05,
+          "max_command_force_N": 0.1108208678641531,
+          "max_command_normal_force_N": 0.10769238300569475,
+          "max_desired_speed_m_s": 0.08926468890559455
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.657671511526293e-05,
+          "max_command_force_N": 0.1108208678641648,
+          "max_command_normal_force_N": 0.1076923830057008,
+          "max_desired_speed_m_s": 0.08926468890559312
+        }
+      ],
+      "rotation_deg": 4.458417995839768e-14,
+      "drive_complete_times_s": [
+        5.8500000000000005,
+        5.8500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.4674648506237733,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.3_0.3",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.3043112611516072,
+        0.3043112611516072
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004430519902537178,
+        0.004430519902537178
+      ],
+      "independent_follow_path_m": [
+        0.015478076604242198,
+        0.015478076604242202
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.41400000000000026,
+        0.41400000000000026
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.3319833033040256
+      ],
+      "object_effect": 0.3319833033040256,
+      "seconds": 6.300000000000001,
+      "exit_times_s": [
+        6.25,
+        6.25
+      ],
+      "checked_samples": 252,
+      "positive_intervals": 138,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715114874352e-05,
+          "max_command_force_N": 0.1108208678641531,
+          "max_command_normal_force_N": 0.10769238300569475,
+          "max_desired_speed_m_s": 0.08926468890559455
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.657671511526293e-05,
+          "max_command_force_N": 0.1108208678641648,
+          "max_command_normal_force_N": 0.1076923830057008,
+          "max_desired_speed_m_s": 0.08926468890559312
+        }
+      ],
+      "rotation_deg": 4.458417995839768e-14,
+      "drive_complete_times_s": [
+        5.8500000000000005,
+        5.8500000000000005
+      ],
+      "min_robot_centre_distance_m": 0.4674648506237733,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.3_0.5",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.30382510222852527,
+        0.5041353856684953
+      ],
+      "independent_follow_normal_travel_m": [
+        0.1353646893392849,
+        0.004360203807847828
+      ],
+      "independent_follow_path_m": [
+        0.14396055519548887,
+        0.015554497575452601
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.24839999999999982,
+        0.6780000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.03724707354284762,
+        0.4931039041675982
+      ],
+      "object_effect": 0.4931039041675982,
+      "seconds": 8.5,
+      "exit_times_s": [
+        8.4,
+        8.450000000000001
+      ],
+      "checked_samples": 339,
+      "positive_intervals": 226,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 45,
+          "contact_frames": 45,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.7351330769523914e-05,
+          "max_command_force_N": 0.6342754769183351,
+          "max_command_normal_force_N": 0.6177300432804668,
+          "max_desired_speed_m_s": 0.08926409524890018
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.9621738791507646e-05,
+          "max_command_force_N": 0.3170733094940639,
+          "max_command_normal_force_N": 0.18839291048432982,
+          "max_desired_speed_m_s": 0.07383785320336737
+        }
+      ],
+      "rotation_deg": -9.619843166200571,
+      "drive_complete_times_s": [
+        5.8500000000000005,
+        8.05
+      ],
+      "min_robot_centre_distance_m": 0.43448464236038187,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.3_0.5",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.30382510222852527,
+        0.5041353856684953
+      ],
+      "independent_follow_normal_travel_m": [
+        0.1353646893392849,
+        0.004360203807847828
+      ],
+      "independent_follow_path_m": [
+        0.14396055519548887,
+        0.015554497575452601
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.24839999999999982,
+        0.6780000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.03724707354284762,
+        0.4931039041675982
+      ],
+      "object_effect": 0.4931039041675982,
+      "seconds": 8.5,
+      "exit_times_s": [
+        8.4,
+        8.450000000000001
+      ],
+      "checked_samples": 339,
+      "positive_intervals": 226,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 45,
+          "contact_frames": 45,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.7351330769523914e-05,
+          "max_command_force_N": 0.6342754769183351,
+          "max_command_normal_force_N": 0.6177300432804668,
+          "max_desired_speed_m_s": 0.08926409524890018
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.9621738791507646e-05,
+          "max_command_force_N": 0.3170733094940639,
+          "max_command_normal_force_N": 0.18839291048432982,
+          "max_desired_speed_m_s": 0.07383785320336737
+        }
+      ],
+      "rotation_deg": -9.619843166200571,
+      "drive_complete_times_s": [
+        5.8500000000000005,
+        8.05
+      ],
+      "min_robot_centre_distance_m": 0.43448464236038187,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.5_0.1",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.503035358825116,
+        0.10239639606924884
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004329452768813854,
+        0.2522343583187488
+      ],
+      "independent_follow_path_m": [
+        0.015342025302033794,
+        0.26369122177464516
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6840000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.11186833127050422,
+        0.4443387341123346
+      ],
+      "object_effect": 0.4443387341123346,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.5,
+        8.450000000000001
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.729655473350135e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.174256433085109e-05,
+          "max_command_force_N": 0.258287183467387,
+          "max_command_normal_force_N": 0.2161003984072913,
+          "max_desired_speed_m_s": 0.07489943959696581
+        },
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.594160143308156e-05,
+          "max_command_force_N": 0.6620857677125231,
+          "max_command_normal_force_N": 0.621992087486425,
+          "max_desired_speed_m_s": 0.08681138050798849
+        }
+      ],
+      "rotation_deg": 20.04877545307939,
+      "drive_complete_times_s": [
+        8.1,
+        3.9000000000000004
+      ],
+      "min_robot_centre_distance_m": 0.4155988494481108,
+      "max_object_penetration_m": 3.702722224630324e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.5_0.1",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.503035358825116,
+        0.10239639606924884
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004329452768813854,
+        0.2522343583187488
+      ],
+      "independent_follow_path_m": [
+        0.015342025302033794,
+        0.26369122177464516
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6840000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.11186833127050422,
+        0.4443387341123346
+      ],
+      "object_effect": 0.4443387341123346,
+      "seconds": 8.55,
+      "exit_times_s": [
+        8.5,
+        8.450000000000001
+      ],
+      "checked_samples": 341,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.729655473350135e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 2.174256433085109e-05,
+          "max_command_force_N": 0.258287183467387,
+          "max_command_normal_force_N": 0.2161003984072913,
+          "max_desired_speed_m_s": 0.07489943959696581
+        },
+        {
+          "frames": 85,
+          "contact_frames": 85,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.594160143308156e-05,
+          "max_command_force_N": 0.6620857677125231,
+          "max_command_normal_force_N": 0.621992087486425,
+          "max_desired_speed_m_s": 0.08681138050798849
+        }
+      ],
+      "rotation_deg": 20.04877545307939,
+      "drive_complete_times_s": [
+        8.1,
+        3.9000000000000004
+      ],
+      "min_robot_centre_distance_m": 0.4155988494481108,
+      "max_object_penetration_m": 3.702722224630324e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.5_0.5",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5027727996131679,
+        0.5027727996131679
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0044305198894436515,
+        0.0044305198894436515
+      ],
+      "independent_follow_path_m": [
+        0.015477696807223763,
+        0.015477696807223763
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6720000000000005,
+        0.6720000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5304448416002137
+      ],
+      "object_effect": 0.5304448416002137,
+      "seconds": 8.450000000000001,
+      "exit_times_s": [
+        8.4,
+        8.4
+      ],
+      "checked_samples": 338,
+      "positive_intervals": 224,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715114874352e-05,
+          "max_command_force_N": 0.10949292879084617,
+          "max_command_normal_force_N": 0.10769231217922172,
+          "max_desired_speed_m_s": 0.08926177782266775
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.657671511526293e-05,
+          "max_command_force_N": 0.10949292879084704,
+          "max_command_normal_force_N": 0.10769231217922112,
+          "max_desired_speed_m_s": 0.08926177782266662
+        }
+      ],
+      "rotation_deg": 5.740931176596774e-14,
+      "drive_complete_times_s": [
+        8.0,
+        8.0
+      ],
+      "min_robot_centre_distance_m": 0.46611524609498867,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_N_0.5_0.5",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5027727996131679,
+        0.5027727996131679
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0044305198894436515,
+        0.0044305198894436515
+      ],
+      "independent_follow_path_m": [
+        0.015477696807223763,
+        0.015477696807223763
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6720000000000005,
+        0.6720000000000005
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5304448416002137
+      ],
+      "object_effect": 0.5304448416002137,
+      "seconds": 8.450000000000001,
+      "exit_times_s": [
+        8.4,
+        8.4
+      ],
+      "checked_samples": 338,
+      "positive_intervals": 224,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.6576715114874352e-05,
+          "max_command_force_N": 0.10949292879084617,
+          "max_command_normal_force_N": 0.10769231217922172,
+          "max_desired_speed_m_s": 0.08926177782266775
+        },
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.657671511526293e-05,
+          "max_command_force_N": 0.10949292879084704,
+          "max_command_normal_force_N": 0.10769231217922112,
+          "max_desired_speed_m_s": 0.08926177782266662
+        }
+      ],
+      "rotation_deg": 5.740931176596774e-14,
+      "drive_complete_times_s": [
+        8.0,
+        8.0
+      ],
+      "min_robot_centre_distance_m": 0.46611524609498867,
+      "max_object_penetration_m": 2.638451576397749e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_N_NW",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5015447740570383,
+        0.10207215175110206
+      ],
+      "independent_follow_normal_travel_m": [
+        0.008080276174870974,
+        0.2439777529166964
+      ],
+      "independent_follow_path_m": [
+        0.01520182743294614,
+        0.266977869032873
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6840000000000005,
+        0.0336
+      ],
+      "object_displacement_xy_m": [
+        -0.26064116152053884,
+        0.41248101740632004
+      ],
+      "object_effect": 0.41248101740632004,
+      "seconds": 10.100000000000001,
+      "exit_times_s": [
+        10.05,
+        10.0
+      ],
+      "checked_samples": 403,
+      "positive_intervals": 222,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -0.00016866848343288776,
+          "max_command_force_N": 0.26008715937100335,
+          "max_command_normal_force_N": 0.2565489330875255,
+          "max_desired_speed_m_s": 0.0760578702440474
+        },
+        {
+          "frames": 85,
+          "contact_frames": 82,
+          "contact_fraction": 0.9647058823529412,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 7.00480115889135e-05,
+          "max_command_force_N": 0.6370512546050191,
+          "max_command_normal_force_N": 0.636038496541091,
+          "max_desired_speed_m_s": 0.08679162813744126
+        }
+      ],
+      "rotation_deg": 17.69771006318172,
+      "drive_complete_times_s": [
+        9.65,
+        5.45
+      ],
+      "min_robot_centre_distance_m": 0.4101938259834267,
+      "max_object_penetration_m": 0.00020655110735917997,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_N_NW",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5015447740570383,
+        0.10207215175110206
+      ],
+      "independent_follow_normal_travel_m": [
+        0.008080276174870974,
+        0.2439777529166964
+      ],
+      "independent_follow_path_m": [
+        0.01520182743294614,
+        0.266977869032873
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6840000000000005,
+        0.0336
+      ],
+      "object_displacement_xy_m": [
+        -0.26064116152053884,
+        0.41248101740632004
+      ],
+      "object_effect": 0.41248101740632004,
+      "seconds": 10.100000000000001,
+      "exit_times_s": [
+        10.05,
+        10.0
+      ],
+      "checked_samples": 403,
+      "positive_intervals": 222,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.688821387764051e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -0.00016866848343288776,
+          "max_command_force_N": 0.26008715937100335,
+          "max_command_normal_force_N": 0.2565489330875255,
+          "max_desired_speed_m_s": 0.0760578702440474
+        },
+        {
+          "frames": 85,
+          "contact_frames": 82,
+          "contact_fraction": 0.9647058823529412,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 7.00480115889135e-05,
+          "max_command_force_N": 0.6370512546050191,
+          "max_command_normal_force_N": 0.636038496541091,
+          "max_desired_speed_m_s": 0.08679162813744126
+        }
+      ],
+      "rotation_deg": 17.69771006318172,
+      "drive_complete_times_s": [
+        9.65,
+        5.45
+      ],
+      "min_robot_centre_distance_m": 0.4101938259834267,
+      "max_object_penetration_m": 0.00020655110735917997,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_N_NW_equal_gap",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5043496126844923,
+        0.1028845595579892
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004291683678503501,
+        0.2550413026082169
+      ],
+      "independent_follow_path_m": [
+        0.015221432184396495,
+        0.2696962521283661
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.2746981947376428,
+        0.37804042590057785
+      ],
+      "object_effect": 0.37804042590057785,
+      "seconds": 8.9,
+      "exit_times_s": [
+        8.85,
+        8.8
+      ],
+      "checked_samples": 355,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.8163916471489756e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.317791984958074e-05,
+          "max_command_force_N": 0.2515397498014322,
+          "max_command_normal_force_N": 0.24691277020037455,
+          "max_desired_speed_m_s": 0.07992542462212963
+        },
+        {
+          "frames": 86,
+          "contact_frames": 85,
+          "contact_fraction": 0.9883720930232558,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.288732427995545e-05,
+          "max_command_force_N": 0.6187923025021649,
+          "max_command_normal_force_N": 0.6174893945989083,
+          "max_desired_speed_m_s": 0.08696743632579475
+        }
+      ],
+      "rotation_deg": 20.629769780138307,
+      "drive_complete_times_s": [
+        8.450000000000001,
+        4.2
+      ],
+      "min_robot_centre_distance_m": 0.4101976557683497,
+      "max_object_penetration_m": 7.726555896930545e-05,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_N_NW_equal_gap",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5043496126844923,
+        0.1028845595579892
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004291683678503501,
+        0.2550413026082169
+      ],
+      "independent_follow_path_m": [
+        0.015221432184396495,
+        0.2696962521283661
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.2746981947376428,
+        0.37804042590057785
+      ],
+      "object_effect": 0.37804042590057785,
+      "seconds": 8.9,
+      "exit_times_s": [
+        8.85,
+        8.8
+      ],
+      "checked_samples": 355,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.8163916471489756e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 3.317791984958074e-05,
+          "max_command_force_N": 0.2515397498014322,
+          "max_command_normal_force_N": 0.24691277020037455,
+          "max_desired_speed_m_s": 0.07992542462212963
+        },
+        {
+          "frames": 86,
+          "contact_frames": 85,
+          "contact_fraction": 0.9883720930232558,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.288732427995545e-05,
+          "max_command_force_N": 0.6187923025021649,
+          "max_command_normal_force_N": 0.6174893945989083,
+          "max_desired_speed_m_s": 0.08696743632579475
+        }
+      ],
+      "rotation_deg": 20.629769780138307,
+      "drive_complete_times_s": [
+        8.450000000000001,
+        4.2
+      ],
+      "min_robot_centre_distance_m": 0.4101976557683497,
+      "max_object_penetration_m": 7.726555896930545e-05,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_equal_dx+0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5015549593833196,
+        0.1004564681385471
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004297415380335358,
+        0.24955480417867187
+      ],
+      "independent_follow_path_m": [
+        0.01523339193805943,
+        0.26842854417034134
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.036
+      ],
+      "object_displacement_xy_m": [
+        -0.2732856438240341,
+        0.371367745174946
+      ],
+      "object_effect": 0.371367745174946,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        8.85
+      ],
+      "checked_samples": 357,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 8.125960555327438e-06,
+          "max_command_force_N": 0.24644512808166777,
+          "max_command_normal_force_N": 0.24174644797621306,
+          "max_desired_speed_m_s": 0.07855651081296601
+        },
+        {
+          "frames": 86,
+          "contact_frames": 84,
+          "contact_fraction": 0.9767441860465116,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 5.535051319985329e-05,
+          "max_command_force_N": 0.6166559642341292,
+          "max_command_normal_force_N": 0.6153123818772255,
+          "max_desired_speed_m_s": 0.08690369577631077
+        }
+      ],
+      "rotation_deg": 20.927885079076482,
+      "drive_complete_times_s": [
+        8.5,
+        4.25
+      ],
+      "min_robot_centre_distance_m": 0.41019801023559327,
+      "max_object_penetration_m": 0.00011370391043800834,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_equal_dx+0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5015549593833196,
+        0.1004564681385471
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004297415380335358,
+        0.24955480417867187
+      ],
+      "independent_follow_path_m": [
+        0.01523339193805943,
+        0.26842854417034134
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.036
+      ],
+      "object_displacement_xy_m": [
+        -0.2732856438240341,
+        0.371367745174946
+      ],
+      "object_effect": 0.371367745174946,
+      "seconds": 8.950000000000001,
+      "exit_times_s": [
+        8.9,
+        8.85
+      ],
+      "checked_samples": 357,
+      "positive_intervals": 227,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 2.7755575615628914e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 8.125960555327438e-06,
+          "max_command_force_N": 0.24644512808166777,
+          "max_command_normal_force_N": 0.24174644797621306,
+          "max_desired_speed_m_s": 0.07855651081296601
+        },
+        {
+          "frames": 86,
+          "contact_frames": 84,
+          "contact_fraction": 0.9767441860465116,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 5.535051319985329e-05,
+          "max_command_force_N": 0.6166559642341292,
+          "max_command_normal_force_N": 0.6153123818772255,
+          "max_desired_speed_m_s": 0.08690369577631077
+        }
+      ],
+      "rotation_deg": 20.927885079076482,
+      "drive_complete_times_s": [
+        8.5,
+        4.25
+      ],
+      "min_robot_centre_distance_m": 0.41019801023559327,
+      "max_object_penetration_m": 0.00011370391043800834,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_equal_dx-0.01",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5000617260939617,
+        0.1033672182774069
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004286201129546315,
+        0.24872356304461773
+      ],
+      "independent_follow_path_m": [
+        0.01520999361865399,
+        0.2676439928366533
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.2709832726091106,
+        0.37818080457149117
+      ],
+      "object_effect": 0.37818080457149117,
+      "seconds": 8.700000000000001,
+      "exit_times_s": [
+        8.65,
+        8.6
+      ],
+      "checked_samples": 347,
+      "positive_intervals": 225,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.469446951953614e-17,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.254881290602139e-06,
+          "max_command_force_N": 0.2561615989186655,
+          "max_command_normal_force_N": 0.25186094962962424,
+          "max_desired_speed_m_s": 0.07435127002737618
+        },
+        {
+          "frames": 85,
+          "contact_frames": 83,
+          "contact_fraction": 0.9764705882352941,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.852794426477014e-05,
+          "max_command_force_N": 0.6183502806474594,
+          "max_command_normal_force_N": 0.6171131449422124,
+          "max_desired_speed_m_s": 0.0871011961104687
+        }
+      ],
+      "rotation_deg": 20.105637725889142,
+      "drive_complete_times_s": [
+        8.25,
+        4.05
+      ],
+      "min_robot_centre_distance_m": 0.4102071897726492,
+      "max_object_penetration_m": 0.00016611140232676856,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "same_face_equal_dx-0.01",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "normal_travel_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5000617260939617,
+        0.1033672182774069
+      ],
+      "independent_follow_normal_travel_m": [
+        0.004286201129546315,
+        0.24872356304461773
+      ],
+      "independent_follow_path_m": [
+        0.01520999361865399,
+        0.2676439928366533
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.6900000000000005,
+        0.0348
+      ],
+      "object_displacement_xy_m": [
+        -0.2709832726091106,
+        0.37818080457149117
+      ],
+      "object_effect": 0.37818080457149117,
+      "seconds": 8.700000000000001,
+      "exit_times_s": [
+        8.65,
+        8.6
+      ],
+      "checked_samples": 347,
+      "positive_intervals": 225,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 3.469446951953614e-17,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 1,
+          "contact_frames": 1,
+          "contact_fraction": 1.0,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": -1.254881290602139e-06,
+          "max_command_force_N": 0.2561615989186655,
+          "max_command_normal_force_N": 0.25186094962962424,
+          "max_desired_speed_m_s": 0.07435127002737618
+        },
+        {
+          "frames": 85,
+          "contact_frames": 83,
+          "contact_fraction": 0.9764705882352941,
+          "near_fraction": 1.0,
+          "max_follow_gap_m": 4.852794426477014e-05,
+          "max_command_force_N": 0.6183502806474594,
+          "max_command_normal_force_N": 0.6171131449422124,
+          "max_desired_speed_m_s": 0.0871011961104687
+        }
+      ],
+      "rotation_deg": 20.105637725889142,
+      "drive_complete_times_s": [
+        8.25,
+        4.05
+      ],
+      "min_robot_centre_distance_m": 0.4102071897726492,
+      "max_object_penetration_m": 0.00016611140232676856,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "scale_0.50",
+      "measured_completion": false,
+      "exits": [
+        "normal_travel_complete",
+        "wait_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5133527983879962,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7140000000000005,
+        null
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5276188439882308
+      ],
+      "object_effect": 0.5276188439882308,
+      "seconds": 8.05,
+      "exit_times_s": [
+        8.0,
+        1.9500000000000002
+      ],
+      "checked_samples": 161,
+      "positive_intervals": 121,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 3.2817786322362087e-13,
+      "drive_complete_times_s": [
+        7.6000000000000005,
+        null
+      ],
+      "min_robot_centre_distance_m": 2.193076118407356,
+      "max_object_penetration_m": 0.000618877068969681,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "scale_0.50",
+      "measured_completion": true,
+      "exits": [
+        "normal_travel_complete",
+        "wait_complete"
+      ],
+      "independent_normal_travel_m": [
+        0.5133527983879962,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.7140000000000005,
+        null
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.5276188439882308
+      ],
+      "object_effect": 0.5276188439882308,
+      "seconds": 8.05,
+      "exit_times_s": [
+        8.0,
+        1.9500000000000002
+      ],
+      "checked_samples": 161,
+      "positive_intervals": 121,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 3.2817786322362087e-13,
+      "drive_complete_times_s": [
+        7.6000000000000005,
+        null
+      ],
+      "min_robot_centre_distance_m": 2.193076118407356,
+      "max_object_penetration_m": 0.000618877068969681,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "short_face_two_robots",
+      "measured_completion": false,
+      "exits": [
+        "same_face_no_room",
+        "same_face_no_room"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 0.05,
+      "exit_times_s": [
+        0.0,
+        0.0
+      ],
+      "checked_samples": 2,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": false,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 0.0,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.40000000000000013,
+      "max_object_penetration_m": 0.0,
+      "recovery": false,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    },
+    {
+      "case": "short_face_two_robots",
+      "measured_completion": true,
+      "exits": [
+        "same_face_no_room",
+        "same_face_no_room"
+      ],
+      "independent_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_follow_path_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_normal_travel_m": [
+        0.0,
+        0.0
+      ],
+      "independent_recovery_path_m": [
+        0.0,
+        0.0
+      ],
+      "reference_budget_m": [
+        0.0,
+        0.0
+      ],
+      "object_displacement_xy_m": [
+        0.0,
+        0.0
+      ],
+      "object_effect": 0.0,
+      "seconds": 0.05,
+      "exit_times_s": [
+        0.0,
+        0.0
+      ],
+      "checked_samples": 2,
+      "positive_intervals": 0,
+      "reverse_intervals": 0,
+      "max_reconstruction_error_m": 0.0,
+      "follow": true,
+      "follow_stats": [
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        },
+        {
+          "frames": 0,
+          "contact_frames": 0,
+          "contact_fraction": null,
+          "near_fraction": null,
+          "max_follow_gap_m": null,
+          "max_command_force_N": 0.0,
+          "max_command_normal_force_N": 0.0,
+          "max_desired_speed_m_s": 0.0
+        }
+      ],
+      "rotation_deg": 0.0,
+      "drive_complete_times_s": [
+        null,
+        null
+      ],
+      "min_robot_centre_distance_m": 0.40000000000000013,
+      "max_object_penetration_m": 0.0,
+      "recovery": true,
+      "recoveries": [],
+      "diagnostic_disturbance": null
+    }
+  ],
+  "source_sha256": {
+    "joint_contact_recovery_audit.py": "6abbafc15cde208c85416155b4f4e7a26a0d600367cdd909711c039a21fde5a7",
+    "normal_travel_audit.py": "2cad4dad48e44ee3930129e91ac493c1bd3ab287d8de324a385cfa0a9b73a8d3",
+    "post_push_follow_audit.py": "9927a3d6a520ae0705d9bf2f918e62d53f5e0785f5e7ef956f0c43f74a9ce622"
+  },
+  "contract": "actual contact and gap keeping are distinct; no physical contact is inferred from proximity"
+}

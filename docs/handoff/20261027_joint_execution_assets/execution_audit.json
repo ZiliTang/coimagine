@@ -1,0 +1,1259 @@
+{
+  "version": "joint-reference-audit-v1",
+  "records": [
+    {
+      "case": "N_E_0.1_0.5",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 5.200000000000001,
+      "seconds": 10.5,
+      "actual_displacement_xy": [
+        0.5019099808544221,
+        0.13797794510964811
+      ],
+      "rotation_deg": -9.994084179712702,
+      "max_penetration": 0.0006219478045247579,
+      "events": []
+    },
+    {
+      "case": "N_E_0.1_0.5",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.1008000000000002,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.09999999999999964,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.3408944971757326,
+        0.21186184091371008
+      ],
+      "rotation_deg": 1.9027543310230115,
+      "max_penetration": 5.117020397608887e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_E_0.3_0.3",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 0.8500000000000005,
+      "seconds": 8.75,
+      "actual_displacement_xy": [
+        0.30201196715783807,
+        0.30584995291544015
+      ],
+      "rotation_deg": -2.810771283730167,
+      "max_penetration": 0.0007129948436113639,
+      "events": []
+    },
+    {
+      "case": "N_E_0.3_0.3",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.30000000000000016,
+        0.30000000000000016
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 100,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 5.3500000000000005,
+      "actual_displacement_xy": [
+        0.18561949233618913,
+        0.23348583634905928
+      ],
+      "rotation_deg": 8.075099722117239,
+      "max_penetration": 6.390787537045216e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_E_0.5_0.1",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 5.0,
+      "seconds": 10.3,
+      "actual_displacement_xy": [
+        0.09360747859390717,
+        0.5021979426767533
+      ],
+      "rotation_deg": 8.664602928356304,
+      "max_penetration": 0.0006481062503306362,
+      "events": []
+    },
+    {
+      "case": "N_E_0.5_0.1",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.1008000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.04999999999999982,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.18054419814885625,
+        0.38788012604633604
+      ],
+      "rotation_deg": 10.399378871874134,
+      "max_penetration": 3.413924336521139e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_E_0.5_0.1_dx+0.01",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 5.150000000000001,
+      "seconds": 10.4,
+      "actual_displacement_xy": [
+        0.0997262309741287,
+        0.5014348114332399
+      ],
+      "rotation_deg": 8.815711620605951,
+      "max_penetration": 0.0006576236058055397,
+      "events": []
+    },
+    {
+      "case": "N_E_0.5_0.1_dx+0.01",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.1008000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.04999999999999982,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.17632134803620003,
+        0.38676160783269387
+      ],
+      "rotation_deg": 10.282109431035728,
+      "max_penetration": 3.460781166918419e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_E_0.5_0.1_dx-0.01",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 5.1,
+      "seconds": 10.450000000000001,
+      "actual_displacement_xy": [
+        0.07185909145404112,
+        0.5024014526593019
+      ],
+      "rotation_deg": 7.2132484514858595,
+      "max_penetration": 0.0006454461712122209,
+      "events": []
+    },
+    {
+      "case": "N_E_0.5_0.1_dx-0.01",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.1008000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.04999999999999982,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.18469003534417938,
+        0.3886141138067636
+      ],
+      "rotation_deg": 10.400994616460737,
+      "max_penetration": 4.373504398932899e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_S_0.3_0.3",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "blocked_no_progress"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 4.800000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 6.8177313472585e-13,
+      "max_penetration": 0.0006188770689630196,
+      "events": []
+    },
+    {
+      "case": "N_S_0.3_0.3",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.30000000000000016,
+        0.30000000000000016
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 100,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 5.050000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 5.095642233256113e-13,
+      "max_penetration": 2.7767642726717057e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_S_0.5_0.1",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "blocked_no_progress"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 6.15,
+      "actual_displacement_xy": [
+        0.0,
+        0.01651605518700583
+      ],
+      "rotation_deg": 3.708581851900959e-13,
+      "max_penetration": 0.0006188770689636858,
+      "events": []
+    },
+    {
+      "case": "N_S_0.5_0.1",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.1008000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 6.95,
+      "actual_displacement_xy": [
+        0.0,
+        0.1909193859822258
+      ],
+      "rotation_deg": 1.5973070071841834e-12,
+      "max_penetration": 2.7767642726717057e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "N_S_0.5_0.5",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "blocked_no_progress"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 4.800000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 6.8177313472585e-13,
+      "max_penetration": 0.0006188770689630196,
+      "events": []
+    },
+    {
+      "case": "N_S_0.5_0.5",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 6.75,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 8.736411832554676e-13,
+      "max_penetration": 2.7767642726717057e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "peer_direction_unavailable",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "safety_abort",
+        "direction_unavailable"
+      ],
+      "exit_gap_seconds": 3.3000000000000003,
+      "seconds": 3.35,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 0.0,
+      "max_penetration": 0.0,
+      "events": []
+    },
+    {
+      "case": "peer_direction_unavailable",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "peer_prepare_failed",
+        "direction_unavailable"
+      ],
+      "exit_gap_seconds": 0.05,
+      "seconds": 0.1,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 0.0,
+      "max_penetration": 0.0,
+      "events": [
+        {
+          "event": "peer_prepare_failed",
+          "time": 0.05
+        }
+      ]
+    },
+    {
+      "case": "rotation_mixed_angles",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "option_budget",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 0.5,
+      "seconds": 6.95,
+      "actual_displacement_xy": [
+        -0.022997939217191288,
+        -0.08219884641489794
+      ],
+      "rotation_deg": 29.23837280808727,
+      "max_penetration": 0.00023816954322385198,
+      "events": []
+    },
+    {
+      "case": "rotation_mixed_angles",
+      "new_protocol": true,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "local_effect_reached",
+        "local_effect_reached"
+      ],
+      "exit_gap_seconds": 3.7,
+      "seconds": 6.75,
+      "actual_displacement_xy": [
+        -0.022846706421417284,
+        -0.08181518499793827
+      ],
+      "rotation_deg": 28.990640516323392,
+      "max_penetration": 0.00023493784772355813,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.1_0.1",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 5.5,
+      "actual_displacement_xy": [
+        0.0,
+        0.10230495326343547
+      ],
+      "rotation_deg": 1.6048134095889272e-13,
+      "max_penetration": 0.0004961964078837866,
+      "events": []
+    },
+    {
+      "case": "same_N_0.1_0.1",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.10200000000000002,
+        0.10200000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 34,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 3.7,
+      "actual_displacement_xy": [
+        0.0,
+        0.09198486303122033
+      ],
+      "rotation_deg": -2.4917564678265427e-14,
+      "max_penetration": 2.638451576442158e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.1_0.2",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.06,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 4.950000000000001,
+      "seconds": 10.15,
+      "actual_displacement_xy": [
+        0.1219832268236618,
+        0.22084527201588777
+      ],
+      "rotation_deg": -24.12152721510049,
+      "max_penetration": 0.0005872866752340238,
+      "events": []
+    },
+    {
+      "case": "same_N_0.1_0.2",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.10200000000000005,
+        0.2040000000000001
+      ],
+      "normal_speed_references": [
+        0.06,
+        0.12
+      ],
+      "checked_contact_increments": 68,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 4.55,
+      "actual_displacement_xy": [
+        0.00023195419544475016,
+        0.16948937720719126
+      ],
+      "rotation_deg": -0.21902356782723073,
+      "max_penetration": 2.638451576442158e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.1_0.5",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 14.950000000000003,
+      "seconds": 18.2,
+      "actual_displacement_xy": [
+        0.5292702402055909,
+        0.5193169202273324
+      ],
+      "rotation_deg": -28.081309815386767,
+      "max_penetration": 0.0006345497123989607,
+      "events": []
+    },
+    {
+      "case": "same_N_0.1_0.5",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.1008000000000002,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.05000000000000071,
+      "seconds": 7.1000000000000005,
+      "actual_displacement_xy": [
+        0.013660438339442305,
+        0.38639265528098177
+      ],
+      "rotation_deg": -3.5909920912055884,
+      "max_penetration": 4.342349998317951e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.1_0.5_dx+0.01",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 11.95,
+      "seconds": 15.200000000000001,
+      "actual_displacement_xy": [
+        0.5185275140655881,
+        0.5041955523405215
+      ],
+      "rotation_deg": -32.22310612372008,
+      "max_penetration": 0.0006310192070609483,
+      "events": []
+    },
+    {
+      "case": "same_N_0.1_0.5_dx+0.01",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.1008000000000002,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.04999999999999982,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.018825731929329237,
+        0.3819462989605511
+      ],
+      "rotation_deg": -4.269345508410872,
+      "max_penetration": 0.00017356104745420785,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.1_0.5_dx-0.01",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "blocked_no_progress",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 15.25,
+      "seconds": 18.5,
+      "actual_displacement_xy": [
+        0.5250632875752079,
+        0.5201408105916734
+      ],
+      "rotation_deg": -27.971666694191253,
+      "max_penetration": 0.0006353013970076026,
+      "events": []
+    },
+    {
+      "case": "same_N_0.1_0.5_dx-0.01",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.1008000000000002,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.024,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.05000000000000071,
+      "seconds": 7.1000000000000005,
+      "actual_displacement_xy": [
+        0.014999891637807572,
+        0.3865308611631755
+      ],
+      "rotation_deg": -3.5157799941856758,
+      "max_penetration": 3.278915573445452e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.3_0.3",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 7.75,
+      "actual_displacement_xy": [
+        0.0,
+        0.3024388759600227
+      ],
+      "rotation_deg": -1.1333023025697437e-12,
+      "max_penetration": 0.0005649046229636578,
+      "events": []
+    },
+    {
+      "case": "same_N_0.3_0.3",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.30000000000000016,
+        0.30000000000000016
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 100,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 5.3500000000000005,
+      "actual_displacement_xy": [
+        0.0,
+        0.24429207991987933
+      ],
+      "rotation_deg": -1.63122705828615e-13,
+      "max_penetration": 2.638451576442158e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.3_0.5",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.072,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 2.3000000000000007,
+      "seconds": 11.25,
+      "actual_displacement_xy": [
+        0.2695138469330236,
+        0.4739269534521964
+      ],
+      "rotation_deg": -33.83984844258533,
+      "max_penetration": 0.0005985221119845641,
+      "events": []
+    },
+    {
+      "case": "same_N_0.3_0.5",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.3023999999999997,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.072,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.0003376078928551962,
+        0.4009575927457023
+      ],
+      "rotation_deg": -0.054882898286821934,
+      "max_penetration": 2.638451576442158e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.5_0.1",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "blocked_no_progress"
+      ],
+      "exit_gap_seconds": 14.950000000000003,
+      "seconds": 18.2,
+      "actual_displacement_xy": [
+        -0.5292702402056264,
+        0.5193169202273369
+      ],
+      "rotation_deg": 28.081309815387627,
+      "max_penetration": 0.0006345497123977186,
+      "events": []
+    },
+    {
+      "case": "same_N_0.5_0.1",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.1008000000000002
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.05000000000000071,
+      "seconds": 7.1000000000000005,
+      "actual_displacement_xy": [
+        -0.013660438339440528,
+        0.386392655280988
+      ],
+      "rotation_deg": 3.590992091204321,
+      "max_penetration": 4.342349998007767e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_N_0.5_0.5",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "effect_complete",
+        "effect_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 9.950000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.5024688963076227
+      ],
+      "rotation_deg": -4.9687842294412e-12,
+      "max_penetration": 0.0005649046229636578,
+      "events": []
+    },
+    {
+      "case": "same_N_0.5_0.5",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.5040000000000003,
+        0.5040000000000003
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 168,
+      "exits": [
+        "normal_reference_complete",
+        "normal_reference_complete"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 7.050000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.401214506650565
+      ],
+      "rotation_deg": -3.228225434624172e-13,
+      "max_penetration": 2.638451576442158e-05,
+      "events": [
+        {
+          "event": "staging_released",
+          "time": 1.25
+        },
+        {
+          "event": "contact_released",
+          "time": 2.4000000000000004
+        }
+      ]
+    },
+    {
+      "case": "same_face_N_NW",
+      "new_protocol": false,
+      "normal_reference_pair": false,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.12
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "safety_abort",
+        "safety_abort"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 1.6,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 0.0,
+      "max_penetration": 0.0,
+      "events": []
+    },
+    {
+      "case": "same_face_N_NW",
+      "new_protocol": true,
+      "normal_reference_pair": true,
+      "normal_reference_budget": [
+        0.0,
+        0.0
+      ],
+      "normal_speed_references": [
+        0.12,
+        0.024
+      ],
+      "checked_contact_increments": 0,
+      "exits": [
+        "joint_prepare_stalled",
+        "joint_prepare_stalled"
+      ],
+      "exit_gap_seconds": 0.0,
+      "seconds": 4.800000000000001,
+      "actual_displacement_xy": [
+        0.0,
+        0.0
+      ],
+      "rotation_deg": 0.0,
+      "max_penetration": 0.0,
+      "events": [
+        {
+          "event": "joint_prepare_stalled",
+          "time": 4.75
+        }
+      ]
+    }
+  ],
+  "source_sha256": "67bbdd9127c402c6d88d8d94071b48a9c0ff91f0ca7964343518bbaba7cff18d",
+  "physics_scored_against_joint_vector_goal": false
+}
