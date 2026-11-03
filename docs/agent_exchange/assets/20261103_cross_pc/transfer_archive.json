@@ -1,0 +1,10 @@
+{
+  "filename": "coimagine_state_20261103_1250.tar.gz",
+  "local_path": "/home/tzl/repo/coimagine/outputs/handoff/20261103_cross_pc/coimagine_state_20261103_1250.tar.gz",
+  "sha256": "c063e510df93f736866d5b72f71ffb39c98f6245bfbba3e1ce6b25c43974055a",
+  "bytes": 46995135,
+  "file_count": 86,
+  "includes": "mid-run best/checkpoint, source snapshots, manifest/panels, full frozen history, selected evaluations, six published RL replays, saved presets and 11:18 mentor evidence",
+  "excludes": "other historical outputs, complete testbed run library, future final checkpoint/result, virtual environment, credentials",
+  "git_uploaded": false
+}

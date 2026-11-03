@@ -1,0 +1,3347 @@
+{
+  "metadata": {
+    "interface_version": "event-progress-v1",
+    "action_version": "testbed-speeds-v1",
+    "action_codebook_hash": "dcece078bb8ba397194fd8c1fa43865363af9927ea59d978ef08b18a77eb5a64",
+    "actions": [
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 0,
+        "label": "PUSH_E[v=0.10m/s]",
+        "index": 0,
+        "effect_kind": "translate",
+        "effect_direction": [
+          1.0,
+          0.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 0,
+        "label": "PUSH_E[v=0.20m/s]",
+        "index": 1,
+        "effect_kind": "translate",
+        "effect_direction": [
+          1.0,
+          0.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 0,
+        "label": "PUSH_E[v=0.30m/s]",
+        "index": 2,
+        "effect_kind": "translate",
+        "effect_direction": [
+          1.0,
+          0.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 0,
+        "label": "PUSH_E[v=0.40m/s]",
+        "index": 3,
+        "effect_kind": "translate",
+        "effect_direction": [
+          1.0,
+          0.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 1,
+        "label": "PUSH_NE[v=0.10m/s]",
+        "index": 4,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865476,
+          0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 1,
+        "label": "PUSH_NE[v=0.20m/s]",
+        "index": 5,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865476,
+          0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 1,
+        "label": "PUSH_NE[v=0.30m/s]",
+        "index": 6,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865476,
+          0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 1,
+        "label": "PUSH_NE[v=0.40m/s]",
+        "index": 7,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865476,
+          0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 2,
+        "label": "PUSH_N[v=0.10m/s]",
+        "index": 8,
+        "effect_kind": "translate",
+        "effect_direction": [
+          6.123233995736766e-17,
+          1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 2,
+        "label": "PUSH_N[v=0.20m/s]",
+        "index": 9,
+        "effect_kind": "translate",
+        "effect_direction": [
+          6.123233995736766e-17,
+          1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 2,
+        "label": "PUSH_N[v=0.30m/s]",
+        "index": 10,
+        "effect_kind": "translate",
+        "effect_direction": [
+          6.123233995736766e-17,
+          1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 2,
+        "label": "PUSH_N[v=0.40m/s]",
+        "index": 11,
+        "effect_kind": "translate",
+        "effect_direction": [
+          6.123233995736766e-17,
+          1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 3,
+        "label": "PUSH_NW[v=0.10m/s]",
+        "index": 12,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865475,
+          0.7071067811865476
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 3,
+        "label": "PUSH_NW[v=0.20m/s]",
+        "index": 13,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865475,
+          0.7071067811865476
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 3,
+        "label": "PUSH_NW[v=0.30m/s]",
+        "index": 14,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865475,
+          0.7071067811865476
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 3,
+        "label": "PUSH_NW[v=0.40m/s]",
+        "index": 15,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865475,
+          0.7071067811865476
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 4,
+        "label": "PUSH_W[v=0.10m/s]",
+        "index": 16,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.0,
+          1.2246467991473532e-16
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 4,
+        "label": "PUSH_W[v=0.20m/s]",
+        "index": 17,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.0,
+          1.2246467991473532e-16
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 4,
+        "label": "PUSH_W[v=0.30m/s]",
+        "index": 18,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.0,
+          1.2246467991473532e-16
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 4,
+        "label": "PUSH_W[v=0.40m/s]",
+        "index": 19,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.0,
+          1.2246467991473532e-16
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 5,
+        "label": "PUSH_SW[v=0.10m/s]",
+        "index": 20,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865477,
+          -0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 5,
+        "label": "PUSH_SW[v=0.20m/s]",
+        "index": 21,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865477,
+          -0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 5,
+        "label": "PUSH_SW[v=0.30m/s]",
+        "index": 22,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865477,
+          -0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 5,
+        "label": "PUSH_SW[v=0.40m/s]",
+        "index": 23,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -0.7071067811865477,
+          -0.7071067811865475
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 6,
+        "label": "PUSH_S[v=0.10m/s]",
+        "index": 24,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.8369701987210297e-16,
+          -1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 6,
+        "label": "PUSH_S[v=0.20m/s]",
+        "index": 25,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.8369701987210297e-16,
+          -1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 6,
+        "label": "PUSH_S[v=0.30m/s]",
+        "index": 26,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.8369701987210297e-16,
+          -1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 6,
+        "label": "PUSH_S[v=0.40m/s]",
+        "index": 27,
+        "effect_kind": "translate",
+        "effect_direction": [
+          -1.8369701987210297e-16,
+          -1.0
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.1,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.1,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 7,
+        "label": "PUSH_SE[v=0.10m/s]",
+        "index": 28,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865474,
+          -0.7071067811865477
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.2,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.2,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 7,
+        "label": "PUSH_SE[v=0.20m/s]",
+        "index": 29,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865474,
+          -0.7071067811865477
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 7,
+        "label": "PUSH_SE[v=0.30m/s]",
+        "index": 30,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865474,
+          -0.7071067811865477
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.4,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.4,
+        "scale_kind": "normal_speed",
+        "scale_index": 3,
+        "type_index": 7,
+        "label": "PUSH_SE[v=0.40m/s]",
+        "index": 31,
+        "effect_kind": "translate",
+        "effect_direction": [
+          0.7071067811865474,
+          -0.7071067811865477
+        ],
+        "rotation_sign": 0,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.02,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.02,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 8,
+        "label": "ROTATE_CCW[normal_v=0.02m/s]",
+        "index": 32,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": 1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.04,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.04,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 8,
+        "label": "ROTATE_CCW[normal_v=0.04m/s]",
+        "index": 33,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": 1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.06,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.06,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 8,
+        "label": "ROTATE_CCW[normal_v=0.06m/s]",
+        "index": 34,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": 1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.02,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.02,
+        "scale_kind": "normal_speed",
+        "scale_index": 0,
+        "type_index": 9,
+        "label": "ROTATE_CW[normal_v=0.02m/s]",
+        "index": 35,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": -1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.04,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.04,
+        "scale_kind": "normal_speed",
+        "scale_index": 1,
+        "type_index": 9,
+        "label": "ROTATE_CW[normal_v=0.04m/s]",
+        "index": 36,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": -1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "push",
+        "alpha_deg": 0.0,
+        "speed": 0.06,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.06,
+        "scale_kind": "normal_speed",
+        "scale_index": 2,
+        "type_index": 9,
+        "label": "ROTATE_CW[normal_v=0.06m/s]",
+        "index": 37,
+        "effect_kind": "rotate",
+        "effect_direction": [
+          0.0,
+          1.0
+        ],
+        "rotation_sign": -1,
+        "rotation_angle": 0.0
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CCW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 10,
+        "label": "REPOSITION_CCW[v=0.30m/s]",
+        "index": 38
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CCW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 10,
+        "label": "REPOSITION_CCW[v=0.30m/s]",
+        "index": 39
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CCW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 10,
+        "label": "REPOSITION_CCW[v=0.30m/s]",
+        "index": 40
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 11,
+        "label": "REPOSITION_CW[v=0.30m/s]",
+        "index": 41
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 11,
+        "label": "REPOSITION_CW[v=0.30m/s]",
+        "index": 42
+      },
+      {
+        "kind": "reposition",
+        "alpha_deg": 0.0,
+        "speed": 0.3,
+        "direction": "CW",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.3,
+        "scale_kind": "tangent_speed",
+        "scale_index": 0,
+        "type_index": 11,
+        "label": "REPOSITION_CW[v=0.30m/s]",
+        "index": 43
+      },
+      {
+        "kind": "wait",
+        "alpha_deg": 0.0,
+        "speed": 0.0,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.0,
+        "scale_kind": "persistent",
+        "scale_index": -1,
+        "type_index": 12,
+        "label": "BRAKE_HOLD",
+        "index": 44
+      },
+      {
+        "kind": "follow",
+        "alpha_deg": 0.0,
+        "speed": 0.0,
+        "direction": "",
+        "distance": 0.0,
+        "duration": 0.0,
+        "scale": 0.0,
+        "scale_kind": "persistent",
+        "scale_index": -1,
+        "type_index": 13,
+        "label": "SUPPORT_FOLLOW_PUSH",
+        "index": 45
+      }
+    ],
+    "legal_pairs": "P+P, P+W, R+R, R+W, W+W, ordered",
+    "observation_extra": [
+      "elapsed_s",
+      "progress_0",
+      "progress_1",
+      "contact_0",
+      "contact_1",
+      "event_start",
+      "event_contact",
+      "event_progress",
+      "event_contact_lost",
+      "event_failure",
+      "event_acquisition_timeout",
+      "event_progress_timeout",
+      "event_wait",
+      "event_terminal"
+    ],
+    "event_config": {
+      "distance_m": 0.2,
+      "contact_hold_s": 0.15,
+      "contact_loss_s": 0.25,
+      "acquisition_timeout_s": 12.0,
+      "progress_timeout_s": 8.0,
+      "wait_timeout_s": 1.0
+    },
+    "centralized": true,
+    "progress": "signed robot travel; not object displacement"
+  },
+  "config": {
+    "seed": 20261103,
+    "episodes": 32,
+    "hidden": 256,
+    "epochs": 4,
+    "lr": 0.0003,
+    "entropy": 0.02,
+    "trace_seconds": 10.0,
+    "target_kl": 0.03,
+    "panel": "dynamic",
+    "eval_roots": 32,
+    "eval_every": 10,
+    "eval_stochastic": false,
+    "max_attempt_factor": 3,
+    "workers": 16
+  },
+  "args": {
+    "out": "/home/tzl/repo/coimagine/outputs/option_rl_v20/event_12h_20261103_v2/run",
+    "hours": 12.0,
+    "iterations": 100000,
+    "episodes": 32,
+    "seed": 20261103,
+    "hidden": 256,
+    "epochs": 4,
+    "lr": 0.0003,
+    "entropy": 0.02,
+    "trace_seconds": 10.0,
+    "target_kl": 0.03,
+    "eval_every": 10,
+    "eval_roots": 32,
+    "test_roots": 32,
+    "eval_stochastic": false,
+    "panel": "dynamic",
+    "panel_path": null,
+    "resume": null,
+    "snapshot_every": 50,
+    "max_attempt_factor": 3,
+    "workers": 16
+  },
+  "obs_dim": 958,
+  "trainer": "event-progress-long-run-v1",
+  "scene_version": "simple-legal-v2",
+  "training_scenes": "one fresh legal training root per episode (v14 generator); fixed panels disjoint",
+  "evaluation_scenes": "fixed validation roots; test roots reserved for final analysis",
+  "warmup_roots": 64,
+  "gamma": 1.0,
+  "advantage": "gae by actual event periods, trace_seconds as lambda scale",
+  "normalization": "warmup then batch update once after PPO (v16 protocol); first 760 dims normalized only",
+  "anomaly_rule": "record all attempts; quarantine physical anomalies from PPO; all eval roots count",
+  "split_audit": {
+    "ok": true,
+    "unique": 64,
+    "duplicates": []
+  },
+  "validation_instances": [
+    {
+      "name": "simple-legal-v2_validation_0000000",
+      "map": "L0",
+      "split": "validation",
+      "index": 0,
+      "seed": 400711434,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.2267232602507323,
+        "y": 1.501723248070504,
+        "angle": 0.7283461432595622
+      },
+      "robots": [
+        {
+          "x": 1.7876175249614776,
+          "y": 1.6718812612239633,
+          "angle": -0.3696932795904909
+        },
+        {
+          "x": 1.8277611186128726,
+          "y": 0.7895050607249587,
+          "angle": 1.0601797962615238
+        }
+      ],
+      "goal_centre": [
+        2.362561661481485,
+        2.170659070848207
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000001",
+      "map": "L0",
+      "split": "validation",
+      "index": 1,
+      "seed": 613531226,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.5596351866074252,
+        "y": 2.1305602058083988,
+        "angle": -2.022175455934369
+      },
+      "robots": [
+        {
+          "x": 1.8951120500642855,
+          "y": 1.7771076096833869,
+          "angle": 2.3301081402012276
+        },
+        {
+          "x": 2.014263679709545,
+          "y": 2.1967208534504516,
+          "angle": -2.9970802799637486
+        }
+      ],
+      "goal_centre": [
+        1.0660528138960685,
+        1.5707379629443234
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000002",
+      "map": "L0",
+      "split": "validation",
+      "index": 2,
+      "seed": 989531662,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.7565528886512034,
+        "y": 2.2413498505082092,
+        "angle": 0.3998218797925617
+      },
+      "robots": [
+        {
+          "x": 2.9436610339384712,
+          "y": 1.8650557932148537,
+          "angle": 2.0322328348032896
+        },
+        {
+          "x": 3.5116688895001795,
+          "y": 2.5080825896426147,
+          "angle": -2.8020395650667234
+        }
+      ],
+      "goal_centre": [
+        2.615141166792284,
+        1.6540570402773143
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000003",
+      "map": "L0",
+      "split": "validation",
+      "index": 3,
+      "seed": 760265627,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.9945108885993004,
+        "y": 1.1270464836286065,
+        "angle": 2.0112552444469634
+      },
+      "robots": [
+        {
+          "x": 3.617272739128663,
+          "y": 1.168829174990704,
+          "angle": -3.0746004857180176
+        },
+        {
+          "x": 3.221093945800511,
+          "y": 1.7904654920744019,
+          "angle": -1.8999131625556023
+        }
+      ],
+      "goal_centre": [
+        1.2493032383435527,
+        1.3091468831461104
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000004",
+      "map": "L0",
+      "split": "validation",
+      "index": 4,
+      "seed": 675603833,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.2831879024625596,
+        "y": 1.29077923531876,
+        "angle": -1.716806441114689
+      },
+      "robots": [
+        {
+          "x": 2.8656730099676557,
+          "y": 1.5313933839341578,
+          "angle": -0.5228112837626926
+        },
+        {
+          "x": 2.8350503178872293,
+          "y": 0.8427490695490756,
+          "angle": 0.7852782987793674
+        }
+      ],
+      "goal_centre": [
+        2.5241857746482723,
+        0.8697194779596862
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000005",
+      "map": "L0",
+      "split": "validation",
+      "index": 5,
+      "seed": 308159710,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.9098512243459638,
+        "y": 1.9215999546966764,
+        "angle": 1.394647820721051
+      },
+      "robots": [
+        {
+          "x": 1.5391333628583361,
+          "y": 2.0645823036620623,
+          "angle": -0.3681100461808073
+        },
+        {
+          "x": 1.3756456136984512,
+          "y": 1.487780000342867,
+          "angle": 0.6820660662997866
+        }
+      ],
+      "goal_centre": [
+        2.9184022540420633,
+        1.3081048115319092
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000006",
+      "map": "L0",
+      "split": "validation",
+      "index": 6,
+      "seed": 127162611,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.8960339590347886,
+        "y": 2.017737303765759,
+        "angle": 0.7096003236340382
+      },
+      "robots": [
+        {
+          "x": 3.4230406260108692,
+          "y": 2.6845043894368437,
+          "angle": -2.2396505638434796
+        },
+        {
+          "x": 2.6445809010655,
+          "y": 2.4855653113798577,
+          "angle": -1.0776081263472492
+        }
+      ],
+      "goal_centre": [
+        0.88329262739386,
+        1.3282131964731683
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000007",
+      "map": "L0",
+      "split": "validation",
+      "index": 7,
+      "seed": 290603198,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.095296346109265,
+        "y": 1.4723226132330605,
+        "angle": -0.4367824657343853
+      },
+      "robots": [
+        {
+          "x": 1.3993302471421045,
+          "y": 1.4221836063242237,
+          "angle": 0.07191806330835075
+        },
+        {
+          "x": 1.8674445879647883,
+          "y": 1.103464582635343,
+          "angle": 1.0174476824663603
+        }
+      ],
+      "goal_centre": [
+        1.8462848568714496,
+        0.8562529804062127
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000008",
+      "map": "L0",
+      "split": "validation",
+      "index": 8,
+      "seed": 73545609,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.1745023550039155,
+        "y": 2.170898505803284,
+        "angle": -2.053708316317324
+      },
+      "robots": [
+        {
+          "x": 0.7108693780483539,
+          "y": 1.292765835521154,
+          "angle": 1.0850192073834952
+        },
+        {
+          "x": 1.5265149501053306,
+          "y": 1.9880649222345372,
+          "angle": 2.6625497035984864
+        }
+      ],
+      "goal_centre": [
+        1.0771849598981564,
+        1.161573765032183
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000009",
+      "map": "L0",
+      "split": "validation",
+      "index": 9,
+      "seed": 237213107,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.09302443463946,
+        "y": 1.063835210214436,
+        "angle": 2.9459428308254463
+      },
+      "robots": [
+        {
+          "x": 3.0997190565102755,
+          "y": 1.56403407117935,
+          "angle": -1.5841794483927283
+        },
+        {
+          "x": 2.2753990832448134,
+          "y": 1.0952601284298056,
+          "angle": -0.038415465250645736
+        }
+      ],
+      "goal_centre": [
+        0.8919166908048363,
+        1.8751767435946345
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000010",
+      "map": "L0",
+      "split": "validation",
+      "index": 10,
+      "seed": 944817302,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.2954977913387031,
+        "y": 1.725647215429769,
+        "angle": -2.6314497168567375
+      },
+      "robots": [
+        {
+          "x": 1.003005789911091,
+          "y": 2.0632257564098198,
+          "angle": -0.8568343222702262
+        },
+        {
+          "x": 0.40771256993668814,
+          "y": 1.2104754766258101,
+          "angle": 0.5257998003471999
+        }
+      ],
+      "goal_centre": [
+        2.0650014102915177,
+        0.8583253281996597
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000011",
+      "map": "L0",
+      "split": "validation",
+      "index": 11,
+      "seed": 708635041,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.8588775292628743,
+        "y": 1.4778803917873782,
+        "angle": 2.135293772537193
+      },
+      "robots": [
+        {
+          "x": 1.5780934704912595,
+          "y": 0.990531856799256,
+          "angle": 1.0481009934063594
+        },
+        {
+          "x": 2.347711448328798,
+          "y": 0.8094734992361927,
+          "angle": 2.2022488777958866
+        }
+      ],
+      "goal_centre": [
+        1.375422748568294,
+        0.8946277483379752
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000012",
+      "map": "L0",
+      "split": "validation",
+      "index": 12,
+      "seed": 357690854,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.5574972185391196,
+        "y": 1.0065759502775895,
+        "angle": 2.0185666289480846
+      },
+      "robots": [
+        {
+          "x": 0.9065812216545475,
+          "y": 1.5239762905104945,
+          "angle": -0.6716114034464066
+        },
+        {
+          "x": 0.9276586734673072,
+          "y": 0.8511304886416815,
+          "angle": 0.2419665967137494
+        }
+      ],
+      "goal_centre": [
+        2.5756301828532213,
+        1.2791706879535958
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000013",
+      "map": "L0",
+      "split": "validation",
+      "index": 13,
+      "seed": 287169912,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.3474289363598966,
+        "y": 1.5184781793448452,
+        "angle": 0.3928257205122967
+      },
+      "robots": [
+        {
+          "x": 2.834993845212342,
+          "y": 1.307426522046203,
+          "angle": 2.733075950358119
+        },
+        {
+          "x": 2.920143604304262,
+          "y": 2.0095073220389983,
+          "angle": -2.4328346822807005
+        }
+      ],
+      "goal_centre": [
+        0.9894558962376195,
+        2.0537524709146444
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000014",
+      "map": "L0",
+      "split": "validation",
+      "index": 14,
+      "seed": 147193259,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.8615696766434595,
+        "y": 2.379613437747173,
+        "angle": 0.15644022567617322
+      },
+      "robots": [
+        {
+          "x": 2.0545278164032763,
+          "y": 1.7447658084808206,
+          "angle": 1.8658675478847755
+        },
+        {
+          "x": 2.6254326304345645,
+          "y": 2.3094583232602837,
+          "angle": 3.0500070459190396
+        }
+      ],
+      "goal_centre": [
+        1.6054156722232267,
+        2.0637253427728046
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000015",
+      "map": "L0",
+      "split": "validation",
+      "index": 15,
+      "seed": 370875094,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.7939914174286127,
+        "y": 2.0986091695364664,
+        "angle": 0.09349984118023658
+      },
+      "robots": [
+        {
+          "x": 2.6459709663045063,
+          "y": 2.4129280312232053,
+          "angle": -2.788156235787125
+        },
+        {
+          "x": 1.8202642393506148,
+          "y": 2.625041176899323,
+          "angle": -1.6206622945713995
+        }
+      ],
+      "goal_centre": [
+        1.2258752617777762,
+        1.939001053708314
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000016",
+      "map": "L0",
+      "split": "validation",
+      "index": 16,
+      "seed": 718419039,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.146789489404349,
+        "y": 0.7885974358094905,
+        "angle": -0.1419821117901492
+      },
+      "robots": [
+        {
+          "x": 2.0986747000903905,
+          "y": 1.2114150051280335,
+          "angle": -1.4574881175885088
+        },
+        {
+          "x": 1.3941650090807038,
+          "y": 0.698975157796981,
+          "angle": 0.11852156637549913
+        }
+      ],
+      "goal_centre": [
+        1.4424153447596155,
+        1.4980407786207603
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000017",
+      "map": "L0",
+      "split": "validation",
+      "index": 17,
+      "seed": 568131130,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.938578469275407,
+        "y": 1.9587988804691183,
+        "angle": -2.1289976044247725
+      },
+      "robots": [
+        {
+          "x": 3.223434873908763,
+          "y": 1.4375787310011336,
+          "angle": 2.070962598835981
+        },
+        {
+          "x": 3.6150318862894557,
+          "y": 1.966110836090766,
+          "angle": -3.1307838222917765
+        }
+      ],
+      "goal_centre": [
+        1.9944170069690232,
+        0.8239779653954326
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000018",
+      "map": "L0",
+      "split": "validation",
+      "index": 18,
+      "seed": 692625138,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.07087757352597,
+        "y": 1.661431185860998,
+        "angle": 2.043981383423959
+      },
+      "robots": [
+        {
+          "x": 1.5152641838628507,
+          "y": 2.162364123670265,
+          "angle": -0.733690340727658
+        },
+        {
+          "x": 1.712968092850047,
+          "y": 1.5203167567666522,
+          "angle": 0.3755605089127688
+        }
+      ],
+      "goal_centre": [
+        2.8027248014753416,
+        1.77018317600634
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000019",
+      "map": "L0",
+      "split": "validation",
+      "index": 19,
+      "seed": 1053158408,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 0.9271506556332272,
+        "y": 1.0791048411853847,
+        "angle": -0.8229478911943731
+      },
+      "robots": [
+        {
+          "x": 1.2491830897376794,
+          "y": 1.4129213504351845,
+          "angle": -2.3382287567741042
+        },
+        {
+          "x": 0.3807164889255662,
+          "y": 1.8863986815398595,
+          "angle": -0.9757620956480625
+        }
+      ],
+      "goal_centre": [
+        0.9395668452323389,
+        1.6322263416200529
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000020",
+      "map": "L0",
+      "split": "validation",
+      "index": 20,
+      "seed": 236573396,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.4308834200303875,
+        "y": 0.6982056850147117,
+        "angle": -0.6352729067374518
+      },
+      "robots": [
+        {
+          "x": 1.2530285646391337,
+          "y": 1.2846541527103748,
+          "angle": -1.2763381341669653
+        },
+        {
+          "x": 0.9160222602596977,
+          "y": 0.5970370493412281,
+          "angle": 0.1940249624201339
+        }
+      ],
+      "goal_centre": [
+        3.1230999570205817,
+        1.6093775962114631
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000021",
+      "map": "L0",
+      "split": "validation",
+      "index": 21,
+      "seed": 64014619,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.711307156945219,
+        "y": 1.582021046556281,
+        "angle": 1.447434741643156
+      },
+      "robots": [
+        {
+          "x": 1.427042154082742,
+          "y": 0.8630297496955478,
+          "angle": 1.1942908010292663
+        },
+        {
+          "x": 2.1694011630872962,
+          "y": 1.3894873457156192,
+          "angle": 2.7437156292705884
+        }
+      ],
+      "goal_centre": [
+        2.471436573016519,
+        1.7197518860185181
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000022",
+      "map": "L0",
+      "split": "validation",
+      "index": 22,
+      "seed": 447699567,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.8094340014095147,
+        "y": 2.0322099748008533,
+        "angle": -2.3503821761500103
+      },
+      "robots": [
+        {
+          "x": 1.9332077278624638,
+          "y": 2.6905211571684733,
+          "angle": -1.756643719729884
+        },
+        {
+          "x": 1.3205186945666945,
+          "y": 2.455039339652502,
+          "angle": -0.7130417527920561
+        }
+      ],
+      "goal_centre": [
+        1.4904443343427225,
+        1.965552737743239
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000023",
+      "map": "L0",
+      "split": "validation",
+      "index": 23,
+      "seed": 720180374,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.469538617635203,
+        "y": 2.3244107594945653,
+        "angle": 2.962026990655911
+      },
+      "robots": [
+        {
+          "x": 0.7125824569206765,
+          "y": 2.495193526912176,
+          "angle": -0.22190237498437432
+        },
+        {
+          "x": 1.2315894380024588,
+          "y": 1.7367775032223953,
+          "angle": 1.1860488762608872
+        }
+      ],
+      "goal_centre": [
+        1.910840092980576,
+        1.3967510323139445
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000024",
+      "map": "L0",
+      "split": "validation",
+      "index": 24,
+      "seed": 288793428,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.121503919029695,
+        "y": 1.403205671007565,
+        "angle": 1.6000816758014462
+      },
+      "robots": [
+        {
+          "x": 2.7005591457597107,
+          "y": 1.3956347768620365,
+          "angle": 0.01798354189578065
+        },
+        {
+          "x": 3.0373236840565605,
+          "y": 0.5018615328787629,
+          "angle": 1.4776723450753178
+        }
+      ],
+      "goal_centre": [
+        3.156660659772072,
+        1.7169419779783492
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000025",
+      "map": "L0",
+      "split": "validation",
+      "index": 25,
+      "seed": 940334411,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.0980986745769412,
+        "y": 1.8531403545085143,
+        "angle": 0.4334472493059498
+      },
+      "robots": [
+        {
+          "x": 1.1220226770652615,
+          "y": 2.457730652670815,
+          "angle": -1.610346295236491
+        },
+        {
+          "x": 0.6505521483529901,
+          "y": 2.2032840529338467,
+          "angle": -0.6638935727856021
+        }
+      ],
+      "goal_centre": [
+        2.212831176205621,
+        1.2577225765348128
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000026",
+      "map": "L0",
+      "split": "validation",
+      "index": 26,
+      "seed": 244853036,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.3729175259729707,
+        "y": 0.9049489007829843,
+        "angle": -0.843402965489775
+      },
+      "robots": [
+        {
+          "x": 1.6541967543817582,
+          "y": 1.2677731731112447,
+          "angle": -2.2302620681883294
+        },
+        {
+          "x": 0.869395309105004,
+          "y": 1.5195412878791263,
+          "angle": -0.8844103547936629
+        }
+      ],
+      "goal_centre": [
+        1.3817231714408995,
+        2.1945237382206395
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000027",
+      "map": "L0",
+      "split": "validation",
+      "index": 27,
+      "seed": 406149803,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.7806423223678247,
+        "y": 2.0192123892841165,
+        "angle": 0.48423036485341875
+      },
+      "robots": [
+        {
+          "x": 0.777299980317161,
+          "y": 1.7432217831788417,
+          "angle": 0.26843242607325946
+        },
+        {
+          "x": 1.556391714329436,
+          "y": 1.3840497739203488,
+          "angle": 1.2313979216711874
+        }
+      ],
+      "goal_centre": [
+        3.0269766563382134,
+        1.314907149808986
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000028",
+      "map": "L0",
+      "split": "validation",
+      "index": 28,
+      "seed": 711740846,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.8250537257916009,
+        "y": 1.0657898855620829,
+        "angle": 2.7654093791934953
+      },
+      "robots": [
+        {
+          "x": 1.042035987310054,
+          "y": 0.9475939320661868,
+          "angle": 0.14981819634237895
+        },
+        {
+          "x": 1.731140508442973,
+          "y": 0.4072348464240835,
+          "angle": 1.4291464166370949
+        }
+      ],
+      "goal_centre": [
+        1.0673144823222867,
+        1.1133439875866677
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000029",
+      "map": "L0",
+      "split": "validation",
+      "index": 29,
+      "seed": 712355995,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.3401648074274224,
+        "y": 1.5742849355744852,
+        "angle": 1.2017867809033476
+      },
+      "robots": [
+        {
+          "x": 3.007338466640422,
+          "y": 2.1568987546272442,
+          "angle": -1.051774231041162
+        },
+        {
+          "x": 2.8081373781450636,
+          "y": 1.5555901051936045,
+          "angle": 0.03512439516904996
+        }
+      ],
+      "goal_centre": [
+        3.0554368154130014,
+        1.6252866950169595
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000030",
+      "map": "L0",
+      "split": "validation",
+      "index": 30,
+      "seed": 294455645,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5842090889635303,
+        "y": 1.44005741680267,
+        "angle": 1.7731097335691661
+      },
+      "robots": [
+        {
+          "x": 3.1606307057356915,
+          "y": 1.7250412124823966,
+          "angle": -2.6824337500696958
+        },
+        {
+          "x": 2.509132794681141,
+          "y": 2.3609797293882218,
+          "angle": -1.4894532704065981
+        }
+      ],
+      "goal_centre": [
+        2.7106733478979876,
+        1.311845427655008
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_validation_0000031",
+      "map": "L0",
+      "split": "validation",
+      "index": 31,
+      "seed": 597199119,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.945400140201312,
+        "y": 1.7264710266321748,
+        "angle": 0.4516019270307776
+      },
+      "robots": [
+        {
+          "x": 3.36287377312329,
+          "y": 1.3773296621924775,
+          "angle": 2.4450946011909864
+        },
+        {
+          "x": 3.6461294685431986,
+          "y": 1.986386898989635,
+          "angle": -2.7864020653889994
+        }
+      ],
+      "goal_centre": [
+        1.1699911112609434,
+        1.1925304636927572
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    }
+  ],
+  "test_instances": [
+    {
+      "name": "simple-legal-v2_test_0000000",
+      "map": "L0",
+      "split": "test",
+      "index": 0,
+      "seed": 812506538,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.854507356382574,
+        "y": 1.8369257288803598,
+        "angle": 0.7485453972233578
+      },
+      "robots": [
+        {
+          "x": 1.2186669131501877,
+          "y": 1.1361996518329411,
+          "angle": 0.8339065851121313
+        },
+        {
+          "x": 2.127158460013767,
+          "y": 1.3960000583063894,
+          "angle": 2.1246070572469646
+        }
+      ],
+      "goal_centre": [
+        1.1306377319015093,
+        1.0320575676888974
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000001",
+      "map": "L0",
+      "split": "test",
+      "index": 1,
+      "seed": 445868588,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.2043061052500028,
+        "y": 2.0024653046688443,
+        "angle": 1.1022386186680038
+      },
+      "robots": [
+        {
+          "x": 0.6352842658042321,
+          "y": 1.4025332770323455,
+          "angle": 0.8118346104027105
+        },
+        {
+          "x": 1.3723229635662837,
+          "y": 1.4496279521787918,
+          "angle": 1.8658431262685493
+        }
+      ],
+      "goal_centre": [
+        2.6182755555671937,
+        1.981344978389223
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000002",
+      "map": "L0",
+      "split": "test",
+      "index": 2,
+      "seed": 641651210,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.65718726670324,
+        "y": 2.021529270200836,
+        "angle": -2.829431402853924
+      },
+      "robots": [
+        {
+          "x": 1.800186613338971,
+          "y": 1.5822789413694842,
+          "angle": 0.473632178143528
+        },
+        {
+          "x": 2.8626253931688286,
+          "y": 1.635288695816597,
+          "angle": 2.0596305433320747
+        }
+      ],
+      "goal_centre": [
+        1.879035765562205,
+        0.9788955694976341
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000003",
+      "map": "L0",
+      "split": "test",
+      "index": 3,
+      "seed": 226260687,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.6586840752323715,
+        "y": 1.1821873799181375,
+        "angle": 0.8895063226801225
+      },
+      "robots": [
+        {
+          "x": 2.880521481237883,
+          "y": 0.8725614550119618,
+          "angle": 2.1924900719809375
+        },
+        {
+          "x": 3.206194975060062,
+          "y": 1.2124763476050624,
+          "angle": -3.0863277718215865
+        }
+      ],
+      "goal_centre": [
+        2.7017936471733153,
+        1.9462167186496675
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000004",
+      "map": "L0",
+      "split": "test",
+      "index": 4,
+      "seed": 376099575,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.0267757028446605,
+        "y": 1.302914150581305,
+        "angle": 0.5705734231821178
+      },
+      "robots": [
+        {
+          "x": 2.0493291035454346,
+          "y": 1.9579697188373189,
+          "angle": -1.6052124839380908
+        },
+        {
+          "x": 1.4741040591255015,
+          "y": 1.5126204774524177,
+          "angle": -0.36265852602216886
+        }
+      ],
+      "goal_centre": [
+        2.444463497339223,
+        2.0224178121836767
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000005",
+      "map": "L0",
+      "split": "test",
+      "index": 5,
+      "seed": 708133752,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.1282278962884997,
+        "y": 0.6198887724638766,
+        "angle": 2.839061906868708
+      },
+      "robots": [
+        {
+          "x": 2.042108824180168,
+          "y": 0.36009295925193635,
+          "angle": 2.8646218191189856
+        },
+        {
+          "x": 1.388576802434554,
+          "y": 1.0139779713200734,
+          "angle": -2.154611154392028
+        }
+      ],
+      "goal_centre": [
+        1.2556150053155288,
+        1.020718828232632
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000006",
+      "map": "L0",
+      "split": "test",
+      "index": 6,
+      "seed": 614463997,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.721611659297359,
+        "y": 2.0586065878558877,
+        "angle": 1.0988072933270603
+      },
+      "robots": [
+        {
+          "x": 2.125494195264898,
+          "y": 2.1919170506224814,
+          "angle": -0.22001121582580113
+        },
+        {
+          "x": 2.2820459310941095,
+          "y": 1.2082496986485474,
+          "angle": 1.0937052242516527
+        }
+      ],
+      "goal_centre": [
+        0.8814058098173375,
+        2.1145293574264645
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000007",
+      "map": "L0",
+      "split": "test",
+      "index": 7,
+      "seed": 358027105,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.0320112066501332,
+        "y": 1.1375711553058776,
+        "angle": -2.2677543813656698
+      },
+      "robots": [
+        {
+          "x": 1.5754482759885802,
+          "y": 0.37461178277868523,
+          "angle": 1.0315463661687756
+        },
+        {
+          "x": 2.3481738454631507,
+          "y": 0.5387047435244331,
+          "angle": 2.056541511539078
+        }
+      ],
+      "goal_centre": [
+        2.099872453136149,
+        1.8916369830139972
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000008",
+      "map": "L0",
+      "split": "test",
+      "index": 8,
+      "seed": 965681976,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.6724844136555572,
+        "y": 1.9069857100693655,
+        "angle": 0.47648633728122336
+      },
+      "robots": [
+        {
+          "x": 0.9866420776826008,
+          "y": 1.9812384685868911,
+          "angle": -0.10784500243778442
+        },
+        {
+          "x": 1.4689169980447967,
+          "y": 1.3464246860771794,
+          "angle": 1.2224554570803088
+        }
+      ],
+      "goal_centre": [
+        2.9746873639633726,
+        0.8021832280495067
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000009",
+      "map": "L0",
+      "split": "test",
+      "index": 9,
+      "seed": 472055003,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.834624401406603,
+        "y": 1.231943070769277,
+        "angle": 0.12158268560324137
+      },
+      "robots": [
+        {
+          "x": 2.3452907749511374,
+          "y": 1.6960502307315237,
+          "angle": -0.7589459885193405
+        },
+        {
+          "x": 1.8963130776009314,
+          "y": 0.8663978680031779,
+          "angle": 0.37148950612872006
+        }
+      ],
+      "goal_centre": [
+        2.0156044493919016,
+        2.0015096592481343
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000010",
+      "map": "L0",
+      "split": "test",
+      "index": 10,
+      "seed": 650512577,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5456548107692623,
+        "y": 0.9497824957968671,
+        "angle": -1.8182144445419008
+      },
+      "robots": [
+        {
+          "x": 3.004870180368574,
+          "y": 1.0894490378548602,
+          "angle": -2.84634048123473
+        },
+        {
+          "x": 2.7263916420041294,
+          "y": 1.9379555164239988,
+          "angle": -1.751696812914021
+        }
+      ],
+      "goal_centre": [
+        2.7219552498718675,
+        0.8583969425758577
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000011",
+      "map": "L0",
+      "split": "test",
+      "index": 11,
+      "seed": 271341990,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.9405313234793375,
+        "y": 1.4887968906541862,
+        "angle": 1.6849127193159932
+      },
+      "robots": [
+        {
+          "x": 2.863164236515352,
+          "y": 2.3186858552174368,
+          "angle": -1.4778391747525768
+        },
+        {
+          "x": 2.339929912767615,
+          "y": 1.6185022180479893,
+          "angle": -0.2126926832918477
+        }
+      ],
+      "goal_centre": [
+        1.4809229783692985,
+        2.040974389140171
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000012",
+      "map": "L0",
+      "split": "test",
+      "index": 12,
+      "seed": 299706205,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.027312524664774,
+        "y": 1.3633422051844082,
+        "angle": 1.8440940539244046
+      },
+      "robots": [
+        {
+          "x": 3.1172069566736056,
+          "y": 2.1632130939301706,
+          "angle": -1.682712888268155
+        },
+        {
+          "x": 2.5747450562214125,
+          "y": 1.6233459435343653,
+          "angle": -0.5214646282190015
+        }
+      ],
+      "goal_centre": [
+        1.767470362406932,
+        2.103270481048144
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000013",
+      "map": "L0",
+      "split": "test",
+      "index": 13,
+      "seed": 688553659,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.790084351555419,
+        "y": 1.1360638795205398,
+        "angle": 2.293096268333449
+      },
+      "robots": [
+        {
+          "x": 2.426558356752224,
+          "y": 1.9699225990809044,
+          "angle": -1.1596822821591595
+        },
+        {
+          "x": 2.2634635642595997,
+          "y": 0.8887851427268135,
+          "angle": 0.43899838250126033
+        }
+      ],
+      "goal_centre": [
+        2.2683465319699865,
+        1.355063347882083
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000014",
+      "map": "L0",
+      "split": "test",
+      "index": 14,
+      "seed": 41799361,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 0.9756074400153044,
+        "y": 1.8951241888484538,
+        "angle": 0.7157013084778967
+      },
+      "robots": [
+        {
+          "x": 0.2994240604623526,
+          "y": 1.46866218736458,
+          "angle": 0.5626804414555748
+        },
+        {
+          "x": 0.973867310774809,
+          "y": 1.2005565770363784,
+          "angle": 1.568290990280297
+        }
+      ],
+      "goal_centre": [
+        2.240757393571573,
+        1.824812116500378
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000015",
+      "map": "L0",
+      "split": "test",
+      "index": 15,
+      "seed": 277754509,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.1170340059224513,
+        "y": 0.9083721798246674,
+        "angle": -2.919554970233328
+      },
+      "robots": [
+        {
+          "x": 1.901391353132685,
+          "y": 0.288779811290487,
+          "angle": 1.2358690719474417
+        },
+        {
+          "x": 2.6257567530028334,
+          "y": 0.5883126379378976,
+          "angle": 2.580019385336811
+        }
+      ],
+      "goal_centre": [
+        0.8936391484512923,
+        1.5507247714907662
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000016",
+      "map": "L0",
+      "split": "test",
+      "index": 16,
+      "seed": 201384624,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.7919913424326381,
+        "y": 1.3171370023670255,
+        "angle": -0.2290927395944844
+      },
+      "robots": [
+        {
+          "x": 1.7838093936348063,
+          "y": 1.9058980521551336,
+          "angle": -1.556900329169655
+        },
+        {
+          "x": 1.0096416611250958,
+          "y": 1.4853224615788958,
+          "angle": -0.21175206467606253
+        }
+      ],
+      "goal_centre": [
+        2.856108414025802,
+        1.8662596359047208
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000017",
+      "map": "L0",
+      "split": "test",
+      "index": 17,
+      "seed": 861440549,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.1706572064462066,
+        "y": 1.393903777276982,
+        "angle": -2.676119197065312
+      },
+      "robots": [
+        {
+          "x": 2.565237557060789,
+          "y": 0.8808485936433303,
+          "angle": 2.2263970657149303
+        },
+        {
+          "x": 2.865034484403082,
+          "y": 1.7262859411504357,
+          "angle": -2.695148807835789
+        }
+      ],
+      "goal_centre": [
+        2.9521164090040966,
+        1.7214355283325808
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000018",
+      "map": "L0",
+      "split": "test",
+      "index": 18,
+      "seed": 153171880,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 0.8195984098023877,
+        "y": 1.8136918647957327,
+        "angle": -0.23861997249384137
+      },
+      "robots": [
+        {
+          "x": 1.1414608799617172,
+          "y": 1.213052823657009,
+          "angle": 2.0627239342479555
+        },
+        {
+          "x": 1.7292039138708226,
+          "y": 1.8511135356035813,
+          "angle": -3.1004752906932143
+        }
+      ],
+      "goal_centre": [
+        2.493752475698927,
+        0.8450415840205616
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000019",
+      "map": "L0",
+      "split": "test",
+      "index": 19,
+      "seed": 951262821,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.644037538232047,
+        "y": 2.030083885307817,
+        "angle": -1.453152332297403
+      },
+      "robots": [
+        {
+          "x": 2.2961431579457843,
+          "y": 1.738974648307321,
+          "angle": 0.6967658483693729
+        },
+        {
+          "x": 2.9353218436245143,
+          "y": 1.1788952088970452,
+          "angle": 1.9005134726198607
+        }
+      ],
+      "goal_centre": [
+        3.030252296844682,
+        1.4887119312301014
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000020",
+      "map": "L0",
+      "split": "test",
+      "index": 20,
+      "seed": 909485661,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.5463346665571325,
+        "y": 1.8542158871422634,
+        "angle": 1.424906685398767
+      },
+      "robots": [
+        {
+          "x": 1.9642152144184954,
+          "y": 1.2692574689347054,
+          "angle": 2.191105925533007
+        },
+        {
+          "x": 2.215129791552166,
+          "y": 1.8660234836594465,
+          "angle": -3.1239394598148613
+        }
+      ],
+      "goal_centre": [
+        1.1519433719494152,
+        2.126579779068252
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000021",
+      "map": "L0",
+      "split": "test",
+      "index": 21,
+      "seed": 1035074763,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.775160012640578,
+        "y": 1.6256390654548003,
+        "angle": 1.019714636464256
+      },
+      "robots": [
+        {
+          "x": 3.1363987637530877,
+          "y": 1.286333778978754,
+          "angle": 2.3874934532859187
+        },
+        {
+          "x": 3.463865052896851,
+          "y": 2.151810118002218,
+          "angle": -2.4891912206920526
+        }
+      ],
+      "goal_centre": [
+        2.3931531880872594,
+        1.2742516645326885
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000022",
+      "map": "L0",
+      "split": "test",
+      "index": 22,
+      "seed": 975457358,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 0.920075309894211,
+        "y": 1.3136295423162285,
+        "angle": -2.1609681250099397
+      },
+      "robots": [
+        {
+          "x": 0.33099296215057095,
+          "y": 1.6395146896775257,
+          "angle": -0.5053029338439347
+        },
+        {
+          "x": 0.3208959802141145,
+          "y": 0.7227343196235245,
+          "angle": 0.7784372774838254
+        }
+      ],
+      "goal_centre": [
+        2.5193579755392257,
+        1.117483540904179
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000023",
+      "map": "L0",
+      "split": "test",
+      "index": 23,
+      "seed": 111276329,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.0741607393820547,
+        "y": 1.1989753968515244,
+        "angle": 2.1563584435853382
+      },
+      "robots": [
+        {
+          "x": 0.4440064598026804,
+          "y": 1.0583988328552383,
+          "angle": 0.21948885037959875
+        },
+        {
+          "x": 1.2323000609966426,
+          "y": 0.4618022279691514,
+          "angle": 1.7821148597789624
+        }
+      ],
+      "goal_centre": [
+        3.0491060690433898,
+        0.8177733674305298
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000024",
+      "map": "L0",
+      "split": "test",
+      "index": 24,
+      "seed": 354007079,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.0714111487107836,
+        "y": 2.306805760432346,
+        "angle": -2.598084379496882
+      },
+      "robots": [
+        {
+          "x": 2.291458577790252,
+          "y": 2.1716625727080925,
+          "angle": 0.17156758468312716
+        },
+        {
+          "x": 3.0121886575720724,
+          "y": 1.8281729039703398,
+          "angle": 1.4476894209053675
+        }
+      ],
+      "goal_centre": [
+        1.2557043177089144,
+        1.986529344645727
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000025",
+      "map": "L0",
+      "split": "test",
+      "index": 25,
+      "seed": 927215353,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.56805080755017,
+        "y": 1.7797389203877239,
+        "angle": 2.297500556080486
+      },
+      "robots": [
+        {
+          "x": 2.2003822634384194,
+          "y": 1.4844225540201987,
+          "angle": 0.676697370835897
+        },
+        {
+          "x": 3.077371885426996,
+          "y": 1.0326269722588932,
+          "angle": 2.169148120675608
+        }
+      ],
+      "goal_centre": [
+        1.8127579956840447,
+        0.8990755697740248
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000026",
+      "map": "L0",
+      "split": "test",
+      "index": 26,
+      "seed": 53462894,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.8534282326498703,
+        "y": 1.1806833647431467,
+        "angle": 1.3071403795637648
+      },
+      "robots": [
+        {
+          "x": 2.365026866875621,
+          "y": 1.201810904697052,
+          "angle": -3.1003190063224864
+        },
+        {
+          "x": 1.8570218237889906,
+          "y": 2.062445889290883,
+          "angle": -1.5748717679068436
+        }
+      ],
+      "goal_centre": [
+        1.9245438798575882,
+        1.375151356888142
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000027",
+      "map": "L0",
+      "split": "test",
+      "index": 27,
+      "seed": 372746600,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 3.1531131860350907,
+        "y": 1.5642180185638854,
+        "angle": 2.128106130540065
+      },
+      "robots": [
+        {
+          "x": 2.588623783615482,
+          "y": 2.328218403520853,
+          "angle": -0.934462957557955
+        },
+        {
+          "x": 2.563512823910222,
+          "y": 1.262625168594661,
+          "angle": 0.47282171463907025
+        }
+      ],
+      "goal_centre": [
+        2.2421869018513663,
+        1.2295159674668499
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000028",
+      "map": "L0",
+      "split": "test",
+      "index": 28,
+      "seed": 820599733,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.122746736247298,
+        "y": 1.6830417227496128,
+        "angle": 1.8022616493723547
+      },
+      "robots": [
+        {
+          "x": 2.4756270410526815,
+          "y": 1.850365497046841,
+          "angle": -2.69882516427488
+        },
+        {
+          "x": 2.2981268060097553,
+          "y": 2.4684471485198145,
+          "angle": -1.7904909303300565
+        }
+      ],
+      "goal_centre": [
+        2.3982927996084697,
+        0.8711283088196623
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000029",
+      "map": "L0",
+      "split": "test",
+      "index": 29,
+      "seed": 338164828,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.670448289050883,
+        "y": 1.4914398046708208,
+        "angle": 1.7536269079158737
+      },
+      "robots": [
+        {
+          "x": 2.338575521699244,
+          "y": 2.1755361572857757,
+          "angle": -1.1191187543976675
+        },
+        {
+          "x": 2.1153599011058954,
+          "y": 1.5861905657125734,
+          "angle": -0.16906546828550945
+        }
+      ],
+      "goal_centre": [
+        2.469969504955545,
+        1.205366957178426
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000030",
+      "map": "L0",
+      "split": "test",
+      "index": 30,
+      "seed": 543848929,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.161524300594024,
+        "y": 1.1840200350978494,
+        "angle": -3.0019197816447
+      },
+      "robots": [
+        {
+          "x": 1.911480216216614,
+          "y": 1.5529031897622136,
+          "angle": -2.684467661311666
+        },
+        {
+          "x": 1.0409615497158122,
+          "y": 1.620022348926972,
+          "angle": -1.3010188313160702
+        }
+      ],
+      "goal_centre": [
+        2.2187622953045003,
+        1.7236614457145403
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "simple-legal-v2_test_0000031",
+      "map": "L0",
+      "split": "test",
+      "index": 31,
+      "seed": 49883527,
+      "arena": [
+        4.0,
+        3.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 1.4860436759195017,
+        "y": 1.0766053158352478,
+        "angle": -1.0774497455922512
+      },
+      "robots": [
+        {
+          "x": 1.748123917882206,
+          "y": 1.5510393510720129,
+          "angle": -2.0754849330909417
+        },
+        {
+          "x": 0.9941549751032774,
+          "y": 1.9657402446934777,
+          "angle": -1.0654830382209124
+        }
+      ],
+      "goal_centre": [
+        2.623397103305181,
+        1.3953396513235046
+      ],
+      "goal_radius": 0.2,
+      "object_polygon": null,
+      "env_version": "random-start-oriented-v4.7"
+    }
+  ],
+  "source_sha256": {
+    "experiments/option_rl_v20/event_env.py": "086622a0b019b1a473afbc482e13fd1b424585f77bcf9668d6d69259179135da",
+    "experiments/option_rl_v20/interface.py": "97778eb490432589881e6fb9713b85df2c6e54dafffc54653cfcc93a9696638b",
+    "experiments/option_rl_v20/train.py": "213a5b0ac64c666c00485e23fb34d8819d2a373da36fb4fbceb1588ba023bfc4",
+    "experiments/option_rl_v20/monitor.py": "7cd3a935dd3ae1da86c17bf7b108f35fc504e2e2ffefc41595f173d01956ef86",
+    "experiments/option_rl_v20/long_run.py": "23a3a362d32b53be8f07dd8e9165118a703336b741520ed41a136c745a7e388c",
+    "experiments/option_rl_v20/parallel.py": "0140816fff51c9a7dbb2c87833d934d8363e122f2447474e08afe752cfeb0d41",
+    "experiments/option_rl_v19/unknown_shape.py": "a05765366597d9a1a819721d16a94451a09bf5d5c4c569a8a99a11c33166bb79",
+    "experiments/option_rl_v19/spec.py": "a7e825e6dbdc21081fc2d47e1949e7ea42061638b7f5a119c6cbed811a82686a",
+    "experiments/option_rl_v19/system.py": "8150f7e3747f939662231673f616f9beaa2ddb9567db5ce2bf60a6c57241b925",
+    "experiments/option_rl_v13/mode_env.py": "25ef750f31c14f4cb888eada029fb8f5d56fb3ceacf7e44f8232fe729cd8121e",
+    "experiments/option_rl_v13/controller.py": "b85413091448214d367573c04467e479b42d4eb661c7db43ea52819384ee1793",
+    "experiments/option_rl_v13/push_controller.py": "f0453c41b0222b2bc59d10e531073b879fc32801637eb23cbed2ecbf61ef253a",
+    "experiments/option_rl_v14/interface.py": "1a2019f75c914c93805192a65d25fc2eece285fb0899e096ac2c16b1f8a19050",
+    "experiments/option_rl_v14/mode_env.py": "a9c29d63f901a7552493236793f16a453c0d36d942188caae3f77c4821fb2ef4",
+    "experiments/option_rl_v14/scenes.py": "1299f15a9fa7a76391a2572da56a56f7b3a516de2d019c26ff9ad3c85bafbe0e",
+    "experiments/option_rl_v14/learnability.py": "5d5f89f19b5f31efdf6f52b783c8cd3893808a42cfd859a390ede152d27ec7e2",
+    "experiments/option_rl_v15/interface.py": "9bad38ee8e400e6f6c3414f8f2e3eea312e1ffe2a181d1ab561d20a086a8fe7a",
+    "experiments/option_rl_v15/scenes.py": "5d47d3c2c47abd721b85327f87255273ce8b09f4accbe67f87f0651a07d2bc28",
+    "experiments/option_rl_v15/live.py": "1879a3b2b916501a70077d17e718948b67a409712960f9419d0385e91d2e910d",
+    "experiments/option_rl_v16/train.py": "876242f06ed23769778b7db6136a3232e68a268a0c3f75bbb81e7a5e859ab1de",
+    "experiments/option_rl_v16/learnability.py": "2b9a5dd39b4a3685404b5a22148bbb813368245bbd9eb646315b48b274309de6",
+    "experiments/option_rl_v45/train.py": "3baaf3efc99de0f6a6baea9ba870916427a928bf3d1371d7b097a372516f0bd2",
+    "experiments/option_rl_v45/monitor.py": "69f26decb237d5dccc154ed0904c38b265076541dc466256e71365c9ec9642ab",
+    "src/coimagine/random_start/env.py": "07a653fd3f9cd960958bd394adabc7028361f5fa991cb77f2825c416f1903fc0",
+    "src/coimagine/random_start/spec.py": "7a3dcd3dacbef9a74765c1053c394ca94646ead6e539342f2ce8dbe606d0e630",
+    "src/coimagine/random_start/lidar.py": "805a168acacae1fd9d68294aff0ff8eea978cec3342b85166dc49ba65cfcff83",
+    "src/coimagine/random_start/skills.py": "9ea021b42ed1a26b8eec33227283ae2ae67c0545a73b8452397ff2e48296ed42",
+    "src/coimagine/random_start/boundary_follow.py": "e730ee71e647a4879ac8f5793420d78ddc2817acc72a8d524e53f1ae6679a5d0",
+    "src/coimagine/random_start/endpoint_tracking.py": "fc29a3dda0781f0019c6dd7879d189819770b808299b73672a1343e4e7cb7c81",
+    "src/coimagine/random_start/effect_push.py": "bc54eb154aca73b76a7d616a7c9c1a714c2e1a332ab2a5176a5552bca72ea736",
+    "src/coimagine/random_start/layout.py": "b073965a93d03790ebd9ed71b6ce18241286618252153a96fd1f2efd09d4245e",
+    "src/coimagine/random_start/geometry.py": "34dc5a7e2f49ad94666d2de53baec6a7a0262d505a34d7887bca145088107739",
+    "src/coimagine/random_start/anchor.py": "2842dfc448463900ec8172e9cf3a76fd258e501d61aaca181042b2263e94d4fe",
+    "src/coimagine/random_start/peer_clearance.py": "b8ffc54c9b879e9687b17777427560978b20a875077259c8a1478f7bdd4fb972",
+    "src/coimagine/continuous2d/backend.py": "a864dcfd74248bd0daf2109102718ef0d1f30b8fbc014e6251eccad8e4cfc414",
+    "src/coimagine/continuous2d/environment.py": "be1dbf8969be6955ad1e16bc746cce38ec900e177efa576a080da939708bc0f9"
+  },
+  "command": "/home/tzl/repo/coimagine/.venv/bin/python -m experiments.option_rl_v20.long_run --out /home/tzl/repo/coimagine/outputs/option_rl_v20/event_12h_20261103_v2/run --hours 12.0 --iterations 100000 --episodes 32 --seed 20261103 --hidden 256 --epochs 4 --lr 0.0003 --entropy 0.02 --trace-seconds 10.0 --target-kl 0.03 --eval-every 10 --eval-roots 32 --test-roots 32 --snapshot-every 50 --panel dynamic --workers 16"
+}

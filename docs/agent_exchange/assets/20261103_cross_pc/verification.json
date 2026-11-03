@@ -1,0 +1,19 @@
+{
+  "archive_file_hashes_verified": 85,
+  "archive_members": 86,
+  "document_links_missing": [],
+  "checkpoint_load": {
+    "best.pt": {
+      "iteration": 3500,
+      "obs_dim": 958,
+      "hidden": 256
+    },
+    "checkpoint.pt": {
+      "iteration": 3937,
+      "obs_dim": 958,
+      "hidden": 256
+    }
+  },
+  "protected_source_drift": 0,
+  "new_training_or_evaluations": 0
+}

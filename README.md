@@ -1,5 +1,7 @@
 # CoImagine — 2D protocol core
 
+**2026-11-03 跨机器接续入口：** [当前 Option / 事件 RL 状态与迁移步骤](docs/agent_exchange/Cross_PC_Handoff_20261103.md) · [导师阶段汇报](docs/option_optimization_and_event_rl_report_20261103.md) · [经验增强 LLM Option Policy 研究讨论](docs/research/LLM_Option_Experience_Research_Direction_20261103.md)。以下介绍保留最初 micro/grid 阶段背景；当前连续二维实现与运行状态以这些入口和 [CURRENT](docs/agent_exchange/CURRENT.md) 为准。
+
 Executable 2D validation for the CoImagine v6 research plan
 (`docs/CoImagine_v6_研究方案与创新评估.md`), scoped by the first-round execution
 prompt (`docs/CoImagine_2D_Agent_执行提示_v1.md`).

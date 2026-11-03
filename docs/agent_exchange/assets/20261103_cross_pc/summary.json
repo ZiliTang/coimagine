@@ -1,0 +1,90 @@
+{
+  "captured_local": "2026-11-03T12:50:13.985124+08:00",
+  "status": "running_midrun_snapshot",
+  "base_git_head": "163b6a1ccae97e20ca924df2b2a420935f084f06",
+  "iterations": 3937,
+  "train_episodes": 125984,
+  "event_transitions": 5233200,
+  "train_anomalies": 0,
+  "validation_checks": 394,
+  "best_validation": {
+    "iteration": 3500,
+    "success_rate": 1.0,
+    "mean_progress": 0.8238440994607557,
+    "eval_return": 8.74561898214873,
+    "eval_roots": 32,
+    "eval_outside_goal_success": 1.0
+  },
+  "latest_validation": {
+    "iteration": 3930,
+    "success_rate": 0.9375,
+    "mean_progress": 0.6897657529159544,
+    "eval_return": 7.385110728631361,
+    "eval_roots": 32,
+    "eval_outside_goal_success": 0.9354838709677419
+  },
+  "midrun_test": {
+    "checkpoint_iteration": 2580,
+    "successes": 26,
+    "roots": 32,
+    "anomalies": 0,
+    "note": "Previously executed by DS. No new evaluation in this handoff; test has now been inspected."
+  },
+  "checkpoints": {
+    "best.pt": {
+      "path": "outputs/option_rl_v20/event_12h_20261103_v2/run/best.pt",
+      "sha256": "8f2050559d8e2378e0515e7e71e1bcea17617658f92182a55d78a42549e168ec",
+      "bytes": 10999917,
+      "iteration": 3500,
+      "best": [
+        1.0,
+        0.8238440994607557
+      ],
+      "config": {
+        "seed": 20261103,
+        "episodes": 32,
+        "hidden": 256,
+        "epochs": 4,
+        "lr": 0.0003,
+        "entropy": 0.02,
+        "trace_seconds": 10.0,
+        "target_kl": 0.03,
+        "panel": "dynamic",
+        "eval_roots": 32,
+        "eval_every": 10,
+        "eval_stochastic": false,
+        "max_attempt_factor": 3,
+        "workers": 16
+      }
+    },
+    "checkpoint.pt": {
+      "path": "outputs/option_rl_v20/event_12h_20261103_v2/run/checkpoint.pt",
+      "sha256": "7a68043bb602dd12d1a12a1989d007bf3dab3459e72692e31f0cb8ca90818a19",
+      "bytes": 11379005,
+      "iteration": 3937,
+      "best": [
+        1.0,
+        0.8238440994607557
+      ],
+      "config": {
+        "seed": 20261103,
+        "episodes": 32,
+        "hidden": 256,
+        "epochs": 4,
+        "lr": 0.0003,
+        "entropy": 0.02,
+        "trace_seconds": 10.0,
+        "target_kl": 0.03,
+        "panel": "dynamic",
+        "eval_roots": 32,
+        "eval_every": 10,
+        "eval_stochastic": false,
+        "max_attempt_factor": 3,
+        "workers": 16
+      }
+    }
+  },
+  "source_hash_drift": 0,
+  "source_files": 36,
+  "caution": "best/checkpoint were copied sequentially during live training and may have a later iteration than frozen history. Neither is a final policy.pt."
+}

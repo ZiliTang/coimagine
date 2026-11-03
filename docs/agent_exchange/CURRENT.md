@@ -1,12 +1,19 @@
 # 当前交接
 
-- **12 小时事件进度并行 RL 正在运行**：[启动记录、复核与吞吐对照](reviews/Event_RL_12h_Launch_20261103.md)。目录 `outputs/option_rl_v20/event_12h_20261103_v2/`；2026-11-03 04:13:48 启动，预算 12 h，约 16:13 结束（Asia/Shanghai）。
-- 运行配置：16 个 spawn worker × 32 个有效 episode/轮；hidden 256、4 PPO epochs、lr 3e-4、entropy 0.02、gamma=1、trace 10 s；动态合法训练根；32 个固定 validation roots 每 10 轮 greedy 验证；32 个 test roots 保留。预算/事件/奖励/控制器/物理/动作表均未改。
-- 吞吐：16×32 ≈8.7 s/轮（≈3.6 episode/s，≈12.3 用户态 CPU 核）；8×24 ≈9.6 s；16×48 ≈13.9 s；单进程 pilot ≈20.9 s。选择 16×32。32-root 验证约 7.4 s/次。
-- GitHub 风格 dashboard：http://127.0.0.1:8771/event_12h_20261103_v2/dashboard.html （文件 `outputs/option_rl_v20/event_12h_20261103_v2/dashboard.html`）；[monitor_summary.md](../../outputs/option_rl_v20/event_12h_20261103_v2/monitor_summary.md) 每分钟更新；[plan.json](../../outputs/option_rl_v20/event_12h_20261103_v2/plan.json)、[manifest](../../outputs/option_rl_v20/event_12h_20261103_v2/run/manifest.json)。
-- 预检复核 GPT 最后工作：v20 事件 7 项测试通过；`smoke_003` 在 `--epochs 1` 下 97 decisions、`entropy=1.3152498006820679` 等 PPO 指标逐项复现。新增 `long_run/parallel/monitor/supervise` 与 7 项测试；合计 14 项通过。
-- 第 1 轮验证仅 1/32 success、progress −0.00056、0 anomaly；训练 return 仍以噪声为主。**运行中观察，不是学习结论。**
-- 运行中禁止修改 `experiments/option_rl_v20/long_run.py` 的 `SOURCES` 内文件（含 event/interface/parallel/env/controller）；supervisor 会按源码漂移写 STOP.json。故障规则：非有限、心跳>300 s、连续异常≥25%、连续 KL>0.5、源码漂移、硬截止；回合边界停止，不自动重启。
+- **跨PC接续（2026-11-03 12:50冻结）**：[工作状态、权重/回放迁移、启动与下一步](Cross_PC_Handoff_20261103.md)。3937轮、125,984训练episode；best@3500验证32/32，最近@3930为30/32；旧best@2580中期test26/32，不能绑定新best。原训练仍运行，本次没有新训练/评测或修改受保护源码。
+- **新研究路线已持久化，尚未实施**：[物理交互经验如何帮助冻结LLM选择/组合option](../research/LLM_Option_Experience_Research_Direction_20261103.md)。先做单一阻挡实例与经验表示对照，再决定benchmark扩展；不把神经世界模型作为前置条件。
+- Git同步源码/文档/图表/紧凑证据；权重与回放仍被ignore，另有原PC迁移包`outputs/handoff/20261103_cross_pc/coimagine_state_20261103_1250.tar.gz`，**未上传GitHub**；具体SHA/复制方式见跨PC文档。不要在新机器自动重启训练。
+- **本次push因GitHub认证缺失而失败，远端尚未更新。** 本地文档提交已保留；配置GitHub登录后`git push origin main`。另生成`outputs/handoff/20261103_cross_pc/coimagine_docs_20261103.bundle`，可与模型迁移包一起拷至新PC，按交接文档恢复。
+
+- **导师汇报已复核重写**：[问题—动机—改动—效果—研究目标](../option_optimization_and_event_rl_report_20261103.md)。曲线冻结到11:18的3124轮；最近完整验证3120轮25/32、best@2580为30/32；另纳入DS的best中期test26/32。结果支持当前矩形分布可学，尚不能单独归因事件决策。
+- 本次复核订正：v20事件读取仿真接触布尔反馈；RL几何mask仍经`rectangle_size=(1.0,.25)`面估计，尚未完成端到端去形状先验。未改训练源码或新增评测，训练继续。快照/图表/原稿备份在`outputs/agent_exchange/mentor_report_review_20261103/`，最终数字在`refresh_1118/`。
+- **12h 事件进度并行 RL 运行中，学习已明显生效**：[启动记录](reviews/Event_RL_12h_Launch_20261103.md)、[早晨状态与测台回放](reviews/Event_RL_Morning_20261103.md)。目录 `outputs/option_rl_v20/event_12h_20261103_v2/`；04:13:48 启动，预计 16:13 结束。
+- 11:12 状态：**3081 轮 / 7.51 h**；16 workers；最后 10 轮约 6.2–8.3 s；无 STOP/NaN/源码漂移/训练异常；PPO KL 0.0143、EV 0.83、entropy 1.16、logp 误差≤1.1e-5；内存约 6 GB。
+- 学习：训练最后 100 轮 return **+5.79**、success **82.9%**、progress **0.726**；验证第 1 轮 1/32 → 第 2580 轮 **30/32（progress 0.790，best.pt）** → 第 3080 轮 **28/32（0.731）**，最近 5 次 0.75–0.9375。
+- Held-out test（仅 `best@2580` 只读一次，未参与训练/验证/调参）：**26/32（81.25%）**、progress 0.711、绝对距离中位 **+0.880 m**、94% roots 改善、0 anomaly；6 个失败多为接近目标超时。**不是最终 test**，结束后应在最终 `policy.pt`/`best.pt` 上重做并写正式报告。
+- 测台回放：test panel 的 6 条 `best@2580` 轨迹已加入 `outputs/testbed/runs/`，Runs 列表可见；20Hz 精确逐 tick 回放（periods/success/最终距离与 RL eval 一致），sequence 为 0.2s 量化仅供编辑。示例 http://127.0.0.1:8765/?run=20261103_111051_rl06 。RL 场景未注册进测台 `SCENES`，按 Run 会报 unknown scene；本轮未改测台源码/未重启。
+- dashboard：http://127.0.0.1:8771/event_12h_20261103_v2/dashboard.html （文件 `outputs/option_rl_v20/event_12h_20261103_v2/dashboard.html`）；[monitor_summary.md](../../outputs/option_rl_v20/event_12h_20261103_v2/monitor_summary.md)、[plan.json](../../outputs/option_rl_v20/event_12h_20261103_v2/plan.json)、[manifest](../../outputs/option_rl_v20/event_12h_20261103_v2/run/manifest.json)。
+- 运行结束前不要修改 `experiments/option_rl_v20/long_run.py` 的 `SOURCES` 内文件；supervisor 会按源码漂移写 STOP.json。结束时 trainer 自己写 `run/result.json` 与 `policy.pt`，supervisor 写最终 dashboard/summary；之后用 `best.pt` 与最终 `policy.pt` 各做正式 test，并与固定时间决策基线做同场景对照。
 - v1（04:11 启动）因补齐 `parallel.py` 源码哈希被主动停止，12 轮记录保留在 `outputs/option_rl_v20/event_12h_20261103/`；pilot（单进程 20 轮、418 s）保留在 `outputs/option_rl_v20/pilot_20261103/`，仅作接线/吞吐证据。
 
 - **进度事件已接入集中式PPO并完成短检查**：[实现、数据和边界](reviews/Event_RL_Integration_20261103.md)。新目录`experiments/option_rl_v20/`；0.20m、20Hz检查、接触0点、真实时间超时与WAIT，支持P+P/P+W/R+R/R+W/W+W，联合mask1097对。已有v19测台未改。
