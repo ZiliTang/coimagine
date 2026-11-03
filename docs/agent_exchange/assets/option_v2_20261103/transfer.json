@@ -1,0 +1,72 @@
+{
+  "path": "outputs/handoff/20261103_option_v2/testbed_review_v2.tar.gz",
+  "bytes": 4095032,
+  "sha256": "b5a66496f353ded2643543e57a0fffbe44a151a18c85e2d31e6113b86cd47d7d",
+  "files": [
+    {
+      "path": "outputs/testbed/runs/20261103_215538_49f501.json",
+      "sha256": "9e3e6d06814639c2a1312383e3b0a2cc27d9be848ac5b04e57bb712bb5840847"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_blocker_brake.json",
+      "sha256": "cf3b8ee43458690c9c68bce3bd1474221af5f9449caed2d1aab0d8d46ff1a8c6"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215539_8fe6f2.json",
+      "sha256": "22cb8c4e97104a48ac613c3a03d253a6862352c0bf05f11d61a5e800bf5e9cc2"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_blocker_yield.json",
+      "sha256": "2bdf87435a2ddf7e9dae0513640d3c3062bff0bd53c6ec2e21758445575c3189"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215539_2baf31.json",
+      "sha256": "aa05aadec30d0a0ed35cc59dc78f2b55c0bdcdd71375e27d1b95fa0c5b6674d3"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_wall_yield.json",
+      "sha256": "f169cb55c81ca82d8ec4e8e12d2637fc2a98c004fed81abf5de1ea05391caff5"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215540_29265f.json",
+      "sha256": "66d4846a322313617158d536cf58ebd8ee1decb1bf72725e42e146ba1823bc08"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_opposed.json",
+      "sha256": "e562da7a76c1e8d7e6d599b2fdd1d49fa9a6f603117d9094392c7842bd6c31c5"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215541_47bc93.json",
+      "sha256": "dd67a71ec888a3fc60e9ccf5423b59c7615016f76eb5777d65dba512c8d182b5"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_wrong_direction.json",
+      "sha256": "874c6798dcbd9e4bf3af31477825cbfbbd511f1a84c889e47fa27cb9d2fb6941"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215541_589fec.json",
+      "sha256": "bb75a4574336466254d71ed9c148f2290a0587e61512b292efc5d5cb4d8de9d4"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_dual_north.json",
+      "sha256": "e958e951c4661ad53c73e6f018796627a3018a49546fdc24ae6db8de39e1bd1c"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215542_47542c.json",
+      "sha256": "5ed442413041e2303a9c2eb8ac76beec3676635b277057d4b6f08e091cbf94c7"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_adjacent_ne.json",
+      "sha256": "a96e735e75970eb1124958a7f5a35b59454347efe1eb24eb91d1e00f1a8650eb"
+    },
+    {
+      "path": "outputs/testbed/runs/20261103_215542_901be5.json",
+      "sha256": "7dede4845929b8fe2875d78696f29bc10ac315328dcc27de09b23f49d6e1d3fe"
+    },
+    {
+      "path": "outputs/testbed/presets/v2_yield_idle.json",
+      "sha256": "e71232b06637296a791d02ba35d427893f33046d3394896c8fbd9ac5c42fbb92"
+    }
+  ],
+  "uploaded": false
+}

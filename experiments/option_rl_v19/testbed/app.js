@@ -2,19 +2,20 @@ const S = {
   options: [], params: [],
   scene: null, baseScene: null, currentPreset: null, loadedInitial: null, dirty: false,
   object: null, robots: [],
-  sequence: [], overrides: {}, presets: [], presetSort: 'created', controllerVersion: 'm3b',
+  sequence: [], overrides: {}, presets: [], presetSort: 'created', controllerVersion: 'option-v2',
   run: null, frame: 0, playing: false, timer: null, runId: null,
   running: false,
-  view: {lidar:false, target:false, force:false, contact:false, estimate:true},
+  view: {lidar:false, target:false, force:false, contact:false, estimate:true, yield:true},
   curves: {force:true, speed:true},
 };
 const $ = (id) => document.getElementById(id);
 const STAGE_COLORS = {approach:'#3d6fd6', ready:'#f2c94c', push:'#27ae60', recover:'#eb5757',
   brake:'#8c98a8', move:'#9b51e0', align:'#00b8a9', follow:'#2d9cdb', blocked:'#56616f', initial:'#6b7280',
-  done:'#ef7d3b'};
+  done:'#ef7d3b', yield_idle:'#38b2ac', yield_escape:'#00e5ff', yield_blocked:'#ff477e', find:'#ffb74d'};
 const PHASE_COLORS = {IDLE:'#56616f', APPROACH:'#1f4ea8', READY:'#f2c94c', ENGAGE:'#ef7d3b',
   PUSH:'#27ae60', RECOVER:'#eb5757', EXIT:'#2b3440'};
 const CONTACT_COLOR = '#3fa45b', ACTIVE_COLOR = '#e0b84a';
+const physicalContact = (st) => st?.physical_contact || st?.contact || [false, false];
 
 async function api(path, method = 'GET', body = null) {
   const opts = {method, headers: {}};
@@ -63,7 +64,7 @@ function applyPreset(p) {
   S.robots = (p.robots || S.scene.initial.robots).map(clonePose);
   S.loadedInitial = {object: clonePose(S.object), robots: S.robots.map(clonePose)};
   S.sequence = (p.sequence || []).map(copySegment);
-  S.controllerVersion = 'm3b';
+  S.controllerVersion = 'option-v2';
   if ($('controllerVersion')) $('controllerVersion').value = S.controllerVersion;
   S.overrides = p.overrides || {};
   S.run = null; S.frame = 0; S.runId = null;
@@ -185,7 +186,7 @@ async function runSequence() {
   const body = {
     scene: S.baseScene, name: S.currentPreset?.name || 'session',
     object: S.object, robots: S.robots,
-    sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'm3b',
+    sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'option-v2',
   };
   const requestStarted = performance.now();
   api('/api/run', 'POST', body).then(run => {
@@ -206,7 +207,7 @@ function loadRunObject(run) {
   S.run = run; S.runId = run.id; S.frame = 0;
   $('frameSlider').max = String(Math.max(0, run.frames.length - 1));
   $('frameSlider').value = '0';
-  $('runMeta').textContent = `${run.scene} · ${run.controller_version || 'm3b'} · ${run.success ? 'TASK SUCCESS' : 'TASK INCOMPLETE'} · ${run.periods} ticks · seq ${run.sequence.length}`;
+  $('runMeta').textContent = `${run.scene} · ${run.controller_version || 'legacy'} · ${run.success ? 'TASK SUCCESS' : 'TASK INCOMPLETE'} · ${run.periods} ticks · seq ${run.sequence.length}`;
   $('runMeta').textContent += ` · ${run.action_version || '历史动作速度（重跑使用当前挡位）'}`;
   if (run.controller_source_sha256) $('runMeta').textContent += ` · ${run.controller_source_sha256.slice(0, 8)}`;
   if (run.support_memory_enabled === false) $('runMeta').textContent += ' · 仅当前可见面';
@@ -432,9 +433,9 @@ function drawOverlays(ctx, f, robots) {
     });
   }
   // contact rings
-  if (S.view.contact && st && st.contact) {
+  if (S.view.contact && st) {
     robots.forEach((r, side) => {
-      if (!st.contact[side]) return;
+      if (!physicalContact(st)[side]) return;
       const [rx, ry] = w2c(r.x, r.y);
       ctx.beginPath(); ctx.arc(rx, ry, .18*view.scale + 4, 0, Math.PI*2);
       ctx.strokeStyle = '#66e39a'; ctx.lineWidth = 1.5; ctx.stroke();
@@ -480,6 +481,30 @@ function drawOverlays(ctx, f, robots) {
   // m3b debug: persistent candidate q and actual contact point
   if (f && f.mb) f.mb.forEach((m, side) => {
     if (!m) return;
+    if (S.view.yield && robots[side]) {
+      const r = robots[side]; const [rx, ry] = w2c(r.x, r.y);
+      if (m.requested_direction) {
+        const d = m.requested_direction;
+        const [ex, ey] = w2c(r.x+.40*d[0], r.y+.40*d[1]);
+        drawArrow(ctx, rx, ry, ex, ey, m.direction_valid ? '#ffce54' : '#ff477e', 2);
+      }
+      const y = m.yield_debug;
+      if (y) {
+        for (const candidate of y.candidates || []) {
+          const [ex, ey] = w2c(r.x+candidate.v[0]*.6, r.y+candidate.v[1]*.6);
+          ctx.strokeStyle = candidate.feasible ? '#387f7d' : '#733848'; ctx.lineWidth = .7;
+          ctx.beginPath(); ctx.moveTo(rx, ry); ctx.lineTo(ex, ey); ctx.stroke();
+        }
+        if (y.chosen_velocity) {
+          const [ex, ey] = w2c(r.x+y.chosen_velocity[0], r.y+y.chosen_velocity[1]);
+          drawArrow(ctx, rx, ry, ex, ey, '#00e5ff', 3);
+        }
+        if (y.threat_point) {
+          const [px, py] = w2c(...y.threat_point);
+          ctx.strokeStyle = '#ff477e'; ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI*2); ctx.stroke();
+        }
+      }
+    }
     const col = side===0 ? '#f0b86e' : '#7fd1b9';
     if (m.q_prime) {
       const [px,py]=w2c(m.q_prime[0],m.q_prime[1]);
@@ -578,7 +603,7 @@ function drawTimeline() {
     }
     ctx.fillStyle = PHASE_COLORS[st.phase] || '#5b6470';
     ctx.fillRect(x, top + 2*rowH + 4, Math.max(1, cw), rowH - 8);
-    const c = st.contact || [false, false];
+    const c = physicalContact(st);
     ctx.fillStyle = c[0] ? CONTACT_COLOR : '#2a333d';
     ctx.fillRect(x, top + 3*rowH + 4, Math.max(1, cw/2), rowH - 8);
     ctx.fillStyle = c[1] ? CONTACT_COLOR : '#2a333d';
@@ -660,7 +685,7 @@ function updateTimelineTip(e, f) {
   const fd = S.run.frames[f];
   const coord = (S.run.coordinator || [])[f] || {};
   const tip = $('timelineTip');
-  const c = st.contact || [false, false];
+  const c = physicalContact(st);
   const fc = st.forces || [[0,0],[0,0]];
   const dot = (k) => `<i style="background:${STAGE_COLORS[k] || '#6b7280'}"></i>`;
   const speed = r => Math.hypot(r[3], r[4]);
@@ -738,7 +763,7 @@ function renderInfo() {
       <span>sequence</span><b>${S.sequence.length} segments</b>`;
     return;
   }
-  const c = st?.contact || [false,false];
+  const c = physicalContact(st);
   const forces = st?.forces || [[0,0],[0,0]];
   box.innerHTML = `
     <span>time</span><b>${(S.frame*0.05).toFixed(2)} s · frame ${S.frame}</b>
@@ -765,11 +790,14 @@ function renderM3bDebug(){
     if(!m){lines.push(`R${side}: no m3b record`);continue;}
     const c=m.candidate;
     const q=c&&c.q?`q=(${fmt(c.q[0])},${fmt(c.q[1])}) id${c.id} ${c.reason||''}`:'q=null/not_applicable';
-    lines.push(`R${side} ${m.action||''} stage=${m.stage||'—'} phase=${m.contact_phase||'—'} contact=${m.contact?'YES':'no'}`);
+    lines.push(`R${side} ${m.action||''} stage=${m.stage||'—'} phase=${m.contact_phase||'—'} sensor=${physicalContact(currentStrip())[side]?'YES':'no'} ready=${m.contact?'Y':'n'}`);
     lines.push(`  ${q} e_t=${fmt(m.candidate_err_t,3)} cp=${m.contact_point_world?`(${fmt(m.contact_point_world[0])},${fmt(m.contact_point_world[1])})`:'null'}`);
     lines.push(`  F=${m.force?`(${fmt(m.force[0])},${fmt(m.force[1])})`:'null'}  ff_t=${fmt(m.ff_t,3)} u_adj=${fmt(m.u_adjust,3)} c_err_t=${fmt(m.contact_err_t,3)}`);
     lines.push(`  pre=${m.desired_pre?`(${fmt(m.desired_pre[0])},${fmt(m.desired_pre[1])})`:'null'}  desired=${m.desired?`(${fmt(m.desired[0])},${fmt(m.desired[1])})`:'null'}  avoid=${m.avoidance_active?'Y':'n'}`);
     lines.push(`  ref=${m.reference?`(${fmt(m.reference[0])},${fmt(m.reference[1])})`:'null'}  n_ang=${fmt(m.normal_angle,3)}`);
+    if (m.requested_direction) lines.push(`  PUSH exec=${m.direction_valid?'matched':'waiting'} request_face=${m.direction_unavailable?'UNAVAILABLE':'available'} dot=${fmt(m.direction_alignment,3)}`);
+    const y=m.yield_debug;
+    if(y) lines.push(`  YIELD active=${y.active?'Y':'n'} blocked=${y.blocked?'Y':'n'} gap=${fmt(y.min_gap,3)} predicted=${fmt(y.predicted_min_gap,3)} side=${y.side}`);
     const qt = m.selector_debug && m.selector_debug.q_tracking;
     if (qt) lines.push(`  segment=${qt.segment_id || '—'} ${qt.source} selector=${qt.selector_evaluated ? '重新选择' : '保持'} matched=${qt.matched ? 'Y' : 'n'}`);
   }
@@ -886,7 +914,7 @@ async function savePreset() {
   try {
     const p = await api('/api/presets', 'POST', {
       name, scene: S.baseScene, base_scene: S.baseScene,
-      object: S.object, robots: S.robots, sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'm3b',
+      object: S.object, robots: S.robots, sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'option-v2',
     });
     S.currentPreset = p; S.dirty = false;
     S.loadedInitial = {object: clonePose(S.object), robots: S.robots.map(clonePose)};
@@ -939,7 +967,7 @@ $('clearSequence').onclick = () => { S.sequence = []; renderSequence(); markDirt
 $('saveOverrides').onclick = saveOverrides;
 $('savePreset').onclick = savePreset;
 $('presetSort').onchange = (e) => { S.presetSort = e.target.value; renderPresets(); };
-for (const [id, key] of [['viewLidar','lidar'],['viewTarget','target'],['viewForce','force'],['viewContact','contact'],['viewEstimate','estimate']]) {
+for (const [id, key] of [['viewLidar','lidar'],['viewTarget','target'],['viewForce','force'],['viewContact','contact'],['viewEstimate','estimate'],['viewYield','yield']]) {
   S.view[key] = $(id).checked;
   $(id).onchange = (e) => { S.view[key] = e.target.checked; drawScene(); };
 }

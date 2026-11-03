@@ -1,0 +1,870 @@
+{
+  "version": "declared-developer-panel-v1",
+  "cases": [
+    {
+      "category": "contact",
+      "direction": 2,
+      "orbit": "CW",
+      "instance": {
+        "name": "contact_2",
+        "map": "L0",
+        "split": "train",
+        "index": 0,
+        "seed": 12000,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 2.5,
+            "y": 1.687,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.5,
+          2.45
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "contact",
+      "direction": 0,
+      "orbit": "CCW",
+      "instance": {
+        "name": "contact_0",
+        "map": "L0",
+        "split": "train",
+        "index": 1,
+        "seed": 12001,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": -1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.187,
+            "y": 2.0,
+            "angle": 0.0
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.95,
+          2.0
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "approach",
+      "direction": 2,
+      "orbit": "CW",
+      "instance": {
+        "name": "approach_2",
+        "map": "L0",
+        "split": "train",
+        "index": 2,
+        "seed": 12002,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 2.5,
+            "y": 1.595,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.5,
+          2.45
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "approach",
+      "direction": 0,
+      "orbit": "CCW",
+      "instance": {
+        "name": "approach_0",
+        "map": "L0",
+        "split": "train",
+        "index": 3,
+        "seed": 12003,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": -1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.0949999999999998,
+            "y": 2.0,
+            "angle": 0.0
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.95,
+          2.0
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "dual",
+      "direction": 2,
+      "orbit": "CW",
+      "instance": {
+        "name": "dual_2",
+        "map": "L0",
+        "split": "train",
+        "index": 4,
+        "seed": 12004,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 2.75,
+            "y": 1.595,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 2.25,
+            "y": 1.595,
+            "angle": 1.5707963267948966
+          }
+        ],
+        "goal_centre": [
+          2.5,
+          2.45
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "dual",
+      "direction": 0,
+      "orbit": "CCW",
+      "instance": {
+        "name": "dual_0",
+        "map": "L0",
+        "split": "train",
+        "index": 5,
+        "seed": 12005,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": -1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.0949999999999998,
+            "y": 1.75,
+            "angle": 0.0
+          },
+          {
+            "x": 2.0949999999999998,
+            "y": 2.25,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.95,
+          2.0
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "reposition",
+      "direction": 6,
+      "orbit": "CW",
+      "instance": {
+        "name": "reposition_2",
+        "map": "L0",
+        "split": "train",
+        "index": 6,
+        "seed": 12006,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 2.5,
+            "y": 1.595,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.5,
+          1.55
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    },
+    {
+      "category": "reposition",
+      "direction": 4,
+      "orbit": "CCW",
+      "instance": {
+        "name": "reposition_0",
+        "map": "L0",
+        "split": "train",
+        "index": 7,
+        "seed": 12007,
+        "arena": [
+          5.0,
+          4.0
+        ],
+        "obstacles": [],
+        "object": {
+          "x": 2.5,
+          "y": 2.0,
+          "angle": -1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.0949999999999998,
+            "y": 2.0,
+            "angle": 0.0
+          },
+          {
+            "x": 4.4,
+            "y": 0.5,
+            "angle": 0.0
+          }
+        ],
+        "goal_centre": [
+          2.05,
+          2.0
+        ],
+        "goal_radius": 0.2,
+        "env_version": "random-start-oriented-v4.7"
+      }
+    }
+  ],
+  "perturbation_instances": [
+    {
+      "name": "contact_2_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 100,
+      "seed": 12000,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": 0.0
+      },
+      "robots": [
+        {
+          "x": 2.49,
+          "y": 1.687,
+          "angle": 1.5707963267948966
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.5,
+        2.45
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "contact_0_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 101,
+      "seed": 12001,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": -1.5707963267948966
+      },
+      "robots": [
+        {
+          "x": 2.187,
+          "y": 2.01,
+          "angle": 0.0
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.95,
+        2.0
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "approach_2_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 102,
+      "seed": 12002,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": 0.0
+      },
+      "robots": [
+        {
+          "x": 2.49,
+          "y": 1.595,
+          "angle": 1.5707963267948966
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.5,
+        2.45
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "approach_0_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 103,
+      "seed": 12003,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": -1.5707963267948966
+      },
+      "robots": [
+        {
+          "x": 2.0949999999999998,
+          "y": 2.01,
+          "angle": 0.0
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.95,
+        2.0
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "dual_2_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 104,
+      "seed": 12004,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": 0.0
+      },
+      "robots": [
+        {
+          "x": 2.74,
+          "y": 1.595,
+          "angle": 1.5707963267948966
+        },
+        {
+          "x": 2.25,
+          "y": 1.595,
+          "angle": 1.5707963267948966
+        }
+      ],
+      "goal_centre": [
+        2.5,
+        2.45
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "dual_0_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 105,
+      "seed": 12005,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": -1.5707963267948966
+      },
+      "robots": [
+        {
+          "x": 2.0949999999999998,
+          "y": 1.76,
+          "angle": 0.0
+        },
+        {
+          "x": 2.0949999999999998,
+          "y": 2.25,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.95,
+        2.0
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "reposition_2_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 106,
+      "seed": 12006,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": 0.0
+      },
+      "robots": [
+        {
+          "x": 2.49,
+          "y": 1.595,
+          "angle": 1.5707963267948966
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.5,
+        1.55
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    },
+    {
+      "name": "reposition_0_tangent+0.010",
+      "map": "L0",
+      "split": "dev-perturb",
+      "index": 107,
+      "seed": 12007,
+      "arena": [
+        5.0,
+        4.0
+      ],
+      "obstacles": [],
+      "object": {
+        "x": 2.5,
+        "y": 2.0,
+        "angle": -1.5707963267948966
+      },
+      "robots": [
+        {
+          "x": 2.0949999999999998,
+          "y": 2.01,
+          "angle": 0.0
+        },
+        {
+          "x": 4.4,
+          "y": 0.5,
+          "angle": 0.0
+        }
+      ],
+      "goal_centre": [
+        2.05,
+        2.0
+      ],
+      "goal_radius": 0.2,
+      "env_version": "random-start-oriented-v4.7"
+    }
+  ],
+  "metrics": [
+    {
+      "case": "contact_2",
+      "variant": "witness",
+      "category": "contact",
+      "success": true,
+      "seconds": 4.4,
+      "termination": "success",
+      "final_distance": 0.07438659804273318,
+      "max_penetration": 0.0003801279724964246,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "contact_2_tangent+0.010",
+      "variant": "witness",
+      "category": "contact",
+      "success": true,
+      "seconds": 4.4,
+      "termination": "success",
+      "final_distance": 0.08998933161849033,
+      "max_penetration": 0.00037087792011442604,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "contact_0",
+      "variant": "witness",
+      "category": "contact",
+      "success": true,
+      "seconds": 4.4,
+      "termination": "success",
+      "final_distance": 0.07438659804273318,
+      "max_penetration": 0.0003801279724968687,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "contact_0_tangent+0.010",
+      "variant": "witness",
+      "category": "contact",
+      "success": true,
+      "seconds": 4.4,
+      "termination": "success",
+      "final_distance": 0.08998933161852019,
+      "max_penetration": 0.0003708779201142041,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "approach_2",
+      "variant": "witness",
+      "category": "approach",
+      "success": true,
+      "seconds": 5.6000000000000005,
+      "termination": "success",
+      "final_distance": 0.07597721929412282,
+      "max_penetration": 0.00018211861766359583,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "approach_2_tangent+0.010",
+      "variant": "witness",
+      "category": "approach",
+      "success": true,
+      "seconds": 5.6000000000000005,
+      "termination": "success",
+      "final_distance": 0.0774255685206245,
+      "max_penetration": 0.0001533083940370848,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "approach_0",
+      "variant": "witness",
+      "category": "approach",
+      "success": true,
+      "seconds": 5.6000000000000005,
+      "termination": "success",
+      "final_distance": 0.07597721929412282,
+      "max_penetration": 0.00018211861766070925,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "approach_0_tangent+0.010",
+      "variant": "witness",
+      "category": "approach",
+      "success": true,
+      "seconds": 5.6000000000000005,
+      "termination": "success",
+      "final_distance": 0.07742556852061805,
+      "max_penetration": 0.0001533083940337556,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "dual_2",
+      "variant": "witness",
+      "category": "dual",
+      "success": true,
+      "seconds": 6.45,
+      "termination": "success",
+      "final_distance": 0.06096011601489959,
+      "max_penetration": 0.00023407903606997849,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "dual_2_tangent+0.010",
+      "variant": "witness",
+      "category": "dual",
+      "success": true,
+      "seconds": 6.45,
+      "termination": "success",
+      "final_distance": 0.06097093872781703,
+      "max_penetration": 0.00023407903607020053,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "dual_0",
+      "variant": "witness",
+      "category": "dual",
+      "success": true,
+      "seconds": 6.45,
+      "termination": "success",
+      "final_distance": 0.06096011601489959,
+      "max_penetration": 0.00023407903607264302,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "dual_0_tangent+0.010",
+      "variant": "witness",
+      "category": "dual",
+      "success": true,
+      "seconds": 6.45,
+      "termination": "success",
+      "final_distance": 0.06097093872781706,
+      "max_penetration": 0.00023407903607264302,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "reposition_2",
+      "variant": "witness",
+      "category": "reposition",
+      "success": true,
+      "seconds": 23.6,
+      "termination": "success",
+      "final_distance": 0.07249698721258897,
+      "max_penetration": 0.0001424231102881615,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.44999999999999996
+    },
+    {
+      "case": "reposition_2_tangent+0.010",
+      "variant": "witness",
+      "category": "reposition",
+      "success": true,
+      "seconds": 23.200000000000003,
+      "termination": "success",
+      "final_distance": 0.08487226892099191,
+      "max_penetration": 0.0001484352034900342,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.44999999999999996
+    },
+    {
+      "case": "reposition_0",
+      "variant": "witness",
+      "category": "reposition",
+      "success": true,
+      "seconds": 23.6,
+      "termination": "success",
+      "final_distance": 0.0724969872125812,
+      "max_penetration": 0.00014242311029082622,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    },
+    {
+      "case": "reposition_0_tangent+0.010",
+      "variant": "witness",
+      "category": "reposition",
+      "success": true,
+      "seconds": 23.400000000000002,
+      "termination": "success",
+      "final_distance": 0.08487226261795952,
+      "max_penetration": 0.00014843854252312598,
+      "exits": [
+        null,
+        null
+      ],
+      "witness_privileged_braking": true,
+      "initial_distance": 0.4500000000000002
+    }
+  ],
+  "train_count": 8,
+  "perturbation_count": 8,
+  "all_witnessed": true,
+  "seconds": 5.655964730998676,
+  "usage": "fixed training is deliberate overfitting diagnostic; perturbations are development data, not final test; failed witnesses retained"
+}

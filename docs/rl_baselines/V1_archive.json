@@ -1,0 +1,6 @@
+{
+  "path": "outputs/rl_baselines/V1_event_progress_20261103.tar.gz",
+  "bytes": 23584274,
+  "sha256": "cf86253744b2002f78e6f1be0f1024492e541bc41104b657e12648f91fafa4c1",
+  "note": "Final V1 baseline; local only. Does not include new V2 testbed recordings."
+}

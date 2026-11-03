@@ -1,0 +1,10 @@
+{
+  "applied": true,
+  "at": "2026-11-03T21:44:08.138175+08:00",
+  "bytes": 2111555834,
+  "kept_baseline": "outputs/rl_baselines/V1_event_progress_20261103",
+  "note": "Pruned dense intermediate evaluations/periodic checkpoints, worker cache and superseded smoke/pilot. No testbed runs or historical diagnostic reports removed.",
+  "additional_removed_staging_bytes": 188286628,
+  "additional_removed_staging_path": "outputs/handoff/20261103_cross_pc/payload",
+  "removed_files": 748
+}

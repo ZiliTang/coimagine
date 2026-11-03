@@ -1,5 +1,14 @@
 # 当前交接
 
+- **Option V2 已上线，等待用户审查（2026-11-03晚）**：[改动、8个实例、检查与限制](reviews/Option_V2_Yield_20261103.md)。8765已重启，PID2260541，`option-v2-yield-signed-push`；PUSH方向贯穿选面/分配/跟踪/执行，新增YIELD(ID46)和P+Y等组合；973维/1168合法对。无新训练、无惩罚、未禁止真实对向PUSH。
+- 先看[同起点BRAKE](http://127.0.0.1:8765/?run=20261103_215538_49f501)与[YIELD](http://127.0.0.1:8765/?run=20261103_215539_8fe6f2)，再看[近墙边界](http://127.0.0.1:8765/?run=20261103_215539_2baf31)。开阔例接触7.55→0s、角偏0.432→约0；近墙仍有0.5s接触/1s blocked，不能宣称完全解决。
+- **上一轮RL明确冻结为第一版V1基线**：[登记](../rl_baselines/README.md)。训练已按预算结束，5331轮/170592 episode；best@4640验证32/32，末次@5330为29/32；旧best@2580 test26/32不是新best结果。best/final/完整源码686项已保留，禁止用当前改过的控制器冒充V1复现。
+- 清理周期权重、冗余逐轮原始评估/worker缓存、被替代pilot，以及已压缩迁移包的解包暂存，释放约2.30GB；未删用户presets、既有RL回放和v14–v16历史诊断。最终V1包`outputs/rl_baselines/V1_event_progress_20261103.tar.gz`，23.6MB，本机未上传。此前12:50包为历史中期版本。
+- 62项聚焦检查通过；7个D010/D005历史失败已在修改前源码独立复现，未隐去/伪装通过。V2仍是手工option回放验证；原16worker长训器绑定v20，不能直接当V2 runner。下一位：用户在测台审查，不自动训练。
+- 跨PC：V1最终权重包见基线登记；V2现成回放包`outputs/handoff/20261103_option_v2/testbed_review_v2.tar.gz`；代码增量bundle为同目录`coimagine_option_v2.bundle`。GitHub认证仍缺失，不能把本机提交视为已push。部署/读取校验见V2报告及verification.json。
+
+## 以下为12:50及以前的历史交接快照
+
 - **跨PC接续（2026-11-03 12:50冻结）**：[工作状态、权重/回放迁移、启动与下一步](Cross_PC_Handoff_20261103.md)。3937轮、125,984训练episode；best@3500验证32/32，最近@3930为30/32；旧best@2580中期test26/32，不能绑定新best。原训练仍运行，本次没有新训练/评测或修改受保护源码。
 - **新研究路线已持久化，尚未实施**：[物理交互经验如何帮助冻结LLM选择/组合option](../research/LLM_Option_Experience_Research_Direction_20261103.md)。先做单一阻挡实例与经验表示对照，再决定benchmark扩展；不把神经世界模型作为前置条件。
 - Git同步源码/文档/图表/紧凑证据；权重与回放仍被ignore，另有原PC迁移包`outputs/handoff/20261103_cross_pc/coimagine_state_20261103_1250.tar.gz`，**未上传GitHub**；具体SHA/复制方式见跨PC文档。不要在新机器自动重启训练。

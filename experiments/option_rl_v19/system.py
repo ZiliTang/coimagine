@@ -31,7 +31,8 @@ class OptionSlot(Slot):
 
 
 class JointCoordinator:
-    def __init__(self):
+    def __init__(self, action_spec=S):
+        self.action_spec = action_spec
         self.phase = 'IDLE'
         self.last_phase = 'IDLE'
         self.rows = []
@@ -47,7 +48,7 @@ class JointCoordinator:
     def pair_specs(self, slots):
         if any(s.pending is not None for s in slots):
             return None
-        specs = [S.SPEC_BY_INDEX[s.action.index] for s in slots]
+        specs = [self.action_spec.SPEC_BY_INDEX[s.action.index] for s in slots]
         if not all('same_family' in sp.joint_requirements for sp in specs):
             return None
         if specs[0].family != specs[1].family:

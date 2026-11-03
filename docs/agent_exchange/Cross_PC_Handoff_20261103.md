@@ -1,5 +1,7 @@
 # 跨 PC 工作交接：Option、事件 RL 与经验增强 LLM 路线
 
+> **后续更新（2026-11-03晚）：** 原训练已结束并冻结为[第一版V1基线](../rl_baselines/README.md)，最终V1迁移包为`outputs/rl_baselines/V1_event_progress_20261103.tar.gz`。当前8765已更新[Option V2](reviews/Option_V2_Yield_20261103.md)，含YIELD和PUSH方向修正，尚未训练。本文以下12:50包和权重是历史中期快照；其重复解包暂存已清理，压缩包仍保留。
+
 冻结时间：**2026-11-03 12:50:13，Asia/Shanghai**。本文件是当前接续入口；实时状态仍以原机器上的进程与输出为准。最新讨论见[研究路线记录](../research/LLM_Option_Experience_Research_Direction_20261103.md)，阶段汇报见[导师稿](../option_optimization_and_event_rl_report_20261103.md)。
 
 ## 1. 已经完成与尚未完成

@@ -26,12 +26,21 @@ from coimagine.continuous2d.scenes import Pose
 from coimagine.random_start import spec as R
 from experiments.option_rl_v16.learnability import load_panel
 from experiments.option_rl_v19.session import (
-    TestbedSession, CONTROLLER_SOURCE_PATH, CONTROLLER_SOURCE_SHA256,
+    CONTROLLER_SOURCE_PATH, CONTROLLER_SOURCE_SHA256,
 )
-from experiments.option_rl_v19 import spec as S
+from experiments.option_rl_v21.session import TestbedSession
+from experiments.option_rl_v21 import spec as S
+from experiments.option_rl_v21.review_cases import review_scenes, review_presets
 
 SERVER_STARTED_AT = time.time()
 _RUNTIME_SOURCE_FILES = (
+    'docs/agent_exchange/state/testbed_panel.json',
+    'experiments/option_rl_v21/spec.py',
+    'experiments/option_rl_v21/system.py',
+    'experiments/option_rl_v21/session.py',
+    'experiments/option_rl_v21/yield_skill.py',
+    'experiments/option_rl_v21/review_cases.py',
+    'experiments/option_rl_v17/contact_timing_audit.py',
     'experiments/option_rl_v19/testbed_server.py',
     'experiments/option_rl_v19/session.py',
     'experiments/option_rl_v19/system.py',
@@ -56,7 +65,7 @@ def _server_status():
     disk_sha = hashlib.sha256(CONTROLLER_SOURCE_PATH.read_bytes()).hexdigest()
     runtime_changed = any(hashlib.sha256((ROOT/name).read_bytes()).hexdigest() != digest
                           for name, digest in _LOADED_RUNTIME_HASHES.items())
-    return dict(pid=os.getpid(), started_at=SERVER_STARTED_AT, controller_version='m3b',
+    return dict(pid=os.getpid(), started_at=SERVER_STARTED_AT, controller_version='option-v2',
                 action_version=S.VERSION, action_codebook_hash=S.CODEBOOK_HASH,
                 push_speeds=S.PUSH_SPEEDS, reposition_speed=S.REPOSITION_SPEED,
                 support_memory_enabled=False, q_acquisition_mode='current_visible_support',
@@ -67,7 +76,8 @@ def _server_status():
 
 
 def _load_scenes():
-    train, _ = load_panel(PANEL)
+    panel = PANEL if PANEL.exists() else ROOT/'docs/agent_exchange/state/testbed_panel.json'
+    train, _ = load_panel(panel)
     out = {}
     for i in train:
         out[i.name] = i
@@ -91,7 +101,7 @@ def _load_scenes():
     return out
 
 
-SCENES = _load_scenes()
+SCENES = {**_load_scenes(), **review_scenes()}
 
 
 def _scene_dict(inst):
@@ -133,6 +143,14 @@ def _seed_presets():
                     object=meta['initial']['object'], robots=meta['initial']['robots'],
                     sequence=[], overrides={}, scene_meta=meta)
         path.write_text(json.dumps(data, indent=1))
+    for pid, title, scene, sequence in review_presets():
+        path = PRESETS / f'{pid}.json'
+        if path.exists():
+            continue
+        meta = _scene_dict(SCENES[scene])
+        path.write_text(json.dumps(dict(id=pid, name=title, description=_auto_description(sequence, now),
+            created=now, scene=scene, base_scene=scene, object=meta['initial']['object'],
+            robots=meta['initial']['robots'], sequence=sequence, overrides={}, scene_meta=meta), indent=1))
 
 
 def _read_csv(path):
@@ -152,6 +170,9 @@ def _param_list():
         out.append(dict(family=r['family'], name=r['name'], default=float(r['default']),
                         low=float(r['low']), high=float(r['high']), unit=r['unit'],
                         description=r['description']))
+    for p in S.YIELD_PARAMS:
+        out.append(dict(family='YIELD', name=p.name, default=p.default, low=p.low,
+                        high=p.high, unit=p.unit, description=p.description))
     return out
 
 
@@ -204,7 +225,7 @@ def _validate_sequence(seq):
 
 def _preset_save(body):
     scene = body.get('scene')
-    controller_version = 'm3b'
+    controller_version = 'option-v2'
     if scene not in SCENES:
         raise ValueError('unknown scene')
     obj = body.get('object') or {}

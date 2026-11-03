@@ -17,7 +17,8 @@ from coimagine.random_start.skills import RobotKinematics
 def test_reposition_legacy_ids_resolve_to_one_selectable_speed_per_direction():
     menu = server._option_list()
     repos = [s for s in menu if s['family'] == 'REPOSITION']
-    assert len(menu) == 42 and {s['action_index'] for s in repos} == {40, 43}
+    assert len(menu) == 43 and {s['action_index'] for s in repos} == {40, 43}
+    assert [s['action_index'] for s in menu if s['family'] == 'YIELD'] == [46]
     assert len(repos) == 2
     obs = TestbedSession(server.SCENES['contact_0']).env.boundary_observations()[0]
     mask = S.mask(obs)

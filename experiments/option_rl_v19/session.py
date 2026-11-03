@@ -31,18 +31,27 @@ class Segment:
 
 class TestbedSession:
     __test__ = False
-    def __init__(self, instance, *, overrides=None, controller_version='m3b'):
+    def __init__(self, instance, *, overrides=None, controller_version='m3b',
+                 action_spec=None, env_factory=None, install_controller=True):
         self.instance = instance
         self.overrides = overrides or {}
-        self.controller_version = 'm3b'
-        self.env = OptionSystemEnv(instance, overrides=self.overrides)
-        UnknownShapeEnvMixin.install_prior_free(self.env)
+        self.controller_version = controller_version
+        self.spec = action_spec or S
+        self.env_factory = env_factory or OptionSystemEnv
+        self.install_controller = install_controller
+        self.env = self._new_env()
         self.sequence = []
         self.last = None
         self.runs = []
 
+    def _new_env(self):
+        env = self.env_factory(self.instance, overrides=self.overrides)
+        if self.install_controller:
+            UnknownShapeEnvMixin.install_prior_free(env)
+        return env
+
     def add(self, a0, a1, decisions=1, budget_m=None, time_budget_s=None, progress='decisions'):
-        self.sequence.append(Segment(S.canonical_index(a0), S.canonical_index(a1), int(decisions),
+        self.sequence.append(Segment(self.spec.canonical_index(a0), self.spec.canonical_index(a1), int(decisions),
                                      None if budget_m is None else float(budget_m),
                                      None if time_budget_s is None else float(time_budget_s),
                                      str(progress)))
@@ -53,8 +62,7 @@ class TestbedSession:
         return self
 
     def reset(self):
-        self.env = OptionSystemEnv(self.instance, overrides=self.overrides)
-        UnknownShapeEnvMixin.install_prior_free(self.env)
+        self.env = self._new_env()
         self.last = None
         return self
 
@@ -63,28 +71,43 @@ class TestbedSession:
         env = self.env
         rec = A.Recorder('session', 'session')
         inst = A.Instrumentation(env, rec).install()
+        budget_trace = {}
+        original_coordinate = env._coordinate
+        def coordinate_with_budget_trace(now, observations=None):
+            result = original_coordinate(now, observations)
+            budget_trace[int(env.total_periods)] = [env.budget_trackers[i].info() for i in (0, 1)]
+            return result
+        env._coordinate = coordinate_with_budget_trace
         try:
-            budget_trace = {}
             execution_started = time.perf_counter()
             for seg in self.sequence:
-                budget_applied = False
-                for _ in range(max(1, seg.decisions)):
+                budget_applied = seg.budget_m is not None or seg.time_budget_s is not None
+                now = float(env.total_periods)*.05
+                for i in (0, 1):
+                    # Every segment starts a fresh ledger, including an unbudgeted one.
+                    env.budget_trackers[i].configure(seg.budget_m, seg.time_budget_s, seg.progress, now)
+                original_ticks = env.decision_ticks
+                if budget_applied:
+                    env.decision_ticks = 1
+                for _ in range(max(1, seg.decisions)*original_ticks if budget_applied else max(1, seg.decisions)):
                     if env.termination is not None:
                         break
                     env.joint_step(seg.a0, seg.a1, record=True)
-                    budget_trace[int(env.total_periods)] = [
-                        env.budget_trackers[i].info() for i in (0, 1)]
+                    if seg.time_budget_s is not None and env.total_periods*.05-now >= seg.time_budget_s-1e-9:
+                        for tracker in env.budget_trackers.values():
+                            tracker.reached = True
+                            tracker.exit_reason = tracker.exit_reason or 'time_budget'
+                        budget_trace[int(env.total_periods)-1] = [env.budget_trackers[i].info() for i in (0, 1)]
                     # Budgets live in the option controllers; the testbed only
                     # installs the request and reads controller-progress.
-                    if not budget_applied and (seg.budget_m is not None or seg.time_budget_s is not None):
-                        now = float(env.total_periods) * 0.2
-                        for i in (0, 1):
-                            env.budget_trackers[i].configure(seg.budget_m, seg.time_budget_s, seg.progress, now)
-                        budget_applied = True
                     if budget_applied:
-                        reached = any(env.budget_trackers[i].reached for i in (0, 1))
+                        reached = any(env.budget_trackers[i].reached
+                                      for i, a in enumerate((seg.a0, seg.a1))
+                                      if self.spec.ACTIONS[a].kind in ('push', 'reposition'))
+                        reached = reached or (seg.time_budget_s is not None and env.total_periods*.05-now >= seg.time_budget_s-1e-9)
                         if reached:
                             break
+                env.decision_ticks = original_ticks
             execution_seconds = time.perf_counter() - execution_started
             finalize_started = time.perf_counter()
             ticks = rec.finish(env, bool(env.success), env.termination, float(env.reward_total))
@@ -117,6 +140,9 @@ class TestbedSession:
             info=_info(t,side); eff=info.get('effect') or {}; obs=((t.get('p0',{}) or {}).get(str(side),{}) or {}).get('obs',{}) or {}
             own=obs.get('own') or {}
             return dict(action=info.get('skill'), stage=info.get('stage'), contact_phase=eff.get('contact_phase'),
+                        requested_direction=info.get('requested_direction'),
+                        direction_valid=info.get('direction_valid'), direction_alignment=info.get('direction_alignment'),
+                        direction_unavailable=info.get('direction_unavailable'), yield_debug=info.get('yield_debug'),
                         candidate=eff.get('candidate'), candidate_err_t=eff.get('candidate_err_t'),
                         contact=bool(info.get('contact_ready') if info.get('contact_ready') is not None else info.get('contacting_object')), contact_point_robot=obs.get('contact_point_robot'),
                         contact_point_world=eff.get('contact_point_world'), own=eff.get('own'), own_v=eff.get('own_v'),
@@ -152,13 +178,14 @@ class TestbedSession:
             strip.append(dict(t=float(t['t_start']), tick=int(t['tick']),
                               stage=[stage0, stage1], phase=c.get('phase'),
                               contact=[bool(A._contact(t, 0)), bool(A._contact(t, 1))],
+                              physical_contact=[bool(((t.get('p0', {}).get(str(i), {}) or {}).get('obs') or {}).get('contacting_object')) for i in (0, 1)],
                               joint_active=bool(A._active(t, 0) or A._active(t, 1)),
                               forces=p4.get('forces')))
         disk_sha = hashlib.sha256(CONTROLLER_SOURCE_PATH.read_bytes()).hexdigest()
         run = dict(
             case='session', controller_version=self.controller_version,
-            action_version=S.VERSION, action_codebook_hash=S.CODEBOOK_HASH,
-            action_labels=[a.label for a in S.ACTIONS],
+            action_version=self.spec.VERSION, action_codebook_hash=self.spec.CODEBOOK_HASH,
+            action_labels=[a.label for a in self.spec.ACTIONS],
             support_memory_enabled=False, q_acquisition_mode='current_visible_support',
             controller_source_sha256=CONTROLLER_SOURCE_SHA256,
             controller_disk_sha256=disk_sha,

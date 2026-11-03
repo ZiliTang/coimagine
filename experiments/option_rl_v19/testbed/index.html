@@ -12,7 +12,7 @@
   <div class="header-controls">
     <span id="presetLabel" class="preset-label">Unsaved</span>
     <button id="resetPoses" class="ghost">Reset poses</button>
-    <label class="small">controller <select id="controllerVersion"><option value="m3b">m3b</option></select></label>
+    <label class="small">controller <select id="controllerVersion"><option value="option-v2">option V2</option></select></label>
     <span id="serverVersion" class="hint" title="Loaded controller version">version…</span>
     <button id="runBtn" class="primary">Run sequence</button>
     <span id="status" class="status"></span>
@@ -33,6 +33,7 @@
         <label><input id="viewTarget" type="checkbox"> target</label>
         <label><input id="viewForce" type="checkbox"> force</label>
         <label><input id="viewContact" type="checkbox"> contact</label>
+        <label><input id="viewYield" type="checkbox" checked> yield / direction</label>
         <label><input id="viewEstimate" type="checkbox" checked> est. window</label>
       </div>
     </div>
@@ -56,7 +57,7 @@
         <canvas id="timelineCanvas" width="900" height="260"></canvas>
         <div id="timelineTip" class="timeline-tip"></div>
       </div>
-      <div class="timeline-note">contact = physical tick-start sensor · both_contact/joint_active = contact-ready (gap<=5cm) · phase = coordinator before step · geometry = post-step</div>
+      <div class="timeline-note">contact = physical tick-start sensor (legacy runs fall back to recorded flags) · joint_active = coordinator flag · phase = before control · geometry = post-step</div>
       <div id="legend" class="legend"></div>
     </div>
     </div>

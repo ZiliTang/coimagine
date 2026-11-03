@@ -1,0 +1,36 @@
+{
+  "status": {
+    "pid": 2260541,
+    "started_at": 1793714823.606541,
+    "controller_version": "option-v2",
+    "action_version": "option-v2-yield-signed-push",
+    "action_codebook_hash": "cde7838fc9f94e43977b4fda2705593affc582ba82fb1c5446cf2e9e4ffa32f1",
+    "push_speeds": [
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "reposition_speed": 0.3,
+    "support_memory_enabled": false,
+    "q_acquisition_mode": "current_visible_support",
+    "controller_source_sha256": "43f03c1a4d33df26bf944f976239c108dc9681d58f5cffc8254f5468ab41af10",
+    "controller_disk_sha256": "43f03c1a4d33df26bf944f976239c108dc9681d58f5cffc8254f5468ab41af10",
+    "runtime_source_sha256": "befe6a9a1fb81e1cdb63b5d02b5d00ba9a60ffa0b0d0a96868b15ab0d0f48522",
+    "restart_required": false
+  },
+  "options": 43,
+  "v2_presets": 8,
+  "final_runs_readable": 8,
+  "focused_tests": "62 passed in 3.27s",
+  "v1_frozen_models_load": {
+    "best.pt": 4640,
+    "policy.pt": 5331
+  },
+  "new_training": false,
+  "note": "After review_006, only scene-panel fallback/server setup and train entry fallback changed; PUSH/YIELD controller hashes match recorded runs.",
+  "frontend_sha256": {
+    "experiments/option_rl_v19/testbed/app.js": "4f49c15a86a88e1e255c4d27bea88be244738b1b149cb14ec4f6a13448e77d0a",
+    "experiments/option_rl_v19/testbed/index.html": "48bb702ecd1ae214dd492387fd9c5a00dd1d9e721d0656a286a0057d15fc108d"
+  }
+}

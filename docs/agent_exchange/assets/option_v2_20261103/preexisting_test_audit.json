@@ -1,0 +1,45 @@
+{
+  "source": "/home/tzl/repo/coimagine/outputs/rl_baselines/V1_event_progress_20261103/frozen_code/experiments/option_rl_v19/unknown_shape.py",
+  "tests": [
+    {
+      "test": "test_d010_controller_step.py::test_missing_candidate_cannot_shift",
+      "status": "pass"
+    },
+    {
+      "test": "test_d010_controller_step.py::test_contact_time_counted_once_per_tick",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d010_controller_step.py::test_surface_moved_two_cm_revalidates_candidate",
+      "status": "pass"
+    },
+    {
+      "test": "test_d010_controller_step.py::test_small_support_change_keeps_candidate_identity",
+      "status": "pass"
+    },
+    {
+      "test": "test_d010_controller_step.py::test_align_position_ok_but_speed_high_does_not_touch",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d010_controller_step.py::test_align_speed_ok_but_position_high_does_not_touch",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d010_controller_step.py::test_align_continuous_conditions_reach_touch_after_settle",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d010_controller_step.py::test_align_interruption_resets_settle",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d010_controller_step.py::test_align_timeout_waits_instead_of_forcing_touch",
+      "status": "AssertionError: "
+    },
+    {
+      "test": "test_d005_option_system.py::test_session_run_roundtrip",
+      "status": "AssertionError: "
+    }
+  ]
+}

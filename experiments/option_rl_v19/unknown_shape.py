@@ -323,7 +323,7 @@ def _optimize_face_pair(f0, f1, obs0, obs1, desired_force, desired_torque, sep,
 def select_contact_point(obs, desired_force=(0., -1.), prev_q=None, local_radius=None,
                          margin=.04, steps=(.20, .10, .05), o_ref_override=None):
     """Single-contact version of the visible-support selector."""
-    faces = visible_faces(obs)
+    faces = [f for f in visible_faces(obs) if direction_matches(f[1], desired_force)]
     if local_radius is not None and prev_q is not None:
         faces = [f for f in faces if abs(float(np.asarray(prev_q, float) @ np.asarray(f[1], float))-float(f[3])) <= .05]
     if not faces:
@@ -405,13 +405,26 @@ def contour_center(faces):
 SIMPLE_SELECTOR = os.environ.get('D013_SIMPLE_SELECTOR', '1') != '0'
 
 
+PUSH_DIRECTION_COS = math.cos(math.radians(35.))
+
+
+def direction_matches(normal, direction):
+    """Normals point INTO the observed surface; sign is part of PUSH intent."""
+    return dot(unit(normal), unit(direction)) >= PUSH_DIRECTION_COS - 1e-12
+
+
+def compatible_faces(obs, action):
+    return [f for f in visible_faces(obs)
+            if direction_matches(f[1], action.effect_direction)]
+
+
 def _best_action_face(obs, action):
-    faces = visible_faces(obs)
+    faces = compatible_faces(obs, action)
     if not faces:
         return None
     d = np.asarray(action.effect_direction, float)
     d = d/max(1e-9, float(np.linalg.norm(d)))
-    return max(faces, key=lambda f: abs(float(np.asarray(f[1], float) @ d)))
+    return max(faces, key=lambda f: float(np.asarray(f[1], float) @ d))
 
 
 def _face_center_q(f):
@@ -457,8 +470,8 @@ def _simple_pair_solution(f0, f1, desired_force):
 
 
 def select_simple_pair(obs0, action0, obs1, action1):
-    faces0 = visible_faces(obs0)
-    faces1 = visible_faces(obs1)
+    faces0 = compatible_faces(obs0, action0)
+    faces1 = compatible_faces(obs1, action1)
     if not faces0 or not faces1:
         return None
     d0=np.asarray(action0.effect_direction,float); d1=np.asarray(action1.effect_direction,float)
@@ -642,8 +655,8 @@ def select_contact_pair(obs0, action0, obs1, action1, *, desired_force=(0., -1.)
     pushing, local_radius restricts each robot to the face/neighbourhood of its
     previous q, so the selector cannot jump across a face/endpoint.
     """
-    faces0 = visible_faces(obs0)
-    faces1 = visible_faces(obs1)
+    faces0 = compatible_faces(obs0, action0)
+    faces1 = compatible_faces(obs1, action1)
     if local_radius is not None:
         if prev_q0 is not None:
             faces0 = [f for f in faces0 if abs(float(np.asarray(prev_q0, float) @ np.asarray(f[1], float))-float(f[3])) <= .05]
@@ -1094,6 +1107,19 @@ class UnknownShapePush(ContinuousPush):
         patch = (getattr(self, 'allocated_face', None)
                  if getattr(self, 'allocation_managed', False)
                  else (scored[0][2] if scored else None))
+        self.direction_alignment = (max((dot(unit(p.normal_world), unit(d)) for p in patches), default=None)
+                                    if patch is None else dot(unit(patch.normal_world), unit(d)))
+        self.direction_valid = patch is not None and direction_matches(patch.normal_world, d)
+        tracking = (getattr(self, 'allocated_debug', None) or {}).get('q_tracking') or {}
+        self.direction_unavailable = (not bool(scored)
+            or (patch is not None and not self.direction_valid)
+            or tracking.get('source') == 'direction_mismatch_hold')
+        if not self.direction_valid:
+            # Allocation/tracking must obey the same signed contract as acquisition.
+            # A formerly valid material segment can rotate outside the action cone.
+            patch = None
+            self.allocated_wait = True
+            self.release = self.joint_active = False
         # Publish the sole allocator result each tick, including visibility
         # loss. Candidate identity follows the committed segment, not rounded q.
         if self.allocated_q is not None and getattr(self, 'allocated_normal', None) is not None:
@@ -1587,6 +1613,10 @@ class UnknownShapePush(ContinuousPush):
         st = self.stage
         info = {
             "skill": self.action.label, "kind": self.kind, "stage": st,
+            "requested_direction": list(self.action.effect_direction),
+            "direction_valid": bool(getattr(self, 'direction_valid', False)),
+            "direction_alignment": getattr(self, 'direction_alignment', None),
+            "direction_unavailable": bool(getattr(self, 'direction_unavailable', False)),
             "exit_reason": self.exit_reason, "done": self.done,
             "desired_velocity": [float(x) for x in raw], "reference_velocity": list(ref),
             "force": list(force), "force_norm": math.hypot(*force),
@@ -1667,7 +1697,9 @@ class UnknownShapeEnvMixin:
         self._commit_support = {0: None, 1: None}
         self._commit_anchor = {0: None, 1: None}
         self._commit_alloc = None
-        self.factory = lambda action: make_unknown_skill(action, self.overrides, self.motion_estimator)
+        action_spec = getattr(self, 'option_spec', S)
+        self.factory = lambda action: make_unknown_skill(
+            action, self.overrides, self.motion_estimator, action_spec=action_spec)
         for slot in self.slots:
             slot.factory = self.factory
         orig = self._coordinate
@@ -1681,15 +1713,18 @@ class UnknownShapeEnvMixin:
                 observations = self.boundary_observations()
             self.motion_estimator.update(observations, now, spec.CONTROL_DT)
             paired = all(isinstance(slot.skill, UnknownShapePush) for slot in self.slots)
-            def _aligned(o):
+            def _aligned(o, action):
                 p = getattr(o, 'patch', None)
                 if p is None or not getattr(p, 'valid', False) or patch_gap(p) > .02:
+                    return False
+                if not direction_matches(p.normal_world, action.effect_direction):
                     return False
                 nn = np.asarray(p.normal_world, float)
                 hh = math.atan2(float(nn[1]), float(nn[0]))
                 ee = math.atan2(math.sin(hh - o.own.angle), math.cos(hh - o.own.angle))
                 return abs(ee) <= .18
-            both_ready = bool(paired and _aligned(observations[0]) and _aligned(observations[1]))
+            both_ready = bool(paired and _aligned(observations[0], self.slots[0].action)
+                              and _aligned(observations[1], self.slots[1].action))
             if both_ready:
                 self._pair_contact_latch = True
             if not paired:
@@ -1704,7 +1739,8 @@ class UnknownShapeEnvMixin:
                     slot.skill.allocated_id = None
             # Commit once per actual skill lifetime (not merely action index).
             # All later q writes go through finite-segment tracking below.
-            _akey = tuple((int(getattr(slot.action, 'index', -1)), id(slot.skill))
+            _akey = tuple((id(slot.skill), tuple(getattr(slot.action, 'effect_direction', ())),
+                           getattr(slot.action, 'direction', ''))
                           for slot in self.slots)
             if _akey != self._commit_key:
                 self._commit_valid = False
@@ -1774,6 +1810,9 @@ class UnknownShapeEnvMixin:
                              commit_source=('pair_selector' if paired else 'single_selector'))
                 self._commit_q[i] = q
                 self._commit_anchor[i] = anchor
+                if f is not None and not direction_matches(f[1], slot.action.effect_direction):
+                    debug.update(source='direction_mismatch_hold', matched=False)
+                    f = None
                 if f is not None:
                     self._commit_support[i] = (float(f[4]), float(f[5]))
                     sk.allocated_face = f[0]
@@ -1789,8 +1828,8 @@ class UnknownShapeEnvMixin:
         return self
 
 
-def make_unknown_skill(action, overrides=None, estimator=None):
-    action = S.ACTIONS[S.canonical_index(action.index)]
+def make_unknown_skill(action, overrides=None, estimator=None, *, action_spec=S):
+    action = action_spec.ACTIONS[action_spec.canonical_index(action.index)]
     if action.kind == "push" and getattr(action, "effect_kind", None) == "translate":
         sk = UnknownShapePush(action, estimator=estimator)
         ov = (overrides or {}).get("PUSH", {})
@@ -1800,4 +1839,6 @@ def make_unknown_skill(action, overrides=None, estimator=None):
         if cfg:
             sk.config = __import__("dataclasses").replace(sk.config, **cfg)
         return sk
-    return S.make_skill(action, overrides)
+    if action.kind == 'yield':
+        return action_spec.make_skill(action, overrides, estimator=estimator)
+    return action_spec.make_skill(action, overrides)

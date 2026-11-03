@@ -1,0 +1,178 @@
+[
+  {
+    "id": "20261103_215538_49f501",
+    "name": "V2 · 前方阻挡 · PUSH + BRAKE",
+    "periods": 180,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 0.7902876832030188,
+    "object_dy": -0.2530120819492234,
+    "yaw_peak": 0.4323816012703232,
+    "robot1_path": 0.6549051548367442,
+    "robot1_object_contact_s": 7.550000000000001,
+    "both_object_contact_s": 6.300000000000001,
+    "motor_force_cancellation_mean": 0.5123275439762864,
+    "yield_active_s": 0.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.4223280340083875,
+    "preset_id": "v2_blocker_brake"
+  },
+  {
+    "id": "20261103_215539_8fe6f2",
+    "name": "V2 · 前方让路 · PUSH + YIELD",
+    "periods": 180,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 1.4053115693314076,
+    "object_dy": 5.923414077013689e-06,
+    "yaw_peak": 2.382937547507069e-05,
+    "robot1_path": 0.9889075759928871,
+    "robot1_object_contact_s": 0.0,
+    "both_object_contact_s": 0.0,
+    "motor_force_cancellation_mean": 0.06910983049061634,
+    "yield_active_s": 3.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.5255788480280899,
+    "preset_id": "v2_blocker_yield"
+  },
+  {
+    "id": "20261103_215539_2baf31",
+    "name": "V2 · 近墙侧让 · PUSH + YIELD",
+    "periods": 120,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 0.6268880234474645,
+    "object_dy": -0.09415891279462274,
+    "yaw_peak": 0.14428166358604289,
+    "robot1_path": 1.09808683553126,
+    "robot1_object_contact_s": 0.5,
+    "both_object_contact_s": 0.5,
+    "motor_force_cancellation_mean": 0.2731513086673837,
+    "yield_active_s": 3.9000000000000004,
+    "yield_blocked_s": 1.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.43954244698397815,
+    "preset_id": "v2_wall_yield"
+  },
+  {
+    "id": "20261103_215540_29265f",
+    "name": "V2 · 对向施力 · 保留物理效果",
+    "periods": 140,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 0.0,
+    "object_dy": 0.0,
+    "yaw_peak": 4.1175354006077515e-17,
+    "robot1_path": 0.12163095126613266,
+    "robot1_object_contact_s": 6.15,
+    "both_object_contact_s": 6.15,
+    "motor_force_cancellation_mean": 0.792857142857139,
+    "yield_active_s": 0.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.26762079499894753,
+    "preset_id": "v2_opposed"
+  },
+  {
+    "id": "20261103_215541_47bc93",
+    "name": "V2 · 反面错误方向拒绝 → 改为让路",
+    "periods": 212,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 1.4053115693314076,
+    "object_dy": 5.923414077013689e-06,
+    "yaw_peak": 2.382937547507069e-05,
+    "robot1_path": 0.9891622774795664,
+    "robot1_object_contact_s": 0.0,
+    "both_object_contact_s": 0.0,
+    "motor_force_cancellation_mean": 0.05867815796373085,
+    "yield_active_s": 3.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      1.6
+    ],
+    "wall_seconds": 0.662631387996953,
+    "preset_id": "v2_wrong_direction"
+  },
+  {
+    "id": "20261103_215541_589fec",
+    "name": "V2 · 同面双北推回归",
+    "periods": 140,
+    "task_success": false,
+    "termination": null,
+    "object_dx": -0.00012963481090144668,
+    "object_dy": 1.0686513530562558,
+    "yaw_peak": 3.519551867586903e-05,
+    "robot1_path": 1.1479198562983264,
+    "robot1_object_contact_s": 4.6000000000000005,
+    "both_object_contact_s": 4.6000000000000005,
+    "motor_force_cancellation_mean": 0.0059843246875990325,
+    "yield_active_s": 0.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.35816585400607437,
+    "preset_id": "v2_dual_north"
+  },
+  {
+    "id": "20261103_215542_47542c",
+    "name": "V2 · N + E 协推回归",
+    "periods": 140,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 0.5476059886574149,
+    "object_dy": 0.9002577347375138,
+    "yaw_peak": 0.11029418235715788,
+    "robot1_path": 1.1624511223309586,
+    "robot1_object_contact_s": 4.7,
+    "both_object_contact_s": 4.65,
+    "motor_force_cancellation_mean": 0.09920082160534842,
+    "yield_active_s": 0.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.3663105469895527,
+    "preset_id": "v2_adjacent_ne"
+  },
+  {
+    "id": "20261103_215542_901be5",
+    "name": "V2 · 无威胁应静止 · YIELD + BRAKE",
+    "periods": 60,
+    "task_success": false,
+    "termination": null,
+    "object_dx": 0.0,
+    "object_dy": 0.0,
+    "yaw_peak": 0.0,
+    "robot1_path": 0.0,
+    "robot1_object_contact_s": 0.0,
+    "both_object_contact_s": 0.0,
+    "motor_force_cancellation_mean": 0.0,
+    "yield_active_s": 0.0,
+    "yield_blocked_s": 0.0,
+    "direction_unavailable_s": [
+      0.0,
+      0.0
+    ],
+    "wall_seconds": 0.09759145497810096,
+    "preset_id": "v2_yield_idle"
+  }
+]
