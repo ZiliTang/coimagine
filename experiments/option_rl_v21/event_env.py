@@ -12,6 +12,7 @@ import numpy as np
 from coimagine.random_start import spec as R
 from experiments.option_rl_v21 import spec as S
 from experiments.option_rl_v21.system import OptionSystemEnv
+from experiments.option_rl_v21.diagnostics import ExecutionDiagnostics
 
 VERSION = 'event-progress-v2-yield'
 REASONS = ('start', 'contact', 'progress', 'contact_lost', 'failure',
@@ -123,6 +124,7 @@ class EventEnv:
         contact = [bool(o.contacting_object) for o in before]
         failed_at_start = {id(s.skill) for s in self.env.slots if s.skill.done}
         reason = None
+        diagnostics = ExecutionDiagnostics()
         while reason is None:
             old = before
             old_skills = [s.skill for s in self.env.slots]
@@ -137,6 +139,7 @@ class EventEnv:
                 components[key] += boundary['reward'][key]
             before = self.env.boundary_observations()
             contact = [bool(o.contacting_object) for o in before]
+            diagnostics.update(self.env, before, R.CONTROL_DT)
             for i, kind in enumerate(kinds):
                 skill = self.env.slots[i].skill
                 committed = self.env.slots[i].pending is None and self.env.slots[i].action.index == ids[i]
@@ -209,5 +212,6 @@ class EventEnv:
         return dict(**self.last_event, periods=self.env.total_periods-start_tick,
                     start_tick=start_tick, end_tick=self.env.total_periods,
                     actions=list(ids), reward=total, components=components,
+                    diagnostics=diagnostics.values,
                     termination=boundary['termination'], success=boundary['success'],
                     skill_ends=boundary['skill_ends'])

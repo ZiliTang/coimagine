@@ -24,6 +24,7 @@ from experiments.option_rl_v16.learnability import load_panel
 from experiments.option_rl_v21 import spec as S
 from experiments.option_rl_v21.event_env import EventEnv, family
 from experiments.option_rl_v21.interface import Policy, metadata, validate_metadata
+from experiments.option_rl_v21.diagnostics import combine
 
 
 def run_episode(policy, instance, normalizer, *, generator, update_stats=False, deterministic=False,
@@ -67,6 +68,7 @@ def run_episode(policy, instance, normalizer, *, generator, update_stats=False, 
                    contact=event_counts.get('contact', 0) > 0,
                    event_counts=dict(event_counts), action_counts=dict(action_counts),
                    decision_seconds=[e['elapsed_s'] for e in events], components=components)
+    summary['diagnostics'] = combine([e['diagnostics'] for e in events], summary['seconds'])
     if collect_observations:
         summary['observations'] = np.stack(raw_observations)
     if not math.isclose(sum(s.reward for s in steps), summary['reward'], abs_tol=1e-7):
@@ -126,6 +128,7 @@ def main():
              'experiments/option_rl_v19/spec.py', 'experiments/option_rl_v19/system.py',
              'experiments/option_rl_v21/spec.py', 'experiments/option_rl_v21/system.py',
              'experiments/option_rl_v21/yield_skill.py',
+             'experiments/option_rl_v21/diagnostics.py',
              'experiments/option_rl_v13/mode_env.py', 'experiments/option_rl_v13/controller.py',
              'experiments/option_rl_v13/push_controller.py', 'experiments/option_rl_v14/interface.py',
              'experiments/option_rl_v14/mode_env.py', 'experiments/option_rl_v15/interface.py',
