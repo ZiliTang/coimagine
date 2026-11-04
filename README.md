@@ -1,5 +1,7 @@
 # CoImagine — 2D protocol core
 
+**2026-11-04：** [V2十二小时RL训练已启动](docs/agent_exchange/reviews/V2_Event_RL_12h_Launch_20261104.md)，16worker×32episode/轮，原奖励；[dashboard](http://127.0.0.1:8772/event_12h_20261104/dashboard.html)。实时状态见CURRENT。
+
 **当前（2026-11-03晚）：** [Option V2让路/方向约束及测台审查](docs/agent_exchange/reviews/Option_V2_Yield_20261103.md) · [第一版RL基线V1冻结登记](docs/rl_baselines/README.md)。V1训练已结束，V2尚未训练；8765为V2测台。旧训练/交接截点保留在下文链接中。
 
 **2026-11-03 跨机器接续入口：** [当前 Option / 事件 RL 状态与迁移步骤](docs/agent_exchange/Cross_PC_Handoff_20261103.md) · [导师阶段汇报](docs/option_optimization_and_event_rl_report_20261103.md) · [经验增强 LLM Option Policy 研究讨论](docs/research/LLM_Option_Experience_Research_Direction_20261103.md)。以下介绍保留最初 micro/grid 阶段背景；当前连续二维实现与运行状态以这些入口和 [CURRENT](docs/agent_exchange/CURRENT.md) 为准。
