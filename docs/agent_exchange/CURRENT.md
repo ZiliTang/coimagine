@@ -1,5 +1,13 @@
 # 当前交接
 
+- **跨PC打包入口（2026-11-05）**：[单压缩包、内容范围与恢复步骤](Cross_PC_Handoff_20261105.md)。最新交付位于`outputs/handoff/20261105_completed_rl/`，含完整Git bundle、V1冻结产物、V2训练结束产物、审查回放和中文说明；大文件不随Git push上传，精确hash见包旁PACKAGE_INFO.json。
+- **V2正式训练已结束并复核（2026-11-05）**：[本轮总结、V1对照与行为边界](reviews/V2_Training_Final_20261105.md)。12h单调时钟到点正常保存退出，4170轮/133440 episode/5657193事件transition，训练/完整验证0异常，82项受保护源码无漂移。
+- best@3900验证29/32；最近完整验证@4160为28/32；最终权重@4170尚未额外验证，test仍未运行。最近200轮训练成功均值83.8%、验证79.1%，不以best峰值代替稳定性。
+- 三个重点失败根2/24/27在best和最近完整验证均成功；YIELD实际有使用，但BRAKE接触/反向施力仍存在，尚不能宣布减少内耗或优于V1。没有续训、调参或自动test；下一步由用户决定冻结test与单实例可视化。
+- 原产物`outputs/option_rl_v21/event_12h_20261104/run/`的best.pt/policy.pt/source_snapshot保持；权重SHA与统计见总结附带summary.json。下一位：用户审阅。以下为开训时历史快照，running/PID不再代表当前状态。
+
+## V2开训历史快照（已结束）
+
 - **V2正式12h训练运行中（2026-11-04 12:03:41，Asia/Shanghai）**：[开训检查、配置和停止规则](reviews/V2_Event_RL_12h_Launch_20261104.md)。目录`outputs/option_rl_v21/event_12h_20261104/`；supervisor2462130/trainer2462169，16 worker，每轮32episode，随机初始化；计划11月5日约00:04结束，预算按单调时钟计。
 - Dashboard：**http://127.0.0.1:8772/event_12h_20261104/dashboard.html**。原奖励，施力成本为0；日志新增门控后施力、低运动对抗、YIELD实际执行/blocked及非推动方接触。V1仍冻结。验证沿用V1同32根，新test用seed20261104且训练中不执行。
 - 开训前73项聚焦测试通过，16worker两轮64episode＋8验证0异常，logp误差最大9.54e-7；STOP实测约5.9s正常保存退出。首轮正式采样32episode/1513transition、0异常，初始logp误差4.77e-7；仅确认接线与运行，不作学习结论。

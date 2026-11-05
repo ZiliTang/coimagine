@@ -59,4 +59,4 @@ PY
 
 ## V2 当前状态
 
-V2是**实现/手工option回放版本，等待用户审查，尚无V2训练结果**。见[V2改动与测台入口](../agent_exchange/reviews/Option_V2_Yield_20261103.md)。V1不自动扩展出YIELD，不与V2权重/观测契约互换。
+V2已完成一轮12h正式训练：4170轮/133440episode，训练异常0；best@3900验证29/32，最近完整@4160为28/32，final权重@4170尚未额外验证，独立test未运行。[完整总结与证据](../agent_exchange/reviews/V2_Training_Final_20261105.md)。此结果不替换V1冻结基线，也不证明V2优于V1或已解决挡路/对抗。V1不自动扩展出YIELD，不与V2权重/观测契约互换；手工改动历史见[V2改动与测台入口](../agent_exchange/reviews/Option_V2_Yield_20261103.md)。
