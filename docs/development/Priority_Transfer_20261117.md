@@ -15,7 +15,7 @@
 
 ## 迁移包内容与边界
 
-包内只有两种选择所需轨迹的并集、10个CAP程序/语义分组、完整7600条开发成败摘要、场景、协议、哈希与跨机器特征参考。不复制旧训练数组和重复源码快照；目标机从轨迹重新计算特征。不带评估成败标签，不需要API密钥。
+包内包含固定Cython3.0.12工具链，以及两种选择所需轨迹的并集、10个CAP程序/语义分组、完整7600条开发成败摘要、场景、协议、哈希与跨机器特征参考。不复制旧训练数组和重复源码快照；目标机从轨迹重新计算特征。不带评估成败标签，不需要API密钥。
 
 原轨迹gzip逐字节复制，旧路径只留在provenance审计字段；运行只读取新的相对路径selections。原campaign清单仅记录来源摘要，本包是有独立manifest的派生子集，不冒充原campaign的完整副本。
 
@@ -32,6 +32,8 @@ python3.11 -m venv .venv
 .venv/bin/python -m pip install 'numpy==2.4.6' 'pymunk==6.9.0' 'matplotlib==3.11.1' 'PyYAML==6.0.3' 'pytest==9.1.1'
 ```
 
+系统工具还需`gcc`、`bubblewrap`、`prlimit`及系统Python和训练Python对应的开发头文件。源机是Ubuntu22.04/WSL，`/usr/bin/python3`为3.10；优先使用相同系统版本。Ubuntu22.04可安装`build-essential bubblewrap python3-dev`，另确保Python3.11安装包含Python.h。不要关闭编译隔离绕过缺失依赖。
+
 这些版本来自源机器实际环境，不保证目标镜像均提供；如无法取得，记录差异并先通过下面的特征验收，不要默默使用不同版本。优先Linux/WSL、CPU PyTorch，需要C编译器供现有雷达内核构建。无需CUDA。
 
 将`priority_teacher_v1.tar.gz`和其SHA256文件放在同一目录，校验后解包：
@@ -40,9 +42,12 @@ python3.11 -m venv .venv
 sha256sum -c priority_teacher_v1.tar.gz.sha256
 mkdir -p outputs/transfers
 tar -xzf priority_teacher_v1.tar.gz -C outputs/transfers
+.venv/bin/python -m tools.priority_transfer bootstrap --bundle outputs/transfers/priority_teacher_v1
 .venv/bin/python -m tools.priority_transfer verify --bundle outputs/transfers/priority_teacher_v1
 .venv/bin/python -m pytest tests/test_priority_transfer.py tests/test_library_learning.py tests/test_library_features.py tests/test_random_room_tasks.py
 ```
+
+`bootstrap`将经过哈希核验的Cython工具链安装到本机outputs/toolchains，拒绝覆盖不同文件，并检查编译工具与头文件。语义模块在目标机重新编译，不复制源机器的语义缓存。
 
 `verify`检查所有负载哈希、运行源码哈希，以及从一条真实示范重算四级动作面板后的特征/目标/历史哈希逐值一致性；它不启动仿真。若失败先排查，不开始正式训练。仓库目录可以不同，但运行源码必须一致。
 

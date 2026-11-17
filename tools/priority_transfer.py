@@ -161,6 +161,8 @@ def export(destination):
         original_seals={str(p):sha(p/'manifest.json') for p in refs}, trajectories=imported,
         original_records_unchanged=True, subset_export_not_full_original_campaign=True)
     save(dest/'provenance.json', provenance);save(dest/'runtime_sources.json',source_hashes())
+    shutil.copytree(ROOT/'outputs/toolchains/cython-3.0.12-cp310',dest/'toolchain',
+                    ignore=shutil.ignore_patterns('__pycache__','*.pyc','bin'))
     # Cross-machine feature/probability golden check: no simulator execution.
     import numpy as np
     f = V.LibraryFeatures(entries(dest),V.O.protocol(V.O.CFG),execution_backend='trusted_inprocess')
@@ -199,6 +201,28 @@ def verify(bundle, check_features=True):
                     np.testing.assert_array_equal(p[field],arrays[f'{key}{j}'])
         finally:f.close()
     return dict(status='passed',files=len(m['files']),bundle_sha256=sha(bundle/'manifest.json'),features=check_features)
+
+
+def bootstrap(bundle):
+    """Install only verified pinned compiler files; never overwrite different files."""
+    verify(bundle,False)
+    target=ROOT/'outputs/toolchains/cython-3.0.12-cp310'
+    files=[(rel,digest) for rel,digest in read(Path(bundle)/'manifest.json')['files'].items() if rel.startswith('toolchain/')]
+    if not files:raise ValueError('bundle lacks compiler payload')
+    for rel,digest in files:
+        dst=inside(target,rel.removeprefix('toolchain/'))
+        if dst.exists() and sha(dst)!=digest:raise ValueError('existing compiler differs: '+str(dst))
+    for rel,digest in files:
+        dst=inside(target,rel.removeprefix('toolchain/'));dst.parent.mkdir(parents=True,exist_ok=True)
+        if not dst.exists():shutil.copyfile(inside(bundle,rel),dst)
+    for name in ['gcc','bwrap','prlimit']:
+        if not shutil.which(name):raise RuntimeError('required system tool missing: '+name)
+    import sysconfig
+    if not (Path(sysconfig.get_path('include'))/'Python.h').exists():
+        raise RuntimeError('host Python development headers missing')
+    include=subprocess.check_output(['/usr/bin/python3','-c','import sysconfig;print(sysconfig.get_path("include"))'],text=True).strip()
+    if not (Path(include)/'Python.h').exists():raise RuntimeError('system Python development headers missing')
+    print(json.dumps(dict(status='installed',compiler_files=len(files),path=str(target))),flush=True)
 
 
 _WORKER={}
@@ -289,12 +313,13 @@ def evaluate(bundle,out,arm,seed,workers):
 
 
 def main():
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('command',choices=['export','verify','extract','fit','evaluate','run'])
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('command',choices=['export','bootstrap','verify','extract','fit','evaluate','run'])
     p.add_argument('--bundle',type=Path,required=True);p.add_argument('--out',type=Path,default=ROOT/'outputs/semantic_rl/priority_teacher_20261117_01')
     p.add_argument('--arm',choices=['fastest','priority'],default='priority');p.add_argument('--seed',type=int,choices=SEEDS,default=17)
     p.add_argument('--workers',type=int,default=4);a=p.parse_args()
     if not 1<=a.workers<=16:raise ValueError('workers must be1..16')
     if a.command=='export':export(a.bundle)
+    elif a.command=='bootstrap':bootstrap(a.bundle)
     elif a.command=='verify':print(json.dumps(verify(a.bundle)))
     elif a.command=='extract':extract(a.bundle,a.out,a.workers)
     elif a.command=='fit':print(json.dumps(fit(a.bundle,a.out,a.arm,a.seed)))
