@@ -8,15 +8,15 @@
 - 同270示范/28000更新/seed17，旧100已查看诊断面板G/GA/GD/GDA分别1/48/5/50成功；最佳CAP003为46，CAP并集79。R0/Rt为36/41。GD已完成100评估、封印和报告收尾。[16方法交互报告](../research/reports/CAP_Coverage_Comparison_20261117/index.html)及[分层读数](../research/reports/CAP_Coverage_Comparison_20261117/analysis.md)。
 - 单训练种子、固定已见诊断，不作为新盲测；覆盖相似不等于行为相同。
 
-## 正在运行
+## GDA扩数据已完成
 
-GDA扩大数据：[任务书](tasks/GDA_Coverage_Scaling_20261117.md)。原270与扩570示范各3seed、42000更新，6模型已训练完；正在3800次比较评估（6模型×300场景＋10CAP×200新场景）。
+[结果报告](reviews/GDA_Coverage_Scaling_20261117.md)：原270与扩570示范各3seed、42000更新，全部7800次采集/评估完成，宿主退出0。新200例seed17/29/43：原270为86/80/85，扩570为74/77/90；教师并集153/200。平均收益不明确，不能只看单seed推断扩数据必然有益。
 
-实时权威状态：`outputs/semantic_rl_authors/random_room_gda_scaling_20261117_03/progress.json`、`study.exit.json`、`RESULT.json`。截至本次清理检查约1116/3800，数值会继续变化；禁止仅按本页旧数字判断停止。源码与输入未修改。
+权威产物：`outputs/semantic_rl_authors/random_room_gda_scaling_20261117_03/RESULT.json`、`study.exit.json`。当前没有该任务的剩余评估。
 
 ## 待办
 
-计划v5已登记：最快成功教师 vs 开发成功率优先教师的等数据/等预算监督对照。尚未启动，不改当前评估。当前不新增CAP、RL或模型调用。
+计划v5已登记：最快成功教师 vs 开发成功率优先教师的等数据/等预算监督对照。第二台PC专用迁移包和运行工具已准备并通过不同根目录/冷缓存验收（[记录](reviews/Priority_Transfer_20261117.md)），见[迁移说明](../development/Priority_Transfer_20261117.md)。当前机器未启动正式优先级训练或评估。当前不新增CAP、RL或模型调用。
 
 ## 清理与接续
 

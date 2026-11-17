@@ -1,9 +1,14 @@
 import numpy as np
+import pytest
 from experiments.planar_tasks.authoring_v2 import program_retrieval_comparison as C
 from experiments.planar_tasks.semantic_rl.program_retrieval import RetrievalIndex
 
 
+@pytest.mark.artifact
 def test_exact_270_demonstration_manifest_and_no_repair_suffixes():
+    required=[C.V.O.PARENT/'demonstrations.json',C.DATA/'selected.json',C.DATA/'extraction.json']
+    if not all(p.exists() for p in required):
+        pytest.skip('requires original270-demo artifacts; not included in minimal priority transfer bundle')
     demos=C.demo_manifest()
     assert len(demos)==270
     assert len({d['task'] for d in demos})==270

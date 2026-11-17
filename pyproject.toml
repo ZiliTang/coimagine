@@ -40,7 +40,7 @@ norecursedirs = ["_old", ".venv", "build", "dist"]
 # (launch_testing / launch_ros) that fail to import when `lark` is absent.
 # They are unrelated to this project, so block them explicitly.
 addopts = "-q -p no:launch_testing -p no:launch_ros"
-markers = ["slow: long-running end-to-end tests"]
+markers = ["slow: long-running end-to-end tests", "artifact: checks requiring optional local experiment artifacts"]
 
 [tool.setuptools.package-data]
 "coimagine.random_start" = ["lidar_kernel.c"]

@@ -6,6 +6,7 @@
 
 - [研究计划 v5](docs/research/CAP_Integration_Mechanisms_Research_Plan_v5_20261117.md)
 - [当前实验状态](docs/agent_exchange/CURRENT.md)
+- [另一台PC运行教师优先级对照](docs/development/Priority_Transfer_20261117.md)
 - [16方法覆盖报告](docs/research/reports/CAP_Coverage_Comparison_20261117/index.html)
 - [导师汇报（含历史汇总）](docs/research/reports/CoImagine_Progress_20261117/index.html)
 - [检索基线协议](docs/research/CAP_Retrieval_Baselines_v1_20261117.md)
