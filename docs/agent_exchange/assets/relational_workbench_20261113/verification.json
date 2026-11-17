@@ -1,0 +1,261 @@
+{
+  "status": "complete",
+  "test_command": "PYTHONPATH=. .venv/bin/python -m pytest tests/test_relational_testbed.py tests/test_testbed_option_speeds.py tests/test_testbed_run_index.py tests/test_relational_motion.py tests/test_relational_environment.py -ra",
+  "test_result": "55 passed in 4.43s",
+  "full_repository_suite": false,
+  "source_sha256": {
+    "experiments/option_rl_v19/testbed_server.py": "b1f3f9220dcffe3704fd8e7c78c2c421c9ba691f661c9b03ac1c24ccbf69086a",
+    "experiments/option_rl_v19/testbed/style.css": "fa01ea80a6ee78ff566ff9154dfa40771bde0b102960f7d5b8493cfa14129ad6",
+    "experiments/option_rl_v19/testbed/index.html": "95f9cb24f4e7ee3ac99023b5c5bb49c06b49c9e5c05d37c46309379558c8045f",
+    "experiments/option_rl_v19/testbed/app.js": "bf7d84a16072785b9c7866534aba7647dd05dbd5f7ff5c22c0bf8da7791af126",
+    "experiments/planar_tasks/relational_search/testbed.py": "b0fcef7f24c459755fa9476a16d8220de46eb9fbda09add484931ac21fc09f3b",
+    "experiments/planar_tasks/relational_search/option_acceptance.py": "ec56d2aa19bd93423252436ee567605a9f0df8cc79cfb989ec7c6c5e44bd6676",
+    "experiments/planar_tasks/relational_search/features.py": "cc1a26979b86f199bf69e5efd5b56774ea174a6f26937af5f827a0a5b87bcf91",
+    "experiments/planar_tasks/relational_search/physics_probe.py": "bcd016e4f09814872ca3d41906507d63886f8b757272ef5b5e6b559ad98aa067",
+    "experiments/planar_tasks/relational_search/estimator.py": "58266a3373c82b733b19b1fc7e3a872f08bcfad7d851930c012a0c3aa464ec54",
+    "experiments/planar_tasks/relational_search/environment.py": "a75fc8165c60e6b25219cfe098cacd70c5dbce78605049581f5eeef539a74d9c",
+    "experiments/planar_tasks/relational_search/predictor_acceptance.py": "8d37bfd525ae5f6327ec42246d71a57ed2766cc36972c2d1bdfb2712617f1a43",
+    "experiments/planar_tasks/relational_search/motion_acceptance.py": "c70d04bc1d901cae4d79b2d3a9ae72f2f47c96713168c184401fb440e166cf42",
+    "experiments/planar_tasks/relational_search/smoke.py": "d099398a508a7fbeb5b4eba81a97b2dad05555d290aad8e9607b2dceb79d50ca",
+    "experiments/planar_tasks/relational_search/__init__.py": "72f98bbb16dce896633fc96b0d4401bf256876a686a7f478d3ae6b9822dbb1ff",
+    "experiments/planar_tasks/relational_search/search.py": "f5c2ad919c54dea403c9749ada5d3c99ac621be9d22003c66a8e5de384cec74d",
+    "experiments/planar_tasks/relational_search/fit.py": "98b5e534ae8cc06d794d7c7164d691454438ca940abcbcbabec1d43b4168b5ce",
+    "experiments/planar_tasks/relational_search/dataset.py": "47c9f48b555e712f407bb7329be9b178f64700e16bd8d626919c61155698cdff",
+    "experiments/planar_tasks/relational_search/motion.py": "24a41e5507a985b7785faed2b8f9f5f8af6d5f664f7ca36400a0f3ec6969bcff",
+    "experiments/planar_tasks/relational_search/contract.py": "6a9722e8b570790e421551833132bbf972356a509e9ea6a52f488523acb3173a",
+    "experiments/planar_tasks/relational_search/predictor.py": "6074d1ec9dbc994373dda1bc4e439a1217d5d2d95f9dd35959b4957883297ff0",
+    "experiments/planar_tasks/relational_search/target_binding.py": "9d34316af6aaaa4a97b7f4436433dc2900bd004107659bf1d3686c3af1a68749",
+    "experiments/planar_tasks/relational_search/evidence.py": "8ca4d940908360ce0679af93b2d69b3e62a6b68d736b3a9bef5b63a1d920626b",
+    "tests/test_relational_testbed.py": "6b8641c702cc6cdcb62618587f5bfd7273aa6b9d21691926de20156c852dee99"
+  },
+  "browser": {
+    "errors": [],
+    "checks": [
+      "numeric pose and canvas B drag",
+      "edited pose/target/MOVE/duration save-load roundtrip",
+      "browser-run task success, B replay, lidar/force/contact overlays, seek",
+      "saved run reload restores initial objects and sequence",
+      "legacy preset without extra bodies"
+    ],
+    "temporary_preset": "20261113_174103_334aaa",
+    "run": {
+      "id": "20261113_174108_543979",
+      "success": true,
+      "periods": 655,
+      "error": null,
+      "final_audit": {
+        "tick": 655,
+        "active_target": "entity-a",
+        "entities": {
+          "entity-a": [
+            4.485835396199076,
+            2.1108674799398126,
+            0.09740892442712747,
+            0.0045902244451285195,
+            0.0005571130590701274,
+            0.0002733330385954873
+          ],
+          "entity-b": [
+            3,
+            3.4851331894871045,
+            0,
+            0,
+            2.9282470872868716e-30,
+            0
+          ]
+        },
+        "robots": [
+          [
+            4.1981472105374555,
+            1.6613937434538808,
+            0.09240128291723473,
+            1.2316054617156012e-09,
+            1.4495184428705523e-10,
+            0
+          ],
+          [
+            4.1183879327068595,
+            2.489719191714484,
+            0.0924012829172347,
+            1.0846085421408493e-09,
+            1.2811800620003532e-10,
+            0
+          ]
+        ],
+        "termination": "success",
+        "penetration": {
+          "robot_object": 0,
+          "robot_robot": 0,
+          "robot_wall": 0,
+          "object_wall": 0,
+          "object_object": 0
+        }
+      }
+    },
+    "widths": [
+      {
+        "viewport": 375,
+        "width": 375,
+        "rects": [
+          {
+            "x": 21,
+            "y": 342.109375,
+            "w": 333,
+            "h": 240
+          },
+          {
+            "x": 21,
+            "y": 592.109375,
+            "w": 333,
+            "h": 223.078125
+          },
+          {
+            "x": 21,
+            "y": 825.1875,
+            "w": 333,
+            "h": 240
+          }
+        ]
+      },
+      {
+        "viewport": 540,
+        "width": 540,
+        "rects": [
+          {
+            "x": 21,
+            "y": 247.78125,
+            "w": 498,
+            "h": 259
+          },
+          {
+            "x": 21,
+            "y": 516.78125,
+            "w": 498,
+            "h": 288.9375
+          },
+          {
+            "x": 21,
+            "y": 815.71875,
+            "w": 498,
+            "h": 226.4375
+          }
+        ]
+      },
+      {
+        "viewport": 760,
+        "width": 760,
+        "rects": [
+          {
+            "x": 27,
+            "y": 77.84375,
+            "w": 706,
+            "h": 363
+          },
+          {
+            "x": 27,
+            "y": 450.84375,
+            "w": 348,
+            "h": 290
+          },
+          {
+            "x": 385,
+            "y": 450.84375,
+            "w": 348,
+            "h": 290
+          }
+        ]
+      },
+      {
+        "viewport": 1120,
+        "width": 1120,
+        "rects": [
+          {
+            "x": 27,
+            "y": 77.65625,
+            "w": 673.203125,
+            "h": 346.59375
+          },
+          {
+            "x": 27,
+            "y": 434.25,
+            "w": 331.59375,
+            "h": 290
+          },
+          {
+            "x": 368.59375,
+            "y": 434.25,
+            "w": 331.609375,
+            "h": 290
+          }
+        ]
+      },
+      {
+        "viewport": 1600,
+        "width": 1600,
+        "rects": [
+          {
+            "x": 27,
+            "y": 59.96875,
+            "w": 451.703125,
+            "h": 295.375
+          },
+          {
+            "x": 488.703125,
+            "y": 59.96875,
+            "w": 301.140625,
+            "h": 295.375
+          },
+          {
+            "x": 799.84375,
+            "y": 59.96875,
+            "w": 301.15625,
+            "h": 295.375
+          }
+        ]
+      }
+    ],
+    "status": "complete"
+  },
+  "final_browser_check": {
+    "errors": [],
+    "time": "32.75 s",
+    "success": true,
+    "status": "complete"
+  },
+  "server": {
+    "pid": 453158,
+    "started_at": 1794562720.671065,
+    "controller_version": "option-v2",
+    "action_version": "option-v2-yield-signed-push",
+    "action_codebook_hash": "cde7838fc9f94e43977b4fda2705593affc582ba82fb1c5446cf2e9e4ffa32f1",
+    "controllers": [
+      "option-v2",
+      "relational-v2"
+    ],
+    "relational_action_version": "relational-options-move-v2",
+    "push_speeds": [
+      0.1,
+      0.2,
+      0.3,
+      0.4
+    ],
+    "reposition_speed": 0.3,
+    "support_memory_enabled": false,
+    "q_acquisition_mode": "current_visible_support",
+    "controller_source_sha256": "43f03c1a4d33df26bf944f976239c108dc9681d58f5cffc8254f5468ab41af10",
+    "controller_disk_sha256": "43f03c1a4d33df26bf944f976239c108dc9681d58f5cffc8254f5468ab41af10",
+    "runtime_source_sha256": "f62cfee55c543ee6de7bc33ae0d9058b0f58d2563275a007d404af6a7dbc3f02",
+    "restart_required": false
+  },
+  "run": "outputs/testbed/runs/20261113_174108_543979.json",
+  "run_sha256": "49aa1c7b794820ad14a6c18df19511e037a6f2eae56270ad48ca77e2bac538df",
+  "development_execution_ticks": 2435,
+  "browser_execution_ticks": 655,
+  "total_explicit_development_and_browser_ticks": 3090,
+  "llm_calls": 0,
+  "learned_policy_evaluations": 0,
+  "manifest": "outputs/testbed/relational_workbench_20261113/manifest.json",
+  "manifest_sha256": "6bedabe7903a3cb7401731cd6733ca6c29449099f5cf241f774fd8918084cc58",
+  "artifact_files": 40,
+  "headless_browser_final_states_equal": true
+}

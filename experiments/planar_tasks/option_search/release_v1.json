@@ -1,0 +1,21 @@
+{
+  "version": "option-search-v1",
+  "baseline_release_sha256": "51099198b0a6985a940355b8cb223a8456886902812f9cb5e7640f7f61c7d67a",
+  "files": {
+    "search.py": "fbf9644615bf725d556bc3240e77b705fffee487f87bcec03857e137463f4463",
+    "model.py": "041188d130d4b52c0b9521e2eb7662a4802bf29ecd3b1ec0c0989f3f32fbbc3d",
+    "policy.py": "667caaa86118851cc316c94c3b05568427b5d34ed2553390f84f50509f60e96b",
+    "hook_client.py": "3636417e72966570662213d70cf2177231f42bbc4ba8ecdefc5932f3a4633e43",
+    "hook_worker.py": "9803f755d3afbf59846cf7d874ac0e5e6b25620c40380fd6b79dff8fa95ec4bb",
+    "geometry.py": "f85740f821864b50c5d8b4d35f7ecc658de6afc94ac0323b408b530bece324f0",
+    "estimator.py": "4c878366d46a4bc81dcda0a861398a09e02089547c5a0353b5217082c818f8b3",
+    "heuristic.py": "0243078df4ec56e5bd51749f9280b85b20f3b1c6553029711c7be9fbcc37c397",
+    "build.py": "77f18a72679226277451e160b3e82be2444b79f9cc5ebadaeeeb1f4332c65139",
+    "smoke.py": "8134fd1fd86bb2573174a955572ff946c424914affa9fe9acb247fdcff057799",
+    "README.md": "79da204ebbbf8b76f19cde518faafe36d8d2fdcde0aae418e571ab6bddf5c51d"
+  },
+  "tests_sha256": "82c77ced71cee1751d9594e9e2b78ae3372992f63463598d3a793b950396d405",
+  "estimator_origin": "prediction_sol_runtime_20261110_01/frozen/package/geom.py",
+  "output_language": "actual legal_pairs x integer ticks 1..40; feedback after every command",
+  "guarantee": "structural action/trace support, not equal finite-budget search coverage or physical safety"
+}

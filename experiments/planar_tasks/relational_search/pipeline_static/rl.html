@@ -1,0 +1,7 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CoImagine · PPO 训练</title><link rel="stylesheet" href="/pipeline.css"><link rel="stylesheet" href="/rl.css"></head><body>
+<header><div><b>CoImagine / Semantic Option RL</b><h1>并行采样与 PPO 更新</h1></div><nav><a href="/">语义研究管线</a><a href="http://127.0.0.1:8765/">场景编辑器 ↗</a></nav></header>
+<main><div class="toolbar"><label>实验 <select id="experiment"></select></label><button id="refresh">刷新</button><label><input id="auto" type="checkbox" checked> 每 5 秒更新</label><span id="updated" class="muted"></span></div><p id="error" role="alert"></p><p class="muted">训练采样表现不代表测试泛化；历史记录中未保存的指标显示为缺失。</p><div id="cards" class="cards"></div>
+<section><h2>采样进程</h2><div id="workers" class="workers"></div></section>
+<section><h2>学习与采样曲线</h2><div id="charts" class="charts"></div></section>
+<section><h2>语义输入与配置</h2><p id="schema"></p><details><summary>查看通道槽位、版本和预算</summary><pre id="config"></pre></details></section>
+<section><h2>执行结果与回放</h2><p class="muted small">回放为人工诊断视图，包含完整几何，不会提供给运行时策略。</p><label>轨迹 <select id="episode"></select></label><div class="replaybox"><canvas id="replay" width="700" height="560"></canvas></div><div class="toolbar"><button id="play">播放</button><input id="seek" type="range" min="0" max="1" value="0"><span id="time"></span></div><div id="episodes" class="tablewrap"></div></section></main><script src="/rl.js"></script></body></html>

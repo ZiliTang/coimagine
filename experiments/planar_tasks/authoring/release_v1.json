@@ -1,0 +1,29 @@
+{
+  "version": "public-option-knowledge-v1",
+  "baseline_sha256": "51099198b0a6985a940355b8cb223a8456886902812f9cb5e7640f7f61c7d67a",
+  "framework_sha256": "df36536ffdf0c56abecea2cc7df56f65d1345993c9602d4fab961076ec6c10a6",
+  "files": {
+    "__init__.py": "9d88f83cf61dce343b6b76e2c1e1b0955d4eaffd703a20c40ae15f1b2fb47843",
+    "knowledge.py": "9aee50d46d8d69cc53969b13a371a10aa610f95e3c16aa6ba54c598c2bacbc91",
+    "session.py": "0ba3160c9cbe60a24f7d78a6a06f12aa4296676c274596eb809c10869b2fd623",
+    "driver.py": "f77cd17d41654721ffa5601de76a2d2405db797c02365d8aa36fe7555b6f83ad",
+    "option_guide.md": "923245b0d8090e543316556c3cb11ae049cef87029517c16e8e44a88185b765c",
+    "README.md": "33d5e95d5af7199609f52b24cedb2e19509b0f6a82a1df3a7bb57825ad2e545e"
+  },
+  "tests_sha256": "05000616cd5e5a11d5fc5204be14035733c4e734a4a1fcf54a6faa841fb051a4",
+  "controller_sources": {
+    "experiments/planar_tasks/interface.py": "a55f17421c082da4a2f778d157e792d5f2116df7465cd0df7612f588924bba01",
+    "experiments/option_rl_v21/spec.py": "32d6bdf3250a63b589e832109996e85e1bc8cfc84f646be6fe70e68c0a048178",
+    "experiments/option_rl_v21/system.py": "1ed7a5a888946c6e1bc9b03baa21770b1b78efec50bba27c0a5a064e517f5d56",
+    "experiments/option_rl_v21/yield_skill.py": "262c8eb9440475d17588a21c5301ef3f162b08392bf7b3fccc776ed7f279ef7c",
+    "experiments/option_rl_v21/event_env.py": "29123f80e3b07e90a6dd29b3013cc5399bbb75ac1f579d67630a9cb8bf1e68ad",
+    "experiments/option_rl_v19/spec.py": "a7e825e6dbdc21081fc2d47e1949e7ea42061638b7f5a119c6cbed811a82686a",
+    "experiments/option_rl_v19/system.py": "7db262a49a1892dcb201a47f546aae34f9577450218f92c1e580edb6456a052f",
+    "experiments/option_rl_v19/unknown_shape.py": "43f03c1a4d33df26bf944f976239c108dc9681d58f5cffc8254f5468ab41af10",
+    "experiments/option_rl_v13/controller.py": "b85413091448214d367573c04467e479b42d4eb661c7db43ea52819384ee1793",
+    "experiments/option_rl_v13/mode_env.py": "25ef750f31c14f4cb888eada029fb8f5d56fb3ceacf7e44f8232fe729cd8121e",
+    "experiments/option_rl_v13/push_controller.py": "f1ef2185f5dd609dddf8ef095918f0c86b60ab467e278f77d106708bde384ba8",
+    "src/coimagine/random_start/skills.py": "9ea021b42ed1a26b8eec33227283ae2ae67c0545a73b8452397ff2e48296ed42",
+    "src/coimagine/random_start/effect_push.py": "bc54eb154aca73b76a7d616a7c9c1a714c2e1a332ab2a5176a5552bca72ea736"
+  }
+}

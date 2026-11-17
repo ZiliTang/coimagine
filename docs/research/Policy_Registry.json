@@ -1,0 +1,342 @@
+{
+  "schema_version": 1,
+  "registered_date": "2026-11-16",
+  "scope": "Selected major snapshots in the semantic Option learning lineage, not all historical CAP attempts",
+  "identity_rule": "stable artifact id plus execution contract; version numbers enumerate registered snapshots, not every local submission; display names never imply coverage guarantees",
+  "hash_rule": "file_sha256 is SHA256 of raw file bytes, not the repository canonical JSON semantic digest",
+  "entries": [
+    {
+      "id": "CAP-001.v1",
+      "name": "三场景基础CAP·初稿",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/sol_stage1_20261114_01/semantics/s010.py",
+      "file_sha256": "517a8fcd9a88e00e01b626e538d6f25273cbec0d67a5a38a7949fed176ab6e36",
+      "parents": [],
+      "author": "GPT-6.1 Sol High, initial author session",
+      "execution_mode": "progress",
+      "scope_status": "自由/清障根成功；窄边贴墙未解",
+      "evidence": "docs/agent_exchange/reviews/Sol_Semantic_RL_Stage1_20261114.md",
+      "aliases": []
+    },
+    {
+      "id": "CAP-001.v2",
+      "name": "三场景基础CAP·贴墙续修",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/sol_stage1_20261114_resume01/semantics/s025.py",
+      "file_sha256": "9ea6d6d98ad204aa37b4dcab38ea43cdf8b472b4234fb7a55d08d237c7efce06",
+      "parents": [
+        "CAP-001.v1"
+      ],
+      "author": "GPT-6.1 Sol High, continued context with prior witness",
+      "execution_mode": "progress",
+      "scope_status": "自由/清障根成功；原贴墙任务仍未完成",
+      "evidence": "docs/agent_exchange/reviews/Sol_Semantic_RL_Stage1_Continuation_20261114.md",
+      "aliases": []
+    },
+    {
+      "id": "CAP-001.v3",
+      "name": "三场景基础CAP·可解贴墙课程",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/sol_stage1_wall_anchor_v2_20261114_01/semantics/s000.py",
+      "file_sha256": "b70170856d6890944f4bb74a19f7c0f8f04700b019369d62ba832a98aaf61e3d",
+      "parents": [
+        "CAP-001.v2"
+      ],
+      "author": "GPT-6.1 Sol High, continued context",
+      "execution_mode": "progress",
+      "scope_status": "三个开发根成功；贴墙课程初态已变更",
+      "evidence": "docs/agent_exchange/reviews/Sol_Semantic_RL_Wall_Anchor_v2_20261114.md",
+      "aliases": []
+    },
+    {
+      "id": "CAP-001.v4",
+      "name": "三场景基础CAP·时长协议版",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/duration_stream_continuation_parent_20261115_01/inputs/source.py",
+      "file_sha256": "be39a890540f24b731b652562ab235305dd49a5df41b11a9333d1b3ead3efe8b",
+      "parents": [
+        "CAP-001.v3"
+      ],
+      "author": "main assistant adaptation; not a new clean Sol author",
+      "execution_mode": "duration",
+      "scope_status": "typed_stream迁移及清障停车修订后的基础教师；7训练初态+3根成功",
+      "evidence": "docs/agent_exchange/reviews/Duration_Stream_PPO_Start_20261115.md",
+      "aliases": [
+        "outputs/semantic_rl/local_cap_loop_20261116_01/semantics/s000.py",
+        "outputs/semantic_rl/handoff_entry_20261116_02/inputs/s000.py"
+      ]
+    },
+    {
+      "id": "CAP-002.v1",
+      "name": "接近布局CAP·西侧接近版",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/local_cap_loop_20261116_01/semantics/s001.py",
+      "file_sha256": "fa4d201dc4321e1490ec3967e11c0fa708ae04cceff0b74c68c8b6c9e2168b27",
+      "parents": [
+        "CAP-001.v4"
+      ],
+      "author": "main assistant local development",
+      "execution_mode": "duration",
+      "scope_status": "局部成功开发版，不能替代基础CAP",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": []
+    },
+    {
+      "id": "CAP-002.v2",
+      "name": "接近布局CAP·绕行修复版",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/local_cap_loop_20261116_01/semantics/s002.py",
+      "file_sha256": "85879b791842352add3e129ebb6f5fdaad235615c639cffa41f023ea2ca86237",
+      "parents": [
+        "CAP-002.v1"
+      ],
+      "author": "main assistant local development",
+      "execution_mode": "duration",
+      "scope_status": "新增open03/clear01/clear02成功；并非通用过冲恢复",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": [
+        "outputs/semantic_rl/handoff_entry_20261116_02/inputs/s002.py"
+      ]
+    },
+    {
+      "id": "CAP-002.v3",
+      "name": "接近布局CAP·旋转探索版",
+      "kind": "cap",
+      "artifact": "outputs/semantic_rl/local_cap_loop_20261116_01/semantics/s003.py",
+      "file_sha256": "bbfaf7bd58bd6850724eeb108a63bd668da8065c3917d2e5ef979334fefb1211",
+      "parents": [
+        "CAP-002.v2"
+      ],
+      "author": "main assistant local development",
+      "execution_mode": "duration",
+      "scope_status": "open02修复未成功；保留的失败探索版本，不是当前推荐教师",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": []
+    },
+    {
+      "id": "SEM-001.v1",
+      "name": "基础与接近布局联合语义",
+      "kind": "semantic_bundle",
+      "artifact": "outputs/semantic_rl/local_cap_integration_20261116_01/semantics/s000.py",
+      "file_sha256": "928559bb592d8f2ab35c6b262dfbccd90e08895f6c54789c7fda50025cdb637a",
+      "parents": [
+        "CAP-001.v4",
+        "CAP-002.v2"
+      ],
+      "author": "main assistant integration",
+      "execution_mode": "duration",
+      "scope_status": "41候选/27状态通道；含建议接口，不单列为新的独立CAP教师",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": [
+        "outputs/semantic_rl/local_cap_loop_20261116_01/semantics/s004.py",
+        "outputs/semantic_rl/random_parameter_parent_20261116_01/inputs/source.py"
+      ]
+    },
+    {
+      "id": "SUP-001.v1",
+      "name": "基础CAP监督评分器",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/duration_stream_parent_20261115_01/inputs/initial.pt",
+      "file_sha256": "489a2c86633431e45c723252941e578e8426fb07d2ab937bba9dc28603967984",
+      "parents": [
+        "CAP-001.v4"
+      ],
+      "author": "supervised optimizer",
+      "execution_mode": "duration",
+      "scope_status": "三个开发根示范初始化；非13轨迹整合模型",
+      "evidence": "docs/agent_exchange/reviews/Duration_Stream_PPO_Start_20261115.md",
+      "aliases": []
+    },
+    {
+      "id": "SUP-002.v1",
+      "name": "双CAP监督整合评分器",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/local_cap_integration_20261116_01/semantic_fits/f000/policy.pt",
+      "file_sha256": "5bc597be25fd17572fe34431840bfb93eb31c051e648943ccadfb747c63d19e6",
+      "parents": [
+        "CAP-001.v4",
+        "CAP-002.v2",
+        "SEM-001.v1"
+      ],
+      "author": "supervised optimizer",
+      "execution_mode": "duration",
+      "scope_status": "13轨迹/407边界整合，13/13闭环恢复",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": [
+        "outputs/semantic_rl/random_parameter_parent_20261116_01/inputs/supervisor.pt"
+      ]
+    },
+    {
+      "id": "RL-001.v1",
+      "name": "全合法动作PPO·短训",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/duration_stream_training_20261115_01/models/final.pt",
+      "file_sha256": "cae7f25a0dac772e88130482663414a307e2857b17e56668a2a1a3d9f4108a64",
+      "parents": [
+        "SUP-001.v1"
+      ],
+      "author": "PPO",
+      "execution_mode": "duration",
+      "scope_status": "2048训练episode；此身份仅指固定最终模型",
+      "evidence": "docs/agent_exchange/reviews/Duration_Stream_PPO_Final_20261115.md",
+      "aliases": [],
+      "action_support": "full public legal action protocol"
+    },
+    {
+      "id": "RL-001.v2",
+      "name": "全合法动作PPO·长训",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/duration_stream_continuation_20261115_01/models/final.pt",
+      "file_sha256": "0f678f78a2f4cf05fcabb3924ffa519fd0207b698921a1438e14a9f552461233",
+      "parents": [
+        "RL-001.v1"
+      ],
+      "author": "PPO continuation",
+      "execution_mode": "duration",
+      "scope_status": "累计16384episode；固定训练10/12、既有test6/12",
+      "evidence": "docs/agent_exchange/reviews/Duration_Stream_PPO_Final_20261115.md",
+      "aliases": [],
+      "action_support": "full public legal action protocol"
+    },
+    {
+      "id": "RL-002.v1",
+      "name": "时长参数PPO",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/local_cap_parameter_rl_20261116_01/models/final.pt",
+      "file_sha256": "8b92d65dce5364605e357bd04eaccc388e408855094d38fc317d6367219f11ca",
+      "parents": [
+        "SUP-002.v1"
+      ],
+      "author": "PPO",
+      "execution_mode": "duration",
+      "scope_status": "512episode；固定25例贪心行为与监督一致",
+      "evidence": "docs/agent_exchange/reviews/Local_CAP_Parameter_Loop_20261116.md",
+      "aliases": [],
+      "action_support": "supervised target/a0/a1 fixed, ticks +/-4"
+    },
+    {
+      "id": "RL-003.v1",
+      "name": "时长速度参数PPO",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/random_parameter_speed_20261116_01/models/final.pt",
+      "file_sha256": "43f539c906226fb24e52caeab8a340d1aca9cb257bc59b15244afd8a8b09b3d9",
+      "parents": [
+        "SUP-002.v1"
+      ],
+      "author": "PPO",
+      "execution_mode": "duration",
+      "scope_status": "512episode；本轮48test31成功，配对监督31成功",
+      "evidence": "docs/agent_exchange/reviews/Random_Parameter_RL_Result_20261116.md",
+      "aliases": [],
+      "action_support": "supervised target/family/direction fixed, speed levels and ticks +/-4"
+    },
+    {
+      "id": "RL-004.v1",
+      "name": "时长速度邻向PPO·短训",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/random_parameter_direction_20261116_01/models/final.pt",
+      "file_sha256": "977103a68295cb8ff30df370635c7cfb891f39c9a4d171a90507a6cbf48be6f1",
+      "parents": [
+        "SUP-002.v1"
+      ],
+      "author": "PPO",
+      "execution_mode": "duration",
+      "scope_status": "512episode；身份不随评估面板结果变化",
+      "evidence": "docs/agent_exchange/reviews/Random_Parameter_RL_Result_20261116.md",
+      "aliases": [],
+      "action_support": "supervised target/family fixed, speed levels, MOVE/PUSH +/-45deg, ticks +/-4"
+    },
+    {
+      "id": "RL-004.v2",
+      "name": "时长速度邻向PPO·长训",
+      "kind": "rl",
+      "artifact": "outputs/semantic_rl/random_parameter_direction_long_20261116_01/models/final.pt",
+      "file_sha256": "b467d62f33c8adeb683cccb5f4e0e1b79bf2cb17a5f1f4bab696f35abaa72ee7",
+      "parents": [
+        "RL-004.v1"
+      ],
+      "author": "PPO continuation with Adam restored",
+      "execution_mode": "duration",
+      "scope_status": "累计16384episode；新48test34成功，配对监督28成功",
+      "evidence": "docs/agent_exchange/reviews/Bounded_Direction_Long_Final_20261116.md",
+      "aliases": [],
+      "action_support": "supervised target/family fixed, speed levels, MOVE/PUSH +/-45deg, ticks +/-4"
+    },
+    {
+      "id": "SUP-002.v2",
+      "name": "双CAP监督整合·旧数据等更新对照",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/coverage_distillation_fit_20261116_01/models/control.pt",
+      "file_sha256": "7a780c167a413dbd53238d3524ec933cdb46609140d312810a18b1bef4c6addf",
+      "parents": [
+        "SUP-002.v1",
+        "SEM-001.v1"
+      ],
+      "author": "supervised from scratch, seed17, fixed3000updates; parent denotes data/feature lineage, not weight continuation",
+      "execution_mode": "duration",
+      "scope_status": "原13轨迹；3000更新；锚点13/13、开发9/24、新留出16/24",
+      "evidence": "docs/agent_exchange/reviews/CAP_Coverage_Distillation_20261116.md",
+      "aliases": []
+    },
+    {
+      "id": "SUP-002.v3",
+      "name": "双CAP监督整合·覆盖补数据版",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/coverage_distillation_fit_20261116_01/models/expanded.pt",
+      "file_sha256": "6d987db67c14de2f2a185fd965c5632d4dcea4853dae580598b3c24adaba77bb",
+      "parents": [
+        "SUP-002.v1",
+        "SEM-001.v1"
+      ],
+      "author": "supervised from scratch, seed17, fixed3000updates; parent denotes data/feature lineage, not weight continuation",
+      "execution_mode": "duration",
+      "scope_status": "20轨迹676边界；3000更新；锚点13/13、开发14/24、新留出14/24；不替代原基线",
+      "evidence": "docs/agent_exchange/reviews/CAP_Coverage_Distillation_20261116.md",
+      "aliases": []
+    },
+    {
+      "id": "SUP-002.v4",
+      "name": "双CAP监督整合·大预算旧数据对照",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/large_coverage_fit_20261116_01/models/control.pt",
+      "file_sha256": "fb4daee3c63b1dd9a5a1509011a75fba94988184d030c6abed698eb3b4303c28",
+      "parents": [
+        "SUP-002.v1",
+        "SEM-001.v1"
+      ],
+      "author": "supervised from scratch, seed17, fixed16800updates; parent denotes data/feature lineage, not weight continuation",
+      "execution_mode": "duration",
+      "scope_status": "13条407边界；16800更新；锚点13/13、训练95/216、新测试105/216；单seed",
+      "evidence": "docs/agent_exchange/reviews/CAP_Large_Coverage_20261116.md",
+      "aliases": []
+    },
+    {
+      "id": "SUP-002.v5",
+      "name": "双CAP监督整合·随机覆盖150示范",
+      "kind": "supervised",
+      "artifact": "outputs/semantic_rl/large_coverage_fit_20261116_01/models/expanded.pt",
+      "file_sha256": "25abc8d14b76aea4de8af503c8a7032b9df63663879b1aab10de9db1476b8421",
+      "parents": [
+        "SUP-002.v1",
+        "SEM-001.v1"
+      ],
+      "author": "supervised from scratch, seed17, fixed16800updates; parent denotes data/feature lineage, not weight continuation",
+      "execution_mode": "duration",
+      "scope_status": "150条5351边界；16800更新；锚点11/13、训练134/216、新测试136/216；单seed",
+      "evidence": "docs/agent_exchange/reviews/CAP_Large_Coverage_20261116.md",
+      "aliases": []
+    }
+  ],
+  "bindings": [
+    {
+      "campaign": "handoff_entry_20261116_02",
+      "local_id": "s000",
+      "registry_id": "CAP-001.v4"
+    },
+    {
+      "campaign": "handoff_entry_20261116_02",
+      "local_id": "s002",
+      "registry_id": "CAP-002.v2"
+    }
+  ]
+}

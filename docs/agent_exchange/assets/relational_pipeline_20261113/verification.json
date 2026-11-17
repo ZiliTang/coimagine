@@ -1,0 +1,83 @@
+{
+  "status": "engineering_acceptance_complete",
+  "frozen": {
+    "status": "verified",
+    "files": 808,
+    "sha256": "f3217d36b07572569cb19a2e9511e031f0e1df2c9a7631ecc0bd976dc45b5500"
+  },
+  "tests": {
+    "name": "pytest",
+    "errors": "0",
+    "failures": "0",
+    "skipped": "0",
+    "tests": "96",
+    "time": "14.937",
+    "timestamp": "2026-11-13T18:54:35.884181+08:00",
+    "hostname": "TZLPC"
+  },
+  "browser": {
+    "initial": "0.00 s",
+    "defaultA": "a000",
+    "defaultB": "a002",
+    "fit": "f001",
+    "repairTime": "9.00 s",
+    "mismatchTime": "16.00 s",
+    "playbackTime": "2.07 s",
+    "endA": "16.00 s · tick 320 · 动作 79 · 已停止",
+    "endB": "33.95 s · tick 679 · 动作 169",
+    "initialFit": "条件集合偏好对数严格排序正确平局Etest0未评估—Etrain44/40Evalidation0未评估—Mtest0未评估—Mtrain44/40Mvalidation0未评估—Stest0未评估—Strain40/44Svalidation0未评估—",
+    "revisedFit": "条件集合偏好对数严格排序正确平局Etest0未评估—Etrain44/40Evalidation0未评估—Mtest0未评估—Mtrain44/40Mvalidation0未评估—Stest0未评估—Strain44/40Svalidation0未评估—",
+    "trace": true,
+    "widths": [
+      {
+        "width": 1600,
+        "scrollWidth": 1600,
+        "error": "",
+        "canvasWidth": 626,
+        "curveCount": 3
+      },
+      {
+        "width": 1120,
+        "scrollWidth": 1120,
+        "error": "",
+        "canvasWidth": 386,
+        "curveCount": 3
+      },
+      {
+        "width": 760,
+        "scrollWidth": 760,
+        "error": "",
+        "canvasWidth": 478,
+        "curveCount": 3
+      },
+      {
+        "width": 540,
+        "scrollWidth": 540,
+        "error": "",
+        "canvasWidth": 482,
+        "curveCount": 3
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "error": "",
+        "canvasWidth": 317,
+        "curveCount": 3
+      }
+    ],
+    "errors": []
+  },
+  "ranked_browser": {
+    "ranked": "a004 · f001 / S · 边界 83 · 成功。仅验证所给候选与固定后续序列。候选实体R0 / R1时长评分选择0entity-aBRAKE / BRAKE2.00 s-2.06441entity-aPUSH E 0.1 / PUSH E 0.12.00 s0.00002entity-aPUSH E 0.3 / PUSH E 0.32.00 s4.1288✓ 执行",
+    "width": {
+      "inner": 375,
+      "scroll": 375
+    },
+    "errors": []
+  },
+  "llm_calls": 0,
+  "primary_ticks": 7033,
+  "early_development_ticks": 1679,
+  "initial_smoke_ticks": 4,
+  "known_old_test_setup_errors": 12
+}

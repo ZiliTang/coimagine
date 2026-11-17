@@ -1,0 +1,66 @@
+Implement one general Python program to transport a single planar object to the
+shared goal using two robots and the supplied options. Other obstacles are fixed.
+You are an autonomous coding agent: choose your development experiments, write and
+execute diagnostic programs, inspect available raw logs, and revise your program.
+Submit one final program explicitly before the budget expires. No fixed number of
+revisions, test order, planning abstraction, memory design or solution is imposed.
+
+Read contract.json and campaign.json. Only named development fixtures are exposed;
+these nine fixtures are not a held-out benchmark. Do not claim test generalization.
+Your Python workspace contains client.py. DevelopmentEnv().reset(task), .observe(),
+.step({a0:int,a1:int,ticks:int}), .render() call the external simulator. step returns
+observation plus terminal status; render is SVG drawn only from legal sensors.
+You may select tasks, build your own tests, store evidence, estimate models, retain
+history, search and implement recovery within the same budgets. Simulator source,
+full state, true maps, hidden dynamics and evaluation data are not accessible.
+Use only the Python standard library. No internet or robotics libraries are provided.
+
+Deployment interface: author policy.py with class Policy. __init__(self, contract)
+initializes an episode; act(self, observation) returns exactly {a0, a1, ticks}.
+The common host handles stdin JSONL/reset/flush; it does not select/correct actions.
+observation contains robots and legal_pairs. Pairs decode as JSON lists: use list
+membership, or explicitly convert to tuples. ticks is 1..40, at 0.05 s per tick.
+Repeated actions continue the controller, including failure latches. A different
+action follows existing controller transition rules. Read execution fields to learn
+what actually happened. Legal does not imply physically feasible. BRAKE is active.
+Scan angles/points are world coordinates. Categories: 0 none, 1 object, 2 static,
+3 teammate. Patches are sensor-derived; their normals point into the surface.
+
+No model calls or development simulator access are available to frozen deployment.
+You may freeze your self-created code/data/model with submit(files=[...]); include
+policy.py and all needed dependencies explicitly. No cross-evaluation-episode state
+is retained; each process starts fresh. Within an episode you may estimate/update
+internal models using permitted observations. Do not read or import host sources.
+
+Invalid actions are reported, never silently replaced. Exceptions, stderr and raw
+sensor/action logs are available. Failures consume budgets; no automatic retries.
+A researcher will not provide task-specific hints or modify your policy during a
+campaign. Select your final artifact yourself; the harness does not choose the best
+candidate. Model and tool usage and exact code revisions are recorded.
+
+Tool replies include authoritative remaining budgets. Two stages share the declared
+hard total limits; submission reserves are NOT extra resources. Stage 1 permits
+all development tools. When its allowance ends, stage 2 exposes ONLY submit and
+requires a submission tool call. No separate read/write/run/test tools are available
+in stage 2. Choose and deliver your own program directly, not a promise to finish.
+
+submit(files=["policy.py", ...], contents={"policy.py": "complete source", ...})
+atomically stages a selected package. contents is optional: listed files without
+inline text are copied from your workspace. Inline text can create missing files or
+replace existing files without a separate write call. Only listed files are included.
+Submission checks syntax, sandboxed Policy(contract) construction and act(observation)
+signature, without calling act or running physics. A validation error does not submit
+or change your workspace; correct and submit again if stage-2 budget remains. Never
+interpret this interface check as evidence of physical success. No researcher picks
+or repairs a policy, and nothing is submitted automatically on exit.
+
+The default campaign allows at most 38 development model calls followed by at most
+2 submission calls, inside 40 total. Other resource limits may close development
+earlier; the submission stage still has at most its declared two calls and its own
+wall/input/output/tool caps. Network/model failures still stop without automatic
+retry. Neither forced tool choice nor validation guarantees a successful submission.
+
+An output-token truncation executes no tools from that response. It closes
+development and leaves only the already-reserved submission allowance. A truncated
+submission may use only its remaining declared submission attempts. Partial output
+is never installed as a program, and no additional calls or tokens are granted.

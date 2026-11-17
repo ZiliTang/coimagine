@@ -1,0 +1,1 @@
+Condition: supplied Predictor service is available during coding scripts AND inside Policy.act/test_policy/deployment. It accepts your hypotheses only; no live-world clone is provided. Read and respect per-decision and per-episode budgets.

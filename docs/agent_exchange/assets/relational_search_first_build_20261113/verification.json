@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-13",
+  "status": "partial_system_built",
+  "source_sha256": {
+    "experiments/planar_tasks/relational_search/features.py": "cc1a26979b86f199bf69e5efd5b56774ea174a6f26937af5f827a0a5b87bcf91",
+    "experiments/planar_tasks/relational_search/physics_probe.py": "bcd016e4f09814872ca3d41906507d63886f8b757272ef5b5e6b559ad98aa067",
+    "experiments/planar_tasks/relational_search/smoke.py": "d099398a508a7fbeb5b4eba81a97b2dad05555d290aad8e9607b2dceb79d50ca",
+    "experiments/planar_tasks/relational_search/__init__.py": "72f98bbb16dce896633fc96b0d4401bf256876a686a7f478d3ae6b9822dbb1ff",
+    "experiments/planar_tasks/relational_search/search.py": "6a6bfdc262517943230282c028859379aa0ae47b10f4436c6f025dd1e2ac7274",
+    "experiments/planar_tasks/relational_search/fit.py": "98b5e534ae8cc06d794d7c7164d691454438ca940abcbcbabec1d43b4168b5ce",
+    "experiments/planar_tasks/relational_search/dataset.py": "47c9f48b555e712f407bb7329be9b178f64700e16bd8d626919c61155698cdff",
+    "experiments/planar_tasks/relational_search/contract.py": "5fa0e972d8a8917f822413f26220723a156a5de8363fe590eda984a31f9623c7",
+    "experiments/planar_tasks/relational_search/target_binding.py": "487e2bc46f6b90fdcd606a69393a19460ced5a485bfb00c38e72f0f1d50ecc43",
+    "experiments/planar_tasks/relational_search/evidence.py": "8ca4d940908360ce0679af93b2d69b3e62a6b68d736b3a9bef5b63a1d920626b",
+    "tests/test_relational_search.py": "cff4c7c70fbae1f060c2b77384bd8b195053c88179f28e8e07bae664abb4669c"
+  },
+  "git_head": "0dc6568c7324b043dca63067d45735ff555b639e",
+  "working_tree": "dirty; historical and unrelated changes retained",
+  "tests": {
+    "command": "PYTHONPATH=. .venv/bin/python -m pytest tests/test_relational_search.py tests/test_semantic_planning.py tests/test_option_search_v3.py tests/test_authoring_v2.py",
+    "passed": 67,
+    "wall_seconds": 33.71,
+    "full_suite": false
+  },
+  "probe": {
+    "directory": "outputs/relational_search/m0_m1_probe_20261113_01",
+    "verified_files": 12,
+    "execution_and_replay_ticks": 960,
+    "wall_seconds": 0.5573437839993858,
+    "llm_calls": 0,
+    "evidence_type": "synthetic mechanism diagnostic plus low-level rigid-body probe; not Option policy performance"
+  },
+  "short_physics_in_tests": {
+    "control_and_replay_ticks_per_test_invocation": 20,
+    "invocations_this_turn": 4,
+    "total_ticks": 80
+  },
+  "remaining": [
+    "persistent Option multi-entity adapter",
+    "nominal predictor integration",
+    "durable campaign accounting",
+    "history encoder",
+    "isolated authoring profile",
+    "physical comparisons and LLM revision"
+  ]
+}

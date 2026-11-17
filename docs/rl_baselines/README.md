@@ -1,5 +1,7 @@
 # RL 基线登记
 
+2026-11-09 本机已从最新完整移交包恢复 V1 冻结目录与 V2 结束产物，模型读取检查通过。包内已含 V1，无需另找下文提到的旧独立 V1 压缩包。当前模型路径、版本边界、清理记录与本机命令见 [接续记录](../agent_exchange/Local_Restore_20261109.md)。
+
 ## V1：事件进度集中式 PPO（2026-11-03）
 
 **上一轮正式 RL 训练现明确登记为第一版基线 V1；状态 frozen。** 新的 YIELD/方向约束属于 V2，不追溯改变 V1 的动作、指标或源码。
@@ -34,7 +36,7 @@
 
 ```bash
 cd outputs/rl_baselines/V1_event_progress_20261103/frozen_code
-PYTHONPATH="$PWD/src" /home/tzl/repo/coimagine/.venv/bin/python - <<'PY'
+PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$PWD/src" ../../../../.venv/bin/python - <<'PY'
 from pathlib import Path
 from experiments.option_rl_v20.long_run import load_state
 from experiments.option_rl_v19 import unknown_shape
@@ -45,7 +47,7 @@ for name in ('best.pt', 'policy.pt'):
 PY
 ```
 
-其他PC请将命令中的Python绝对路径改为本机虚拟环境。未来需要重新评测时，从冻结源码加载manifest中的固定面板并另写输出；此次没有新增V1策略评测或训练授权。
+以上命令从仓库根目录进入 frozen_code 后，使用本仓库的虚拟环境。未来需要重新评测时，从冻结源码加载manifest中的固定面板并另写输出；此次没有新增V1策略评测或训练授权。
 
 最终V1迁移包：`outputs/rl_baselines/V1_event_progress_20261103.tar.gz`，大小与SHA见[V1_archive.json](V1_archive.json)。包在本机，受`.gitignore`排除，**不随Git同步**。它替代12:50的中期模型快照用于最终V1接续；旧迁移包仍保留，但不是最终基线。
 

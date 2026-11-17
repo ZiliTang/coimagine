@@ -1,0 +1,125 @@
+{
+  "test_command": "PYTHONPATH=. .venv/bin/python -m pytest tests/test_relational_motion.py tests/test_relational_predictor.py tests/test_relational_environment.py tests/test_relational_search.py tests/test_semantic_planning.py tests/test_option_search_v3.py tests/test_authoring_v2.py -ra",
+  "test_result": "106 passed in 51.79s",
+  "full_repository_suite": false,
+  "acceptance_directory": "outputs/relational_search/motion_acceptance_20261113_01",
+  "acceptance_manifest_sha256": "e3d3ff4bdc540b843d84cee53e7062801d0f0a19386ae456adb9ff3627ea5bb1",
+  "artifact_files_verified": 28,
+  "source_sha256": {
+    "experiments/planar_tasks/relational_search/option_acceptance.py": "ec56d2aa19bd93423252436ee567605a9f0df8cc79cfb989ec7c6c5e44bd6676",
+    "experiments/planar_tasks/relational_search/features.py": "cc1a26979b86f199bf69e5efd5b56774ea174a6f26937af5f827a0a5b87bcf91",
+    "experiments/planar_tasks/relational_search/physics_probe.py": "bcd016e4f09814872ca3d41906507d63886f8b757272ef5b5e6b559ad98aa067",
+    "experiments/planar_tasks/relational_search/estimator.py": "58266a3373c82b733b19b1fc7e3a872f08bcfad7d851930c012a0c3aa464ec54",
+    "experiments/planar_tasks/relational_search/environment.py": "a75fc8165c60e6b25219cfe098cacd70c5dbce78605049581f5eeef539a74d9c",
+    "experiments/planar_tasks/relational_search/predictor_acceptance.py": "8d37bfd525ae5f6327ec42246d71a57ed2766cc36972c2d1bdfb2712617f1a43",
+    "experiments/planar_tasks/relational_search/motion_acceptance.py": "c70d04bc1d901cae4d79b2d3a9ae72f2f47c96713168c184401fb440e166cf42",
+    "experiments/planar_tasks/relational_search/smoke.py": "d099398a508a7fbeb5b4eba81a97b2dad05555d290aad8e9607b2dceb79d50ca",
+    "experiments/planar_tasks/relational_search/__init__.py": "72f98bbb16dce896633fc96b0d4401bf256876a686a7f478d3ae6b9822dbb1ff",
+    "experiments/planar_tasks/relational_search/search.py": "f5c2ad919c54dea403c9749ada5d3c99ac621be9d22003c66a8e5de384cec74d",
+    "experiments/planar_tasks/relational_search/fit.py": "98b5e534ae8cc06d794d7c7164d691454438ca940abcbcbabec1d43b4168b5ce",
+    "experiments/planar_tasks/relational_search/dataset.py": "47c9f48b555e712f407bb7329be9b178f64700e16bd8d626919c61155698cdff",
+    "experiments/planar_tasks/relational_search/motion.py": "24a41e5507a985b7785faed2b8f9f5f8af6d5f664f7ca36400a0f3ec6969bcff",
+    "experiments/planar_tasks/relational_search/contract.py": "6a9722e8b570790e421551833132bbf972356a509e9ea6a52f488523acb3173a",
+    "experiments/planar_tasks/relational_search/predictor.py": "6074d1ec9dbc994373dda1bc4e439a1217d5d2d95f9dd35959b4957883297ff0",
+    "experiments/planar_tasks/relational_search/target_binding.py": "9d34316af6aaaa4a97b7f4436433dc2900bd004107659bf1d3686c3af1a68749",
+    "experiments/planar_tasks/relational_search/evidence.py": "8ca4d940908360ce0679af93b2d69b3e62a6b68d736b3a9bef5b63a1d920626b",
+    "tests/test_relational_search.py": "cff4c7c70fbae1f060c2b77384bd8b195053c88179f28e8e07bae664abb4669c",
+    "tests/test_relational_motion.py": "461c004136fcfd9ced2a68aae5ac1194b6a0aa5f1079f8452e94c0f916251441",
+    "tests/test_relational_environment.py": "07c13b986b333dfc25239efeff40f8933cbe049a38ba1ba5037b07a2029a6b0a",
+    "tests/test_relational_predictor.py": "ea58dfbb49d1100a421cee9d49d267df6d6fc20518cede8de781ff9d93f53b93"
+  },
+  "post_run_module_docstring_only_changes": [
+    "experiments/planar_tasks/relational_search/target_binding.py"
+  ],
+  "guide_sha256": "6e4b013760645a03cbdda260dd0fc2a60a9b348f21719e9b5e70730196183814",
+  "summary": {
+    "status": "complete",
+    "llm_calls": 0,
+    "task_benchmark": false,
+    "action_version": "relational-options-move-v2",
+    "action_codebook_hash": "3d76e9d116deacccd8e4a9707b1e6d4e102c7784099c056890143ffab729b50d",
+    "cases": [
+      {
+        "name": "discover",
+        "execution_ticks": 120,
+        "replay_ticks": 120,
+        "exact_replay": true,
+        "initial_seen": [],
+        "final_seen": [
+          "entity-a"
+        ],
+        "robot_displacements": [
+          1.4148420351121995,
+          0.0
+        ],
+        "termination": null
+      },
+      {
+        "name": "wall_and_retreat",
+        "execution_ticks": 240,
+        "replay_ticks": 240,
+        "exact_replay": true,
+        "initial_seen": [],
+        "final_seen": [],
+        "robot_displacements": [
+          0.5575170166153867,
+          0.0
+        ],
+        "termination": null
+      },
+      {
+        "name": "independent_robots",
+        "execution_ticks": 40,
+        "replay_ticks": 40,
+        "exact_replay": true,
+        "initial_seen": [],
+        "final_seen": [
+          "entity-a"
+        ],
+        "robot_displacements": [
+          0.4148420351122388,
+          0.29322802340812526
+        ],
+        "termination": null
+      },
+      {
+        "name": "push_move_push",
+        "execution_ticks": 101,
+        "replay_ticks": 101,
+        "exact_replay": true,
+        "initial_seen": [
+          "entity-a"
+        ],
+        "final_seen": [
+          "entity-a"
+        ],
+        "robot_displacements": [
+          0.27616284709969374,
+          0.24061338485671024
+        ],
+        "termination": null
+      }
+    ],
+    "search": {
+      "action": {
+        "target_id": null,
+        "a0": 49,
+        "a1": 44,
+        "ticks": 40
+      },
+      "execution_ticks": 40,
+      "prediction_ticks": 160
+    },
+    "usage": {
+      "limits": {
+        "execution_ticks": 4000,
+        "prediction_ticks": 1000
+      },
+      "used": {
+        "execution_ticks": 1042,
+        "prediction_ticks": 240
+      }
+    },
+    "wall_seconds": 2.0014155289973132
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "wall_seconds": 3900,
+  "episode_wall_seconds": 120,
+  "response_seconds": 5,
+  "max_control_ticks": 1800,
+  "max_decisions": 1800
+}

@@ -1,0 +1,16 @@
+{
+  "at": 1794899860.0568328,
+  "source": "/home/zilitang/repo/coimagine/outputs/agentic",
+  "destination": "/home/zilitang/coimagine_retired_outputs/20261117/agentic",
+  "action": "rename outside workspace, no permanent deletion",
+  "files_before": 358921,
+  "active_reference_check": "no live command/cwd under source",
+  "preserved": [
+    "outputs/semantic_rl",
+    "outputs/semantic_rl_authors",
+    "docs",
+    "source",
+    "models",
+    "handoff"
+  ]
+}

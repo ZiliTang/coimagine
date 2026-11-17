@@ -100,7 +100,7 @@ def test_one_missing_scan_brakes_and_reacquires_but_prolonged_loss_latches():
 
 def test_retry_does_not_bypass_static_corridor_guard():
     c=next(c for c in reposition_peer_cases() if c['name']=='detour_rp_CCW_static_gap_0.26')
-    w=ContinuousModeEnv(instance_from_dict(c['instance']));rp=action('reposition',speed=.18,direction='CCW')
+    w=ContinuousModeEnv(instance_from_dict(c['instance']));rp=action('reposition',speed=.12,direction='CCW')
     for _ in range(100):
         w.joint_step(rp,C.STOP,record=True)
         if w.slots[0].skill.done:break

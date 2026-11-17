@@ -1,7 +1,7 @@
 const S = {
   options: [], params: [],
   scene: null, baseScene: null, currentPreset: null, loadedInitial: null, dirty: false,
-  object: null, robots: [],
+  object: null, robots: [], movableObjects: [], editingSegment: null,
   sequence: [], overrides: {}, presets: [], presetSort: 'created', controllerVersion: 'option-v2',
   run: null, frame: 0, playing: false, timer: null, runId: null,
   running: false,
@@ -51,6 +51,7 @@ function copySegment(s) {
   const alias = {38:40, 39:40, 41:43, 42:43};
   const canonical = i => alias[Number(i)] ?? Number(i);
   const out = {a0:canonical(s.a0), a1:canonical(s.a1), decisions:Number(s.decisions || 1)};
+  if (Object.hasOwn(s, 'target_id')) out.target_id = s.target_id;
   if (s.budget_m != null) out.budget_m = Number(s.budget_m);
   if (s.time_budget_s != null) out.time_budget_s = Number(s.time_budget_s);
   if (s.progress) out.progress = String(s.progress);
@@ -62,15 +63,16 @@ function applyPreset(p) {
   S.scene = p.scene_meta || S.scene;
   S.object = clonePose(p.object || S.scene.initial.object);
   S.robots = (p.robots || S.scene.initial.robots).map(clonePose);
-  S.loadedInitial = {object: clonePose(S.object), robots: S.robots.map(clonePose)};
+  S.movableObjects = JSON.parse(JSON.stringify(p.movable_objects || S.scene?.movable_objects || []));
+  S.loadedInitial = snapshotPoses();
   S.sequence = (p.sequence || []).map(copySegment);
-  S.controllerVersion = 'option-v2';
+  S.controllerVersion = p.controller_version === 'relational-v2' || S.movableObjects.length || S.baseScene === 'relational_clear_transport' ? 'relational-v2' : 'option-v2';
   if ($('controllerVersion')) $('controllerVersion').value = S.controllerVersion;
   S.overrides = p.overrides || {};
   S.run = null; S.frame = 0; S.runId = null;
   S.dirty = false;
   $('presetName').value = p.name || defaultPresetName();
-  renderSequence(); renderParams(); drawScene(); drawTimeline(); renderInfo(); updatePlayback();
+  syncSceneEditor(); cancelSegmentEdit(); renderSequence(); renderParams(); drawScene(); drawTimeline(); renderInfo(); updatePlayback();
   $('runMeta').textContent = '';
   setPresetLabel();
 }
@@ -78,20 +80,24 @@ function resetPoses() {
   if (!S.loadedInitial) return;
   S.object = clonePose(S.loadedInitial.object);
   S.robots = S.loadedInitial.robots.map(clonePose);
+  S.movableObjects = JSON.parse(JSON.stringify(S.loadedInitial.movableObjects || []));
+  if (S.loadedInitial.goal) S.scene.goal = {...S.loadedInitial.goal};
+  syncSceneEditor();
   S.run = null; S.frame = 0; S.runId = null;
   drawScene(); drawTimeline(); renderInfo(); updatePlayback();
   markDirty();
 }
 function initOptions() {
   for (const id of ['option0', 'option1']) {
-    const sel = $(id); sel.innerHTML = '';
-    for (const o of S.options) {
+    const sel = $(id), previous = sel.value; sel.innerHTML = '';
+    const free = S.controllerVersion === 'relational-v2' && $('targetId').value === '';
+    for (const o of S.options.filter(o => free ? (o.family === 'MOVE' || o.action_index === 44) : o.family !== 'MOVE')) {
       const opt = document.createElement('option');
       opt.value = o.action_index;
       opt.textContent = `${String(o.action_index).padStart(2,'0')}  ${o.label}`;
       sel.appendChild(opt);
     }
-    sel.value = '2';
+    sel.value = [...sel.options].some(o => o.value === previous) ? previous : (free ? '44' : '2');
   }
 }
 
@@ -132,32 +138,80 @@ function collectOverrides() {
   return out;
 }
 
+function snapshotPoses() {
+  return {object: clonePose(S.object), robots: S.robots.map(clonePose),
+    movableObjects: JSON.parse(JSON.stringify(S.movableObjects)), goal: {...S.scene.goal}};
+}
+function entityName(id) {
+  if (id == null) return '自由移动 / 刹车';
+  return id === (S.scene?.primary_id || 'entity-a') ? 'A · 运输目标' : `${id === 'entity-b' ? 'B' : id} · 可动物体`;
+}
+function syncSceneEditor() {
+  const multi = S.controllerVersion === 'relational-v2';
+  $('targetLabel').hidden = !multi;
+  const target = $('targetId'), previous = target.value; target.innerHTML = '';
+  for (const id of [S.scene?.primary_id || 'entity-a', ...S.movableObjects.map(b=>b.label), null]) {
+    const op = document.createElement('option'); op.value = id ?? ''; op.textContent = entityName(id); target.appendChild(op);
+  }
+  if ([...target.options].some(o=>o.value===previous)) target.value=previous;
+  $('sceneBrief').textContent = [S.scene?.task_brief, S.scene?.observation_note].filter(Boolean).join(' ');
+  $('sequenceHint').textContent = multi ? '每段包含换目标/刹车时间；每 0.2 秒检查可见动作。不可执行时停止并保留回放。' : '';
+  const select=$('poseBody'), old=select.value; select.innerHTML='';
+  for (const [value,label] of [['object','A'],...S.movableObjects.map((b,i)=>[`extra:${i}`,entityName(b.label)]),['robot:0','R0'],['robot:1','R1'],['goal','目标区']]) {
+    const op=document.createElement('option');op.value=value;op.textContent=label;select.appendChild(op);
+  }
+  if ([...select.options].some(o=>o.value===old))select.value=old;
+  initOptions(); showPose();
+}
+function poseSelection() {
+  const value=$('poseBody').value;
+  if(value==='object')return S.object;
+  if(value==='goal')return S.scene?.goal;
+  if(value.startsWith('extra:'))return S.movableObjects[Number(value.split(':')[1])];
+  return S.robots[Number(value.split(':')[1])];
+}
+function showPose() {
+  const p=poseSelection(); if(!p)return;
+  $('poseX').value=p.x.toFixed(3);$('poseY').value=p.y.toFixed(3);
+  $('poseAngle').value=((p.angle||0)*180/Math.PI).toFixed(1);
+  $('poseAngle').disabled=$('poseBody').value==='goal';
+}
+function applyPose() {
+  const p=poseSelection(); if(!p)return;
+  const x=Number($('poseX').value), y=Number($('poseY').value), angle=Number($('poseAngle').value)*Math.PI/180;
+  if (![x,y,angle].every(Number.isFinite))return;
+  p.x=x;p.y=y;if($('poseBody').value!=='goal')p.angle=angle;
+  S.run=null;S.frame=0;S.runId=null; markDirty();drawScene();drawTimeline();renderInfo();updatePlayback();
+}
+function cancelSegmentEdit() {
+  S.editingSegment=null;$('addSegment').textContent='Add';$('cancelEdit').hidden=true;
+}
 function renderSequence() {
   const box = $('sequenceList'); box.innerHTML = '';
-  let t = 0;
   S.sequence.forEach((seg, i) => {
     const row = document.createElement('div'); row.className = 'segment';
     const idx = document.createElement('span'); idx.className = 'idx'; idx.textContent = `${i+1}`;
+    const target = document.createElement('span');target.className='segment-target';
+    target.textContent=Object.hasOwn(seg,'target_id') ? (seg.target_id==null?'自由':seg.target_id==='entity-a'?'A':seg.target_id==='entity-b'?'B':seg.target_id) : 'A';
     const a = document.createElement('span'); a.className = 'opt'; a.textContent = optionLabel(seg.a0); a.title = a.textContent;
     const b = document.createElement('span'); b.className = 'opt'; b.textContent = optionLabel(seg.a1); b.title = b.textContent;
     const d = document.createElement('span'); d.className = 'mono';
-    d.textContent = seg.budget_m != null
-      ? `${Number(seg.budget_m).toFixed(2)}m${seg.time_budget_s != null ? ` / ${Number(seg.time_budget_s).toFixed(1)}s` : ''}`
-      : `${(seg.decisions*0.2).toFixed(1)}s`;
-    const rm = document.createElement('button'); rm.textContent = '×'; rm.title = 'remove'; rm.onclick = () => { S.sequence.splice(i,1); renderSequence(); };
-    row.append(idx, a, b, d, rm); box.appendChild(row);
-    t += (seg.budget_m == null ? seg.decisions * 0.2 : (seg.time_budget_s || 0));
+    d.textContent = seg.budget_m != null ? `${Number(seg.budget_m).toFixed(2)}m` : `${(seg.decisions*0.2).toFixed(1)}s`;
+    const edit=document.createElement('button');edit.textContent='✎';edit.title='编辑这一段';
+    edit.onclick=()=>{S.editingSegment=i;$('targetId').value=Object.hasOwn(seg,'target_id')?(seg.target_id??''):'entity-a';initOptions();$('option0').value=seg.a0;$('option1').value=seg.a1;$('duration').value=seg.decisions*.2;$('addSegment').textContent='更新';$('cancelEdit').hidden=false;};
+    const rm = document.createElement('button'); rm.textContent = '×'; rm.title = 'remove';
+    rm.onclick = () => { S.sequence.splice(i,1); cancelSegmentEdit();renderSequence();markDirty(); };
+    row.append(idx,target,a,b,d,edit,rm); box.appendChild(row);
   });
   $('seqMeta').textContent = S.sequence.length ? `${S.sequence.length} segments · ${(S.sequence.reduce((x,s)=>x+s.decisions,0)*0.2).toFixed(1)} s` : 'empty';
 }
-
 function addSegment() {
-  const a0 = parseInt($('option0').value, 10);
-  const a1 = parseInt($('option1').value, 10);
-  const sec = Math.max(0.2, Math.min(10, parseFloat($('duration').value) || 1));
-  const decisions = Math.max(1, Math.round(sec / 0.2));
-  S.sequence.push({a0, a1, decisions});
-  renderSequence(); markDirty();
+  const a0 = parseInt($('option0').value, 10), a1 = parseInt($('option1').value, 10);
+  const sec = Math.max(0.2, Math.min(40, parseFloat($('duration').value) || 1));
+  const seg={a0,a1,decisions:Math.max(1,Math.round(sec/.2))};
+  if(S.controllerVersion==='relational-v2')seg.target_id=$('targetId').value||null;
+  if(S.editingSegment==null)S.sequence.push(seg); else S.sequence[S.editingSegment]=seg;
+  cancelSegmentEdit();renderSequence();markDirty();
 }
 
 async function refreshControllerStatus() {
@@ -186,7 +240,7 @@ async function runSequence() {
   const body = {
     scene: S.baseScene, name: S.currentPreset?.name || 'session',
     object: S.object, robots: S.robots,
-    sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'option-v2',
+    sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: S.controllerVersion, movable_objects: S.movableObjects,
   };
   const requestStarted = performance.now();
   api('/api/run', 'POST', body).then(run => {
@@ -195,7 +249,7 @@ async function runSequence() {
     loadRunObject(run);
     const drawMs = performance.now()-drawingStarted;
     $('runMeta').textContent += ` · 接口 ${apiSeconds.toFixed(3)}s · 绘制 ${drawMs.toFixed(1)}ms`;
-    setStatus(`run ${run.id} · ${run.success ? 'task success' : 'task incomplete'}`);
+    setStatus(run.execution_error ? `第 ${run.execution_error.segment+1} 段停止：${run.execution_error.message}` : `run ${run.id} · ${run.success ? 'task success' : 'task incomplete'}`, Boolean(run.execution_error));
     refreshRuns();
   }).catch(e => setStatus(e.message, true)).finally(() => {
     S.running = false;
@@ -230,7 +284,7 @@ let hoverFrame = -1;
 
 function updatePlayback() {
   const n = S.run ? S.run.frames.length : 0;
-  const t = S.run ? (S.frame * 0.05) : 0;
+  const t = currentFrame()?.t ?? 0;
   $('timeLabel').textContent = `${t.toFixed(2)} s`;
   $('frameSlider').value = String(S.run ? S.frame : 0);
   $('playBtn').textContent = S.playing ? 'Pause' : 'Play';
@@ -269,8 +323,20 @@ const sceneCanvas = $('sceneCanvas');
 const sctx = sceneCanvas.getContext('2d');
 let view = null;
 
+function fitCanvas(canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const W = Math.max(1, rect.width), H = Math.max(1, rect.height);
+  const dpr = window.devicePixelRatio || 1;
+  const width = Math.round(W*dpr), height = Math.round(H*dpr);
+  if (canvas.width !== width || canvas.height !== height) {
+    canvas.width = width; canvas.height = height;
+  }
+  canvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  return {W, H};
+}
+
 function computeView() {
-  const W = sceneCanvas.width, H = sceneCanvas.height;
+  const {W, H} = fitCanvas(sceneCanvas);
   const arena = S.scene ? S.scene.arena : [5, 4];
   const margin = 36;
   const scale = Math.min((W - 2*margin) / arena[0], (H - 2*margin) / arena[1]);
@@ -281,7 +347,7 @@ function computeView() {
 function w2c(x, y) { return [view.ox + x*view.scale, view.H - (view.oy + y*view.scale)]; }
 function c2w(px, py) {
   const rect = sceneCanvas.getBoundingClientRect();
-  const sx = sceneCanvas.width / rect.width, sy = sceneCanvas.height / rect.height;
+  const sx = view.W / rect.width, sy = view.H / rect.height;
   const x = (px - rect.left) * sx, y = (py - rect.top) * sy;
   return [(x - view.ox) / view.scale, (view.H - y - view.oy) / view.scale];
 }
@@ -304,6 +370,15 @@ function drawScene() {
     const [, py] = w2c(0, y); ctx.beginPath(); ctx.moveTo(ax, py); ctx.lineTo(ax+aw, py); ctx.stroke();
   }
   ctx.strokeStyle = '#3a4655'; ctx.lineWidth = 2; ctx.strokeRect(ax, ay, aw, ah);
+  // Static obstacles are replay metadata, never extra policy observations.
+  for (const b of S.scene.obstacles || []) {
+    const [bx, by] = w2c(b.cx, b.cy);
+    ctx.save(); ctx.translate(bx, by); ctx.rotate(-(b.angle || 0));
+    ctx.fillStyle = '#555d68'; ctx.strokeStyle = '#98a3af'; ctx.lineWidth = 1.5;
+    ctx.fillRect(-b.half_w*view.scale, -b.half_h*view.scale, 2*b.half_w*view.scale, 2*b.half_h*view.scale);
+    ctx.strokeRect(-b.half_w*view.scale, -b.half_h*view.scale, 2*b.half_w*view.scale, 2*b.half_h*view.scale);
+    ctx.restore();
+  }
   // goal (amber dashed region; draggable)
   const g = S.scene.goal; const [gx, gy] = w2c(g.x, g.y);
   ctx.beginPath(); ctx.arc(gx, gy, g.radius*view.scale, 0, Math.PI*2);
@@ -332,6 +407,17 @@ function drawScene() {
     ctx.fillRect(-ow/2, -oh/2, ow, oh); ctx.strokeRect(-ow/2, -oh/2, ow, oh);
   }
   ctx.restore();
+  ctx.fillStyle='#f0c38e';ctx.fillText('A',ox-4,oy-12);
+  for (const body of S.movableObjects) {
+    const state=f?.entities?.[body.label];
+    const p=state?{x:state[0],y:state[1],angle:state[2]}:body;
+    const [x,y]=w2c(p.x,p.y);
+    ctx.save();ctx.translate(x,y);ctx.rotate(-p.angle);
+    ctx.fillStyle='#7564b1';ctx.strokeStyle=f?.active_target===body.label?'#ffffff':'#c6b6f3';ctx.lineWidth=2;
+    ctx.fillRect(-body.width*view.scale/2,-body.height*view.scale/2,body.width*view.scale,body.height*view.scale);
+    ctx.strokeRect(-body.width*view.scale/2,-body.height*view.scale/2,body.width*view.scale,body.height*view.scale);ctx.restore();
+    ctx.fillStyle='#e4d9ff';ctx.fillText(body.label==='entity-b'?'B':body.label,x-4,y-8);
+  }
   // robots
   robots.forEach((r, i) => {
     const [rx, ry] = w2c(r.x, r.y);
@@ -354,14 +440,19 @@ function drawScene() {
 
 function drawEstimate(f) {
   const win = $('estimateWindow'); if (!win) return;
-  win.style.display = S.view.estimate ? 'block' : 'none';
+  win.hidden = !S.view.estimate;
+  $('sceneLayout').classList.toggle('estimate-hidden', !S.view.estimate);
   if (!S.view.estimate) return;
   const cv = $('estimateCanvas'), ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
+  const {W, H} = fitCanvas(cv);
   ctx.clearRect(0,0,W,H); ctx.fillStyle='#0a0d12'; ctx.fillRect(0,0,W,H);
-  const obj = f ? {x:f.object[0], y:f.object[1], angle:f.object[2]} : S.object;
+  const active = f?.active_target || S.scene?.primary_id || 'entity-a';
+  const extra = S.movableObjects.find(b=>b.label===active);
+  const state = extra && f?.entities?.[active];
+  const obj = state ? {x:state[0],y:state[1],angle:state[2]} : extra || (f ? {x:f.object[0], y:f.object[1], angle:f.object[2]} : S.object);
+  $('estimateTitle').textContent=`Local estimate · ${entityName(active)}`;
   const robots = f ? f.robots.map(r=>({x:r[0],y:r[1],angle:r[2]})) : S.robots;
-  const zoom = 135; // px per metre
+  const zoom = 135*Math.min(W/260, H/210); // preserve the local field of view as the panel resizes
   const toC=(x,y)=>[W/2+(x-obj.x)*zoom, H/2-(y-obj.y)*zoom];
   // background crosshair/grid around object
   ctx.strokeStyle='#202832'; ctx.lineWidth=1;
@@ -370,7 +461,7 @@ function drawEstimate(f) {
   // actual object faint reference (known in the testbed only)
   ctx.save(); ctx.translate(...toC(obj.x,obj.y)); ctx.rotate(-obj.angle);
   ctx.fillStyle='rgba(201,139,75,.20)'; ctx.strokeStyle='rgba(240,195,142,.55)'; ctx.lineWidth=1.2;
-  const spoly = S.scene && S.scene.object_polygon;
+  const spoly = extra ? [[-extra.width/2,-extra.height/2],[extra.width/2,-extra.height/2],[extra.width/2,extra.height/2],[-extra.width/2,extra.height/2]] : S.scene?.object_polygon;
   if (Array.isArray(spoly) && spoly.length >= 3) {
     ctx.beginPath(); spoly.forEach((p,k)=>{ const x=p[0]*zoom,y=-p[1]*zoom; if(k)ctx.lineTo(x,y); else ctx.moveTo(x,y); }); ctx.closePath(); ctx.fill(); ctx.stroke();
   } else { ctx.fillRect(-.5*zoom,-.125*zoom,1.0*zoom,.25*zoom); ctx.strokeRect(-.5*zoom,-.125*zoom,1.0*zoom,.25*zoom); }
@@ -449,7 +540,7 @@ function drawOverlays(ctx, f, robots) {
       const [ox, oy] = w2c(scan.origin[0], scan.origin[1]);
       for (let i = 0; i < scan.valid.length; i++) {
         if (!scan.valid[i]) continue;
-        const a = scan.angles[i], d = scan.distances[i];
+        const a = (scan.ray_angles || scan.angles)[i], d = scan.distances[i];
         const [ex, ey] = w2c(scan.origin[0] + d*Math.cos(a), scan.origin[1] + d*Math.sin(a));
         ctx.strokeStyle = colors[scan.category?.[i]] || '#73818f';
         ctx.globalAlpha = .28; ctx.lineWidth = .8;
@@ -533,7 +624,12 @@ function hitBody(wx, wy) {
   const dx = wx - obj.x, dy = wy - obj.y;
   const c = Math.cos(-obj.angle), s = Math.sin(-obj.angle);
   const lx = dx*c - dy*s, ly = dx*s + dy*c;
-  if (Math.abs(lx) <= 0.55 && Math.abs(ly) <= 0.18) return {type:'object'};
+  const bounds=S.scene?.object_polygon; const hw=bounds?Math.max(...bounds.map(p=>Math.abs(p[0]))):.5, hh=bounds?Math.max(...bounds.map(p=>Math.abs(p[1]))):.125;
+  if (Math.abs(lx) <= hw && Math.abs(ly) <= hh) return {type:'object'};
+  for (let i=0;i<S.movableObjects.length;i++) {
+    const b=S.movableObjects[i],dx=wx-b.x,dy=wy-b.y,c=Math.cos(b.angle),s=Math.sin(b.angle);
+    if(Math.abs(dx*c+dy*s)<=b.width/2 && Math.abs(-dx*s+dy*c)<=b.height/2)return {type:'extra',index:i};
+  }
   for (let i = 0; i < S.robots.length; i++) {
     const r = S.robots[i];
     if (Math.hypot(wx - r.x, wy - r.y) <= 0.26) return {type:'robot', index:i};
@@ -549,6 +645,7 @@ sceneCanvas.addEventListener('pointerdown', (e) => {
   const hit = hitBody(wx, wy);
   if (!hit) return;
   const origin = hit.type === 'object' ? S.object
+    : hit.type === 'extra' ? S.movableObjects[hit.index]
     : hit.type === 'robot' ? S.robots[hit.index]
     : (S.scene && S.scene.goal);
   drag = {...hit, wx, wy, ox: origin.x, oy: origin.y};
@@ -561,9 +658,10 @@ sceneCanvas.addEventListener('pointermove', (e) => {
   const [wx, wy] = c2w(e.clientX, e.clientY);
   const nx = drag.ox + (wx - drag.wx), ny = drag.oy + (wy - drag.wy);
   if (drag.type === 'object') { S.object.x = nx; S.object.y = ny; }
+  else if (drag.type === 'extra') {S.movableObjects[drag.index].x=nx;S.movableObjects[drag.index].y=ny;}
   else if (drag.type === 'goal') { S.scene.goal.x = nx; S.scene.goal.y = ny; }
   else { S.robots[drag.index].x = nx; S.robots[drag.index].y = ny; }
-  markDirty(); drawScene();
+  markDirty(); showPose(); drawScene();
 });
 sceneCanvas.addEventListener('pointerup', () => { drag = null; });
 sceneCanvas.addEventListener('pointercancel', () => { drag = null; });
@@ -666,8 +764,9 @@ function drawTimeline() {
   }
   // one shared time axis
   ctx.fillStyle = '#5c6878'; ctx.font = '10px ui-monospace, monospace';
-  for (let i = 0; i < n; i += 20) {
-    ctx.fillText(`${(i*0.05).toFixed(1)}s`, xOfFrame(i), H - 5);
+  const labelStep = Math.max(20, Math.ceil(n/Math.max(2,Math.floor(plotW/65))/20)*20);
+  for (let i = 0; i < n; i += labelStep) {
+    ctx.fillText(`${(S.run.frames[i].t ?? i*.05).toFixed(1)}s`, xOfFrame(i), H - 5);
   }
 }
 
@@ -692,11 +791,11 @@ function updateTimelineTip(e, f) {
   const f0 = Math.hypot(fc[0][0], fc[0][1]), f1 = Math.hypot(fc[1][0], fc[1][1]);
   const v0 = speed(fd.robots[0]), v1 = speed(fd.robots[1]), vo = speed(fd.object);
   tip.innerHTML =
-    `<div class="tt-title">frame ${f} · ${(f*0.05).toFixed(2)} s · tick ${st.tick}</div>` +
+    `<div class="tt-title">frame ${f} · ${(fd.t ?? f*.05).toFixed(2)} s · tick ${st.tick}</div>` +
     `<div class="tt-row"><span>joint phase</span><b>${st.phase || '—'}</b></div>` +
     `<div class="tt-row"><span>R0 stage</span><b>${dot(st.stage?.[0])}${st.stage?.[0] || '—'}</b></div>` +
     `<div class="tt-row"><span>R1 stage</span><b>${dot(st.stage?.[1])}${st.stage?.[1] || '—'}</b></div>` +
-    `<div class="tt-row"><span>contact (physical, tick-start)</span><b>${c[0]?'R0 ':''}${c[1]?'R1':''}${!c[0]&&!c[1]?'none':''}</b></div>` +
+    `<div class="tt-row"><span>contact (physical, ${S.run.controller_version==='relational-v2'?'post-step':'tick-start'})</span><b>${c[0]?'R0 ':''}${c[1]?'R1':''}${!c[0]&&!c[1]?'none':''}</b></div>` +
     `<div class="tt-row"><span>coord both_contact (near)</span><b>${coord.both_contact ? 'yes' : 'no'}</b></div>` +
     `<div class="tt-row"><span>coord release / active</span><b>${coord.release ? 'rel' : '—'} / ${coord.joint_active ? 'active' : '—'}</b></div>` +
     `<div class="tt-row"><span>|F0| / |F1|</span><b>${f0.toFixed(2)} / ${f1.toFixed(2)} N</b></div>` +
@@ -761,6 +860,7 @@ function renderInfo() {
       <span>object</span><b>${S.object ? `${S.object.x.toFixed(2)}, ${S.object.y.toFixed(2)}` : '—'}</b>
       <span>robots</span><b>${S.robots.map(r => `${r.x.toFixed(2)},${r.y.toFixed(2)}`).join('  ·  ') || '—'}</b>
       <span>sequence</span><b>${S.sequence.length} segments</b>`;
+    renderM3bDebug();
     return;
   }
   const c = physicalContact(st);
@@ -785,6 +885,7 @@ function renderM3bDebug(){
   const mb=f.mb||[];
   const fmt=(x,n=2)=>x===null||x===undefined?'null':(+x).toFixed(n);
   const lines=[];
+  if(f.active_target)lines.push(`第 ${(f.segment_index??0)+1} 段 · 当前操作归属 ${entityName(f.active_target)}`);
   for(const side of [0,1]){
     const m=mb[side];
     if(!m){lines.push(`R${side}: no m3b record`);continue;}
@@ -830,7 +931,9 @@ async function loadRun(id) {
     if (run.scene) S.baseScene = run.scene;
     if (run.object) S.object = clonePose(run.object);
     if (run.robots) S.robots = run.robots.map(clonePose);
-    S.loadedInitial = {object: clonePose(S.object), robots: S.robots.map(clonePose)};
+    S.movableObjects=JSON.parse(JSON.stringify(run.movable_objects || run.scene_meta?.movable_objects || []));
+    S.controllerVersion=run.controller_version==='relational-v2'?'relational-v2':'option-v2';$('controllerVersion').value=S.controllerVersion;
+    S.loadedInitial=snapshotPoses();syncSceneEditor();cancelSegmentEdit();
     if (run.sequence) { S.sequence = run.sequence.map(copySegment); renderSequence(); }
     if (run.overrides) { S.overrides = run.overrides; renderParams(); }
     S.currentPreset = null; S.dirty = true;
@@ -914,10 +1017,10 @@ async function savePreset() {
   try {
     const p = await api('/api/presets', 'POST', {
       name, scene: S.baseScene, base_scene: S.baseScene,
-      object: S.object, robots: S.robots, sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: 'option-v2',
+      object: S.object, robots: S.robots, sequence: S.sequence, overrides: S.overrides, goal: S.scene?.goal, controller_version: S.controllerVersion, movable_objects: S.movableObjects,
     });
     S.currentPreset = p; S.dirty = false;
-    S.loadedInitial = {object: clonePose(S.object), robots: S.robots.map(clonePose)};
+    S.loadedInitial = snapshotPoses();
     $('presetName').value = p.name;
     setPresetLabel();
     setStatus(`preset saved: ${p.name}`);
@@ -944,26 +1047,31 @@ async function init() {
   try {
     await refreshControllerStatus();
     const [options, params, presets] = await Promise.all([
-      api('/api/options'), api('/api/params'), api('/api/presets')]);
+      api('/api/options?controller=relational'), api('/api/params'), api('/api/presets')]);
     S.options = options; S.params = params; S.presets = presets;
     initOptions(); renderParams(); renderLegend(); renderPresets(); refreshOverrides(); refreshRuns();
-    const first = presets.find(p => p.name === 'seed_contact_2')
+    const first = presets.find(p => p.id === 'relational_clear_transport_demo_v1') || presets.find(p => p.name === 'seed_contact_2')
       || presets.find(p => (p.name || '').startsWith('seed_')) || presets[0];
     const query = new URLSearchParams(window.location.search);
     if (query.get('run')) {
       await loadRun(query.get('run'));
       const tick = Number(query.get('tick'));
       if (S.run && Number.isFinite(tick)) seek(Math.trunc(tick));
-    } else if (first) await loadPreset(first.id);
+    } else if (query.get('preset')) await loadPreset(query.get('preset'));
+    else if (first) await loadPreset(first.id);
     else setStatus('no presets available', true);
     setInterval(refreshControllerStatus, 15000);
   } catch (e) { setStatus(e.message, true); }
 }
 $('resetPoses').onclick = resetPoses;
-if ($('controllerVersion')) $('controllerVersion').onchange = (e) => { S.controllerVersion = e.target.value; markDirty(); };
+if ($('controllerVersion')) $('controllerVersion').onchange = (e) => { S.controllerVersion = S.movableObjects.length || S.baseScene==='relational_clear_transport' ? 'relational-v2' : e.target.value; e.target.value=S.controllerVersion;syncSceneEditor();markDirty(); };
+$('targetId').onchange=initOptions;
+$('poseBody').onchange=showPose;
+$('applyPose').onclick=applyPose;
+$('cancelEdit').onclick=cancelSegmentEdit;
 $('runBtn').onclick = runSequence;
 $('addSegment').onclick = addSegment;
-$('clearSequence').onclick = () => { S.sequence = []; renderSequence(); markDirty(); };
+$('clearSequence').onclick = () => { S.sequence = [];cancelSegmentEdit(); renderSequence(); markDirty(); };
 $('saveOverrides').onclick = saveOverrides;
 $('savePreset').onclick = savePreset;
 $('presetSort').onchange = (e) => { S.presetSort = e.target.value; renderPresets(); };
@@ -980,4 +1088,16 @@ $('prevBtn').onclick = () => seek(S.frame - 1);
 $('nextBtn').onclick = () => seek(S.frame + 1);
 $('frameSlider').addEventListener('input', e => seek(parseInt(e.target.value, 10)));
 window.addEventListener('resize', () => { drawScene(); drawTimeline(); });
+// Container width also changes when an editor split or sidebar is resized.
+let sceneResizePending = false;
+const sceneResizeObserver = new ResizeObserver(() => {
+  if (sceneResizePending) return;
+  sceneResizePending = true;
+  requestAnimationFrame(() => {
+    sceneResizePending = false;
+    drawScene(); drawTimeline();
+  });
+});
+sceneResizeObserver.observe(sceneCanvas);
+sceneResizeObserver.observe($('estimateCanvas'));
 init();

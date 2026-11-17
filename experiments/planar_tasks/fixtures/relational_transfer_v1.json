@@ -1,0 +1,407 @@
+{
+  "version": "relational-transfer-v1",
+  "split": "development",
+  "cases": [
+    {
+      "id": "east_blocked",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "east",
+      "fixture": {
+        "object": {
+          "x": 1.8,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 1.35,
+            "y": 1.75,
+            "angle": 0.0
+          },
+          {
+            "x": 2.8,
+            "y": 1.2,
+            "angle": 1.5707963267948966
+          }
+        ],
+        "goal": {
+          "x": 4.9,
+          "y": 2.0,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 3.0,
+            "y": 2.0,
+            "width": 0.6,
+            "height": 0.7,
+            "angle": 0.0,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "ef3dbac457dfcf8e6d7a2f7510790060424507a4273a7e8778a8eb655693e879",
+      "host_annotation": {
+        "straight_corridor_overlap": true,
+        "lateral_separation_margin_m": -0.85,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "east_clear",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "east",
+      "fixture": {
+        "object": {
+          "x": 1.8,
+          "y": 2.0,
+          "angle": 0.0
+        },
+        "robots": [
+          {
+            "x": 1.35,
+            "y": 1.75,
+            "angle": 0.0
+          },
+          {
+            "x": 2.8,
+            "y": 1.2,
+            "angle": 1.5707963267948966
+          }
+        ],
+        "goal": {
+          "x": 4.9,
+          "y": 2.0,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 3.0,
+            "y": 3.5,
+            "width": 0.6,
+            "height": 0.7,
+            "angle": 0.0,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "ca6228916bfa07f641fa193c0a2f510d3b939e652623f6bf5d6b35700c3a6647",
+      "host_annotation": {
+        "straight_corridor_overlap": false,
+        "lateral_separation_margin_m": 0.65,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "north_blocked",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "north",
+      "fixture": {
+        "object": {
+          "x": 2.3,
+          "y": 1.4,
+          "angle": 1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.55,
+            "y": 0.95,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 3.0999999999999996,
+            "y": 2.4,
+            "angle": 3.141592653589793
+          }
+        ],
+        "goal": {
+          "x": 2.3,
+          "y": 4.1,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 2.3,
+            "y": 2.5999999999999996,
+            "width": 0.9,
+            "height": 0.4,
+            "angle": 1.5707963267948966,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "319cb4a3802f955ab019a92bc8cbbff697453e7880696d489c486415f265dd86",
+      "host_annotation": {
+        "straight_corridor_overlap": true,
+        "lateral_separation_margin_m": -0.7,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "north_clear",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "north",
+      "fixture": {
+        "object": {
+          "x": 2.3,
+          "y": 1.4,
+          "angle": 1.5707963267948966
+        },
+        "robots": [
+          {
+            "x": 2.55,
+            "y": 0.95,
+            "angle": 1.5707963267948966
+          },
+          {
+            "x": 3.0999999999999996,
+            "y": 2.4,
+            "angle": 3.141592653589793
+          }
+        ],
+        "goal": {
+          "x": 2.3,
+          "y": 4.1,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 0.7999999999999998,
+            "y": 2.5999999999999996,
+            "width": 0.9,
+            "height": 0.4,
+            "angle": 1.5707963267948966,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "d6731f52c0cfb9acde53c8f722cbf49d1a6474fb301da208b69720338b546994",
+      "host_annotation": {
+        "straight_corridor_overlap": false,
+        "lateral_separation_margin_m": 0.8,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "west_blocked",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "west",
+      "fixture": {
+        "object": {
+          "x": 4.4,
+          "y": 2.5,
+          "angle": 3.141592653589793
+        },
+        "robots": [
+          {
+            "x": 4.8500000000000005,
+            "y": 2.75,
+            "angle": 3.141592653589793
+          },
+          {
+            "x": 3.4000000000000004,
+            "y": 3.3,
+            "angle": 4.71238898038469
+          }
+        ],
+        "goal": {
+          "x": 1.2000000000000002,
+          "y": 2.5000000000000004,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 3.1000000000000005,
+            "y": 2.5,
+            "width": 0.5,
+            "height": 0.95,
+            "angle": 3.141592653589793,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "10dd9004cf02878d04d8233ec1528e5787953bd2125ecc4245e3f30dfb5e2748",
+      "host_annotation": {
+        "straight_corridor_overlap": true,
+        "lateral_separation_margin_m": -0.975,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "west_clear",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "west",
+      "fixture": {
+        "object": {
+          "x": 4.4,
+          "y": 2.5,
+          "angle": 3.141592653589793
+        },
+        "robots": [
+          {
+            "x": 4.8500000000000005,
+            "y": 2.75,
+            "angle": 3.141592653589793
+          },
+          {
+            "x": 3.4000000000000004,
+            "y": 3.3,
+            "angle": 4.71238898038469
+          }
+        ],
+        "goal": {
+          "x": 1.2000000000000002,
+          "y": 2.5000000000000004,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 3.1000000000000005,
+            "y": 1.3,
+            "width": 0.5,
+            "height": 0.95,
+            "angle": 3.141592653589793,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "e85e941a8af60573acb734065f1add0cbd0bda7d948ff264a669aa04caf35c94",
+      "host_annotation": {
+        "straight_corridor_overlap": false,
+        "lateral_separation_margin_m": 0.22499999999999998,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "diagonal_blocked",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "diagonal",
+      "fixture": {
+        "object": {
+          "x": 1.8,
+          "y": 1.5,
+          "angle": 0.7853981633974483
+        },
+        "robots": [
+          {
+            "x": 1.6585786437626906,
+            "y": 1.0050252531694166,
+            "angle": 0.7853981633974483
+          },
+          {
+            "x": 3.0727922061357855,
+            "y": 1.6414213562373092,
+            "angle": 2.356194490192345
+          }
+        ],
+        "goal": {
+          "x": 3.7,
+          "y": 3.4,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 2.8000000000000003,
+            "y": 2.5,
+            "width": 0.9,
+            "height": 0.45,
+            "angle": -0.2,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "530210766eee1215c59e24f5369839836676a8e6c6c17fe0d7713afb96749b7c",
+      "host_annotation": {
+        "straight_corridor_overlap": true,
+        "lateral_separation_margin_m": -0.9993910101432096,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    },
+    {
+      "id": "diagonal_clear",
+      "split": "development",
+      "family": "relation_transfer_clear_transport",
+      "layout": "diagonal",
+      "fixture": {
+        "object": {
+          "x": 1.8,
+          "y": 1.5,
+          "angle": 0.7853981633974483
+        },
+        "robots": [
+          {
+            "x": 1.6585786437626906,
+            "y": 1.0050252531694166,
+            "angle": 0.7853981633974483
+          },
+          {
+            "x": 3.0727922061357855,
+            "y": 1.6414213562373092,
+            "angle": 2.356194490192345
+          }
+        ],
+        "goal": {
+          "x": 3.7,
+          "y": 3.4,
+          "radius": 0.2
+        },
+        "movable_objects": [
+          {
+            "label": "entity-b",
+            "x": 1.739339828220179,
+            "y": 3.5606601717798214,
+            "width": 0.9,
+            "height": 0.45,
+            "angle": -0.2,
+            "mass": 3.0
+          }
+        ],
+        "overrides": {}
+      },
+      "fixture_sha256": "de6c1fae88b519b428ce08d5d800020ae862dedf85e750de66a3eb8f14640daf",
+      "host_annotation": {
+        "straight_corridor_overlap": false,
+        "lateral_separation_margin_m": 0.5006089898567904,
+        "scope": "offline design annotation only; not a policy input or proof that clearing is necessary",
+        "solvability": "unverified",
+        "recommended_action": null
+      }
+    }
+  ],
+  "scope": "Development construction; not a held-out benchmark. Host annotations never enter policy observations."
+}

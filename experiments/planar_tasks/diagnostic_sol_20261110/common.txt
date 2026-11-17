@@ -1,0 +1,42 @@
+Additional preregistered diagnostic brief, shared by both experimental conditions.
+
+This is one centralized shared-sensor program commanding two robot options. The
+three development families are open-space transport, release from near a fixed
+wall followed by transport, and transport around a fixed obstacle. Obstacles are
+not movable. Family names identify development fixtures only; deployment receives
+no family, task identifier, map, or object ground truth. Infer relevant situations
+from legal observations and history. Do not hardcode fixture coordinates.
+
+PUSH already includes local surface selection, approach, coordinated contact and
+push execution. It is not a bare force command. Do not require a separate contact
+acquisition action before every PUSH. Legal action availability is not a promise
+of task progress. The same command continues controller state; option completion,
+failure and pauses must be interpreted through available execution feedback.
+You may use any legal option and autonomous experiment. No rotation, route,
+recovery sequence, contact assignment, or geometric threshold is supplied here.
+
+Account for three task outcomes: transporting the object to a requested region
+and settling there; escaping a wall-constrained configuration sufficiently to
+continue transport; and passing an obstacle with a feasible continuation towards
+the goal. A command being issued, a robot moving, or a local controller completing
+is not by itself evidence that these task outcomes occurred. Estimate effects
+only from the legal sensors/history. Apparent failure can involve geometry
+estimation, robot accessibility, low-level execution, or action-effect prediction.
+
+Development coverage protocol (identical for both conditions): allocate resources
+for a final regression of ONE selected candidate on all nine named development
+fixtures, each using test_policy with max_control_ticks=1800 and max_decisions=1800.
+This costs at most 9 tests, 9 resets and 16200 reserved control ticks within the
+same 20-test/40-reset/36000-tick total. Plan exploration accordingly. You may use
+the remaining budget to revise and retest; report any fixtures not tested with
+the exact submitted package. Never describe tests of old revisions as coverage
+of the submitted program. The final candidate remains your choice, even if it
+fails. Do not run out the budget without submitting.
+
+Submit a short DIAGNOSTIC.json alongside your program, recording your chosen
+architecture, observed development outcomes and unresolved hypotheses. It is an
+author report, not an evaluator. Do not include speculative results as measured.
+If useful, emit compact JSON diagnostic events to stderr on meaningful strategy
+changes (not every physics tick), including decision, mode, reason and estimated
+subgoal. This is optional, has no effect on task scoring, and receives no privileged
+feedback. Do not change the exact action response schema.

@@ -1,0 +1,27 @@
+You author only heuristic.py for a FIXED Option tree-search planner. Read contract.json,
+framework.json, campaign.json, heuristic_api.md and prediction_api.md first.
+Implement evaluate_nodes(context,nodes,memory) and score_actions(context,nodes,memory).
+Each returns one finite number per supplied node, lower is better. Node evaluation
+is an estimated remaining cost (seconds); action scores are priority adjustments
+for exploration only. Neither removes any legal action or changes the environment.
+All legal pairs and integer durations 1..40 remain root candidates. Fixed search
+executes only the first action of the selected path, then replans from real feedback.
+Only heuristic.py may be submitted. Do not write policy.py or edit the search core,
+perception, predictor, budget or control protocol. Generated deployment is centralized.
+Edit experiments/*.py for active validation using client.py and predictor_client.py.
+These scripts are development-only; they cannot be included in submission. Scratch
+notes may use notes/*.txt. run_python executes a script relative to /work; to import
+clients from experiments/ use sys.path.insert(0,'.'). Every real step and prediction
+is budgeted. Tests reserve max_ticks before running; no refund on failure. Prediction
+work, including replayed prefixes, shares the campaign ledger with active probes.
+The predictor uses independent nominal hypotheses, NOT live hidden state. Root
+controller state is cold; do not treat predictions as actual privileged observations.
+Read logs using sensors/decisions/stderr (test) or rpc/stdout/stderr (script); execution
+truth and source snapshots are unavailable. No hidden-state files or host filesystem.
+Use test_policy(files=['heuristic.py'], task=..., max_ticks=...) to test the assembled
+fixed planner. This is the SAME package builder used by submit and final deployment.
+Submit explicitly with files=['heuristic.py']; optional contents maps heuristic.py
+to complete text. No helper modules can be submitted. Stage 2 only allows submit,
+including correction of invalid hook signatures; it does not run new physics.
+Validation checks syntax/loading/signatures only, not task success. Do not assume
+automatic repair, fallback policy selection, extra budget, or automatic retries.

@@ -5,7 +5,7 @@ from dataclasses import replace
 import pytest
 
 from coimagine.continuous2d.scenes import Pose
-from coimagine.random_start import env as E, lidar as L
+from coimagine.random_start import env as E, lidar as L, lidar_service as LS
 from coimagine.random_start.layout import InstanceSpec
 
 
@@ -16,14 +16,14 @@ def world(monkeypatch):
                         robot_poses=(Pose(1.5,2.,0.),Pose(4.,3.5,0.)), goal_centre=(3.,2.))
     env = E.RandomStartEnv(inst, E.EnvConfig(lidar_backend='numpy_batch'))
     counts = {'scan':0, 'patch':0}
-    scan, patches = E.scan_lidar_batch, E.scan_patches
+    scan, patches = LS.scan_lidar_batch, E.scan_patches
     def cast(*a,**kw):
         counts['scan'] += 1
         return scan(*a,**kw)
     def fit(*a,**kw):
         counts['patch'] += 1
         return patches(*a,**kw)
-    monkeypatch.setattr(E,'scan_lidar_batch',cast)
+    monkeypatch.setattr(LS,'scan_lidar_batch',cast)
     monkeypatch.setattr(E,'scan_patches',fit)
     return env,counts
 

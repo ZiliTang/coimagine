@@ -1,0 +1,17 @@
+{
+  "version": "experiment-authoring-v2",
+  "knowledge_release_sha256": "80170ccaa02a133edb280b19469e459555d8aaa9bb4d5f0d7d98ffacbe914471",
+  "files": {
+    "__init__.py": "8f460cb3e4a6986ea381bffb45fff8798f7b03bf3c8c866958375f0dd36821c8",
+    "profile.py": "84fc43a71ea709329817228646356899da421e1376e7255d9206e84a23d117f1",
+    "release.py": "319fda1d06746d7969b5ad6105646e324725546317897c9b6dacfdb3fd38c079",
+    "reports.py": "9206403996f7307a348addeb5960a6464469d18a85cb9e1252991a2a1a6feaa7",
+    "context.py": "531865ff7100e49c14948339a8d65096917028ef1f7868d9afca81a58ed8ceaf",
+    "session.py": "bb49f2c39116eca797245b1332a7feed3dc6b22aa80b889383aeebe7dab5f309",
+    "driver.py": "4d063fd21faf5403ef3f28f38ca2f0048b2e5cdb1aad02d572ebbc86c2637c0b",
+    "batch_client.py": "fc780b231d195d5df57ffe997a6e9c80f6d9242126c571dba2ca87c6dec6a6c1",
+    "experiment_api.md": "2ce842442da89ed82a279557f5504843d013d434870e37dcfe7ae9efa30bd5e8",
+    "README.md": "8f3a1a212a8e1db11fb5fc894938760358fa910f73831a84937b7c2d78edd912"
+  },
+  "tests_sha256": "f7af9e66cb01a44e230ca370e83dc83423d3e8f0301ca05c82d8494c60602d10"
+}

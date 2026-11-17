@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CoImagine · Research Console</title><link rel="stylesheet" href="/console.css"></head>
+<body><header><div><span class="mark"></span><strong>CoImagine</strong><span class="sub">研究测台</span></div><div class="header-right"><span class="badge">只读 · 实验记录</span><button id="refresh">刷新记录</button></div></header>
+<main><aside class="sidebar"><label for="backend">LLM 后端</label><select id="backend"><option value="">全部后端</option></select><div id="runList" class="runs"></div><p class="muted">切换后端只筛选记录。模型、额度和任务配置在实验开始前冻结。</p></aside>
+<section class="content"><div id="notice" role="status">正在读取本机实验记录…</div><div id="empty" hidden>暂无实验。创建或运行实验后点击刷新；测台不会自行启动模型调用。</div><article id="detail" hidden>
+<div class="title-row"><div><span id="kind" class="eyebrow"></span><h1 id="modelName"></h1><p id="runPath" class="muted mono"></p></div><span id="status" class="status"></span></div><p id="scope" class="scope"></p>
+<div class="facts"><div><span>方法版本</span><strong id="version"></strong></div><div><span>当前阶段</span><strong id="stage"></strong></div><div><span>停止原因</span><strong id="stopReason"></strong></div></div>
+<details><summary>冻结配置与来源</summary><pre id="config"></pre></details>
+<section class="card"><h2>额度与用量</h2><p id="accounting" class="muted">实验资源按预留记账；供应商 token 用量单列。</p><div id="reported" class="metrics"></div><p id="finalization" class="scope" hidden></p><div class="table-wrap"><table><thead><tr><th>资源</th><th>已使用 / 预留</th><th>硬限额</th><th>剩余</th></tr></thead><tbody id="budgets"></tbody></table></div></section>
+<section class="card"><div class="section-head"><h2>自主工作流程</h2><button id="moreEvents" hidden>继续加载</button></div><p class="muted">按实际模型调用、工具和脚本实验排列；不把每次调用强行称为一轮优化。</p><div id="timeline" class="timeline"></div></section>
+<section class="card"><h2>策略版本</h2><p class="muted">显示运行 Python、策略测试时保留的 policy.py 快照，以及最终提交。文件相同也保留各自实验关联。</p><div class="selectors"><label>当前版本<select id="versionSelect"></select></label><label>对比版本<select id="compareSelect"></select></label><button id="showDiff">查看差异</button><button id="showCode">查看源码</button></div><p id="policyMeta" class="muted mono"></p><pre id="policyCode" class="code"></pre></section>
+<section class="card"><h2>开发任务与执行回放</h2><p class="muted">含旧 pilot 的 transfer 变体，均属于开发数据；场景真值仅在面向人的回放中显示。</p><div class="table-wrap"><table><thead><tr><th>版本 / 任务</th><th>结果</th><th>终止原因</th><th>仿真秒</th><th>回放</th></tr></thead><tbody id="episodes"></tbody></table></div></section>
+<section class="card evaluation"><h2>冻结后独立评估</h2><p class="muted">只评估最终提交。批次完成前不展示逐题结果；此页面不会向开发模型回传测试反馈。</p><div id="evaluations"></div></section>
+</article></section></main><script src="/console.js"></script></body></html>

@@ -1,0 +1,29 @@
+{
+  "purpose": "infrastructure_smoke",
+  "model": {
+    "provider": "synthetic",
+    "name": "no-model-smoke",
+    "settings": {},
+    "source_access": "hidden",
+    "accounting": "reserved_output_tokens_and_input_bytes"
+  },
+  "development_tasks": ["planar_open_anchor", "planar_wall_anchor", "planar_detour_anchor"],
+  "budget": {
+    "wall_seconds": 60,
+    "tool_calls": 100,
+    "model_calls": 8,
+    "model_input_bytes": 1000000,
+    "model_output_tokens": 8192,
+    "model_call_output_tokens": 1024,
+    "model_call_seconds": 5,
+    "python_call_seconds": 3,
+    "python_total_seconds": 15,
+    "resets": 8,
+    "control_ticks": 100,
+    "policy_tests": 4,
+    "workspace_bytes": 16777216,
+    "output_bytes": 1048576,
+    "episode_wall_seconds": 5,
+    "response_seconds": 1
+  }
+}

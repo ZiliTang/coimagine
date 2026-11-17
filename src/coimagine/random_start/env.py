@@ -28,6 +28,7 @@ import numpy as np
 from ..continuous2d.config import Continuous2DConfig
 from ..continuous2d.environment import Continuous2DEnv
 from . import geometry as G
+from .lidar_service import LidarService
 from .lidar import (
     CATEGORY_NONE,
     CATEGORY_OBJECT,
@@ -36,8 +37,6 @@ from .lidar import (
     LidarScan,
     SurfacePatch,
     best_patch,
-    scan_lidar,
-    scan_lidar_batch,
     scan_patches,
 )
 from .layout import InstanceSpec
@@ -240,7 +239,8 @@ class RandomStartEnv:
         self.anchor_trackers = {0: AnchorTracker(), 1: AnchorTracker()}
         # Single-entry sensor caches per robot. The key includes the requested
         # timestamp and complete ray-casting geometry, not merely the tick.
-        self._scan_cache = {}
+        self.lidar = LidarService()
+        self._scan_cache = self.lidar.analytic_cache
         self._patch_cache = {}
         self._last_anchor = {0: None, 1: None}
         self._hold_time = {0: 0.0, 1: 0.0}
@@ -302,17 +302,10 @@ class RandomStartEnv:
         states = self._legal_robot_states()
         obj = self.object_state()
         pose = (obj.x, obj.y, obj.angle)
-        key = (tick, time, pose, tuple(states), self.instance.arena,
-               self.obstacle_polygons, self.instance.object_polygon, self.config.lidar_backend)
-        previous = self._scan_cache.get(robot_id)
-        if previous is not None and previous[0] == key:
-            return previous[1]
-        scanner=scan_lidar_batch if self.config.lidar_backend=='numpy_batch' else scan_lidar
-        scan = scanner(self.instance.arena, self.obstacle_polygons, pose,
-                       states, robot_id, tick, time,
-                       object_polygon=self.instance.object_polygon)
-        self._scan_cache[robot_id] = (key, scan)
-        return scan
+        return self.lidar.analytic(self.instance.arena, self.obstacle_polygons, pose,
+                                   states, robot_id, tick, time,
+                                   object_polygon=self.instance.object_polygon,
+                                   backend=self.config.lidar_backend)
 
     def observe(self, robot_id: int, tick: int, time: float,
                 contacts: Optional[Dict[str, List[Tuple[str, int, float, float]]]] = None
@@ -1128,7 +1121,7 @@ class RandomStartEnv:
         }
 
     def restore_branch_state(self, state: Dict[str, object], *, allow_execution_change: bool = False) -> None:
-        self._scan_cache.clear()
+        self.lidar.invalidate()
         self._patch_cache.clear()
         if state.get('lidar_backend','scalar') != self.config.lidar_backend and not allow_execution_change:
             raise ValueError('Cannot restore a branch with a different lidar backend')

@@ -1,0 +1,240 @@
+{
+  "date": "2026-11-17",
+  "files": [
+    {
+      "path": "outputs/semantic_rl_authors/rel_transfer_20261117_01/RESULT.json",
+      "sha256": "e18502daa5586889365b857cd63eaa0103361471b561fa155f3b9aefe2da098d"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/rel_transfer_20261117_01/FINISHED.json",
+      "sha256": "2c16643a2037083716d44bc26079f5783a37ad869052a1ef86669e47ab122600"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/rel_transfer_20261117_01/eval_resume.exit.json",
+      "sha256": "52381570db037812e2c141a6b7206efeda2a61024c5c3f76c80cf1e809e00550"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/input_attribution_v2_20261117_01/RESULT.json",
+      "sha256": "d666af2c9eaff14573d09b39e0469f9fd68a429349bb822a0e96d1665a6a9cf8"
+    },
+    {
+      "path": "outputs/semantic_rl/large_coverage_evaluation_20261116_01/campaign.json",
+      "sha256": "37004a1012ff0215fdb9547409632ecd71bbcabef74e22f83fad4fc1b2027345"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_data_20261117_01/extraction.json",
+      "sha256": "250ac8f1e10c87b1c0831f4230da45f16d7159c8e8a44aa4fe0647d4b1e8d997"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/campaign.json",
+      "sha256": "d52dd78dee7cf715228396a583249bb2b448bcaf78a149031d687ba7386ed917"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0480/result.json.gz",
+      "sha256": "04fd777f9b2d3fe442063a39b88edfa3eda94e762428bbf49980cf73a99e6627"
+    },
+    {
+      "path": "outputs/semantic_rl/large_coverage_evaluation_20261116_01/runs/a0446/result.json.gz",
+      "sha256": "7662d9d5110fb165a1af07f59101e72cd050b2a536611f94c9a648ba59a44847"
+    },
+    {
+      "path": "outputs/semantic_rl/large_coverage_evaluation_20261116_01/runs/a1131/result.json.gz",
+      "sha256": "5962992e4b3efccb7e0fd328b22e657b9b9950aa95aa6a163269c56e00de2f6e"
+    },
+    {
+      "path": "outputs/semantic_rl/large_coverage_evaluation_20261116_01/runs/a0699/result.json.gz",
+      "sha256": "d4d5ec0fd8fbce6672881149ddbcc7fdcb4af9893748a45e2c174eec736c5518"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0548/result.json.gz",
+      "sha256": "1551ce956d17a520f7ebc6a61e181daea5d8ea4e3f5ad66ddd5d2f57b26f777d"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0068/result.json.gz",
+      "sha256": "6ead70af312ca63557cb9cb2b377b331e6809212c444b6ecdd0d856f71a06de8"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_parent_20261117_01/panels/roots.json",
+      "sha256": "893ba2c03e84121963ece570a8b61861fb3c35c5dc74d02ed2f6d37b1be79726"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0481/result.json.gz",
+      "sha256": "26bf1058ca3163d39c4e6e54833a1f464ae5e9b33cfcf6ac7bd8302b2f7fea35"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0482/result.json.gz",
+      "sha256": "8f850f48617ccddc4987ed10d0b70eb154a86b6a0173ff73b9c88de74da60e69"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0483/result.json.gz",
+      "sha256": "1f6c47813457856a384eb33183db5d16fa8704c6d3b61bd6f51d6fa73df197bd"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0484/result.json.gz",
+      "sha256": "c8e31e2aecbd6363807380b512b2d348b948a3e6b30dae9a015299808ab35391"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0485/result.json.gz",
+      "sha256": "06046262992934a73677c9a24db90488b39dad6c7fad05b81109d6aa6a403e9f"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0486/result.json.gz",
+      "sha256": "77bb3e68623f3e818f83d39867c7f0b168c8acaef4a41468ad7038762dddf76f"
+    },
+    {
+      "path": "outputs/semantic_rl/rel_transfer_evaluation_20261117_02/runs/a0487/result.json.gz",
+      "sha256": "e5e37bf7bc2b94fc1baa8743837a83132ea2a5f8942837f36baf0c7abc1c7794"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Independent_Predictor_20261110.md",
+      "title": "预测工具使用审计",
+      "sha256": "7d7d778e04bb1cf3ff7881eb8ba43d435800bc203995a97b49c5beca1c0335da"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Option_Search_Failure_Analysis_20261110.md",
+      "title": "结构化搜索诊断",
+      "sha256": "a45003bac8516ea0eed6b2868769b562ba39d147c3c2e32dc51e0d0ac40c3d9f"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Authoring_V2_Sol_Generalization_20261111.md",
+      "title": "CAP三锚点与泛化",
+      "sha256": "8a70b1b6429d54a80f091836da3ec459345133473ae5280d99b0988b6d2e756d"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Duration_Stream_PPO_Final_20261115.md",
+      "title": "完整动作PPO",
+      "sha256": "13143c046c421872fd408e91e800c103910bdefce39977b5c9a6d27221828ec7"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Bounded_Direction_Long_Final_20261116.md",
+      "title": "有限参数长训PPO",
+      "sha256": "cacdcbd180d2283fa2affc15c3e25799131910877d0cd1fb860cf8610928db2c"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/CAP_Large_Coverage_20261116.md",
+      "title": "扩大示范覆盖",
+      "sha256": "c46004a4deef57f1a208a06cf68a57f02fb71ab571a252642fc876874d7fbfaf"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/CAP_Input_Attribution_Repair_20261117.md",
+      "title": "输入归因与编码修复",
+      "sha256": "f9127fc4e5b81cf079a82d56b587e806653a4b82bde5b69ffd3762683dec9699"
+    },
+    {
+      "path": "docs/research/Relational_Transfer_Task_Suite_v1_20261117.md",
+      "title": "关系迁移任务",
+      "sha256": "ac0b38c2e16befb28c1b34e5c3ab28ef7c8c8b8534c4b19b11ccf343a5b4add5"
+    },
+    {
+      "path": "docs/agent_exchange/tasks/Relational_Transfer_CAP_20261117.md",
+      "title": "本轮预定协议与恢复账本",
+      "sha256": "2dcd87494813e46232b4ae330cc16daf066c93acd2f5b47820ab6144680d9f96"
+    },
+    {
+      "path": "docs/research/CAP_Semantic_Handoff_Research_Plan_v4_20261116.md",
+      "title": "研究主张v4",
+      "sha256": "ed3aaae646a970b311d017f81d5acb08435746ba537e5c5faae39fe235f4da82"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Relational_Transfer_Attribution_20261117.md",
+      "title": "最新关系迁移完整结果",
+      "sha256": "41c4916ced1ea91f13cfa9abc818551f47acbd9a77e45f5478c4cbcc2dc6d65d"
+    },
+    {
+      "path": "outputs/testbed/runs/20261117_030148_aa88db.json",
+      "sha256": "04c40029457f16d61a11eea63d1432fb9ec6f790d4bb5ff22c9a22cb2340430b"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_20261117_01/RESULT.json",
+      "title": "首次随机房间：机器可读完整结果",
+      "sha256": "84e6a8541844ab92e4bb4b3fdaf47c25fd85c975b071de9852e1eb67c3e788b6"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/COLLECTION_ANALYSIS.json",
+      "sha256": "a86fc5d929c3e7d1ba35e5022566051501415ed64dd6ef7cb875be9d630962c8"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/DIAGNOSTIC_ANALYSIS.json",
+      "sha256": "21a745a5568c5189794c68776a99663f338b06534bf44ff17dd819cac67eb59a"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/REPAIR_ANALYSIS.json",
+      "title": "真实接管修复：330分支统计",
+      "sha256": "4ad9ce2ca2a53fe04900d2e93a6d6e06867e6341c13baf98447b8fa2167ee84a"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/REPAIR_COHORT_BASELINE.json",
+      "sha256": "542b9783c6f27a7dd78641b0bfe0380bd5fbc92f1d8ea17c220c588a55837740"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/FIT_BY_SOURCE.json",
+      "title": "当前九模型：训练动作拟合",
+      "sha256": "8e5c172e0cf5c6b7aa68b6be67cdf72dba3e1ee806c03a97854d70166b7c156d"
+    },
+    {
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/progress.json",
+      "sha256": "97cb5cc0ae7677797a67a2e218fc94440fbdf45a1bb485a628ec7e8536520ccb"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/expanded_training_rollouts/result.json",
+      "sha256": "2301af64b0e4cb6fae81e1d4b07e34bb4195db120d73e3c5fcb5d56ba6f4b83e"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/data_repaired/selected.json",
+      "sha256": "9224011336ad5099b3a1bb1585a04568126f8af3cc68dae85e1d686b035b5522"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/CAP-RR-003/test_2_45/result.json.gz",
+      "sha256": "dabb8cc6b582f66b7a191a8d18747267dedc7dfac56b2edbfa8082bd07a44b57"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/GDA/test_2_45/result.json.gz",
+      "sha256": "2a58bc1dd303ec227d6d3e32dc696c1a364b268678ce7a8e4cdecc2e617c94bb"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/repair/runs/CAP-RR-009/repairdev_2_008__cut002/summary.json",
+      "sha256": "8d781606773452b4d173994dcfee65263bfd9dcea5f2677b497609a95157eb7c"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/repair/selection.json",
+      "sha256": "a6076b4095948c0ca02ea9db9cf404c5efbf94c70e084e3726174b6537b0bb8b"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/expanded_repair_rollouts/runs/expanded_GDA/repairdev_2_008/result.json.gz",
+      "sha256": "3019403f1a552844bf80a29a1a55fb630d2bd569c59e2fbc9315d6c203f79101"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_coverage_20261117_02/repair/runs/CAP-RR-009/repairdev_2_008__cut002/result.json.gz",
+      "sha256": "b8cd0a1b147291ee6155678fc5ec899a5c394bfcd4574826f8367fed7d6e066a"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/G/dev_2_09/result.json.gz",
+      "sha256": "3f85f39e2428affec0be8467d25d7ae49e1e6705ea8a266d69dc881ea954103f"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/G/dev_3_01/result.json.gz",
+      "sha256": "06bd70ae463fd1803443b91ee03965853f74e18a77d2c5a381ec65fff7c71259"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/G/dev_4_02/result.json.gz",
+      "sha256": "66c2637e23b85212ee325919a5823fd021b58b7382db22dc81710abd67024c7d"
+    },
+    {
+      "path": "outputs/semantic_rl/random_room_integration_20261117_01/evaluation/runs/G/dev_5_02/result.json.gz",
+      "sha256": "a01a7ec5b0d24c5ce95b87f38ce8da39f1aa71df6859a9c8fb73c79f49ead25e"
+    },
+    {
+      "path": "docs/agent_exchange/reviews/Random_Room_CAP_Integration_20261117.md",
+      "title": "随机房间：10 CAP 与首次监督整合",
+      "sha256": "e48af64ed1a42d7ab7646886373a888e4d46f00c81c48f31586ab70416d9631d"
+    },
+    {
+      "path": "docs/agent_exchange/tasks/Random_Room_Coverage_Repair_20261117.md",
+      "title": "扩覆盖与真实接管：预定协议及修订",
+      "sha256": "bf55a868a031020f2649d63cd214477ecfa0c707a8fc82b7755b028b8b5e78bf"
+    }
+  ],
+  "report_sha256": "4e4f119c414418e810c3d7757fc4e3d62078bb1c5f3c95ea2d043a98d7532ed7",
+  "visualization": "existing privileged replay, decimated to 10Hz plus option boundaries; rounded to 1e-6 for display only",
+  "selection": "illustrative outcome-selected cases; aggregate results include all specified cases; no new physics/fit/model calls"
+}

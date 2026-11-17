@@ -66,6 +66,7 @@ class ContinuousPush(P.EffectPushSkill):
             self.normal_progress_marker = self.normal_travel
             self._mark_progress()
         raw = (0.0, 0.0)
+        radial = 0.0  # No normal command when no face or no driving stage is available.
         if face is None:
             if self.face is None:
                 _, unavailable = availability(observation, self.action, self.config)

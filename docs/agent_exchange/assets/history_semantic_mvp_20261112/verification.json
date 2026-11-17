@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "tests": 45,
+  "test_seconds": 35.84,
+  "command": "PYTHONPATH=. .venv/bin/python -m pytest tests/test_semantic_planning.py tests/test_option_search_v3.py tests/test_authoring_v2.py",
+  "physical_evidence": "outputs/semantic_planning/smoke_20261112_01",
+  "head": "0dc6568c7324b043dca63067d45735ff555b639e",
+  "files_sha256": {
+    "experiments/planar_tasks/semantic_planning/__main__.py": "d6a21b77740a0d5639063e36008310873d9e8926202a9188308c0da4fccfce2f",
+    "experiments/planar_tasks/semantic_planning/runtime.py": "b717a58272c97c0032c3a98d90dc79b71d32e1fa823c8512193403452b2b0dc9",
+    "experiments/planar_tasks/semantic_planning/reference.py": "efc718cf40ca7a37b7a4b0d7d171be2eca4e8187e73acee0294faefa75adc333",
+    "experiments/planar_tasks/semantic_planning/smoke.py": "6a00721a369e0d44a139fdc6414d5da909cb9928339a459bc472cc98d18b1b15",
+    "experiments/planar_tasks/semantic_planning/__init__.py": "6c2331651cbbdc7d623507d9deec324fea54d8ae8cd3f170567aadb7933d2185",
+    "experiments/planar_tasks/semantic_planning/artifact.py": "ae65a341cd5eda04da118267b407c39e4aae438735db7438f17c941a9902d72e",
+    "experiments/planar_tasks/semantic_planning/session.py": "8c04bdfbc0c1cae8ab7356301aaad425029d8a0d0c068463867df9ed5ce5eed9",
+    "tests/test_semantic_planning.py": "081badb6075782fb6301daa4c1d03467b71d1ea6482ed6697a5a37d8e69572c4",
+    "docs/research/History_Semantic_Planning_v0_20261112.md": "bb29567bef7c7571f49ae32faee425b40152662363dd1a04998e89e562834808",
+    "docs/agent_exchange/reviews/History_Semantic_Planning_MVP_20261112.md": "02522c32cf6de5335a2d7c5972619d761a6f2e5524ef8f090f3bc1c4aaa8ace5",
+    "experiments/planar_tasks/semantic_planning/README.md": "65f5353c4bcb4b87da09884f5726d594ac2d0e8d184ba400323be353a6592c99"
+  }
+}

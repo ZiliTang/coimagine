@@ -1,7 +1,7 @@
 """D006 local testbed server: static UI + thin API over D005 TestbedSession."""
 from __future__ import annotations
 import argparse, json, math, sys, time, uuid, os, hashlib, threading
-from dataclasses import replace
+from dataclasses import asdict, replace
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -31,9 +31,22 @@ from experiments.option_rl_v19.session import (
 from experiments.option_rl_v21.session import TestbedSession
 from experiments.option_rl_v21 import spec as S
 from experiments.option_rl_v21.review_cases import review_scenes, review_presets
+from experiments.planar_tasks.tasks import testbed_scenes, geometry_audit as planar_geometry_audit
+
+from experiments.planar_tasks.relational_search import testbed as RT
+from experiments.planar_tasks.relational_search import motion as M
+from experiments.planar_tasks.relational_search import transfer_tasks as TRANSFER
 
 SERVER_STARTED_AT = time.time()
 _RUNTIME_SOURCE_FILES = (
+    'experiments/planar_tasks/relational_search/transfer_tasks.py',
+    'experiments/planar_tasks/fixtures/relational_transfer_v1.json',
+    'experiments/planar_tasks/relational_search/testbed.py',
+    'experiments/planar_tasks/relational_search/environment.py',
+    'experiments/planar_tasks/relational_search/motion.py',
+    'experiments/planar_tasks/relational_search/contract.py',
+    'experiments/planar_tasks/relational_search/target_binding.py',
+    'experiments/planar_tasks/tasks.py',
     'docs/agent_exchange/state/testbed_panel.json',
     'experiments/option_rl_v21/spec.py',
     'experiments/option_rl_v21/system.py',
@@ -67,6 +80,7 @@ def _server_status():
                           for name, digest in _LOADED_RUNTIME_HASHES.items())
     return dict(pid=os.getpid(), started_at=SERVER_STARTED_AT, controller_version='option-v2',
                 action_version=S.VERSION, action_codebook_hash=S.CODEBOOK_HASH,
+                controllers=['option-v2', RT.CONTROLLER], relational_action_version=M.VERSION,
                 push_speeds=S.PUSH_SPEEDS, reposition_speed=S.REPOSITION_SPEED,
                 support_memory_enabled=False, q_acquisition_mode='current_visible_support',
                 controller_source_sha256=CONTROLLER_SOURCE_SHA256,
@@ -101,16 +115,26 @@ def _load_scenes():
     return out
 
 
-SCENES = {**_load_scenes(), **review_scenes()}
+SCENES = {**_load_scenes(), **review_scenes(), **testbed_scenes(), RT.SCENE_ID: RT.scene()}
 
 
-def _scene_dict(inst):
-    return dict(id=inst.name, name=inst.name, arena=list(inst.arena),
+def _scene_dict(inst, boxes=None):
+    if boxes is None: boxes=RT.parse_boxes(RT.default_boxes()) if inst.name==RT.SCENE_ID else ()
+    data = dict(id=inst.name, name=inst.name, arena=list(inst.arena),
+                obstacles=[dict(cx=b.cx, cy=b.cy, half_w=b.half_w, half_h=b.half_h, angle=b.angle)
+                           for b in inst.obstacles],
                 goal=dict(x=inst.goal_centre[0], y=inst.goal_centre[1], radius=inst.goal_radius),
                 object_size=[R.OBJECT_WIDTH, R.OBJECT_HEIGHT], robot_radius=R.ROBOT_RADIUS,
                 object_polygon=(None if getattr(inst, 'object_polygon', None) is None else [list(v) for v in inst.object_polygon]),
                 initial=dict(object=dict(x=inst.object_pose.x, y=inst.object_pose.y, angle=inst.object_pose.angle),
                              robots=[dict(x=p.x, y=p.y, angle=p.angle) for p in inst.robot_poses]))
+    data['primary_id']=RT.PRIMARY_ID
+    data['initial']['movable_objects']=[asdict(b) for b in boxes]
+    data['movable_objects']=[asdict(b) for b in boxes]
+    if inst.name==RT.SCENE_ID:
+        data['task_brief']='将 A 运入目标区。B 位于直线路线上，可尝试先向上移开 B，再运输 A；也允许编辑序列比较绕行。'
+        data['observation_note']='全场景用于人工编辑/回放；控制器仅使用局部扫描与反馈。'
+    return data
 
 
 def _auto_description(seq, created=None):
@@ -121,9 +145,9 @@ def _auto_description(seq, created=None):
             parts=[]
             if seg.get('budget_m') is not None: parts.append(f"{float(seg['budget_m']):.2f}m {seg.get('progress','object_normal')}")
             if seg.get('time_budget_s') is not None: parts.append(f"{float(seg['time_budget_s']):.1f}s")
-            labels.append(f"{S.SPEC_BY_INDEX[a0].label}/{S.SPEC_BY_INDEX[a1].label} {'/'.join(parts)}")
+            labels.append(f"{M.SPEC_BY_INDEX[a0].label}/{M.SPEC_BY_INDEX[a1].label} {'/'.join(parts)}")
         else:
-            labels.append(f"{S.SPEC_BY_INDEX[a0].label}/{S.SPEC_BY_INDEX[a1].label} "
+            labels.append(f"{M.SPEC_BY_INDEX[a0].label}/{M.SPEC_BY_INDEX[a1].label} "
                           f"{int(seg.get('decisions', 1)) * 0.2:.1f}s")
     summary = ' ; '.join(labels) if labels else 'empty sequence'
     ts = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(created if created else time.time()))
@@ -153,13 +177,39 @@ def _seed_presets():
             robots=meta['initial']['robots'], sequence=sequence, overrides={}, scene_meta=meta), indent=1))
 
 
+    path=PRESETS/f'{RT.PRESET_ID}.json'
+    if not path.exists():
+        meta=_scene_dict(SCENES[RT.SCENE_ID]);sequence=RT.default_sequence()
+        path.write_text(json.dumps(dict(id=RT.PRESET_ID,name='清障运输 · 先移 B，再运 A',
+            created=now,scene=RT.SCENE_ID,base_scene=RT.SCENE_ID,
+            object=meta['initial']['object'],robots=meta['initial']['robots'],
+            movable_objects=meta['movable_objects'],sequence=sequence,overrides={},
+            controller_version=RT.CONTROLLER,action_version=M.VERSION,scene_meta=meta),indent=1))
+
+    for case in TRANSFER.cases():
+        pid=TRANSFER.preset_id(case);path=PRESETS/f'{pid}.json'
+        if path.exists():continue
+        f=case['fixture']
+        inst=_scene_instance(RT.SCENE_ID,f['object'],f['robots'],f['goal'])
+        boxes=RT.parse_boxes(f['movable_objects']);RT.validate_geometry(inst,boxes)
+        path.write_text(json.dumps(dict(id=pid,name=TRANSFER.title(case),created=now,
+            scene=RT.SCENE_ID,base_scene=RT.SCENE_ID,object=f['object'],robots=f['robots'],
+            goal=f['goal'],movable_objects=f['movable_objects'],overrides=f['overrides'],
+            sequence=TRANSFER.preview_sequence(),controller_version=RT.CONTROLLER,
+            action_version=M.VERSION,action_codebook_hash=M.CODEBOOK_HASH,
+            scene_meta=_scene_dict(inst,boxes),suite=TRANSFER.VERSION,case_id=case['id'],
+            fixture_sha256=case['fixture_sha256'],sequence_scope='0.2 s brake preview only; not a solution'),indent=1))
+
+
 def _read_csv(path):
     import csv
     with Path(path).open() as f:
         return list(csv.DictReader(f))
 
 
-def _option_list():
+def _option_list(relational=False):
+    if relational:
+        return [dict(key=M.SPEC_BY_INDEX[a.index].key,label=a.label,family=M.SPEC_BY_INDEX[a.index].family,action_index=a.index) for a in M.ACTIVE_ACTIONS]
     return [dict(key=s.key, label=s.label, family=s.family, action_index=s.action_index)
             for s in S.ACTIVE_SPECS]
 
@@ -197,7 +247,15 @@ def _scene_instance(scene_id, object_pose, robots, goal=None):
         kwargs['goal_centre'] = (float(goal['x']), float(goal['y']))
         if goal.get('radius') is not None:
             kwargs['goal_radius'] = float(goal['radius'])
-    return replace(base, **kwargs)
+    inst = replace(base, **kwargs)
+    values=[obj.x,obj.y,obj.angle,*[v for r in rs for v in (r.x,r.y,r.angle)],*inst.goal_centre,inst.goal_radius]
+    if not all(math.isfinite(v) for v in values) or inst.goal_radius<=0:
+        raise ValueError('finite poses and positive goal radius required')
+    if scene_id.startswith('planar_'):
+        audit = planar_geometry_audit(inst)
+        if not audit['legal']:
+            raise ValueError('illegal planar scene: ' + ', '.join(audit['reasons']))
+    return inst
 
 
 def _validate_sequence(seq):
@@ -223,29 +281,43 @@ def _validate_sequence(seq):
                 raise ValueError('time_budget_s must be positive')
 
 
+def _relational(body):
+    return body.get('controller_version')==RT.CONTROLLER or body.get('scene')==RT.SCENE_ID or bool(body.get('movable_objects'))
+
+
+def _boxes(body):
+    return RT.parse_boxes(body.get('movable_objects',RT.default_boxes() if body.get('scene')==RT.SCENE_ID else []))
+
+
 def _preset_save(body):
     scene = body.get('scene')
-    controller_version = 'option-v2'
+    relational=_relational(body)
+    spec=M if relational else S
     if scene not in SCENES:
         raise ValueError('unknown scene')
     obj = body.get('object') or {}
     robots = body.get('robots') or []
     inst = _scene_instance(scene, obj, robots, body.get('goal'))
-    seq = S.canonical_sequence(body.get('sequence') or [])
-    _validate_sequence(seq)
+    boxes=_boxes(body) if relational else ()
+    if relational:
+        RT.validate_geometry(inst,boxes)
+        seq=RT.normalize_sequence(body.get('sequence'),{RT.PRIMARY_ID,*[b.label for b in boxes]})
+    else:
+        seq=S.canonical_sequence(body.get('sequence') or []);_validate_sequence(seq)
     now = time.time()
     name = str(body.get('name') or '').strip()
     if not name:
         name = f"{scene}_{time.strftime('%Y%m%d_%H%M%S', time.localtime(now))}"
     pid = time.strftime('%Y%m%d_%H%M%S', time.localtime(now)) + '_' + uuid.uuid4().hex[:6]
     normalized = [dict(a0=int(s['a0']), a1=int(s['a1']), decisions=int(s.get('decisions', 1)), **({'budget_m': float(s['budget_m']), 'progress': s.get('progress','object_normal')} if s.get('budget_m') is not None else {}), **({'time_budget_s': float(s['time_budget_s'])} if s.get('time_budget_s') is not None else {})) for s in seq]
+    if relational: normalized=seq
     data = dict(id=pid, name=name, description=_auto_description(normalized, now),
                 created=now, scene=scene, base_scene=scene,
                 object=dict(x=inst.object_pose.x, y=inst.object_pose.y, angle=inst.object_pose.angle),
                 robots=[dict(x=p.x, y=p.y, angle=p.angle) for p in inst.robot_poses],
-                sequence=normalized, overrides=body.get('overrides') or {}, controller_version='m3b',
-                action_version=S.VERSION, action_codebook_hash=S.CODEBOOK_HASH,
-                scene_meta=_scene_dict(inst))
+                sequence=normalized, overrides=body.get('overrides') or {}, controller_version=RT.CONTROLLER if relational else 'm3b',
+                action_version=spec.VERSION, action_codebook_hash=spec.CODEBOOK_HASH,
+                movable_objects=[asdict(b) for b in boxes],scene_meta=_scene_dict(inst,boxes))
     PRESETS.mkdir(parents=True, exist_ok=True)
     (PRESETS / f'{pid}.json').write_text(json.dumps(data, indent=1))
     return data
@@ -261,7 +333,7 @@ def _preset_list():
             out.append(dict(id=r.get('id', p.stem), name=r.get('name', p.stem),
                             description=_auto_description(seq, r.get('created')),
                             scene=r.get('scene'), base_scene=r.get('base_scene', r.get('scene')),
-                            created=r.get('created'), sequence_len=len(seq), controller_version='m3b'))
+                            created=r.get('created'), sequence_len=len(seq), controller_version=RT.CONTROLLER if _relational(r) else 'm3b'))
         except Exception:
             continue
     return out
@@ -272,8 +344,12 @@ def _preset_get(pid):
     if not p.exists():
         raise FileNotFoundError('preset not found')
     r = json.loads(p.read_text())
-    r['sequence'] = S.canonical_sequence(r.get('sequence', []))
-    r['action_version'] = S.VERSION
+    if _relational(r):
+        r['sequence']=[dict(s,a0=M.canonical_index(s['a0']),a1=M.canonical_index(s['a1'])) for s in r.get('sequence',[])]
+        r['action_version']=M.VERSION;r['controller_version']=RT.CONTROLLER
+    else:
+        r['sequence'] = S.canonical_sequence(r.get('sequence', []))
+        r['action_version'] = S.VERSION
     if not r.get('scene_meta') and r.get('scene') in SCENES:
         r['scene_meta'] = _scene_dict(SCENES[r['scene']])
     r['description'] = _auto_description(r.get('sequence', []), r.get('created'))
@@ -291,6 +367,7 @@ def _preset_delete(pid):
 def _run(body):
     if _server_status()['restart_required']:
         raise ValueError('Controller source changed; restart testbed before running the new version.')
+    if _relational(body):return _run_relational(body)
     seq = S.canonical_sequence(body.get('sequence') or [])
     _validate_sequence(seq)
     inst = _scene_instance(body.get('scene'), body.get('object') or {}, body.get('robots') or [], body.get('goal'))
@@ -307,6 +384,11 @@ def _run(body):
                overrides=body.get('overrides') or {}, controller_version=controller_version,
                scene_meta=_scene_dict(inst),
                created=time.time())
+    return _persist_run(res)
+
+
+def _persist_run(res):
+    rid=res['id']
     RUNS.mkdir(parents=True, exist_ok=True)
     path = RUNS / f'{rid}.json'
     temp = RUNS / f'.{rid}.tmp'
@@ -317,6 +399,20 @@ def _run(body):
         temp.unlink(missing_ok=True)
     _index_run(path, res)
     return res
+
+
+def _run_relational(body):
+    inst=_scene_instance(body.get('scene'),body.get('object') or {},body.get('robots') or [],body.get('goal'))
+    boxes=_boxes(body);RT.validate_geometry(inst,boxes)
+    sequence=RT.normalize_sequence(body.get('sequence'),{RT.PRIMARY_ID,*[b.label for b in boxes]})
+    res=RT.run_sequence(inst,boxes,sequence,body.get('overrides') or {})
+    rid=time.strftime('%Y%m%d_%H%M%S')+'_'+uuid.uuid4().hex[:6]
+    res.update(id=rid,name=body.get('name') or rid,scene=inst.name,created=time.time(),
+        runtime_source_sha256=RUNTIME_SOURCE_SHA256,controller_source_sha256=CONTROLLER_SOURCE_SHA256,
+        object=dict(x=inst.object_pose.x,y=inst.object_pose.y,angle=inst.object_pose.angle),
+        robots=[dict(x=p.x,y=p.y,angle=p.angle) for p in inst.robot_poses],movable_objects=[asdict(b) for b in boxes],
+        overrides=body.get('overrides') or {},scene_meta=_scene_dict(inst,boxes))
+    return _persist_run(res)
 
 
 def _run_summary(run, stem):
@@ -437,7 +533,7 @@ class Handler(SimpleHTTPRequestHandler):
         if path == '/api/status':
             return self._send(200, _server_status())
         if path == '/api/options':
-            return self._send(200, OPTIONS)
+            return self._send(200, _option_list(relational=True) if 'controller=relational' in urlparse(self.path).query else OPTIONS)
         if path == '/api/params':
             return self._send(200, PARAMS)
         if path == '/api/runs':

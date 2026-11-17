@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CoImagine · Option Testbed</title>
+<title>CoImagine · Simulation Workbench</title>
 <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 <header>
-  <div class="brand"><span class="mark"></span>CoImagine <small>option testbed</small></div>
+  <div class="brand"><span class="mark"></span>CoImagine <small>simulation workbench</small></div>
   <div class="header-controls">
     <span id="presetLabel" class="preset-label">Unsaved</span>
     <button id="resetPoses" class="ghost">Reset poses</button>
-    <label class="small">controller <select id="controllerVersion"><option value="option-v2">option V2</option></select></label>
+    <label class="small">controller <select id="controllerVersion"><option value="option-v2">单物体 V2</option><option value="relational-v2">多物体 + MOVE</option></select></label>
     <span id="serverVersion" class="hint" title="Loaded controller version">version…</span>
     <button id="runBtn" class="primary">Run sequence</button>
     <span id="status" class="status"></span>
@@ -21,12 +21,21 @@
 <main>
   <section class="left">
     <div class="card scene-card">
-      <div class="card-head"><span>Scene</span><span class="hint">drag object or robots</span></div>
-      <canvas id="sceneCanvas" width="900" height="340"></canvas>
-      <div id="estimateWindow" class="estimate-window">
-        <canvas id="estimateCanvas" width="260" height="210"></canvas>
+      <div class="card-head"><span>Scene</span><span class="hint">拖动物体、机器人或目标区</span></div>
+      <div id="sceneBrief" class="hint scene-brief"></div>
+      <div class="scene-layout" id="sceneLayout">
+        <div class="scene-workspace">
+          <canvas id="sceneCanvas" width="900" height="340" aria-label="Workspace; drag the object or robots to edit their poses"></canvas>
+        </div>
+        <div id="estimateWindow" class="estimate-window">
+          <div id="estimateTitle" class="scene-subhead">Local estimate</div>
+          <canvas id="estimateCanvas" width="260" height="210" aria-label="Local contact and motion estimate"></canvas>
+        </div>
+        <div class="scene-debug">
+          <div class="scene-subhead">Execution feedback</div>
+          <div id="m3bDebug" class="m3b-debug" tabindex="0">m3b debug: run a sequence</div>
+        </div>
       </div>
-      <div id="m3bDebug" class="m3b-debug">m3b debug: run a sequence</div>
       <div class="view-controls">
         <span>view</span>
         <label><input id="viewLidar" type="checkbox"> lidar</label>
@@ -35,6 +44,13 @@
         <label><input id="viewContact" type="checkbox"> contact</label>
         <label><input id="viewYield" type="checkbox" checked> yield / direction</label>
         <label><input id="viewEstimate" type="checkbox" checked> est. window</label>
+      </div>
+      <div class="pose-editor">
+        <label>编辑位置<select id="poseBody"></select></label>
+        <label>x (m)<input id="poseX" type="number" step="0.05"></label>
+        <label>y (m)<input id="poseY" type="number" step="0.05"></label>
+        <label>角度 (°)<input id="poseAngle" type="number" step="5"></label>
+        <button id="applyPose">应用</button>
       </div>
     </div>
     <div class="card playback">
@@ -57,21 +73,23 @@
         <canvas id="timelineCanvas" width="900" height="260"></canvas>
         <div id="timelineTip" class="timeline-tip"></div>
       </div>
-      <div class="timeline-note">contact = physical tick-start sensor (legacy runs fall back to recorded flags) · joint_active = coordinator flag · phase = before control · geometry = post-step</div>
+      <div class="timeline-note">contact = physical tick-start sensor (legacy runs fall back to recorded flags) · joint_active = coordinator flag · phase = before control · geometry = post-step; 多物体回放的扫描/接触也为 post-step</div>
       <div id="legend" class="legend"></div>
-    </div>
     </div>
   </section>
   <aside class="right">
     <div class="card">
       <div class="card-head"><span>Option sequence</span><span id="seqMeta" class="hint"></span></div>
       <div class="segment-form">
+        <label id="targetLabel">操作对象<select id="targetId"></select></label>
         <label>R0<select id="option0"></select></label>
         <label>R1<select id="option1"></select></label>
-        <label>sec<input id="duration" type="number" min="0.2" max="10" step="0.2" value="1"></label>
+        <label>sec<input id="duration" type="number" min="0.2" max="40" step="0.2" value="1"></label>
         <button id="addSegment" class="primary small">Add</button>
+        <button id="cancelEdit" class="ghost small" hidden>取消编辑</button>
         <button id="clearSequence" class="ghost small">Clear</button>
       </div>
+      <div id="sequenceHint" class="hint scene-brief"></div>
       <div id="sequenceList" class="sequence-list"></div>
     </div>
     <div class="card">

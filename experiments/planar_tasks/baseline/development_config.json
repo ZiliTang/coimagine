@@ -1,0 +1,51 @@
+{
+  "purpose": "development",
+  "model": {
+    "provider": "deepseek",
+    "name": "deepseek-flash",
+    "settings": {
+      "temperature": 0,
+      "thinking": {
+        "type": "disabled"
+      }
+    },
+    "source_access": "hidden",
+    "accounting": "reserved_output_tokens_and_input_bytes"
+  },
+  "development_tasks": [
+    "planar_detour_anchor",
+    "planar_detour_mirror",
+    "planar_detour_shift",
+    "planar_open_anchor",
+    "planar_open_mirror",
+    "planar_open_shift",
+    "planar_wall_anchor",
+    "planar_wall_mirror",
+    "planar_wall_shift"
+  ],
+  "budget": {
+    "wall_seconds": 1800,
+    "tool_calls": 2000,
+    "model_calls": 40,
+    "model_input_bytes": 33554432,
+    "model_output_tokens": 327680,
+    "model_call_output_tokens": 8192,
+    "model_call_seconds": 120,
+    "python_call_seconds": 60,
+    "python_total_seconds": 900,
+    "resets": 40,
+    "control_ticks": 36000,
+    "policy_tests": 20,
+    "workspace_bytes": 16777216,
+    "output_bytes": 1048576,
+    "episode_wall_seconds": 120,
+    "response_seconds": 5
+  },
+  "finalization": {
+    "model_calls": 2,
+    "model_input_bytes": 4194304,
+    "model_output_tokens": 16384,
+    "tool_calls": 12,
+    "wall_seconds": 180
+  }
+}

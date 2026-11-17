@@ -1,0 +1,32 @@
+Experimental condition: CAP with explicit task-effect modules.
+Organize one centralized program around reusable closed-loop task-effect modules.
+Do not make 'establish contact' a stand-alone mandatory macro: PUSH already handles
+local contact acquisition. Instead implement these parameterized responsibilities:
+
+1. TransportSegment: move the object towards an estimated local target/region,
+   handling the joint option choices, progress monitoring and bounded recovery
+   needed for that segment. It can serve free-space transport and individual legs
+   of an obstacle bypass. Support final arrival and settling as part of this module
+   or a closely associated terminal phase, rather than equating distance alone
+   with the public success rule.
+2. ReleaseForTransport: change a wall-constrained configuration into one from which
+   a requested transport segment can proceed. Infer constraint and release from
+   legal sensing and observed effects. Rotation is one possible means, not a
+   mandatory solution or sufficient evidence of release. The exit contract must
+   address the next transport segment, not just an angle change or robot contact.
+3. BypassObstacle: choose and follow a sequence of local transport targets around
+   an observed fixed obstruction, accounting for the manipulated object's extent
+   and robot execution access. Reuse TransportSegment where appropriate and verify
+   the passage and handoff to the goal segment. A point path existing is not by
+   itself a completed bypass. Select your own map representation and route method.
+
+A supervisor selects/re-enters these modules from observations and history, never
+from a task/family ID. Modules may be nested or combined where justified. Keep
+their responsibilities inspectable in the submitted source and DIAGNOSTIC.json.
+For each module define: observable entry conditions; parameters/local objective;
+within-module state; a policy producing legal joint options; observed progress;
+success/handoff conditions; and bounded failure/abort conditions. On failure return
+an explicit reason to the supervisor rather than silently declaring completion.
+Choose all numerical thresholds, action sequences and recovery behaviors yourself
+using the same development budget. This is a researcher's architecture prompt,
+not a supplied controller implementation, experience library or world model.

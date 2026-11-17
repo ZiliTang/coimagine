@@ -1,0 +1,5 @@
+Experimental condition: autonomous CAP, architecture unrestricted.
+Design whatever program organization you consider effective. You may independently
+create modules, state machines, planners, models, history or recovery. This condition
+does not forbid modularity and does not require a monolithic policy. No additional
+decomposition or module interfaces are prescribed.

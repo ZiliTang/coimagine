@@ -1,0 +1,50 @@
+You author heuristic.py for fixed option-search-v3. Read heuristic_api.md, contract.json,
+framework.json, campaign.json and prediction_api.md. Implement TWO functions:
+
+rank_actions(parent, candidates, memory) -> {"costs": [one finite number per candidate],
+    "proposals": [{"action": {"a0": int,"a1": int,"ticks": int}, "cost": finite_number}]}
+evaluate_state(node, memory) -> finite remaining task-cost estimate in seconds.
+
+rank_actions evaluates the CURRENT candidate on the CURRENT parent state. Every
+candidate is a complete joint command with parameters encoded by a0/a1 and its
+own ticks. Estimate total remaining cost if this command is taken, INCLUDING its
+time and anticipated consequences. Do NOT just score path_context[0] or treat all
+candidate durations as equal-effect actions plus a time penalty. Parent is a real
+legal estimate at root or a synthetic state at depth; its incoming_action is the
+PREVIOUS command, not the current candidate. path_context is optional history.
+
+You may nominate up to the fixed proposal_limit ANY commands from parent's public
+legal_pairs and ticks1..40, with a cost for each. Nominations allow the sparse
+planner to reach any legal command immediately, even absent from its default batch.
+Do not assume the default candidates exhaust the legal menu. Candidate costs may
+remain uninformative when uncertain; diagnostics expose ties, not a reward penalty.
+
+Evaluate_state is called only on an actual estimated root or a predicted result,
+never on an action which has not run. Estimate remaining task cost from that state;
+do not repeatedly charge the first action's preference along the entire path.
+The host adds simulated edge time and backs up explored successor values. Untested
+actual root actions remain eligible using their explicitly labeled total-cost priors.
+Simulation failure is evidence, not a prohibition on actual legal commands.
+
+Memory persists; memory['context'] contains current real observation, hypothesis,
+previous_action, contract and prediction_feedback. memory['history'] contains real
+contexts. Prediction_feedback compares successive legal estimates, NOT hidden truth.
+The initial predictor root is cold. Prefix reuse retains only synthetic histories.
+No real hidden controller state, object truth, map truth or deployment task ID is given.
+
+Default time windows start with continuation and 40/20/10/1 ticks, then lazily include
+all remaining ticks. No legal command is deleted. Sparse candidates are progressively
+expanded. Rank useful time windows deliberately, accounting for approach/contact and
+execution feedback. A deep tree of 1-tick suffixes is not meaningful temporal lookahead.
+Review stderr diagnostics: maximum_forecast_ticks, suffix_ticks, flat_rank_batches,
+distinct_forecast_root_commands, selected_status, prediction_feedback, resource use.
+Warnings are evidence, not additional rewards or automatic policy repair.
+
+Edit heuristic.py, experiments/*.py, notes/*.txt. Scripts actively test physical
+hypotheses via DevelopmentEnv and Predictor; all work counts, including reconstructed
+prediction prefixes. Only heuristic.py may be tested/submitted for deployment.
+Use run_python for experiments/*.py; insert '.' into sys.path for supplied clients.
+Test with files=['heuristic.py']; inspect legal logs; explicitly submit the SAME file.
+Submission validates syntax/load/signatures only, no success guarantee. Finalization
+allows only atomic submit(files,contents). No extra budget, automatic selection or
+retry is provided. Test packages and final packages use the same fixed builder.

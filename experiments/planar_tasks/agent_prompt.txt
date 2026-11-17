@@ -1,0 +1,35 @@
+Development policy synthesis brief (runs require explicit user authorization)
+
+Implement one persistent JSONL executable policy for CoImagine planar manipulation.
+The robot interface is planar-option-json-v1; read policy_contract.json exported by
+the task CLI. Observe both robots' legal sensors, their own execution feedback and
+the common goal. Return exactly {"a0": int, "a1": int, "ticks": int}; ticks are 1..40
+at 20 Hz. Choose only an entry in observation.legal_pairs. Retain history in your
+process; first requests have reset=true and include the contract.
+
+Solve transport using the given skills, including paired rotation where helpful.
+BRAKE actively resists motion. Repeated action IDs continue the existing controller;
+they do not reset a failed skill. Choosing a different mode requests a transition
+through the existing controller. Choose preparatory actions when necessary. Do not
+assume that a requested option was successfully executed; read the next observation.
+
+Develop one policy shared across task instances, not a lookup keyed by task/seed ID.
+No privileged simulator state, rewards, object geometry, mass/friction, scene catalog,
+offline truth logs or reset snapshots may be read by the deployed policy. Do not
+modify skills, masks, physics, costs or the completion rule. No model call is made
+by the simulator wrapper. Any LLM use in the deployed policy must be declared and
+budgeted separately; a program-synthesis baseline is frozen and LLM-free at test time.
+
+Before running, record the development interaction/model/token/wall budget, model
+version, permitted feedback, source-access setting and isolated execution environment.
+The 2026-11-09 user instruction authorizes direct Astra/Sol/DeepSeek exploration;
+within that delegation, choose and disclose a bounded pilot configuration before
+execution. It does not authorize unbounded API spending or hidden budget expansion. Within that authorized configuration, use development trials to investigate
+failures and revise the program. Commit/hash each tested program and keep all attempts.
+Never use held-out test outcomes for program repair. Record unsuccessful trials too.
+
+Deliver the executable, dependency versions, exact prompt/configuration, development
+transcript and immutable final program hash. This is an AgenticGenPlan-style adaptation
+to CoImagine options based on arXiv:2609.30233v1, not an official implementation,
+an exact reproduction, or a claim of ICRA publication. The generic JSONL runner is only an IPC boundary. Use agentic.py/sandbox.py for
+the mandatory filesystem/network-isolated generated deployment workflow.

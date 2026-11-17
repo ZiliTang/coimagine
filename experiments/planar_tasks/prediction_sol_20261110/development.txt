@@ -1,0 +1,1 @@
+Condition: supplied Predictor service is available during coding scripts only. It is unavailable inside Policy.act/test_policy/deployment. You may use coding predictions to develop your submitted program, including your own analytical models.

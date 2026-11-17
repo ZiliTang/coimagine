@@ -1,0 +1,1255 @@
+{
+  "date": "2026-11-17",
+  "arms": [
+    "G",
+    "GA",
+    "DA",
+    "GDA"
+  ],
+  "attribution": {
+    "50": [
+      82,
+      113,
+      111,
+      116
+    ],
+    "150": [
+      124,
+      124,
+      128,
+      121
+    ]
+  },
+  "transfer": {
+    "iid": [
+      17,
+      21,
+      21,
+      21,
+      21
+    ],
+    "transfer": [
+      7,
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "coverage": {
+    "labels": [
+      "基础CAP",
+      "修复CAP",
+      "旧数据等预算",
+      "扩大覆盖监督"
+    ],
+    "counts": [
+      92,
+      119,
+      105,
+      136
+    ],
+    "n": 216
+  },
+  "sources": [
+    {
+      "title": "预测工具使用审计",
+      "path": "docs/agent_exchange/reviews/Independent_Predictor_20261110.md"
+    },
+    {
+      "title": "结构化搜索诊断",
+      "path": "docs/agent_exchange/reviews/Option_Search_Failure_Analysis_20261110.md"
+    },
+    {
+      "title": "CAP三锚点与泛化",
+      "path": "docs/agent_exchange/reviews/Authoring_V2_Sol_Generalization_20261111.md"
+    },
+    {
+      "title": "完整动作PPO",
+      "path": "docs/agent_exchange/reviews/Duration_Stream_PPO_Final_20261115.md"
+    },
+    {
+      "title": "有限参数长训PPO",
+      "path": "docs/agent_exchange/reviews/Bounded_Direction_Long_Final_20261116.md"
+    },
+    {
+      "title": "扩大示范覆盖",
+      "path": "docs/agent_exchange/reviews/CAP_Large_Coverage_20261116.md"
+    },
+    {
+      "title": "输入归因与编码修复",
+      "path": "docs/agent_exchange/reviews/CAP_Input_Attribution_Repair_20261117.md"
+    },
+    {
+      "title": "关系迁移任务",
+      "path": "docs/research/Relational_Transfer_Task_Suite_v1_20261117.md"
+    },
+    {
+      "title": "本轮预定协议与恢复账本",
+      "path": "docs/agent_exchange/tasks/Relational_Transfer_CAP_20261117.md"
+    },
+    {
+      "title": "研究主张v4",
+      "path": "docs/research/CAP_Semantic_Handoff_Research_Plan_v4_20261116.md"
+    },
+    {
+      "title": "最新关系迁移完整结果",
+      "path": "docs/agent_exchange/reviews/Relational_Transfer_Attribution_20261117.md"
+    },
+    {
+      "title": "随机房间：10 CAP 与首次监督整合",
+      "path": "docs/agent_exchange/reviews/Random_Room_CAP_Integration_20261117.md"
+    },
+    {
+      "title": "扩覆盖与真实接管：预定协议及修订",
+      "path": "docs/agent_exchange/tasks/Random_Room_Coverage_Repair_20261117.md"
+    },
+    {
+      "title": "首次随机房间：机器可读完整结果",
+      "path": "outputs/semantic_rl_authors/random_room_20261117_01/RESULT.json"
+    },
+    {
+      "title": "当前九模型：训练动作拟合",
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/FIT_BY_SOURCE.json"
+    },
+    {
+      "title": "真实接管修复：330分支统计",
+      "path": "outputs/semantic_rl_authors/random_room_coverage_20261117_02/REPAIR_ANALYSIS.json"
+    }
+  ],
+  "current_summary": {
+    "episodes": 560,
+    "ticks": 762658,
+    "fit_actions": 1950,
+    "demos": 45,
+    "success_label_agreement": {
+      "GA": 80,
+      "DA": 80,
+      "GDA": 80
+    },
+    "error_count": 22,
+    "seals": {
+      "outputs/semantic_rl/rel_transfer_author_20261117_01": {
+        "files": 998,
+        "sha256": "54736c3dc53ae0d3604e058c1d2f8512b588dc345da854ef46e711e306301ed5",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_collection_20261117_01": {
+        "files": 898,
+        "sha256": "23246084b819650c3566692d7d3b927f58b036d685abfea603d51c3604ea0a10",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_collection_20261117_02": {
+        "files": 957,
+        "sha256": "3a8208f90de63af3f12f0d4f42149e00aae7b3d07b5f4cdbccd8402ba8611f8f",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_data_20261117_01": {
+        "files": 807,
+        "sha256": "53955caaef38707683d2aa606f17d4561384633085b05eebca58a4f5e753992c",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_evaluation_20261117_01": {
+        "files": 1699,
+        "sha256": "a055c2f9ed9db6ca1f443684a48479f6443d8de7d8c4698eab9c7b77880095f6",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_evaluation_20261117_02": {
+        "files": 2864,
+        "sha256": "7fe4264a940be1a8a73cf13e383aeb607f4551663ae8eb35b469b6aef0926f3a",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_fit_20261117_01": {
+        "files": 816,
+        "sha256": "560a76beaa47b2811e4a824e485692a378373aeb29e6c0be837b3c48ba14c6cb",
+        "status": "verified"
+      },
+      "outputs/semantic_rl/rel_transfer_parent_20261117_01": {
+        "files": 811,
+        "sha256": "14682299a2afa8c8c35ce910f0a156ce692c799d1e78a380bfe69a7eb6e82a2b",
+        "status": "verified"
+      }
+    }
+  },
+  "extra_examples": {
+    "random_integration": [
+      6,
+      7
+    ],
+    "repair": [
+      8,
+      9
+    ]
+  },
+  "random_room": {
+    "updated": "2026-11-17 10:57 CST",
+    "first_round": {
+      "dev": {
+        "CAP-RR-001": {
+          "invalid": 0,
+          "n": 160,
+          "success": 56
+        },
+        "CAP-RR-002": {
+          "invalid": 0,
+          "n": 160,
+          "success": 58
+        },
+        "CAP-RR-003": {
+          "invalid": 0,
+          "n": 160,
+          "success": 65
+        },
+        "CAP-RR-004": {
+          "invalid": 0,
+          "n": 160,
+          "success": 29
+        },
+        "CAP-RR-005": {
+          "invalid": 0,
+          "n": 160,
+          "success": 32
+        },
+        "CAP-RR-006": {
+          "invalid": 0,
+          "n": 160,
+          "success": 27
+        },
+        "CAP-RR-007": {
+          "invalid": 0,
+          "n": 160,
+          "success": 47
+        },
+        "CAP-RR-008": {
+          "invalid": 0,
+          "n": 160,
+          "success": 39
+        },
+        "CAP-RR-009": {
+          "invalid": 0,
+          "n": 160,
+          "success": 65
+        },
+        "CAP-RR-010": {
+          "invalid": 0,
+          "n": 160,
+          "success": 58
+        },
+        "G": {
+          "invalid": 0,
+          "n": 160,
+          "outside_teacher_union": [],
+          "success": 47,
+          "teacher_union_lost": [
+            "dev_2_00",
+            "dev_2_03",
+            "dev_2_04",
+            "dev_2_07",
+            "dev_2_10",
+            "dev_2_11",
+            "dev_2_13",
+            "dev_2_14",
+            "dev_2_16",
+            "dev_2_17",
+            "dev_2_19",
+            "dev_2_20",
+            "dev_2_21",
+            "dev_2_22",
+            "dev_2_24",
+            "dev_2_25",
+            "dev_2_26",
+            "dev_2_28",
+            "dev_2_29",
+            "dev_2_30",
+            "dev_2_31",
+            "dev_2_32",
+            "dev_2_33",
+            "dev_2_36",
+            "dev_2_37",
+            "dev_2_38",
+            "dev_2_39",
+            "dev_3_00",
+            "dev_3_03",
+            "dev_3_06",
+            "dev_3_10",
+            "dev_3_13",
+            "dev_3_15",
+            "dev_3_16",
+            "dev_3_17",
+            "dev_3_18",
+            "dev_3_22",
+            "dev_3_25",
+            "dev_3_29",
+            "dev_3_32",
+            "dev_3_33",
+            "dev_3_34",
+            "dev_3_35",
+            "dev_3_37",
+            "dev_3_38",
+            "dev_3_39",
+            "dev_4_00",
+            "dev_4_01",
+            "dev_4_04",
+            "dev_4_05",
+            "dev_4_09",
+            "dev_4_20",
+            "dev_4_21",
+            "dev_4_24",
+            "dev_4_25",
+            "dev_4_26",
+            "dev_4_27",
+            "dev_4_30",
+            "dev_4_32",
+            "dev_4_33",
+            "dev_4_37",
+            "dev_4_38",
+            "dev_5_01",
+            "dev_5_03",
+            "dev_5_05",
+            "dev_5_06",
+            "dev_5_11",
+            "dev_5_13",
+            "dev_5_14",
+            "dev_5_15",
+            "dev_5_17",
+            "dev_5_18",
+            "dev_5_21",
+            "dev_5_22",
+            "dev_5_23",
+            "dev_5_24",
+            "dev_5_33"
+          ],
+          "teacher_union_retained": 47
+        },
+        "GA": {
+          "invalid": 0,
+          "n": 160,
+          "outside_teacher_union": [
+            "dev_2_08"
+          ],
+          "success": 125,
+          "teacher_union_lost": [],
+          "teacher_union_retained": 124
+        },
+        "GDA": {
+          "invalid": 0,
+          "n": 160,
+          "outside_teacher_union": [
+            "dev_3_20",
+            "dev_4_16",
+            "dev_5_26"
+          ],
+          "success": 127,
+          "teacher_union_lost": [],
+          "teacher_union_retained": 124
+        },
+        "teacher_union": {
+          "n": 160,
+          "offline_upper_reference": true,
+          "success": 124
+        }
+      },
+      "test": {
+        "CAP-RR-001": {
+          "invalid": 0,
+          "n": 20,
+          "success": 7
+        },
+        "CAP-RR-002": {
+          "invalid": 0,
+          "n": 20,
+          "success": 5
+        },
+        "CAP-RR-003": {
+          "invalid": 0,
+          "n": 20,
+          "success": 8
+        },
+        "CAP-RR-004": {
+          "invalid": 0,
+          "n": 20,
+          "success": 2
+        },
+        "CAP-RR-005": {
+          "invalid": 0,
+          "n": 20,
+          "success": 4
+        },
+        "CAP-RR-006": {
+          "invalid": 0,
+          "n": 20,
+          "success": 3
+        },
+        "CAP-RR-007": {
+          "invalid": 0,
+          "n": 20,
+          "success": 5
+        },
+        "CAP-RR-008": {
+          "invalid": 0,
+          "n": 20,
+          "success": 7
+        },
+        "CAP-RR-009": {
+          "invalid": 0,
+          "n": 20,
+          "success": 9
+        },
+        "CAP-RR-010": {
+          "invalid": 0,
+          "n": 20,
+          "success": 5
+        },
+        "G": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [],
+          "success": 0,
+          "teacher_union_lost": [
+            "test_2_46",
+            "test_2_47",
+            "test_2_48",
+            "test_2_49",
+            "test_3_46",
+            "test_3_47",
+            "test_3_48",
+            "test_4_45",
+            "test_4_46",
+            "test_4_47",
+            "test_4_48",
+            "test_4_49",
+            "test_5_48",
+            "test_5_49"
+          ],
+          "teacher_union_retained": 0
+        },
+        "GA": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [
+            "test_2_45"
+          ],
+          "success": 8,
+          "teacher_union_lost": [
+            "test_2_48",
+            "test_3_47",
+            "test_3_48",
+            "test_4_45",
+            "test_4_46",
+            "test_4_47",
+            "test_5_48"
+          ],
+          "teacher_union_retained": 7
+        },
+        "GDA": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [
+            "test_2_45"
+          ],
+          "success": 8,
+          "teacher_union_lost": [
+            "test_2_47",
+            "test_2_48",
+            "test_3_47",
+            "test_3_48",
+            "test_4_45",
+            "test_4_47",
+            "test_5_48"
+          ],
+          "teacher_union_retained": 7
+        },
+        "teacher_union": {
+          "n": 20,
+          "offline_upper_reference": true,
+          "success": 14
+        }
+      },
+      "validation": {
+        "CAP-RR-001": {
+          "invalid": 0,
+          "n": 20,
+          "success": 5
+        },
+        "CAP-RR-002": {
+          "invalid": 0,
+          "n": 20,
+          "success": 5
+        },
+        "CAP-RR-003": {
+          "invalid": 0,
+          "n": 20,
+          "success": 9
+        },
+        "CAP-RR-004": {
+          "invalid": 0,
+          "n": 20,
+          "success": 6
+        },
+        "CAP-RR-005": {
+          "invalid": 0,
+          "n": 20,
+          "success": 6
+        },
+        "CAP-RR-006": {
+          "invalid": 0,
+          "n": 20,
+          "success": 3
+        },
+        "CAP-RR-007": {
+          "invalid": 0,
+          "n": 20,
+          "success": 7
+        },
+        "CAP-RR-008": {
+          "invalid": 0,
+          "n": 20,
+          "success": 6
+        },
+        "CAP-RR-009": {
+          "invalid": 0,
+          "n": 20,
+          "success": 6
+        },
+        "CAP-RR-010": {
+          "invalid": 0,
+          "n": 20,
+          "success": 9
+        },
+        "G": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [],
+          "success": 1,
+          "teacher_union_lost": [
+            "validation_2_41",
+            "validation_2_42",
+            "validation_2_44",
+            "validation_3_40",
+            "validation_3_42",
+            "validation_3_43",
+            "validation_3_44",
+            "validation_4_42",
+            "validation_4_43",
+            "validation_4_44",
+            "validation_5_40",
+            "validation_5_41",
+            "validation_5_42",
+            "validation_5_43",
+            "validation_5_44"
+          ],
+          "teacher_union_retained": 1
+        },
+        "GA": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [],
+          "success": 6,
+          "teacher_union_lost": [
+            "validation_3_40",
+            "validation_3_42",
+            "validation_3_43",
+            "validation_3_44",
+            "validation_4_42",
+            "validation_4_44",
+            "validation_5_40",
+            "validation_5_41",
+            "validation_5_42",
+            "validation_5_43"
+          ],
+          "teacher_union_retained": 6
+        },
+        "GDA": {
+          "invalid": 0,
+          "n": 20,
+          "outside_teacher_union": [],
+          "success": 9,
+          "teacher_union_lost": [
+            "validation_2_44",
+            "validation_3_43",
+            "validation_3_44",
+            "validation_4_42",
+            "validation_5_40",
+            "validation_5_41",
+            "validation_5_42"
+          ],
+          "teacher_union_retained": 9
+        },
+        "teacher_union": {
+          "n": 20,
+          "offline_upper_reference": true,
+          "success": 16
+        }
+      }
+    },
+    "collection": {
+      "episodes": 2000,
+      "ticks": 3091658,
+      "success_by_CAP": {
+        "CAP-RR-001": 80,
+        "CAP-RR-002": 73,
+        "CAP-RR-003": 86,
+        "CAP-RR-004": 50,
+        "CAP-RR-005": 52,
+        "CAP-RR-006": 33,
+        "CAP-RR-007": 56,
+        "CAP-RR-008": 54,
+        "CAP-RR-009": 85,
+        "CAP-RR-010": 71
+      },
+      "union": 146,
+      "selected_teachers": {
+        "CAP-RR-004": 17,
+        "CAP-RR-001": 24,
+        "CAP-RR-008": 8,
+        "CAP-RR-010": 23,
+        "CAP-RR-009": 23,
+        "CAP-RR-007": 7,
+        "CAP-RR-003": 24,
+        "CAP-RR-002": 15,
+        "CAP-RR-005": 4,
+        "CAP-RR-006": 1
+      },
+      "invalid": 0,
+      "demonstrations": 270,
+      "boundaries": 9292
+    },
+    "diagnosis": {
+      "cases": 14,
+      "cut_states": 21,
+      "details": [
+        {
+          "case": "test_2_47",
+          "cut": 8,
+          "learner_action": {
+            "a0": 73,
+            "a1": 69,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003",
+            "CAP-RR-001",
+            "CAP-RR-002"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003",
+            "CAP-RR-001",
+            "CAP-RR-002"
+          ],
+          "tick": 260
+        },
+        {
+          "case": "test_2_48",
+          "cut": 4,
+          "learner_action": {
+            "a0": 75,
+            "a1": 73,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-005",
+            "CAP-RR-007"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-005",
+            "CAP-RR-007"
+          ],
+          "tick": 100
+        },
+        {
+          "case": "test_2_48",
+          "cut": 12,
+          "learner_action": {
+            "a0": 75,
+            "a1": 51,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 360
+        },
+        {
+          "case": "test_3_47",
+          "cut": 8,
+          "learner_action": {
+            "a0": 46,
+            "a1": 11,
+            "target_id": "entity-a",
+            "ticks": 20
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003"
+          ],
+          "tick": 170
+        },
+        {
+          "case": "test_3_48",
+          "cut": 2,
+          "learner_action": {
+            "a0": 15,
+            "a1": 46,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-004",
+            "CAP-RR-010"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-004",
+            "CAP-RR-010"
+          ],
+          "tick": 50
+        },
+        {
+          "case": "test_3_48",
+          "cut": 10,
+          "learner_action": {
+            "a0": 34,
+            "a1": 34,
+            "target_id": "entity-a",
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-004",
+            "CAP-RR-010",
+            "CAP-RR-008"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-004",
+            "CAP-RR-010",
+            "CAP-RR-008"
+          ],
+          "tick": 297
+        },
+        {
+          "case": "test_4_45",
+          "cut": 8,
+          "learner_action": {
+            "a0": 46,
+            "a1": 7,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-008",
+            "CAP-RR-010",
+            "CAP-RR-006",
+            "CAP-RR-007",
+            "CAP-RR-005",
+            "CAP-RR-009"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-008",
+            "CAP-RR-010",
+            "CAP-RR-006",
+            "CAP-RR-007",
+            "CAP-RR-005",
+            "CAP-RR-009"
+          ],
+          "tick": 267
+        },
+        {
+          "case": "test_4_47",
+          "cut": 8,
+          "learner_action": {
+            "a0": 46,
+            "a1": 19,
+            "target_id": "entity-a",
+            "ticks": 20
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 193
+        },
+        {
+          "case": "test_5_48",
+          "cut": 8,
+          "learner_action": {
+            "a0": 46,
+            "a1": 7,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-010"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-010"
+          ],
+          "tick": 245
+        },
+        {
+          "case": "validation_2_44",
+          "cut": 3,
+          "learner_action": {
+            "a0": 34,
+            "a1": 34,
+            "target_id": "entity-a",
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003"
+          ],
+          "tick": 75
+        },
+        {
+          "case": "validation_2_44",
+          "cut": 11,
+          "learner_action": {
+            "a0": 7,
+            "a1": 46,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-006",
+            "CAP-RR-010"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-006",
+            "CAP-RR-010"
+          ],
+          "tick": 290
+        },
+        {
+          "case": "validation_3_43",
+          "cut": 8,
+          "learner_action": {
+            "a0": 77,
+            "a1": 69,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-004",
+            "CAP-RR-005",
+            "CAP-RR-007",
+            "CAP-RR-008",
+            "CAP-RR-010",
+            "CAP-RR-001",
+            "CAP-RR-002"
+          ],
+          "successful_receiver_same_first_action": [
+            "CAP-RR-004",
+            "CAP-RR-005",
+            "CAP-RR-007",
+            "CAP-RR-008",
+            "CAP-RR-010",
+            "CAP-RR-001",
+            "CAP-RR-002"
+          ],
+          "successful_receivers": [
+            "CAP-RR-004",
+            "CAP-RR-005",
+            "CAP-RR-007",
+            "CAP-RR-008",
+            "CAP-RR-010",
+            "CAP-RR-001",
+            "CAP-RR-002"
+          ],
+          "tick": 170
+        },
+        {
+          "case": "validation_3_44",
+          "cut": 1,
+          "learner_action": {
+            "a0": 61,
+            "a1": 49,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-006"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-006"
+          ],
+          "tick": 25
+        },
+        {
+          "case": "validation_3_44",
+          "cut": 9,
+          "learner_action": {
+            "a0": 51,
+            "a1": 51,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 224
+        },
+        {
+          "case": "validation_4_42",
+          "cut": 3,
+          "learner_action": {
+            "a0": 46,
+            "a1": 23,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-010"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-010"
+          ],
+          "tick": 75
+        },
+        {
+          "case": "validation_4_42",
+          "cut": 11,
+          "learner_action": {
+            "a0": 46,
+            "a1": 23,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 395
+        },
+        {
+          "case": "validation_5_40",
+          "cut": 2,
+          "learner_action": {
+            "a0": 49,
+            "a1": 53,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003"
+          ],
+          "tick": 50
+        },
+        {
+          "case": "validation_5_40",
+          "cut": 10,
+          "learner_action": {
+            "a0": 65,
+            "a1": 75,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003"
+          ],
+          "tick": 240
+        },
+        {
+          "case": "validation_5_41",
+          "cut": 11,
+          "learner_action": {
+            "a0": 46,
+            "a1": 31,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [
+            "CAP-RR-003",
+            "CAP-RR-004",
+            "CAP-RR-005",
+            "CAP-RR-006",
+            "CAP-RR-007",
+            "CAP-RR-008",
+            "CAP-RR-009",
+            "CAP-RR-010"
+          ],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [
+            "CAP-RR-003",
+            "CAP-RR-004",
+            "CAP-RR-005",
+            "CAP-RR-006",
+            "CAP-RR-007",
+            "CAP-RR-008",
+            "CAP-RR-009",
+            "CAP-RR-010"
+          ],
+          "tick": 365
+        },
+        {
+          "case": "validation_5_41",
+          "cut": 19,
+          "learner_action": {
+            "a0": 73,
+            "a1": 53,
+            "target_id": null,
+            "ticks": 25
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 595
+        },
+        {
+          "case": "validation_5_42",
+          "cut": 8,
+          "learner_action": {
+            "a0": 46,
+            "a1": 31,
+            "target_id": "entity-a",
+            "ticks": 40
+          },
+          "receivers": 10,
+          "successful_first_action_in_recorded_recommendations": [],
+          "successful_receiver_same_first_action": [],
+          "successful_receivers": [],
+          "tick": 260
+        }
+      ],
+      "episodes": 210,
+      "prefix_audits_passed": 210,
+      "rescuable_cases": 12,
+      "rescuable_cuts": 15,
+      "rescuable_first_advice_in_union_cuts": 15,
+      "same_first_action_rescuable_cuts": 1,
+      "successes": 40,
+      "ticks": 347679
+    },
+    "repair": {
+      "episodes": 330,
+      "success_branches": 100,
+      "rescuable_cases": 19,
+      "rescuable_cut_states": 25,
+      "selected_suffixes": 25,
+      "selected_teacher_counts": {
+        "CAP-RR-009": 2,
+        "CAP-RR-005": 2,
+        "CAP-RR-007": 2,
+        "CAP-RR-010": 5,
+        "CAP-RR-008": 4,
+        "CAP-RR-004": 1,
+        "CAP-RR-003": 2,
+        "CAP-RR-001": 2,
+        "CAP-RR-002": 3,
+        "CAP-RR-006": 2
+      },
+      "prefix_audits_passed": 330,
+      "errors": 0
+    },
+    "repair_baseline": {
+      "n": 100,
+      "success": 50,
+      "teacher_union": 80,
+      "retained": 49,
+      "lost": [
+        "repairdev_2_000",
+        "repairdev_2_003",
+        "repairdev_2_008",
+        "repairdev_2_012",
+        "repairdev_2_013",
+        "repairdev_2_019",
+        "repairdev_3_014",
+        "repairdev_3_015",
+        "repairdev_3_017",
+        "repairdev_3_018",
+        "repairdev_3_019",
+        "repairdev_3_024",
+        "repairdev_4_008",
+        "repairdev_4_009",
+        "repairdev_4_010",
+        "repairdev_4_011",
+        "repairdev_4_012",
+        "repairdev_4_015",
+        "repairdev_4_016",
+        "repairdev_4_017",
+        "repairdev_4_019",
+        "repairdev_5_001",
+        "repairdev_5_003",
+        "repairdev_5_010",
+        "repairdev_5_013",
+        "repairdev_5_014",
+        "repairdev_5_016",
+        "repairdev_5_018",
+        "repairdev_5_020",
+        "repairdev_5_021",
+        "repairdev_5_023"
+      ],
+      "outside": [
+        "repairdev_4_013"
+      ]
+    },
+    "fits": {
+      "control_G": {
+        "exact_actions": 4417,
+        "boundaries": 4477,
+        "errors_by_source": {
+          "old124": 60
+        },
+        "field_matches": [
+          4457,
+          4459,
+          4467,
+          4464
+        ]
+      },
+      "control_GA": {
+        "exact_actions": 4477,
+        "boundaries": 4477,
+        "errors_by_source": {},
+        "field_matches": [
+          4477,
+          4477,
+          4477,
+          4477
+        ]
+      },
+      "control_GDA": {
+        "exact_actions": 4477,
+        "boundaries": 4477,
+        "errors_by_source": {},
+        "field_matches": [
+          4477,
+          4477,
+          4477,
+          4477
+        ]
+      },
+      "expanded_G": {
+        "exact_actions": 8833,
+        "boundaries": 9292,
+        "errors_by_source": {
+          "old124": 222,
+          "new146": 237
+        },
+        "field_matches": [
+          9201,
+          9072,
+          9103,
+          9257
+        ]
+      },
+      "expanded_GA": {
+        "exact_actions": 9281,
+        "boundaries": 9292,
+        "errors_by_source": {
+          "old124": 5,
+          "new146": 6
+        },
+        "field_matches": [
+          9290,
+          9286,
+          9291,
+          9290
+        ]
+      },
+      "expanded_GDA": {
+        "exact_actions": 9292,
+        "boundaries": 9292,
+        "errors_by_source": {},
+        "field_matches": [
+          9292,
+          9292,
+          9292,
+          9292
+        ]
+      },
+      "repaired_G": {
+        "exact_actions": 9458,
+        "boundaries": 10114,
+        "errors_by_source": {
+          "old124": 294,
+          "new146": 328,
+          "repair25": 34
+        },
+        "field_matches": [
+          9888,
+          9852,
+          9880,
+          10079
+        ]
+      },
+      "repaired_GA": {
+        "exact_actions": 10076,
+        "boundaries": 10114,
+        "errors_by_source": {
+          "old124": 14,
+          "new146": 23,
+          "repair25": 1
+        },
+        "field_matches": [
+          10101,
+          10104,
+          10109,
+          10104
+        ]
+      },
+      "repaired_GDA": {
+        "exact_actions": 10114,
+        "boundaries": 10114,
+        "errors_by_source": {},
+        "field_matches": [
+          10114,
+          10114,
+          10114,
+          10114
+        ]
+      }
+    },
+    "progress": {
+      "at": 1794884248.0400224,
+      "completed": 754,
+      "elapsed_seconds": 1058.6521731250104,
+      "stage": "fixed_final_evaluation",
+      "total": 4000
+    },
+    "training_success": 150,
+    "final": null,
+    "acceptance": null
+  }
+}

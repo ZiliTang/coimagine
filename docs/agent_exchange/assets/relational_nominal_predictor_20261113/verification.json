@@ -1,0 +1,54 @@
+{
+  "date": "2026-11-13",
+  "source_sha256": {
+    "experiments/planar_tasks/relational_search/option_acceptance.py": "ec56d2aa19bd93423252436ee567605a9f0df8cc79cfb989ec7c6c5e44bd6676",
+    "experiments/planar_tasks/relational_search/features.py": "cc1a26979b86f199bf69e5efd5b56774ea174a6f26937af5f827a0a5b87bcf91",
+    "experiments/planar_tasks/relational_search/physics_probe.py": "bcd016e4f09814872ca3d41906507d63886f8b757272ef5b5e6b559ad98aa067",
+    "experiments/planar_tasks/relational_search/estimator.py": "58266a3373c82b733b19b1fc7e3a872f08bcfad7d851930c012a0c3aa464ec54",
+    "experiments/planar_tasks/relational_search/environment.py": "a754b511b52388c38a19ebd8a29dc132dfb6554578a36e0e0b4e3723824fcf77",
+    "experiments/planar_tasks/relational_search/predictor_acceptance.py": "8d37bfd525ae5f6327ec42246d71a57ed2766cc36972c2d1bdfb2712617f1a43",
+    "experiments/planar_tasks/relational_search/smoke.py": "d099398a508a7fbeb5b4eba81a97b2dad05555d290aad8e9607b2dceb79d50ca",
+    "experiments/planar_tasks/relational_search/__init__.py": "72f98bbb16dce896633fc96b0d4401bf256876a686a7f478d3ae6b9822dbb1ff",
+    "experiments/planar_tasks/relational_search/search.py": "f5c2ad919c54dea403c9749ada5d3c99ac621be9d22003c66a8e5de384cec74d",
+    "experiments/planar_tasks/relational_search/fit.py": "98b5e534ae8cc06d794d7c7164d691454438ca940abcbcbabec1d43b4168b5ce",
+    "experiments/planar_tasks/relational_search/dataset.py": "47c9f48b555e712f407bb7329be9b178f64700e16bd8d626919c61155698cdff",
+    "experiments/planar_tasks/relational_search/contract.py": "db0118ddfee7922cf43ae8812b9366b3edb3ef51c7718fdf417f263e905208f2",
+    "experiments/planar_tasks/relational_search/predictor.py": "6074d1ec9dbc994373dda1bc4e439a1217d5d2d95f9dd35959b4957883297ff0",
+    "experiments/planar_tasks/relational_search/target_binding.py": "f70072fad58434b8e672761e1beef12155ee91860874c01fd9fee8f113d02df5",
+    "experiments/planar_tasks/relational_search/evidence.py": "8ca4d940908360ce0679af93b2d69b3e62a6b68d736b3a9bef5b63a1d920626b",
+    "tests/test_relational_search.py": "cff4c7c70fbae1f060c2b77384bd8b195053c88179f28e8e07bae664abb4669c",
+    "tests/test_relational_environment.py": "07c13b986b333dfc25239efeff40f8933cbe049a38ba1ba5037b07a2029a6b0a",
+    "tests/test_relational_predictor.py": "ea58dfbb49d1100a421cee9d49d267df6d6fc20518cede8de781ff9d93f53b93"
+  },
+  "git_head": "0dc6568c7324b043dca63067d45735ff555b639e",
+  "tests": {
+    "command": "PYTHONPATH=. .venv/bin/python -m pytest tests/test_relational_predictor.py tests/test_relational_environment.py tests/test_relational_search.py tests/test_semantic_planning.py tests/test_option_search_v3.py tests/test_authoring_v2.py",
+    "passed": 89,
+    "wall_seconds": 37.72,
+    "full_suite": false
+  },
+  "acceptance": {
+    "directory": "outputs/relational_search/nominal_predictor_acceptance_20261113_02",
+    "verified_files": 23,
+    "usage": {
+      "limits": {
+        "execution_ticks": 2000,
+        "prediction_ticks": 4000
+      },
+      "used": {
+        "execution_ticks": 140,
+        "prediction_ticks": 280
+      }
+    },
+    "wall_seconds": 0.9573020999960136,
+    "llm_calls": 0,
+    "task_benchmark": false
+  },
+  "limitations": [
+    "partial ray box geometry",
+    "unknown space nominally unconstrained",
+    "zero object velocities at cold root",
+    "no cloned execution controller state",
+    "author worker and learning loop not integrated"
+  ]
+}

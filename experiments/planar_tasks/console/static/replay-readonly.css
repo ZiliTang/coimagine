@@ -1,0 +1,1 @@
+header .header-controls>*:not(#status){display:none!important}.right,.scene-card .card-head .hint{display:none!important}main{grid-template-columns:minmax(0,1fr)!important;max-width:1500px;margin:auto}.left{min-width:0}.scene-workspace canvas{pointer-events:none}.brand small{font-size:0}.brand small:after{content:'research replay · read only';font-size:12px}

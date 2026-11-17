@@ -1,0 +1,25 @@
+{
+  "version": "option-search-v2",
+  "baseline_release_sha256": "51099198b0a6985a940355b8cb223a8456886902812f9cb5e7640f7f61c7d67a",
+  "files": {
+    "search.py": "caf670e904e4aa7dafbd5de5567a5f1a3304c93f27d65bf263fb7df50f2fa5ba",
+    "model.py": "041188d130d4b52c0b9521e2eb7662a4802bf29ecd3b1ec0c0989f3f32fbbc3d",
+    "policy.py": "667caaa86118851cc316c94c3b05568427b5d34ed2553390f84f50509f60e96b",
+    "hook_client.py": "3636417e72966570662213d70cf2177231f42bbc4ba8ecdefc5932f3a4633e43",
+    "hook_worker.py": "221fadeabf4b5e1d075d0b402034599ed57c5b2ad26f72439f28cb348f489ba1",
+    "geometry.py": "f85740f821864b50c5d8b4d35f7ecc658de6afc94ac0323b408b530bece324f0",
+    "estimator.py": "4c878366d46a4bc81dcda0a861398a09e02089547c5a0353b5217082c818f8b3",
+    "heuristic.py": "79826379ca69265c86a35f64401e6b9d54672ecd0580a22de525404dfa6bb0fc",
+    "build.py": "c6414a071e3b5c802a8898b65abae07a827e6dc7347bf705d62140b2ec2a328f",
+    "session.py": "fd8c7d76c88ae4f448c43f809a4f58e848f9fe1029a3f6cecc31c7bac6f950bf",
+    "evaluation.py": "d552fd5cfffa5598c7bbb26ab86c603b277236a389a0a52db0476a482039257b",
+    "driver.py": "f66f53470968bf361e8a9924a0233058926156e1fa3969d7c3b10373d531ce95",
+    "policy_host.py": "0d8832b2d5a66c2c1ab171fbe5c201ed661eed029162a5bd5cbd77fffa4c877f",
+    "prompt.txt": "5a0fb5f052b01d8564ab0612ed0ad271104295bee6175d2e36226b6610d8bfb9",
+    "README.md": "503dc9b69a9a1506bb7d1970799d16d500dc94ca57434016151a7a01603afdef"
+  },
+  "tests_sha256": "7cb1b967e8f2a639be975b55646a221ebe1dcad418d2a9d56865e425764214e7",
+  "estimator_origin": "prediction_sol_runtime_20261110_01/frozen/package/geom.py",
+  "output_language": "actual legal_pairs x integer ticks 1..40; feedback after every command",
+  "guarantee": "structural action/trace support, not equal finite-budget search coverage or physical safety"
+}

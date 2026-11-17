@@ -9,6 +9,17 @@ GPT prepares diagnostic plans and reviews evidence; DeepSeek implements and runs
 the task handed over by the human. This entry does not authorize automatic runs,
 agent messaging, or expansion of research scope. Keep historical reports intact.
 
+For newly authorized planar CAP experiments (2026-11-11 onward), use
+`experiments.planar_tasks.authoring_v2` as the default session/driver entry for every
+LLM backend and both free CAP / Option-search-v3. Read
+`experiments/planar_tasks/authoring/option_guide.md` and the v2 `README.md` /
+`experiment_api.md`; the same public skill knowledge must accompany author instructions.
+The user-authorized budget/summary upgrade is versioned separately; historical
+`authoring` sessions keep their original accounting and knowledge seals.
+Use its `verify_frozen` before evaluation. Historical baseline/search entry points
+remain for reproduction only; do not silently retrofit new knowledge into old runs.
+This default does not authorize additional model calls or experiments.
+
 This repository implements the **2D validation** of the CoImagine v6 research plan.
 The authoritative documents are:
 
