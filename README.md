@@ -1,11 +1,13 @@
 # CoImagine — CAP行为与语义的监督整合
 
-当前研究：积累相互重叠的局部CAP程序及其决策语义，通过监督整合形成可复用的操作策略，并以几何/语义消融和检索基线分析覆盖、泛化与样本效率。
+当前研究：积累相互重叠的局部CAP程序，通过监督整合形成可复用的操作策略。下一阶段先限定为CAP完整建议并集，检验自动提取的程序执行特征能否改善动作选择；新插桩与选择器尚未实现，后续大计算转移到第二台PC。
 
 ## 当前入口
 
-- [研究计划 v5](docs/research/CAP_Integration_Mechanisms_Research_Plan_v5_20261117.md)
+- [研究计划 v6：程序执行特征与建议池选择](docs/research/CAP_Program_Trace_Selection_Plan_v6_20261117.md)
 - [当前实验状态](docs/agent_exchange/CURRENT.md)
+- [第二台PC增量移交](docs/development/Program_Trace_Transfer_20261117.md)
+- [D/A表示与接管诊断结果](docs/agent_exchange/reviews/DA_Joint_Representation_20261117.md)
 - [另一台PC运行教师优先级对照](docs/development/Priority_Transfer_20261117.md)
 - [16方法覆盖报告](docs/research/reports/CAP_Coverage_Comparison_20261117/index.html)
 - [导师汇报（含历史汇总）](docs/research/reports/CoImagine_Progress_20261117/index.html)

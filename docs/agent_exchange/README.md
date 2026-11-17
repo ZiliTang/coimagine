@@ -2,7 +2,9 @@
 
 先读[CURRENT](CURRENT.md)，再读对应任务书和结果报告。执行侧约束见[AGENTS](AGENTS.md)；用户当前授权优先于旧阶段范围。
 
-- [当前研究计划](../research/CAP_Integration_Mechanisms_Research_Plan_v5_20261117.md)
+- [当前研究计划v6](../research/CAP_Program_Trace_Selection_Plan_v6_20261117.md)
+- [第二台PC增量移交](../development/Program_Trace_Transfer_20261117.md)
+- [D/A表示与接管结果](reviews/DA_Joint_Representation_20261117.md)
 - [GDA扩数据任务](tasks/GDA_Coverage_Scaling_20261117.md)
 - [GD与统一覆盖比较](tasks/GD_Coverage_Comparison_20261117.md)
 - [检索对照结果](reviews/CAP_Retrieval_Comparison_20261117.md)
