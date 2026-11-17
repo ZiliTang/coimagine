@@ -37,3 +37,7 @@
 [清理记录](reviews/Workspace_Cleanup_20261117.md)记录永久删除范围、账本和保留目录。保留当前CAP库、示范、冻结模型、对照评估、关系迁移实验、运行表格、基础控制器/模型和研究汇总。旧CAP/RL原始输出及旧方案已删除，不再声称能完整复现旧阶段；仓库外旧agentic暂存也已永久删除。
 
 扩展宿主JavaScript堆OOM已被日志确认；outputs等已加入VS Code监听/搜索/Python分析排除。清理不等于已确定或修复崩溃根因。
+
+## 2026-11-18：完整CAP trace开发数据移交
+
+[验收记录](reviews/CAP_Trace_Value_Transfer_20261118.md)与[使用说明](../development/CAP_Trace_Value_Dev_Transfer_20261118.md)。`outputs/transfers/cap_trace_value_dev_v1.tar.gz`独立包含所选7CAP×760开发初态的5320条完整原始gzip（1759成功、3561失败），零缺失/异常；原数据完整审计、包内历史重验及6150文件归档回读均通过。附760场景、10CAP的7600摘要、程序/依赖、相对路径索引、源哈希和无评估标签的场景去重清单。没有训练、仿真或补采。接收方先验SHA256再执行包内说明的verify；内部程序trace仍须重算并验收等价性。
