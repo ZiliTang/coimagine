@@ -1,8 +1,89 @@
 # 当前工作状态
 
-研究主线：[计划v6](../research/CAP_Program_Trace_Selection_Plan_v6_20261117.md)：先在CAP完整建议并集中选择动作，以自动提取的程序执行特征比较几何输入，保留真实接管修复与监督整合。旧v5及冻结实验保留，不将新候选限制追溯应用于旧结果。
+无门控 A/B 路由的默认更新采用分叉监督和全局软保持，成功轨迹回放仅在显式对照中启用。[单轮消融与适用范围](../research/key_findings/2026-11-23_ungated_no_replay/README.md)
 
-## 下一阶段：第二台PC实施，尚未启动
+[未来研究方向讨论](../research/future_directions/README.md) · [论文关键发现](../research/key_findings/README.md)
+
+[区域策略的邻域与决策时刻诊断](../research/key_findings/2026-11-20_regional_advantage/README.md)已完成。96 个父房间，首次分歧时读出 206/353，固定动作 actor 211/353。[面板同步回放](http://localhost:8775/advantage-replays)
+
+<!-- ACTOR_REPLAY -->当前 actor 加历史回放已完成 24 轮和 200 次最终闭环。回放 105、仅当轮 109、监督起点 117；旧标签保留改善。96 个同前缀分叉的 192 个首步中仅 actor 成功 19 个、仅提案专家成功 9 个。[主报告](../research/key_findings/2026-11-20_regional_actor_replay/README.md) · [后缀诊断](../research/key_findings/2026-11-20_regional_actor_replay/suffix.md)
+
+<!-- ACTOR_ITERATION -->十维 actor 的分叉迭代已完成 24 轮。最终 200 房间中监督起点 117 次成功、迭代 109 次、冻结采样集中拟合 112 次。[报告](../research/key_findings/2026-11-20_regional_actor_iteration/README.md)
+
+单次改选完成 200 个开发房间的分叉采集及 200 对新房间验收。728 个分叉能救回 45/89 个原失败房间；冻结候选在验收中救回 21 个、丢失 15 个，单侧下界 −4.61 个百分点，保留原监督 actor。[单次改选报告](../research/key_findings/2026-11-20_regional_once/README.md) · [监测面板](http://localhost:8775/#single-override)
+
+十维编号 actor 完成 2,000 局 PPO 微调及 505 局固定模型闭环。自然留出成功 113→120/200，最佳单 CAP 为 117/200，困难族 30→30/90。十个 C++ 策略通过配对验证，16 进程完整采样吞吐提高到 1.92 倍。[结果、训练曲线与 C++ 对照](../research/key_findings/2026-11-20_regional_id_ppo/README.md)
+
+十维 CAP 编号 actor 硬标签对照完成 1,010 次闭环和 215 条留出教师轨迹重放。固定预算下，编号和合并动作 actor 分别在自然留出成功 113/200、110/200，在困难族扰动成功 30/90、23/90。[评测与切换诊断](../research/key_findings/2026-11-20_regional_id_actor/README.md)
+
+同数据、同预算的时间软标签对照已完成 1,010 次闭环。6,150 个训练边界中 272 处有多个实测成功动作，固定 24,000 步的自然留出成功数从硬标签 110/200 到软标签 106/200，困难族扰动 23/90 到 26/90。[配对结果与训练分歧诊断](../research/key_findings/2026-11-20_regional_soft_actor/README.md)
+
+最快成功教师 actor 在十成员库的 215 个训练房间上完成闭环。原 directQ 保留专家并集 108/161，单教师 actor 24,000 步保留 160/161，低学习率续训的训练选定检查点保留 161/161。两个冻结 actor 随后完成 580 次留出执行，训练选定模型在自然留出成功 118/200、困难族扰动成功 24/90。[留出配对结果](../research/key_findings/2026-11-20_regional_fastest_actor/held.md)。[逐场景成败与首次偏离](../research/key_findings/2026-11-20_regional_fastest_actor/README.md)
+
+十成员区域库独胜收益对照已完成 505 次闭环。成功轨迹的 V 目标改为 1/N 后，18 个留出独胜房间的赢家排名中位数从 5 提高到 2.5，directQ 在同一子集成功 2→3 例，全部留出房间成功 112→88/200。[逐场景对照](../research/key_findings/2026-11-20_regional_inverse_v/README.md)
+
+区域作者第 6–10 轮及新旧 directQ 配对评测已完成。200 个新房间上五成员→十成员并集为 130→160，开发选定单程序 107→117，原 Q→新 Q 为 110→112。新增五轮修复原失败父房间 19/45，其中 8 族由同一新增成员同时解决父房间及两个未见扰动。[报告与训练预算](../research/key_findings/2026-11-19_regional_extension/README.md) · [评测面板](http://localhost:8775/#ten-cap-directq)
+
+五轮区域精化、常规增量、同预算通用 CAP 已完成 3,960 次留出闭环。200 个新房间上区域最佳单程序 119 例成功，同库开局路由 113 例，五成员并集 139 例。[作者对照](../research/key_findings/2026-11-19_regional_cap_authoring/README.md) · [区域成员逐轮地图与 directQ 进度](http://localhost:8775/)
+
+区域库无 trace directQ 已完成 seed17 的 520 次闭环。相对区域最佳单程序，开发池 90 对 92，新房间 122 对 119，开发邻居 95 对 93；新房间配对区间跨零。[逐场景配对](../research/key_findings/2026-11-19_regional_directq/README.md)
+
+最高剂量 GLOBAL-attention＋trace 已完成全部 600 个闭环。固定 seed17，attention 成功 314 例，无 trace GA-Q 成功 323 例，配对差 −1.50 个百分点，95% 区间 [−5.50, +2.50]。[闭环对照](../research/key_findings/2026-11-19_global_attention/README.md) · [程序特征与样本选择假设](../research/future_directions/2026-11-19_policy_switch_representation.md)
+
+最高剂量专家 V 切换与动作 Q 配对已完成。600 个新初态上 V 切换 260 例成功，GA-Q 323 例，最佳单 CAP 267 例。V 开局全部选择 CAP-009，37,129 个实际动作中只有 3 个偏离其提案。[配对结果与行为诊断](../research/key_findings/2026-11-19_cap_policy_switch/README.md) · [研究定位](../research/future_directions/2026-11-19_policy_switch_representation.md)
+
+[按原场景成功数反比采样的千条规模曲线已完成](../research/key_findings/2026-11-19_inverse_scale/README.md)。200 个可解开发族，新增成功序列剂量目标 0／250／500／750／1001，固定 seed17，600 个新初态评估。[进度页](http://127.0.0.1:8767/) · [协议](../../outputs/semantic_rl/cap_inverse_scale_20261119_01/protocol.json)
+
+场景族定向增广实验已完成。每组 5,376 条训练轨迹，普通组新增 364 条、定向组新增 226 条不同的成功动作序列。新面板 seed17 原始／普通／定向 Q 为 96／102／112 成功；独有场景 10／11／16（共 26），定向对普通的主比较区间跨零。[关键数据与启示](../research/key_findings/2026-11-19_family_augmentation/README.md) · [结果页](http://127.0.0.1:8766/report.html)
+
+无 trace 的冻结离线 GA-Q 与 24k 单教师 GA 已在同一诊断面板配对。两种子平均成功率 53.00% 对 43.75%，差 +9.25 个百分点，场景配对 95% 区间 [+3.50, +14.75]。七 CAP 并集保留率差 +10.27 个百分点，28 个单 CAP 独有场景的差值区间跨零。[结果与配对回放](../../outputs/semantic_rl/cap_offline_q_closedloop_20261119_01/REPORT.md) · [论文关键发现索引](../research/key_findings/README.md)
+
+无 trace 的 64×64 单教师 GA 完成 400 次闭环执行。同一 200 场景上，6,000 到 24,000 步的平均总成功率从 37.00% 升至 43.75%，七 CAP 并集保留率提高 9.25 个百分点，场景配对 95% 区间 [+1.42, +17.22]。独有场景和并集外场景没有观察到净提升。[闭环结果与配对回放](../../outputs/semantic_rl/cap_actor_closedloop_20261119_01/REPORT.md)
+
+64×64 单教师 actor 的 GLOBAL trace 对照已完成。固定 24,000 步，GLOBAL 相对 GA 的留出教师一致率差 +0.05 个百分点，场景配对 95% 区间 [−1.82, +1.96]。两个种子的训练一致率均提高，留出交叉熵均升高。本轮只测离线拟合。[结果与接入方式](../../outputs/semantic_rl/cap_actor_trace_20261119_01/REPORT.md) · [训练面板](../../outputs/semantic_rl/cap_actor_trace_20261119_01/live/index.html)
+
+单教师 GA actor 的容量与预算对照已完成。64×64／6,000 到 128×128／24,000，训练教师一致率从 72.86% 到 99.47%，留出从 71.28% 到 75.07%，留出交叉熵从 0.72 升至 3.30。四模型为纯监督拟合诊断。[报告](../../outputs/semantic_rl/cap_actor_capacity_20261119_01/REPORT.md) · [逐种子面板](../../outputs/semantic_rl/cap_actor_capacity_20261119_01/live/index.html)
+
+GA actor 单教师与成功动作集合对照已完成，四模型共 800 次闭环。在同一批 200 个已查看场景上，seed17/29 的单教师组成功 69/79 例，多解组成功 72/85 例；多解组相对单教师组的七 CAP 并集保留率差 +2.05 个百分点，场景配对 95% 区间 [−6.55, +10.78]。两组均直接监督训练至固定末轮。[拟合、保留与配对回放](../../outputs/semantic_rl/cap_actor_distillation_20261119_01/REPORT.md)
+
+新 CAP 拟由 LLM 直接用 C++ 编写完整策略，模板默认预留可关闭采集的 trace 接口。当前为设计提案，后续先验证一个新 CAP，再决定是否切换作者默认语言。[原生 C++ CAP 方案](../development/Native_CPP_CAP_20261119.md)
+
+七 CAP 可信实验入口默认启用共用的 `clearances` 和 `navigate` C 内核。固定 24 初态、12 进程，完整回放每批从 17.77 秒缩短到 10.78 秒，192 次计时执行均与归档一致。[对照报告与复现命令](../../outputs/semantic_rl/cap_shared_kernel_20261119_01/REPORT.md)。
+
+可信实验入口已默认启用冻结 CAP009 的位姿规划 C 内核。七 CAP 路由的 24 场景测速中，共用的 `clearances` 和 `navigate` 分别占累计 worker 时间的 16.7% 和 16.3%。[默认配置](../../experiments/planar_tasks/semantic_rl/program_trace_value_v1/pose_kernel/README.md) · [逐 CAP 耗时及行为核对](../../outputs/semantic_rl/cap_shared_timing_20261119_01/REPORT.md)。
+
+**监督学习与能力保留对照已完成。** 6,000次新面板执行；七CAP并集146/200。自由重选相对开局选一次在六个条件中均有净救回。半批成败配对采样的主比较为 −3.77 个百分点，95%区间 [−10.74,+3.15]。[结论与回放](reviews/CAP_Retention_Supervised_20261119.md)。输出 `outputs/semantic_rl/cap_retention_supervised_20261119_01/`。
+
+**seed17 接续 2000 episode 已完成。** 新200场景上，GA 94→105，GLOBAL 103→97；差距变化 −8.5 个百分点，配对95%区间 [−17.0, 0.0]。[报告](assets/cap_trace_ppo_continue_20261118_01/REPORT.md)。输出 `outputs/semantic_rl/cap_trace_ppo_continue_20261118_01/`。
+
+**GA / GLOBAL 三种子 PPO 确认实验** · <!-- TRACE_PPO_STATUS -->已完成。新确认集上，GLOBAL＋PPO 为 56.83%，GA＋PPO 为 54.00%，配对差 +2.83 个百分点，95% 区间 [−1.33, +7.00]。两组微调收益之差 +8.00 个百分点 [2.50, 13.33]。[完整报告](assets/cap_trace_ppo_confirm_20261118_01/REPORT.md)。输出 `outputs/semantic_rl/cap_trace_ppo_confirm_20261118_01/`。
+
+<!-- PPO_SEED17 -->
+**seed17 PPO对照已完成。** PPO 117/200，同顺序DQN 93/200，共同起点112/200。2888次新增执行完成。[报告](assets/cap_trace_value_ppo_20261118/REPORT.md)。
+<!-- PPO_SEED17_END -->
+
+<!-- LONG_ONLINE_START -->
+**分层洗牌＋500更新筛查已完成。** 新组93/200，旧组108/200，差-7.50pp。
+[报告](reviews/CAP_Trace_Value_Shuffle500_20261118.md)；[曲线](assets/cap_trace_value_shuffle500_20261118/dashboard.html)。单seed、已查看诊断，两因素组合不能独立归因。2888新增执行完成，新确认集0次；停止，不自动扩预算。
+<!-- LONG_ONLINE_END -->
+
+**CAP trace＋价值学习完整实验已完成，状态`complete`。** [完整评估与验收报告](reviews/CAP_Trace_Value_Full_20261118.md)。新冻结200测试上，GLOBAL＋RL三个seed成功112/113/107，平均55.33%；原10CAP最强CAP003为86/200（43%）。多CAP价值选择有明确净收益，但trace相对无trace基线仅+2.17 pp、GLOBAL在线相对离线+3.17 pp，两项配对区间均跨零，尚不能独立确证trace或在线RL的稳定额外收益。GA离线已达53.50%，GA在线53.17%，LOCAL在线51.50%。
+
+正式9份模型各完成16000次V预训练、8000次Q初始化、200在线任务及6000次Q更新；8264正式物理执行全部完成，主实验与报告均退出0。18模型版本×200＋10单CAP×200＝5600最终执行，共享200个不同初态。所有模型先冻结后测试；没有挑seed、checkpoint或按测试追加训练。新在线200根与新测试200根及已知历史内容不重合，仍为同一场景生成规则。
+
+输出：`outputs/semantic_rl/cap_trace_value_full_20261118_02/`；宿主：`outputs/semantic_rl_hosts/cap_trace_value_full_20261118_02/`。验收从[报告](reviews/CAP_Trace_Value_Full_20261118.md)、[逐场景CSV](assets/cap_trace_value_full_20261118/per_case_results.csv)和[配对回放](assets/cap_trace_value_full_20261118/replays.html)进入。任务书：[完整实验](tasks/CAP_Trace_Value_Full_20261118.md)；此前[v7计划](tasks/CAP_Trace_Value_RL_20261118.md)及历史实验保留。本轮没有剩余执行项；后续若据此改方法，应另冻结确认测试集。
+
+## 本轮开发数据与执行记录（已完成）
+
+7CAP为009/003/001/010/006/007/002，在760开发根上保留560/570已知成功覆盖；完整无损覆盖仍需10CAP。[覆盖证据](assets/cap_trace_value_plan_20261118/development_cover.json)。2026-11-18新`cap_trace_value_dev_v1`已在本机全量数据验收通过：5320完整运行，1759成功、3561未成功，缺失/异常0；369726次执行决策、375046个含初态观测边界。此前4510条轨迹缺口已补齐，旧[数据缺口](assets/cap_trace_value_plan_20261118/data_requirements.json)保留为计划时的历史盘点。[本机验收报告](reviews/CAP_Trace_Value_Dev_Acceptance_20261118.md)。64条decision_budget保持独立截断标记；该次数据验收只检查已有数据，未执行CAP、插桩、仿真或训练；后续完整实验见上方。
+
+目标机旧增量包严格特征逐值验收失败：72个D/A方向点积差异，最大4.27e-17；12模型在该参考边界评分相同，仍不等价于strict通过。[历史检查记录](assets/cap_trace_value_plan_20261118/transfer_check.json)。用户已授权直接开展新方法，不再把旧通道差异作为新训练门槛。新trace实现与原CAP已通过短前缀上下文/记忆同值，pilot全部22693边界的行为CAP建议与记录一致。
+
+已完成336轨迹pilot与三组各2000次V更新、48次policy-switching闭环验证。依据用户新增明确授权，完整三seed离线/在线/新测试均已完成。新目标为成功1/其余0、gamma=1；旧reward不改写。软件集成检查另有12次短优化更新与1次开发根执行，单独保留，不进入研究结果；早期dtype修复前的特征提取尝试保留于pilot `_01`，未训练或执行物理任务。
+
+## 既有v6增量移交
+
+以下记录2026-11-17移交时的历史状态，不代表上方已完成实验的当前实现状态。
 
 用户要求将方案落盘、提交代码并增量移交，后续大计算在另一台PC执行。[移交说明](../development/Program_Trace_Transfer_20261117.md)：依赖原`priority_teacher_v1`，新增`cap_program_trace_v1`携带本轮证据、模型、回放及相对索引，不复制约10GB派生数组。自动插桩、稳定特征schema、完整CAP建议池与新候选级评分器尚未实现。先做无行为改变及示范候选覆盖验收，再冻结下一轮训练预算与新测试集；当前没有新训练、PPO或LLM运行。
 
@@ -20,17 +101,28 @@
 
 权威产物：`outputs/semantic_rl_authors/random_room_gda_scaling_20261117_03/RESULT.json`、`study.exit.json`。当前没有该任务的剩余评估。
 
-## 本机已完成：D/A 联合表示
+## 源PC已完成：D/A 联合表示
 
-用户已明确授权自主实现和实验。[本轮报告](reviews/DA_Joint_Representation_20261117.md)、[协议](tasks/DA_Joint_Representation_20261117.md)、[实现与解释边界](../development/DA_Joint_Representation_20261117.md)。监督器退出0；输出 `outputs/semantic_rl/da_joint_20261117_01`，权威结果 `outputs/semantic_rl_authors/da_joint_20261117_01/RESULT.json`。正式宿主约3小时20分钟，无新CAP/PPO/API调用。
+以下为源PC移交记录；对应完整outputs未随Git迁入当前目标PC。用户已明确授权自主实现和实验。[本轮报告](reviews/DA_Joint_Representation_20261117.md)、[协议](tasks/DA_Joint_Representation_20261117.md)、[实现与解释边界](../development/DA_Joint_Representation_20261117.md)。监督器退出0；输出 `outputs/semantic_rl/da_joint_20261117_01`，权威结果 `outputs/semantic_rl_authors/da_joint_20261117_01/RESULT.json`。正式宿主约3小时20分钟，无新CAP/PPO/API调用。
 
 48 donor、112分叉、12fit（各28000更新）、1536模型评估全部完成。24身份、44首动作配对和288模型接管前缀审计通过；270示范旧通道精确一致。新80初态两seed：原数据current 50/44、enriched 46/46、joint 47/47成功；补10后缀后分别40/41、49/50、46/45。联合乘积没有显示额外优势；enriched补数据自身提升4.375个百分点，但区间跨零。所有修复模型在10个示范接管点均10/10成功，从同10场景初态只有5～8成功；20次失败均在原第8接管边界前偏离旧donor前缀。局部修复可学习成立，稳定泛化与能力保持尚未成立。完整逐场景比较、排序诊断、图表和局限见报告；没有自动启动下一轮。
 
-## 远端优先级对照
+## 教师优先级对照已完成
 
-计划v5已登记：最快成功教师 vs 开发成功率优先教师的等场景/等更新预算监督对照。第二台PC专用迁移包和运行工具已准备并通过不同根目录/冷缓存验收（[记录](reviews/Priority_Transfer_20261117.md)），见[迁移说明](../development/Priority_Transfer_20261117.md)。本机没有启动或改动该优先级实验。
+最快成功教师 vs 开发成功数优先教师对照已在目标PC完成（[执行回报](results/Priority_Teacher_20261117.md)）。fastest三seed成功89/82/75，priority为87/82/83，各组分母200；平均41% vs 42%，未显示跨seed稳定收益。六份42000更新及1200评估全部完成、错误记录0、退出0。迁移准备的历史验收见[记录](reviews/Priority_Transfer_20261117.md)及[说明](../development/Priority_Transfer_20261117.md)。当前不新增CAP、RL或模型调用。
 
-用户最新提供远端执行回报：20:01结束、约3小时7分钟，6模型各42000更新、1200评估无错误。共享200初态上seed17/29/43的fastest为89/82/75成功，priority为87/82/83，均值41%→42%，未显示稳定优势。每seed约34%～36%场景改变成败；两组示范拟合均超过99%。priority含24114边界，fastest含20007，故不是纯标签交换。该信息来自用户粘贴的远端报告，本机尚未读取原始CSV或独立核验；不与源机历史fastest跨机器拼成因果比较。远端报告位置：`/home/tzl/repo/coimagine/docs/agent_exchange/results/Priority_Teacher_20261117.md`，数据位置：`outputs/semantic_rl/priority_teacher_20261117_01/per_case_results.csv`。
+### 目标PC执行（2026-11-17）
+
+用户已明确移交并授权本机完成固定优先级对照。执行状态：`complete`，交接状态：`ready_for_review`；等待用户决定后续，不自动扩展实验。
+目标路径为 `/home/tzl/repo/coimagine`；未修改冻结数据或运行源码。压缩包、1244负载文件、运行源码哈希及真实示范四级特征/目标/历史逐值验收通过，指定四组测试为11 passed。
+
+- 持久会话`priority_teacher_20261117`已随监督器正常结束；2026-11-17 16:54:39至20:01:38（Asia/Shanghai），总墙钟约3小时7分钟。
+- 实际入口：`outputs/transfers/venv_py311/bin/python -u -m tools.priority_transfer run --bundle outputs/transfers/priority_teacher_v1 --out outputs/semantic_rl/priority_teacher_20261117_01 --workers 8`；`OMP_NUM_THREADS=1 MKL_NUM_THREADS=1`。
+- 环境：保留原 `.venv`，独立安装Python 3.11.18（源机3.11.4）；交接指定六个包版本均匹配。系统bubblewrap与开发头文件已补齐，编译隔离保留。
+- 预算：两组各570示范、seed17/29/43、各42000更新/7200秒训练上限；4提取进程、6模型顺序拟合、8评估进程；1200执行共享200已查看诊断初态，每例1800ticks/300决策/1800秒。
+- 验收和环境记录：`outputs/transfers/priority_teacher_preflight_20261117/preflight.json`；日志：`outputs/transfers/priority_study.log`。
+- 产物：`outputs/semantic_rl/priority_teacher_20261117_01/`；`FINISHED.json`及`study.exit.json`均complete。模型哈希/更新数/评估分母核实通过，已生成`AUDITED_SUMMARY.json`、`per_case_results.csv`和`REPORT.md`。
+- 无剩余必需执行项。fastest/priority边界数20007/24114；拟合率及逐场景得失见回报。评估使用NumPy雷达回退；本机fastest不同于历史源机结果，跨机器完整复现未验证，不能混用两机结果形成教师对照。
 
 ## 清理与接续
 

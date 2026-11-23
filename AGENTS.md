@@ -20,6 +20,14 @@ Use its `verify_frozen` before evaluation. Historical baseline/search entry poin
 remain for reproduction only; do not silently retrofit new knowledge into old runs.
 This default does not authorize additional model calls or experiments.
 
+For subsequent planar CAP experiments, use the fixed 72 body-frame rays each tick.
+When estimating a target centre from scan points and fitted faces, express points,
+plane intercepts, and the prior centre in the visible points' local frame, then
+transform the result back. For the authored A/B routing line,
+`tools.cap_router_distill.init()` selects `fixed72-local-v1` for both members
+and returns the profile and effective source hashes for the run manifest.
+Use matching expert outcomes when constructing development strata.
+
 This repository implements the **2D validation** of the CoImagine v6 research plan.
 The authoritative documents are:
 

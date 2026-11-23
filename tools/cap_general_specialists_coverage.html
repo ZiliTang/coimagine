@@ -1,0 +1,91 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>候选 CAP 的成功覆盖</title><style>
+*{box-sizing:border-box}body{font:15px/1.5 system-ui,sans-serif;background:#f4f5f1;color:#19322e;margin:0}main{max-width:1360px;margin:auto;padding:20px clamp(12px,3vw,40px)}h1{font-size:28px;margin:.35em 0}h2{font-size:19px;margin:0 0 8px}a{color:#116959}p{margin:6px 0}article{background:white;border:1px solid #d3ddd6;padding:15px;border-radius:8px;min-width:0}.toolbar,.legend{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:10px 0}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin:14px 0}.scroll{overflow:auto;max-height:490px}select,button{font:inherit;color:inherit}select{max-width:100%}table{border-collapse:separate;border-spacing:2px;font-variant-numeric:tabular-nums}th,td{white-space:nowrap;text-align:center}th{font-size:12px}td button{border:0;min-width:36px;height:29px;border-radius:2px;cursor:pointer;font-size:12px}.marked{outline:2px solid #262f37;outline-offset:-2px}.rows{width:100%;border-spacing:0}.rows th,.rows td{padding:5px;border-bottom:1px solid #e4e9e5}.rows th:first-child,.rows td:first-child{text-align:left}.muted,small{color:#52665d}.legend span:before{content:"";display:inline-block;width:10px;height:10px;margin-right:4px;border-radius:2px;background:var(--c)}#plot{width:100%;height:auto;display:block}.ids{overflow-wrap:anywhere}details{margin:.65em 0}summary{cursor:pointer}#summary{font-size:16px}.strip{display:grid;grid-template-columns:repeat(var(--n),minmax(6px,1fr));gap:1px;min-width:max(530px,100%);flex:1}.tile{height:15px;display:block}.striprow{display:flex;align-items:center;gap:6px;margin:2px 0;min-width:max-content}.striprow strong{width:48px;font-size:12px}.stripbox{overflow-x:auto}.tile:hover,.tile:focus{outline:2px solid #141c1b;z-index:1}@media(max-width:850px){.grid{grid-template-columns:1fr}.toolbar{align-items:flex-start}}
+</style><main><a href="/#general62">返回 6.2 Sol 面板</a>　<a href="/general62-journal">作者开发记录</a><h1>候选 CAP 的成功覆盖</h1>
+<div class="toolbar"><label>场景集 <select id="panel"></select></label><label>候选范围 <select id="scope"></select></label><span class="muted" id="status"></span></div>
+<p id="summary"></p><div class="grid"><article><h2>两两覆盖关系</h2><div class="toolbar"><label>格内显示 <select id="metric"><option value="jaccard">交集 / 并集（%）</option><option value="both">共同成功数</option><option value="union">至少一方成功数</option></select></label></div><div class="scroll" id="matrix"></div><small>行是参考版本 A，列是对照版本 B。点击任一格查看这对版本。每格只统计双方均有完整结果的房间。</small></article>
+<article><h2>同一批场景上的变化</h2><div class="toolbar"><label>参考 A <select id="left"></select></label><label>对照 B <select id="right"></select></label></div><p id="pair"></p><div class="legend" id="legend"></div><svg id="plot" role="img" aria-label="同一场景在两个候选版本的成功变化，投影到共同几何主成分" viewBox="0 0 600 260"></svg><p class="muted" id="plotnote"></p><p id="room"></p><div id="lists"></div></article></div>
+<article><h2>按提交顺序看覆盖变化</h2><div class="scroll" id="trend"></div><small>每行与上一个显示的版本在共同实测场景上比较。回溯并集累计本表各候选已观察到的成功，部署时能保留多少仍取决于路由。</small></article>
+<article style="margin-top:14px"><h2>逐场景成败</h2><p class="muted">每行一个版本，每列固定为同一房间。绿色成功，棕色失败，灰色待测，紫色执行异常。点击格子查看场景编号。</p><div class="stripbox" id="heat"></div><p id="picked"></p></article></main>
+<script>
+const $=x=>document.getElementById(x);
+let data,priorPayload='',pairPinned=false,picked=null;
+const colors={both:'#13776e',gain:'#2f65b0',loss:'#cc793a',neither:'#d3dcd6',missing:'#fff'};
+const types={both:'共同成功',gain:'B 救回',loss:'B 丢失',neither:'均失败',missing:'缺少成对结果'};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const valid=v=>v===0||v===1;
+const outcome=v=>v===1?'成功':v===0?'失败':v===-1?'执行异常':'待测';
+function select(el,options,preferred){
+ if(!options.some(([v])=>v===preferred))preferred=options[0]?.[0]??'';
+ if(el.dataset.keys!==JSON.stringify(options)){el.replaceChildren(...options.map(([v,l])=>new Option(l,v)));el.dataset.keys=JSON.stringify(options)}
+ el.value=preferred;
+}
+function compare(a,b,ids){
+ const buckets={both:[],gain:[],loss:[],neither:[],missing:[]};
+ for(const k of ids){
+  const x=a.results[k],y=b.results[k];
+  buckets[!valid(x)||!valid(y)?'missing':x?(y?'both':'loss'):(y?'gain':'neither')].push(k);
+ }
+ return buckets
+}
+function stats(a,ids){return {wins:ids.filter(k=>a.results[k]===1).length,done:ids.filter(k=>valid(a.results[k])).length}}
+function showRoom(id){picked=id;const versions=view().vs;
+ $('picked').textContent=id+'　'+versions.map(c=>c.sid+' '+outcome(c.results[id])).join(' · ');
+ const a=versions.find(c=>c.sid===$('left').value),b=versions.find(c=>c.sid===$('right').value);
+ $('room').textContent=a&&b?id+'　'+a.sid+' '+outcome(a.results[id])+' → '+b.sid+' '+outcome(b.results[id]):'';
+}
+function view(){const ids=data.panels[Number($('panel').value)||0].ids;const scope=$('scope').value;
+ return {ids,vs:data.candidates.filter(c=>scope==='all'||(scope==='committed'?c.committed:String(c.round)===scope))}}
+function render(){
+ select($('panel'),data.panels.map((p,i)=>[String(i),p.name]),$('panel').value);
+ const rounds=[...new Set(data.candidates.map(c=>c.round).filter(n=>n!=null))].sort((a,b)=>a-b);
+ select($('scope'),[['all','全部候选'],['committed','仅入库成员'],...rounds.map(n=>[String(n),'第 '+n+' 轮'])],$('scope').value);
+ const {ids,vs}=view(), n=ids.length;
+ const totals=vs.map(c=>stats(c,ids)),full=vs.filter((c,i)=>totals[i].done===n);
+ const observed=new Set(vs.flatMap(c=>ids.filter(k=>c.results[k]===1)));
+ const best=full.reduce((a,b)=>!a||stats(b,ids).wins>stats(a,ids).wins?b:a,null);
+ $('summary').textContent=vs.length+' 个候选 · 完整测过本场景集 '+full.length+' 个 · 已观察成功并集 '+observed.size+'/'+n+(best?' · 完整结果最佳 '+best.sid+' '+stats(best,ids).wins+'/'+n:'');
+ const opts=vs.map(c=>[c.sid,c.sid+(c.committed?' · 入库':'')]);
+ const auto=full.length?full:vs;
+ select($('left'),opts,pairPinned?$('left').value:auto.at(-2)?.sid??auto.at(-1)?.sid);
+ select($('right'),opts,pairPinned?$('right').value:auto.at(-1)?.sid);
+ if(!vs.length){for(const k of ['matrix','pair','plot','plotnote','room','lists','trend','heat','picked','legend'])$(k).replaceChildren();return}
+ const a=vs.find(c=>c.sid===$('left').value), b=vs.find(c=>c.sid===$('right').value);
+ let body='<table><thead><tr><th>A ╲ B</th>'+vs.map(c=>'<th>'+esc(c.sid)+'</th>').join('')+'</tr></thead><tbody>';
+ for(const x of vs){
+  body+='<tr><th>'+esc(x.sid)+'</th>';
+  for(const y of vs){const p=compare(x,y,ids),d=n-p.missing.length,common=p.both.length,u=common+p.gain.length+p.loss.length;
+   const j=u?common/u:null;const metric=$('metric').value;
+   const val=!d?'—':metric==='jaccard'?(j===null?'—':Math.round(100*j)+'%'):metric==='both'?common:u;
+   const fill=j===null?'#e7eae7':'hsl(169,38%,'+(94-57*j)+'%)';
+   body+='<td><button data-a="'+x.sid+'" data-b="'+y.sid+'" style="background:'+fill+';color:'+(j>.77?'white':'#17352e')+'" class="'+(x===a&&y===b?'marked':'')+'" title="共同实测 '+d+'/'+n+'，共同成功 '+common+'，并集 '+u+'">'+val+'</button></td>'
+  }body+='</tr>'
+ }$('matrix').innerHTML=body+'</tbody></table>';
+ const p=compare(a,b,ids),d=n-p.missing.length;
+ $('pair').textContent='共同实测 '+d+'/'+n+' · '+a.sid+' → '+b.sid+'　救回 '+p.gain.length+'　丢失 '+p.loss.length+'　净变化 '+(p.gain.length-p.loss.length);
+ $('legend').innerHTML=Object.entries(types).map(([k,v])=>'<span style="--c:'+colors[k]+'">'+v+' '+p[k].length+'</span>').join('');
+ const keep=new Set([...$('lists').querySelectorAll('details[open]')].map(el=>el.dataset.k));
+ $('lists').innerHTML=['gain','loss','both'].map(k=>'<details data-k="'+k+'" '+(keep.has(k)?'open':'')+'><summary>'+types[k]+'的场景（'+p[k].length+'）</summary><div class="ids">'+(p[k].map(esc).join('、')||'无')+'</div></details>').join('');
+ const coords=Object.values(data.points),xs=coords.map(z=>z[0]),ys=coords.map(z=>z[1]),lo=Math.min(...xs),bt=Math.min(...ys),w=Math.max(...xs)-lo,h=Math.max(...ys)-bt;
+ const projected=ids.filter(k=>data.points[k]).length;
+ $('plotnote').textContent='沿用原始初态的共同 PCA 坐标，点击或悬停查看房间。图中 '+projected+'/'+n+' 个初态有坐标。';
+ $('plot').innerHTML='<path d="M30 12 V235 H575" fill="none" stroke="#bbc7bf"/><text x="548" y="253" font-size="12">PC1</text><text x="3" y="19" font-size="12">PC2</text>'+['missing','neither','both','gain','loss'].map(type=>p[type].filter(k=>data.points[k]).map(k=>{
+  const [x,y]=data.points[k];return '<circle data-id="'+esc(k)+'" cx="'+(35+(x-lo)*530/w)+'" cy="'+(226-(y-bt)*204/h)+'" r="4.6" fill="'+colors[type]+'" stroke="'+(type==='missing'?'#919e96':'white')+'" stroke-width=".8"><title>'+esc(k)+' · '+types[type]+'</title></circle>'}).join('')).join('');
+ body='<table class="rows"><tr><th>轮 / 候选</th><th>已测</th><th>成功</th><th>共同实测</th><th>救回</th><th>丢失</th><th>历史首次成功</th><th>回溯并集</th></tr>';const seen=new Set();
+ for(let i=0;i<vs.length;i++){
+  const c=vs[i],old=seen.size;for(const k of ids)if(c.results[k]===1)seen.add(k);
+  const q=i?compare(vs[i-1],c,ids):null;const both=q?n-q.missing.length:0;
+  body+='<tr><td>'+(c.round??'—')+' / <a href="/general62-source?sid='+c.sid+'" target="_blank">'+c.sid+'</a></td><td>'+totals[i].done+'/'+n+'</td><td>'+totals[i].wins+'</td><td>'+(q?both:'—')+'</td><td>'+(both?q.gain.length:'—')+'</td><td>'+(both?q.loss.length:'—')+'</td><td>'+(seen.size-old)+'</td><td>'+seen.size+'</td></tr>'
+ }$('trend').innerHTML=body+'</table>';
+ $('heat').innerHTML=vs.map(c=>'<div class="striprow"><strong>'+c.sid+'</strong><div class="strip" style="--n:'+n+'">'+ids.map(k=>{const v=c.results[k];return '<span class="tile" data-id="'+esc(k)+'" title="'+esc(k)+' · '+outcome(v)+'" style="background:'+(v===1?'#16796c':v===0?'#c39267':v===-1?'#8e558d':'#dce2dc')+'"></span>'}).join('')+'</div></div>').join('');
+ if(picked&&ids.includes(picked))showRoom(picked);else{$('room').textContent='';$('picked').textContent=''}
+}
+$('matrix').onclick=e=>{const el=e.target.closest('button');if(!el)return;pairPinned=true;$('left').value=el.dataset.a;$('right').value=el.dataset.b;render()};
+for(const id of ['heat','plot'])$(id).onclick=e=>{const k=e.target.getAttribute('data-id');if(k)showRoom(k)};
+for(const id of ['left','right','metric','scope','panel'])$(id).onchange=()=>{if(id==='scope'||id==='panel'){pairPinned=false;picked=null}else if(id!=='metric')pairPinned=true;render()};
+async function update(){try{const r=await fetch('/general62-coverage-data',{cache:'no-store'});if(!r.ok)throw Error(r.status);
+ const payload=await r.text();if(payload!==priorPayload){data=JSON.parse(payload);render();priorPayload=payload}
+ $('status').textContent='更新 '+new Date().toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai'})+' · 每 5 秒刷新'
+ }catch(err){$('status').textContent='更新失败：'+String(err)}}
+update();setInterval(update,5000);
+</script></html>

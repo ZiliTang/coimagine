@@ -1,0 +1,1541 @@
+[
+  {
+    "id": "semantic-library",
+    "date": "2026-11-23",
+    "title": "让 CAP 作者选择语义专长",
+    "motivation": "几何上交错的专家成败很难路由。作者能否主动形成可辨认的专长？",
+    "goal": "对比常规开发和半开放语义专精开发，冻结专家后测条件内外的效果。",
+    "result": "靠墙专家在声明条件内救回 8 个、丢失 1 个。两组混合策略的交互差为 +3.5 个百分点，区间跨零。",
+    "analysis": "局部专长可以成立；整库的净增益还需要逐房间检验。",
+    "folder": "2026-11-23_semantic_library"
+  },
+  {
+    "id": "push-contract",
+    "date": "2026-11-23",
+    "title": "核对 PUSH 指令的实际效果",
+    "motivation": "策略经常发出 PUSH，但机器人可能把执行时间花在接近或卡滞上。",
+    "goal": "在真实前缀和小扰动上测接触与实际推进，比较同面换点和拆分接触。",
+    "result": "首批留出中，同面换点把局部达标从 52/116 提到 77/116。收窄触发后，整局从 73/200 到 74/200。",
+    "analysis": "局部控制有改善，整局收益仍取决于后续策略的适应。",
+    "folder": "2026-11-23_push_contract"
+  },
+  {
+    "id": "push-phases",
+    "date": "2026-11-23",
+    "title": "让 CAP 读取接触反馈再推动",
+    "motivation": "找到支持面、接触稳定和有效推动发生在不同阶段。",
+    "goal": "比较接触拆分、反馈与就位后调速。",
+    "result": "两位 CAP 在 200 个新房间上的平均成功率从 38.5% 到 44.75%。",
+    "analysis": "在该面板上，确认接触后的调速值得保留并单独消融。",
+    "folder": "2026-11-23_cap_push_phases"
+  },
+  {
+    "id": "semantic-factorial",
+    "date": "2026-11-23",
+    "title": "执行器优化后复测语义混合",
+    "motivation": "更可靠的 PUSH 可能改变策略互补和路由难度。",
+    "goal": "交叉比较执行器、专家库和候选动作评分输入。",
+    "result": "400 个新房间中七个冻结 CAP 的成功数均提高。常规库并集 259→274，专精库 199→225。",
+    "analysis": "执行能力得到改善；逐边界评分仍未稳定超过固定强专家。",
+    "folder": "2026-11-23_option_semantic_factorial"
+  },
+  {
+    "id": "handoff-time",
+    "date": "2026-11-23",
+    "title": "首次分歧后何时交接",
+    "motivation": "首次动作分歧时，两条路线的长期优势可能还看不出来。",
+    "goal": "在相同前缀比较立即、延迟 3 条和 10 条命令交接。",
+    "result": "在诊断面板，后两种交接事后合计救回 17 个双专家都失败的房间；新面板锁定路由 101/200，固定 A 为 104/200。",
+    "analysis": "专家序列可以互补，实际选择时机仍然困难。",
+    "folder": "2026-11-23_cap_route_horizon"
+  },
+  {
+    "id": "route-information",
+    "date": "2026-11-23",
+    "title": "路线优势何时变得可辨认",
+    "motivation": "实际失败可能远晚于首次分歧。",
+    "goal": "比较公开历史、物理状态与两条真实后缀的选路信息。",
+    "result": "新面板公开路由成功 100/200，固定 A 为 105/200；部分双路线仍存活的窗口中，两条真实后缀提供了更多信息。",
+    "analysis": "后期才显现的路线差异难以直接用于分歧当下的部署决策。",
+    "folder": "2026-11-23_cap_route_information"
+  },
+  {
+    "id": "terminal-value",
+    "date": "2026-11-23",
+    "title": "终局价值对一 tick 扰动的敏感性",
+    "motivation": "细小动作时长偏差可能改变整局成败。",
+    "goal": "独立拟合七位专家的终距与成功率，并与真实分叉比较。",
+    "result": "343 个真实分叉中有 31 个成败翻转。翻转分支首个后继的平均预测终距差约 2 cm，最终实际平均差 49 cm。",
+    "analysis": "全局平均可预测性掩盖了少数关键分叉。研究重点转向具体动作后果。",
+    "folder": "2026-11-23_cap_terminal_value"
+  },
+  {
+    "id": "preparation",
+    "date": "2026-11-23",
+    "title": "一位专家能为接手者准备什么",
+    "motivation": "B 会不会推进，比直接预测哪个专家最后成功更容易验证。",
+    "goal": "等时比较 A 准备、C 准备和制动，然后交给同一 B。",
+    "result": "新面板 A 准备后接触并推进 74/182，等时制动为 31/182。事件交接成功 88/200，固定 A 为 94/200。",
+    "analysis": "公开观测能预测近期推进（AUC .856），仍难识别交接相对继续 A 的优势。",
+    "folder": "2026-11-23_cap_preparation_pairs",
+    "assets": [
+      [
+        "paired_replay.png",
+        "四路线重放"
+      ],
+      [
+        "paired_outcomes.png",
+        "配对结果"
+      ]
+    ]
+  },
+  {
+    "id": "topology",
+    "date": "2026-11-23",
+    "title": "局面拓扑与 CAP 转移图",
+    "motivation": "如果 A 能稳定造出一种局面，而 B 在那里能补上 A 的短板，混合就有可检验的机制。",
+    "goal": "用八种物理前置关系监督公开短历史，将同一前缀的 A、B 后继画成图，并实测 A 造局后交给 B 的完整后缀。",
+    "folder": "2026-11-23_cap_topology_graph",
+    "assets": [
+      [
+        "graph.png",
+        "转移图"
+      ],
+      [
+        "transition_matrix.png",
+        "完整转移矩阵"
+      ],
+      [
+        "replays.html",
+        "配对重放"
+      ],
+      [
+        "handoffs.csv",
+        "逐房间交接"
+      ],
+      [
+        "results.json",
+        "全部统计"
+      ],
+      [
+        "method.md",
+        "指标定义"
+      ]
+    ],
+    "run": "cap_topology_graph_20261123_01",
+    "progress": [
+      {
+        "label": "开发房间",
+        "glob": "runs/dev/*.json",
+        "total": 200
+      },
+      {
+        "label": "新房间",
+        "glob": "runs/fresh/*.json",
+        "total": 200
+      },
+      {
+        "label": "开发节点与规则冻结",
+        "file": "dev_freeze.json",
+        "total": 1
+      },
+      {
+        "label": "图、回放与统计",
+        "file": "FINISHED.json",
+        "total": 1
+      }
+    ],
+    "result": "200 个新房间有 946 个同前缀转移对。后侧站位都不可用时，两位专家在 120 tick 后各有 178/194 次仍留在该簇，其中 175 个前缀两者都未离开。",
+    "analysis": "同一批 400 个预定分叉，继续 A 成功 194。即使事后按真实簇选择最佳专家，也只到 195；逐前缀选胜者则可达 223。六个局面仍合并了不同的后续命运。"
+  },
+  {
+    "id": "push-direction",
+    "date": "2026-11-23",
+    "title": "按实际 PUSH 方向检查前置条件",
+    "motivation": "局面图以目标方向选取参考后侧面，专家实际请求的推向有时不同。",
+    "goal": "在开发与新面板各抽 60 个房间，按实际推手和推向测同面接触、通道净空与单次有效位移。",
+    "folder": "2026-11-23_cap_topology_graph",
+    "assets": [
+      [
+        "actual_pushes.csv",
+        "逐提案审计"
+      ],
+      [
+        "actual_pushes.json",
+        "分组结果"
+      ]
+    ],
+    "run": "cap_topology_graph_20261123_01",
+    "progress": [
+      {
+        "label": "开发房间（按批落盘）",
+        "rows": "pushes_dev.json",
+        "total": 60
+      },
+      {
+        "label": "新房间（按批落盘）",
+        "rows": "pushes_fresh.json",
+        "total": 60
+      },
+      {
+        "label": "配对统计",
+        "finding": "actual_pushes.json",
+        "total": 1
+      }
+    ],
+    "result": "新面板有 145 条去重后的实际 PUSH。已接触请求侧面时达标 46/49，其他情况 31/96。",
+    "analysis": "当前提案中，正确侧面接触与普通目标接触完全重合。眼前的物理条件很有预测力，法向提供的额外信息仍需分开验证。"
+  },
+  {
+    "id": "value-dag",
+    "date": "2026-11-23",
+    "title": "时间展开的局面图能否回传价值与风险",
+    "folder": "2026-11-23_cap_value_dag",
+    "run": "cap_value_dag_20261123_01",
+    "motivation": "同簇回访可以有推进；共享节点的来路也可能决定后续成败。",
+    "goal": "从真实配对后缀检验两步转移的终距、风险和选路能力，并用全新房间复核。",
+    "assets": [
+      [
+        "plan.md",
+        "全部假设与验证计划"
+      ],
+      [
+        "metrics.json",
+        "分组统计"
+      ],
+      [
+        "predictions.csv",
+        "逐路线预测"
+      ],
+      [
+        "value.png",
+        "预测与闭环结果"
+      ],
+      [
+        "risk.png",
+        "风险分层与路由"
+      ],
+      [
+        "method.md",
+        "估值方法"
+      ],
+      [
+        "transitions.json",
+        "单窗口边概率"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发前缀与预算",
+        "glob": "data/dev/*.json",
+        "total": 200
+      },
+      {
+        "label": "旧面板前缀复核",
+        "glob": "data/diagnostic/*.json",
+        "total": 200
+      },
+      {
+        "label": "全新房间四路线",
+        "glob": "data/confirm/*.json",
+        "total": 200
+      },
+      {
+        "label": "开发估值冻结",
+        "file": "frozen.json",
+        "total": 1
+      },
+      {
+        "label": "确认评估与报告",
+        "file": "FINISHED.json",
+        "total": 1
+      }
+    ],
+    "result": "新 200 房间、400 个预定时点。加细公开图的终距 MAE 为 0.952 m，终距排序为 51.0%；按预测成功率选路成功 211，固定 AA 为 212。",
+    "analysis": "来路和公开进展改善绝对估值；高风险四分位低估误差。560 条同簇回访中有 99 条后来成功。当前证据支持风险诊断，未见稳定闭环路由收益。"
+  },
+  {
+    "id": "value-dag-pool",
+    "date": "2026-11-23",
+    "title": "共同自环能否找出整库覆盖缺口",
+    "motivation": "用已冻结的图为下一轮 CAP 作者选择值得开发的房间。",
+    "goal": "冻结第 4 条命令后的双专家自环筛查；在新 200 房间自然执行七位原专家，测七位全败的富集程度和漏检。",
+    "folder": "2026-11-23_cap_value_dag",
+    "run": "cap_value_dag_20261123_01",
+    "result": "新 200 房间的早期共同自环标记 23 个，其中 18 个七位全败；其余 177 个中有 33 个全败。",
+    "analysis": "开发集上的富集在独立面板复现，可以把这条规则用于开发候选池的优先抽样。 筛查找回 18/51 个全败房间，尚未编写新成员。",
+    "assets": [
+      [
+        "pool.md",
+        "覆盖缺口筛查"
+      ],
+      [
+        "confirm_pool.csv",
+        "逐房间对照"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发筛查",
+        "finding": "development_pool.json",
+        "total": 1
+      },
+      {
+        "label": "七 CAP 自然闭环",
+        "glob": "singles/*/*.json",
+        "total": 1400
+      },
+      {
+        "label": "新面板统计",
+        "finding": "pool.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "option-handoff",
+    "date": "2026-11-23",
+    "title": "一条 option 准备、一条 option 接手",
+    "folder": "2026-11-23_cap_option_handoff",
+    "run": "cap_option_handoff_20261123_01",
+    "motivation": "检验 A 建立的公开局面能否支持 B 真正接手。",
+    "goal": "配对 AA、AB、BA、BB，每次只执行一条完整提案；以共同后续 A 比较接手收益。",
+    "assets": [
+      [
+        "plan.md",
+        "验证设计"
+      ],
+      [
+        "handoff.png",
+        "局部转移与接手"
+      ],
+      [
+        "metrics.json",
+        "配对统计"
+      ],
+      [
+        "rooms.csv",
+        "逐房间得失"
+      ],
+      [
+        "examples.json",
+        "具体分叉"
+      ],
+      [
+        "edge_audit.json",
+        "两单专家都失败房间中的成功组合"
+      ],
+      [
+        "support.csv",
+        "各节点的样本支持"
+      ],
+      [
+        "dev_candidates.json",
+        "达到支持门槛的开发候选"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发房间",
+        "glob": "dev/*.json",
+        "total": 200
+      },
+      {
+        "label": "交接规则冻结",
+        "file": "frozen.json",
+        "total": 1
+      },
+      {
+        "label": "全新房间配对确认",
+        "glob": "fresh/*.json",
+        "total": 200
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "result": "全新 200 房间。从所有起点开始，A 新建立「公开拓扑簇 4」后交给 B 一次，条件触发 18 个，条件交接 99/200，全 A 102/200，全 B 90/200。",
+    "analysis": "79 个两位原专家全败的房间里，有 10 个能通过实际两条命令的重组获得成功；冻结规则未选中这些分支。触发时真实物理簇与公开判定相符 5/18。"
+  },
+  {
+    "id": "option-handoff-opportunities",
+    "date": "2026-11-23",
+    "title": "沿实际轨迹寻找第一次可交接机会",
+    "folder": "2026-11-23_cap_option_handoff",
+    "run": "cap_option_handoff_20261123_01",
+    "motivation": "开发集一次预定分叉仅 14 次可配对接手。",
+    "goal": "同一冻结条件，在真实 A 轨迹每个边界检查，每房间至多交接一次。",
+    "assets": [
+      [
+        "dense_plan.md",
+        "补充设计"
+      ],
+      [
+        "opportunities.md",
+        "结果"
+      ],
+      [
+        "opportunities.csv",
+        "逐房间结果"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "逐 option 检查的确认房间",
+        "glob": "opportunities/*.json",
+        "total": 200
+      },
+      {
+        "label": "配对汇总",
+        "finding": "opportunities.md",
+        "total": 1
+      }
+    ],
+    "result": "新 200 房间中实际触发 109 次，B 接手整局 100/200，继续 A 为 102/200；救回 5、丢失 7。",
+    "analysis": "同一接手点只执行一条提案，B 达到 2 cm 推进的有 13/109，A 为 14/109。 两组共用同一后续 A，200 个基线哈希一致。"
+  },
+  {
+    "id": "authored-handoff",
+    "date": "2026-11-23",
+    "title": "6.2sol 开发接手专家 B 与图路由",
+    "folder": "2026-11-23_authored_handoff",
+    "run": "cap_authored_handoff_20261123_01",
+    "motivation": "针对 A 的故障与相似自恢复前缀开发 B，检验组合能力及规划的额外作用。",
+    "goal": "冻结 B 后，比较两个单专家、简单触发、逐 option 图规划。",
+    "assets": [
+      [
+        "plan.md",
+        "验证设计"
+      ],
+      [
+        "author.md",
+        "作者策略与试跑"
+      ],
+      [
+        "routes.csv",
+        "独立面板逐房间结果"
+      ],
+      [
+        "metrics.json",
+        "配对统计"
+      ],
+      [
+        "routing.png",
+        "图路由与后缀估值"
+      ],
+      [
+        "examples.png",
+        "成败翻转的实际轨迹"
+      ],
+      [
+        "examples.md",
+        "案例编号与结局"
+      ],
+      [
+        "patch_gate.md",
+        "条件程序与首次分歧对照"
+      ],
+      [
+        "patch_rooms.csv",
+        "补丁逐房间结果"
+      ],
+      [
+        "patch_examples.json",
+        "首次改动作的因果对照"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发 A 轨迹",
+        "glob": "baseline/*.json",
+        "total": 200
+      },
+      {
+        "label": "故障与自恢复对照",
+        "file": "family.json",
+        "total": 1
+      },
+      {
+        "label": "本轮实际提交的作者试跑版本（最多三次）",
+        "glob": "probe[1-3].json",
+        "total": 3
+      },
+      {
+        "label": "B 作者选择与冻结",
+        "file": "member.json",
+        "total": 1
+      },
+      {
+        "label": "转移建模房间",
+        "glob": "train/*.json",
+        "total": 176
+      },
+      {
+        "label": "图冻结",
+        "file": "graph.json",
+        "total": 1
+      },
+      {
+        "label": "新房间闭环",
+        "glob": "test/*.json",
+        "total": 200
+      },
+      {
+        "label": "研究报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "result": "A 98/200，B 106/200，lock 104/200，graph 96/200。",
+    "analysis": "冻结条件下接手 B 相对 A的配对区间包含零；图相对简单触发的配对区间包含零。"
+  },
+  {
+    "id": "authored-router",
+    "date": "2026-11-23",
+    "title": "由 6.2sol 为冻结的 A、B 编写路由",
+    "motivation": "同一对专家的成功房间有差异。作者能否从公开历史判断何时交接？",
+    "goal": "12 分钟、最多 3 版、每版试跑同一批 24 个开发房间。在与图相同的交接起点后允许反复选择。",
+    "run": "cap_authored_router_20261123_01",
+    "folder": "2026-11-23_authored_router",
+    "progress": [
+      {
+        "label": "作者首次完整试跑",
+        "file": "campaign/probe1.json",
+        "total": 1
+      },
+      {
+        "label": "选定版本并核验清单",
+        "file": "frozen.json",
+        "total": 1
+      },
+      {
+        "label": "新房间逐例配对闭环",
+        "glob": "test/*.json",
+        "total": 200
+      },
+      {
+        "label": "分析报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "result": "A 102/200，B 106/200，lock 109/200，graph 104/200，router 118/200。",
+    "analysis": "对开发最强单策略 A，救回 22 个、丢失 6 个；对图救回 25 个、丢失 11 个。",
+    "assets": [
+      [
+        "router.py",
+        "冻结路由源码"
+      ],
+      [
+        "rooms.csv",
+        "逐房间配对结果"
+      ],
+      [
+        "author_notes.md",
+        "作者选版与判断依据"
+      ]
+    ]
+  },
+  {
+    "id": "router-distill",
+    "title": "从可查询的路由程序蒸馏 actor",
+    "date": "2026-11-23",
+    "folder": "2026-11-23_router_distill",
+    "run": "cap_router_distill_20261123_01",
+    "motivation": "用作者小规模交互试跑得到的条件程序作教师，检验精简语义和历史是否有助于保留它的闭环能力。",
+    "goal": "三种输入共享教师标签，附同量房间上的学生访问状态重标注对照。冻结后在 200 个新房间与教师和两位专家同场比较。",
+    "result": "规则教师 106/200，几何＋提案 103/200，再加历史 101/200，再加精简语义 102/200，精简语义＋学生采样重标注 103/200。",
+    "analysis": "精简语义学生相对冻结教师逐房间救回 11 个、丢失 15 个。",
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间配对结果"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "初始开发房间",
+        "glob": "base/*.npz",
+        "total": 200
+      },
+      {
+        "label": "第二批教师采样",
+        "glob": "extra/*.npz",
+        "total": 200
+      },
+      {
+        "label": "第二批学生采样、教师标注",
+        "glob": "relabel/*.npz",
+        "total": 200
+      },
+      {
+        "label": "最终 actor 冻结",
+        "file": "lock.json",
+        "total": 1
+      },
+      {
+        "label": "新房间闭环",
+        "glob": "test/*.json",
+        "total": 200
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "union-iteration",
+    "title": "在专家开发成功并集上迭代语义 actor",
+    "date": "2026-11-23",
+    "folder": "2026-11-23_union_iteration",
+    "run": "cap_union_iteration_20261123_01",
+    "motivation": "能否利用基础专家可解房间中的实际终局差别，改善蒸馏 actor 的选择？",
+    "goal": "两轮真实单步分叉更新，单独检查全新自然房间的并集内收益和并集外保留。",
+    "result": "开发并集 226→229→234/271。新自然房间 116→119/200。",
+    "analysis": "对初始 actor 救回 13 个、丢失 10 个。",
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间配对结果"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发池单专家结果",
+        "glob": "screen/*.json",
+        "total": 400
+      },
+      {
+        "label": "第一轮配对分叉房间",
+        "glob": "round1/*.npz",
+        "total": 271
+      },
+      {
+        "label": "第二轮配对分叉房间",
+        "glob": "round2/*.npz",
+        "total": 271
+      },
+      {
+        "label": "第二轮开发复测",
+        "glob": "dev_eval/*.json",
+        "total": 271
+      },
+      {
+        "label": "全新自然房间",
+        "glob": "test/*.json",
+        "total": 200
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "union-trend",
+    "title": "六轮分叉策略迭代与房间对称性检查",
+    "date": "2026-11-23",
+    "folder": "2026-11-23_union_trend",
+    "run": "cap_union_trend_20261123_01",
+    "motivation": "同一并集上的救回能力能否跨轮积累？旋转和镜像是否保持专家成败？",
+    "goal": "在原预算下固定续训到第 6 轮，逐轮诊断，并在全新面板确认第 6 对第 2 轮。另行复测对称房间。",
+    "result": "开发 226 → 229 → 234 → 246 → 249 → 250 → 251/271。独立面板第 0、2、6 轮 110 → 111 → 104/200。",
+    "analysis": "相对第 2 轮独立确认救回 5 个、丢失 12 个。",
+    "assets": [
+      [
+        "curves.png",
+        "七个 checkpoint 的闭环与保留率"
+      ],
+      [
+        "rooms.csv",
+        "逐房间成功记录"
+      ],
+      [
+        "symmetry.md",
+        "旋转与镜像诊断"
+      ],
+      [
+        "mechanism.md",
+        "对称翻转的因果诊断"
+      ],
+      [
+        "mechanism_cases.csv",
+        "58 个翻转配对的干预结果"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "第 3 轮配对分叉房间",
+        "glob": "round3/*.npz",
+        "total": 271
+      },
+      {
+        "label": "第 4 轮配对分叉房间",
+        "glob": "round4/*.npz",
+        "total": 271
+      },
+      {
+        "label": "第 5 轮配对分叉房间",
+        "glob": "round5/*.npz",
+        "total": 271
+      },
+      {
+        "label": "第 6 轮配对分叉房间",
+        "glob": "round6/*.npz",
+        "total": 271
+      },
+      {
+        "label": "对称诊断母房间",
+        "glob": "symmetry/rooms/*.json",
+        "total": 32
+      },
+      {
+        "label": "诊断面板",
+        "glob": "diagnostic/*.json",
+        "total": 200
+      },
+      {
+        "label": "独立确认面板",
+        "glob": "confirmation/*.json",
+        "total": 200
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "lidar-density",
+    "title": "逐 tick 错相扫描能否让物体边界更稳定",
+    "date": "2026-11-23",
+    "folder": "2026-11-23_lidar_density",
+    "run": "cap_lidar_density_20261123_01",
+    "motivation": "同一房间镜像后 CAP 估计的中心能相差 16 cm。射线太稀、相邻帧运动和估计公式各自起多大作用？",
+    "goal": "同状态比较 72 束、144 束、逐帧错相及两帧合并，用冻结 CAP A 检查闭环结果。",
+    "result": "冻结 A 的 64 局：固定 72 束与瞬时 144 束均成功 31，单帧错相 34，合并两帧 18。",
+    "analysis": "运动目标上瞬时加密改善可用面，直接拼前帧明显恶化法向；已知镜像异常对中心估计的坐标原点更敏感。",
+    "progress": [
+      {
+        "label": "开发母房间（每间 8 局）",
+        "glob": "rooms/*.json",
+        "total": 32
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "lidar-gate",
+    "date": "2026-11-23",
+    "title": "局部中心估计与静止门控错相扫描",
+    "folder": "2026-11-23_lidar_gate",
+    "run": "cap_lidar_gate_20261123_01",
+    "motivation": "中心估计对坐标原点敏感，连续两帧拼接在 PUSH 时容易混入旧的边界。",
+    "goal": "比较两种中心估计与三种扫描。在 32 个原房间及镜像做诊断，并在既有自然面板预选的 64 个房间复测。",
+    "result": "完整自然面板 200 局中，固定 72 束原版 93，局部中心 99，单帧错相 97。",
+    "analysis": "固定局部中心救回 10 个、丢失 4 个。静止融合使低运动快照中心误差中位数从 1.38 降至 0.97 cm，128 个已配对场景中与单帧错相终局逐例相同。",
+    "progress": [
+      {
+        "label": "原始母房间",
+        "glob": "original/*.json",
+        "total": 32
+      },
+      {
+        "label": "上下镜像",
+        "glob": "mirror_y/*.json",
+        "total": 32
+      },
+      {
+        "label": "自然房间",
+        "glob": "natural/*.json",
+        "total": 64
+      },
+      {
+        "label": "追加自然房间（三种条件）",
+        "glob": "remaining/*.json",
+        "total": 136
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "pair-profile",
+    "date": "2026-11-23",
+    "title": "新默认感知下的专家并集与混合策略覆盖",
+    "folder": "2026-11-23_lidar_gate",
+    "run": "cap_pair_fixed72_local_20261123_01",
+    "motivation": "扩大训练房间时，需要知道旧专家标签是否仍适用，以及直接过滤双败会舍弃什么。",
+    "goal": "在已有 200 个自然诊断房间重测两位专家与初始蒸馏 actor，按四组成败逐例配对。",
+    "result": "固定 72 束与局部中心下，专家并集 125/200。冻结蒸馏 actor 在双败组成功 6/75。",
+    "analysis": "共有 26 个房间改变四分类标签。开发分层需使用实际运行版本。",
+    "progress": [
+      {
+        "label": "完成 A、B 和 actor 的房间",
+        "glob": "rooms/*.json",
+        "total": 200
+      }
+    ],
+    "assets": [
+      [
+        "default_pair.md",
+        "默认感知与采样分层"
+      ],
+      [
+        "default_pair_rooms.csv",
+        "逐房间新默认结果"
+      ]
+    ]
+  },
+  {
+    "id": "expanding-pool",
+    "date": "2026-11-23",
+    "title": "扩充母房间池与定向复访",
+    "folder": "2026-11-23_expanding_pool",
+    "run": "cap_expanding_pool_20261123_01",
+    "motivation": "单一开发并集上反复筛查的泛化收益有限；单个母房间又常有多处有效分歧。",
+    "goal": "四轮各新增 200 个自然母房间，每房间最多三个跨时段分叉；第 2 轮起定向复访。",
+    "result": "固定评估 64 间依次成功 31、31、29、30、31；全新 200 间初始 109、最终 106。",
+    "analysis": "1,014 次分叉产生 188 条有效偏好。独立面板救回 13 个、丢失 16 个。",
+    "progress": [
+      {
+        "label": "开发和确认房间的单专家闭环",
+        "glob": "screen/*/*.json",
+        "total": 2000
+      },
+      {
+        "label": "第 1 轮分叉执行（%）",
+        "counter": "progress/r1_fork.json",
+        "key": "percent",
+        "total": 100
+      },
+      {
+        "label": "第 1 轮拟合",
+        "file": "fit1.json",
+        "total": 1
+      },
+      {
+        "label": "第 2 轮分叉执行（%）",
+        "counter": "progress/r2_fork.json",
+        "key": "percent",
+        "total": 100
+      },
+      {
+        "label": "第 2 轮拟合",
+        "file": "fit2.json",
+        "total": 1
+      },
+      {
+        "label": "第 3 轮分叉执行（%）",
+        "counter": "progress/r3_fork.json",
+        "key": "percent",
+        "total": 100
+      },
+      {
+        "label": "第 3 轮拟合",
+        "file": "fit3.json",
+        "total": 1
+      },
+      {
+        "label": "第 4 轮分叉执行（%）",
+        "counter": "progress/r4_fork.json",
+        "key": "percent",
+        "total": 100
+      },
+      {
+        "label": "第 4 轮拟合",
+        "file": "fit4.json",
+        "total": 1
+      },
+      {
+        "label": "固定评估 64 间 × 5 个版本（训练集外）",
+        "glob": "diagnostic/*/*.json",
+        "total": 320
+      },
+      {
+        "label": "独立面板初始和最终 actor",
+        "glob": "held/*/*.json",
+        "total": 400
+      },
+      {
+        "label": "训练访问房间首尾闭环",
+        "glob": "train_check/*/*.json",
+        "total": 544
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "diagnostic64.csv",
+        "固定评估 64 间的来源与逐轮成败"
+      ],
+      [
+        "progress.md",
+        "逐轮拟合与诊断闭环"
+      ],
+      [
+        "rounds.csv",
+        "逐轮成本与信号"
+      ],
+      [
+        "cohorts.csv",
+        "首访和复访收益"
+      ],
+      [
+        "held.csv",
+        "确认面板逐房间成败"
+      ],
+      [
+        "train_check.csv",
+        "实际训练房间的首尾闭环"
+      ],
+      [
+        "teacher.md",
+        "原始规则教师同场对照"
+      ],
+      [
+        "held_teacher.csv",
+        "教师与 actor 逐房间结果"
+      ]
+    ]
+  },
+  {
+    "id": "cold-start",
+    "date": "2026-11-23",
+    "title": "同一批分叉监督下的随机初始化对照",
+    "folder": "2026-11-23_cold_start",
+    "run": "cap_cold_start_20261123_01",
+    "motivation": "逐房间比较训练提升和自然场景表现，区分蒸馏起点与有限分叉监督的影响。",
+    "goal": "冷启动保留自身上一轮概率，另测冷启动保留原蒸馏分支的概率；输入、分叉标签及更新预算匹配。",
+    "result": "同一 200 间：蒸馏组 109→106，冷启动保留自身 91→112，冷启动复用原软标签 91→105。",
+    "analysis": "保留自身的冷启动模型在自然面板救回 28 个、丢失 7 个；两种初始化的最终成绩差仍有较大配对不确定性。",
+    "progress": [
+      {
+        "label": "固定 64 间逐轮闭环",
+        "glob": "diagnostic/*/*.json",
+        "total": 576
+      },
+      {
+        "label": "自然 200 间冷启动首尾闭环",
+        "glob": "held/*/*.json",
+        "total": 600
+      },
+      {
+        "label": "训练 272 间冷启动首尾闭环",
+        "glob": "train/*/*.json",
+        "total": 816
+      },
+      {
+        "label": "配对报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "endpoints.csv",
+        "逐房间首尾成绩"
+      ],
+      [
+        "preferences.csv",
+        "跨轮偏好命中情况"
+      ]
+    ]
+  },
+  {
+    "id": "fork-discovery",
+    "date": "2026-11-23",
+    "title": "谁发现分叉点，谁负责续跑",
+    "folder": "2026-11-23_fork_discovery",
+    "run": "cap_fork_discovery_20261123_01",
+    "motivation": "区分采样者、首步之后的续跑策略和教师启发的显式特征对混合的贡献。",
+    "goal": "同一批新房间比较 A、蒸馏 actor、原始规则教师访问的分叉。直接教师对照统一用 A 续跑，冷启动学生屏蔽 9 个规则特征。",
+    "progress": [
+      {
+        "label": "A 采样轨迹",
+        "glob": "expert_A/parents/*.json",
+        "total": 200
+      },
+      {
+        "label": "蒸馏 actor 采样轨迹",
+        "glob": "distilled/parents/*.json",
+        "total": 200
+      },
+      {
+        "label": "原始规则教师采样轨迹",
+        "glob": "rule_teacher/parents/*.json",
+        "total": 200
+      },
+      {
+        "label": "A 采样，蒸馏 actor 续跑",
+        "glob": "expert_A/forks/*.json",
+        "total": 492
+      },
+      {
+        "label": "蒸馏 actor 采样并续跑",
+        "glob": "distilled/forks/*.json",
+        "total": 492
+      },
+      {
+        "label": "同前缀 A 续跑动作对",
+        "glob": "expert_A_own_suffix/forks/*.json",
+        "total": 492
+      },
+      {
+        "label": "原教师采样，A 续跑",
+        "glob": "rule_teacher/forks/*.json",
+        "total": 492
+      },
+      {
+        "label": "冷启动 actor 自己采样的轨迹",
+        "glob": "self/parents/*.json",
+        "total": 200
+      },
+      {
+        "label": "冷启动 actor 自采自续的拟合轮次",
+        "glob": "self/fit[1-4].json",
+        "total": 4
+      },
+      {
+        "label": "新自然房间闭环",
+        "glob": "test/**/*.json",
+        "total": 2400
+      },
+      {
+        "label": "配对报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "新房间逐例成败"
+      ],
+      [
+        "results.json",
+        "采样与配对统计"
+      ]
+    ],
+    "result": "同为 A 续跑、无显式语义，规则教师采样 109/200，匹配 A 采样 105/200。原教师直接执行 109/200。 自采自续冷启动 actor 100→114，单 CAP A/B 为 100/108。",
+    "analysis": "原教师采样相对 A 采样的配对独胜 / 独败为 21 / 17，净差 +2.0 个百分点，95% 区间 [-4.0, +8.0]。"
+  },
+  {
+    "id": "self-replication",
+    "date": "2026-11-23",
+    "title": "无教师路由的自采自续能否跨训练种子复现",
+    "folder": "2026-11-23_self_replication",
+    "run": "cap_self_replication_20261123_01",
+    "motivation": "单种子在 200 间里从 100 提高到 114，最佳单 CAP 为 108。检验这个差异在其他随机起点和新房间中能否保持。",
+    "goal": "固定原训练房间、输入、抽样规则和更新预算。追加 seed29、43，复用已锁定的 seed17。三者共用新冻结的 200 间，逐房间比较起点及单 CAP A、B。",
+    "progress": [
+      {
+        "label": "新测试房间冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "两个新种子的开发房间轨迹",
+        "glob": "s*/self/parents/*.json",
+        "total": 400
+      },
+      {
+        "label": "两个新种子的拟合轮次",
+        "glob": "s*/self/fit[1-4].json",
+        "total": 8
+      },
+      {
+        "label": "新面板闭环",
+        "glob": "fresh/test/*/*.json",
+        "total": 1600
+      },
+      {
+        "label": "原面板补充闭环",
+        "glob": "diagnostic/test/*/*.json",
+        "total": 800
+      },
+      {
+        "label": "配对报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间起点与终点"
+      ],
+      [
+        "results.json",
+        "区间、分层和监督量"
+      ]
+    ],
+    "result": "新面板 A 成功 101/200，B 成功 106/200。seed17、29、43 的最终成功数分别为 107、111、105。三个种子中有 2 个超过自身起点，2 个超过同面板最佳单 CAP。",
+    "analysis": "按种子等权，相对自身起点 +1.7 [-1.8, +5.0]，相对 B +0.8 [-4.0, +5.5] 个百分点。"
+  },
+  {
+    "id": "self-budget",
+    "date": "2026-11-23",
+    "title": "无教师自采自续从第 4 轮延长到第 8 轮",
+    "folder": "2026-11-23_self_budget",
+    "run": "cap_self_budget_20261123_01",
+    "motivation": "第 4 轮混合能获得新解，在共同的新自然面板上对 B 的净收益尚不稳定。检验增加采样、更新预算能否改善保留和整体收益。",
+    "goal": "三个种子延续原第 4 轮。每轮各训练 50 个新房间，共四轮。单独冻结 200 间只测两端和 B，在上次已查看的 200 间上绘制逐轮曲线。",
+    "progress": [
+      {
+        "label": "新房间与父模型冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "三个种子的自采轨迹",
+        "glob": "s*/self/parents/*.json",
+        "total": 600
+      },
+      {
+        "label": "续训拟合轮次",
+        "glob": "s*/self/fit[5-8].json",
+        "total": 12
+      },
+      {
+        "label": "独立确认面板的闭环",
+        "glob": "confirm/test/*/*.json",
+        "total": 1400
+      },
+      {
+        "label": "诊断面板新增的逐轮闭环",
+        "glob": "trend/test/*/*.json",
+        "total": 2400
+      },
+      {
+        "label": "配对结果和曲线",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "trend.png",
+        "诊断面板逐轮曲线"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "results.json",
+        "逐种子配对统计"
+      ]
+    ],
+    "result": "新确认面板单 CAP B 成功 87/200。三种子平均从 95.3 到 94.7/200，第 8 轮相对第 4 轮 -0.3 [-3.7, +3.0] 个百分点。",
+    "analysis": "第 8 轮相对 B +3.8 [-1.3, +9.2] 个百分点。相对第 4 轮，每个种子平均救回 14.7 间、丢失 15.3 间。"
+  },
+  {
+    "id": "success-replay",
+    "date": "2026-11-23",
+    "title": "给成功路线单独保留 64 个样本",
+    "folder": "2026-11-23_success_replay",
+    "run": "cap_success_replay_20261123_01",
+    "motivation": "额外四轮改变了大量房间的成败，救回与丢失相抵。检验成功路线弱保持能否提高保留，同时维持救回能力。",
+    "goal": "三个种子由同一第 4 轮各自出发，复用第 5 轮分叉。对比原更新、额外 64 个从全部轨迹抽、额外 64 个仅从成功轨迹抽。后两组用同一小余量损失和房间均匀抽样。",
+    "progress": [
+      {
+        "label": "冻结配对协议",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "拟合与原更新复现",
+        "glob": "fit/*.json",
+        "total": 9
+      },
+      {
+        "label": "50 个开发房间的逐模型成败（含复用父模型）",
+        "glob": "train/*/*.json",
+        "total": 600
+      },
+      {
+        "label": "200 个新房间的逐模型闭环",
+        "glob": "fresh/*/*.json",
+        "total": 2400
+      },
+      {
+        "label": "九个模型的逐步梯度回放",
+        "finding": "gradient_summary.json",
+        "total": 1
+      },
+      {
+        "label": "保留与救回报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "results.json",
+        "配对差和保留率"
+      ],
+      [
+        "gradient_summary.json",
+        "三项梯度与 Adam 更新份额"
+      ],
+      [
+        "gradients.csv",
+        "逐步梯度、夹角与 Adam 分解"
+      ],
+      [
+        "gradients.png",
+        "梯度与参数更新曲线"
+      ]
+    ],
+    "result": "新 200 间上，成功路线组相对等预算全部轨迹组的净差为 +1.00 [-0.67, +2.67] 个百分点。旧成功的保留率差为 +0.95 [-0.33, +2.38] 个百分点，旧失败的救回率差为 +1.06 [-2.03, +4.30] 个百分点。",
+    "analysis": "成功组前 50 步偏好损失主导 Adam 更新方向，最后 50 步软保持项占约 76%。"
+  },
+  {
+    "id": "margin-batch",
+    "date": "2026-11-23",
+    "title": "去掉全局软保持，成功余量每步抽 192 个",
+    "folder": "2026-11-23_margin_batch",
+    "run": "cap_margin_batch_20261123_01",
+    "motivation": "上一轮成功路线保护了已见选择，软保持在后期主导更新。检验关闭软保持并重新分配抽样预算的闭环效果。",
+    "goal": "同一起点、同一批分叉，新增仅余量 64 与仅余量 192 两组，复用有软保持的 64 样本参考。在原 200 间配对分析保留与救回。",
+    "progress": [
+      {
+        "label": "协议冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "两组各三个种子拟合",
+        "glob": "fit/*.json",
+        "total": 6
+      },
+      {
+        "label": "梯度逐步回放",
+        "finding": "gradient_summary.json",
+        "total": 1
+      },
+      {
+        "label": "训练房间闭环",
+        "glob": "train/*/*.json",
+        "total": 300
+      },
+      {
+        "label": "诊断面板闭环",
+        "glob": "fresh/*/*.json",
+        "total": 1200
+      },
+      {
+        "label": "配对汇总",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "results.json",
+        "配对统计"
+      ],
+      [
+        "gradients.png",
+        "梯度曲线"
+      ],
+      [
+        "gradients.csv",
+        "逐步梯度"
+      ]
+    ],
+    "result": "同一 200 间上，仅成功余量 192 对比软保持 128 ＋成功余量 64，闭环净差 -0.17 [-3.00, +2.67] 个百分点。",
+    "analysis": "关闭软保持后 192 对 64 的成功率净差为 -0.17 [-2.00, +1.50] 个百分点。"
+  },
+  {
+    "id": "ungated-expert-replay",
+    "date": "2026-11-23",
+    "title": "开放全程路由后，纯专家成功经验能否补回 actor 的缺口",
+    "folder": "2026-11-23_ungated_expert_replay",
+    "run": "cap_ungated_expert_replay_20261123_01",
+    "motivation": "成功余量此前来自 actor 自身。纯专家成功轨迹提供另一种可以走通的路线。",
+    "goal": "三个种子各更新一轮，比较全部 actor 余量与半数换成纯 A、B 示范。在同一批新房间分开统计专家能力与混合路线保留。",
+    "progress": [
+      {
+        "label": "采样与原生专家复核",
+        "counter": "progress/collection.json",
+        "key": "done",
+        "total": 250
+      },
+      {
+        "label": "同前缀分叉",
+        "glob": "forks/*/*.json",
+        "total": 419
+      },
+      {
+        "label": "模型锁定",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "新房间闭环",
+        "glob": "fresh/*/*.json",
+        "total": 2200
+      },
+      {
+        "label": "开发房间更新后闭环",
+        "counter": "progress/train_updated.json",
+        "key": "done",
+        "total": 300
+      },
+      {
+        "label": "配对结果",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "results.json",
+        "分层配对统计"
+      ]
+    ],
+    "result": "新 200 间上，混合余量相对全 actor 余量的成功率差为 -1.83 [-4.33, +0.67] 个百分点。",
+    "analysis": "父 actor 遗漏的专家成功共 87 次，两组分别救回 24 和 23 次。双专家都失败的父 actor 成功共 20 次，两组保住 15 和 13 次。"
+  },
+  {
+    "id": "ungated-no-replay",
+    "date": "2026-11-23",
+    "title": "无门控路由中，成功回放是否优于单用分叉监督和全局软保持",
+    "folder": "2026-11-23_ungated_no_replay",
+    "run": "cap_ungated_no_replay_20261123_01",
+    "motivation": "成功回放减少了训练前缀改选，需要直接量化全局软保持之外的闭环增益。",
+    "goal": "同一批分叉和父权重，去掉成功回放，复测 200 间及 50 个开发房间。",
+    "progress": [
+      {
+        "label": "对照逐值复现与分叉拟合检查",
+        "glob": "audit/*.json",
+        "total": 3
+      },
+      {
+        "label": "去回放模型锁定",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "诊断面板闭环",
+        "glob": "fresh/*/*.json",
+        "total": 600
+      },
+      {
+        "label": "开发闭环",
+        "glob": "train/*/*.json",
+        "total": 150
+      },
+      {
+        "label": "配对分析",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "results.json",
+        "配对统计"
+      ]
+    ],
+    "result": "关闭成功回放后，200 间诊断面板的成功率变化为 -1.33 [-3.17, +0.50] 个百分点。",
+    "analysis": "旧成功保留率变化 -0.29 [-2.42, +1.69] 个百分点，旧失败救回率变化 -2.70 [-6.06, +0.42] 个百分点。"
+  },
+  {
+    "id": "first-choice-transfer",
+    "date": "2026-11-23",
+    "title": "首次分歧的赢家、后继局面与五步交接",
+    "run": "cap_first_choice_transfer_20261123_01",
+    "folder": "2026-11-23_first_choice_transfer",
+    "motivation": "复核旧库的晚期可辨认性，并把路线赢家与短程转移、接手效果拆开。",
+    "goal": "现有 A/B 与三份冻结无回放 actor，开发 200 间，已查看诊断面板 200 间。真实执行两条纯路线与双向五步交接。",
+    "progress": [
+      {
+        "label": "开发纯路线",
+        "glob": "dev/*/*.json",
+        "total": 400
+      },
+      {
+        "label": "诊断纯路线与交接",
+        "glob": "held/*/*.json",
+        "total": 800
+      },
+      {
+        "label": "汇总",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "results.json",
+        "配对统计"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ]
+    ],
+    "result": "52 个独胜房间中，三个冻结 actor 首次选对 24、24、23 个，固定 B 为 29 个。五步 B→A 成功 121/200，固定 B 为 113/200。",
+    "analysis": "五步后两路仍可行动的 163 间中有 91 间进入不同公开节点。两种方向的真实交接共解出 16/64 个原双败房间。"
+  },
+  {
+    "id": "ungated-ppo",
+    "date": "2026-11-23",
+    "title": "当前无门控 A/B actor 的 PPO 训练",
+    "folder": "2026-11-23_ungated_ppo",
+    "run": "cap_ungated_ppo_20261123_01",
+    "motivation": "旧 PPO 使用另一组专家和观察接口。本轮检验新 A/B 在每个分歧处采样动作的实际闭环效果。",
+    "goal": "三种子各 2000 个在线 episode，固定 200 与 2000 两个检查点；另在新的 200 间确认最终效果。",
+    "progress": [
+      {
+        "label": "协议与确认房间冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "完成的 PPO 更新轮（每轮每种子 50 局）",
+        "glob": "metrics/*.json",
+        "total": 120
+      },
+      {
+        "label": "诊断面板两档贪心执行",
+        "glob": "diagnostic/*/*.json",
+        "total": 1200
+      },
+      {
+        "label": "冻结确认面板与基线",
+        "glob": "confirm/*/*.json",
+        "total": 2400
+      },
+      {
+        "label": "三轮 PPO 梯度按房间类型重放",
+        "finding": "strata.md",
+        "total": 1
+      },
+      {
+        "label": "配对报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "learning_curves.png",
+        "训练回报、损失、熵与 KL"
+      ],
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "results.json",
+        "配对统计"
+      ],
+      [
+        "strata.md",
+        "双胜、单胜、双败对 PPO 梯度的贡献"
+      ],
+      [
+        "training.csv",
+        "逐轮训练指标"
+      ],
+      [
+        "teacher_ppo.md",
+        "原 LLM 路由与最终 PPO 同房间比较"
+      ],
+      [
+        "teacher_ppo_rooms.csv",
+        "程序路由与 PPO 逐房间结果"
+      ]
+    ],
+    "result": "新确认面板上，最终 PPO 三个种子分别成功 [110, 114, 111] /200。相对父模型的成功率变化为 +0.83 [-1.83, +3.50] 个百分点。",
+    "analysis": "相对默认分叉更新 +0.33 [-2.17, +2.83] 个百分点，相对纯 B 为 +5.33 [+0.83, +9.83] 个百分点。"
+  },
+  {
+    "id": "distilled-ppo",
+    "date": "2026-11-23",
+    "title": "同一语义 actor 的蒸馏初始化与随机初始化 PPO",
+    "folder": "2026-11-23_distilled_ppo",
+    "run": "cap_distilled_ppo_20261123_01",
+    "motivation": "程序路由提供可蒸馏的交接经验。短程 PPO 能保留或改善这些经验吗？",
+    "goal": "两组都使用停滞门控和相同公开语义。每种子四轮共 200 个不同训练房间，在同一已查看面板配对评估第零和第四轮。",
+    "progress": [
+      {
+        "label": "冻结协议",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "PPO 训练轮次（两组各三种子）",
+        "glob": "metrics/*.json",
+        "total": 24
+      },
+      {
+        "label": "更新前后贪心闭环（蒸馏起点三种子共享）",
+        "glob": "evaluation/*/*.json",
+        "total": 2000
+      },
+      {
+        "label": "逐房间配对报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "逐房间比较"
+      ],
+      [
+        "training.csv",
+        "训练回报与熵"
+      ],
+      [
+        "results.json",
+        "配对差异和房间分层"
+      ],
+      [
+        "panel_comparison.md",
+        "近期 A/B 方法横向对照与探索温度"
+      ]
+    ],
+    "result": "200 间上，四轮后蒸馏 PPO 为 111、111、109，冷启动 PPO 为 102、99、98。配对平均差 +5.33 个百分点，95% 区间 [+0.50,+10.17]。",
+    "analysis": "零轮差已达 +5.50 个百分点。两组四轮均未救回原先失败房间。79 个纯专家双败房间里蒸馏起点成功 10 间，冷启动三个种子均为 0。"
+  }
+]

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>七个 CAP 的初态覆盖</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f6f5;color:#172f38;font:16px "Source Sans 3",system-ui,sans-serif}main{max-width:1280px;margin:auto;padding:35px 4vw}h1{font-size:clamp(24px,3vw,38px);margin:0 0 12px}h2{font-size:19px}p{color:#425861;line-height:1.55}fieldset{display:flex;flex-wrap:wrap;gap:22px;border:0;padding:0;margin:20px 0}select{font:inherit;padding:.35em;border:1px solid #a5b8be;border-radius:4px;background:white}article{background:white;border:1px solid #d2dbdd;border-radius:6px;padding:14px}section{display:grid;grid-template-columns:1.45fr 1fr;gap:18px}canvas{display:block;width:100%;height:auto}#scatter{cursor:crosshair}small{color:#4d636a}#result{font-weight:650}@media(max-width:800px){section{grid-template-columns:1fr}main{padding:20px 3vw}}
+</style>
+<main><h1>七个 CAP 的初态覆盖</h1><p>760 个原始开发房间。点击散点可查看初始布局和七个专家的真实成败。</p>
+<fieldset><label>查看 <select id="expert"></select></label><label>横纵坐标 <select id="axes"><option>PCA 第一、第二主成分</option><option>可动物体路径净距、推送距离（米）</option></select></label></fieldset>
+<section><article><canvas id="scatter" width="780" height="550"></canvas><small id="legend"></small></article>
+<article><h2 id="roomid"></h2><canvas id="room" width="480" height="384"></canvas><p id="result"></p><small>深蓝长条为目标物体，绿圈为终点，橙色为机器人，浅蓝为其他可动物体，灰色为固定障碍物。</small><p id="geometry"></p></article></section></main>
+<script id="rooms" type="application/json">__DATA__</script><script>
+const data=JSON.parse(document.getElementById('rooms').textContent);
+const caps=['009','003','001','010','006','007','002'], colors=['#0072b2','#d79500','#009e73','#d55e00','#7655aa','#b64b84','#25717c'];
+const el=id=>document.getElementById(id), scatter=el('scatter'), room=el('room'), selector=el('expert'), axes=el('axes');
+for(const text of ['各家独胜初态',...caps.map(n=>'CAP '+n)]) selector.add(new Option(text));
+let idx=data.findIndex(r=>r.y.reduce((a,b)=>a+b)===1), points=[];
+function circle(c,x,y,r,fill,stroke){c.beginPath();c.arc(x,y,r,0,Math.PI*2);if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.strokeStyle=stroke;c.stroke()}}
+function draw(){
+ const c=scatter.getContext('2d'), visible=selector.selectedIndex-1, physical=axes.selectedIndex===1;
+ c.clearRect(0,0,780,550);const xs=data.map(r=>physical?r.dist:r.pc[0]),ys=data.map(r=>physical?r.goal:r.pc[1]);
+ const xl=Math.min(...xs),xh=Math.max(...xs),yl=Math.min(...ys),yh=Math.max(...ys);
+ const px=v=>65+(v-xl)*680/(xh-xl), py=v=>490-(v-yl)*445/(yh-yl);
+ c.font='14px system-ui';c.fillStyle='#314954';c.strokeStyle='#e0e7e8';c.lineWidth=1;
+ for(let t=0;t<5;t++){const x=xl+(xh-xl)*t/4,y=yl+(yh-yl)*t/4;c.beginPath();c.moveTo(px(x),42);c.lineTo(px(x),490);c.moveTo(65,py(y));c.lineTo(747,py(y));c.stroke();c.textAlign='center';c.fillText(x.toFixed(1),px(x),510);c.textAlign='right';c.fillText(y.toFixed(1),55,py(y)+4)}
+ c.textAlign='center';c.fillText(physical?'路径净距（米）':'PC1（9.94%）',405,539);
+ c.save();c.translate(18,260);c.rotate(-Math.PI/2);c.fillText(physical?'推送距离（米）':'PC2（8.66%）',0,0);c.restore();
+ points=data.map((r,i)=>[px(xs[i]),py(ys[i])]);
+ const styles=data.map((r,i)=>{const n=r.y.reduce((a,b)=>a+b),j=visible<0?r.y.indexOf(1):visible,hit=visible<0?n===1:r.y[j]===1;return {i,hit,sole:hit&&n===1,color:hit?colors[j]:'#cad2d4'}});
+ styles.sort((a,b)=>Number(a.hit)-Number(b.hit));
+ for(const s of styles){c.globalAlpha=s.hit?.87:.55;circle(c,...points[s.i],s.hit?4:2.7,s.color,visible>=0&&s.sole?'#243641':null)}
+ c.globalAlpha=1;c.lineWidth=2;circle(c,...points[idx],9,null,'#14242e');
+ el('legend').textContent=visible<0?'彩色为独胜，灰色为其他房间。颜色对应右侧专家结果。':'彩色为本 CAP 成功，细黑圈为独胜，灰色为失败。';
+ const r=data[idx], f=r.f;el('roomid').textContent=r.id;el('result').innerHTML=caps.map((cap,k)=>'<span style="color:'+colors[k]+'">'+cap+(r.y[k]?' ✓':' ×')+'</span>').join('　');
+ el('geometry').textContent='路径净距 '+r.dist.toFixed(2)+' 米，推送距离 '+r.goal.toFixed(2)+' 米。负净距表示直线路径穿过可动物体。';
+ const g=room.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,480,384);
+ const [w,h]=f.room.arena;g.setTransform(480/w,0,0,-384/h,0,384);g.lineWidth=.02;g.strokeStyle='#829394';g.strokeRect(.01,.01,w-.02,h-.02);
+ function rect(x,y,a,w,h,color,heading){g.save();g.translate(x,y);g.rotate(a);g.fillStyle=color;g.fillRect(-w/2,-h/2,w,h);g.strokeStyle='#3a4a4d';g.strokeRect(-w/2,-h/2,w,h);if(heading){g.strokeStyle='white';g.beginPath();g.moveTo(0,0);g.lineTo(w/2,0);g.stroke()}g.restore()}
+ g.setLineDash([.06,.06]);g.beginPath();g.moveTo(f.object.x,f.object.y);g.lineTo(f.goal.x,f.goal.y);g.stroke();g.setLineDash([]);
+ for(const b of f.room.obstacles)rect(b.cx,b.cy,b.angle,b.half_w*2,b.half_h*2,'#78848b');
+ for(const b of f.movable_objects)rect(b.x,b.y,b.angle,b.width,b.height,'#bad5de');
+ circle(g,f.goal.x,f.goal.y,f.goal.radius,null,'#16865e');rect(f.object.x,f.object.y,f.object.angle,.25,1,'#0072b2');
+ for(const b of f.robots)rect(b.x,b.y,b.angle,.36,.36,'#ce7049',true);
+}
+scatter.onclick=e=>{const b=scatter.getBoundingClientRect(),x=(e.clientX-b.left)*780/b.width,y=(e.clientY-b.top)*550/b.height;let best=Infinity;points.forEach(([u,v],i)=>{const d=(u-x)**2+(v-y)**2;if(d<best){idx=i;best=d}});draw()};
+selector.onchange=axes.onchange=draw;draw();
+</script></html>

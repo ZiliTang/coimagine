@@ -26,19 +26,25 @@ class StreamHistory:
     def append(self, observation, action=None):
         packet = public_observation(observation)
         previous = self.events
-        if previous:
-            old = previous[0]['observation']
+        self._commit_projected(packet, action, previous[0] if previous else None)
+
+    def _commit_projected(self, packet, action, previous):
+        """Commit an owned public projection and return its canonical event."""
+        if previous is not None:
+            old = previous['observation']
             validate_action(action, old)
             if not 0 < packet['tick']-old['tick'] <= action['ticks']:
                 raise ValueError('stream boundaries must advance within preceding action')
         elif action is not None:
             raise ValueError('initial boundary has no preceding action')
-        self.previous_tick = previous[0]['observation']['tick'] if previous else None
+        self.previous_tick = previous['observation']['tick'] if previous is not None else None
         self.previous_chain = self._chain
         self._encoded = canonical(dict(observation=packet, action=action))
         self.index += 1
+        event = json.loads(self._encoded)
         self._chain = digest(dict(version=VERSION, previous=self.previous_chain,
-                                  index=self.index, previous_tick=self.previous_tick, event=json.loads(self._encoded)))
+                                  index=self.index, previous_tick=self.previous_tick, event=event))
+        return event
 
     @property
     def sha256(self):return self._chain

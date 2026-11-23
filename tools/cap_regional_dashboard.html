@@ -1,0 +1,343 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>CAP 开发对照</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f1;color:#172d31;font:15px "Source Sans 3",system-ui,sans-serif}main{max-width:1550px;margin:auto;padding:26px 3vw}h1{margin:0;font-size:30px}h2{font-size:22px;margin:4px 0}h3{font-size:16px;margin:14px 0 5px}.top,header,.line{display:flex;align-items:center;justify-content:space-between;gap:10px}.top{align-items:baseline;flex-wrap:wrap}.note,small{color:#52645f;line-height:1.5}section{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}article{background:white;padding:15px;border:1px solid #d7ded6;border-radius:9px}canvas{width:100%;height:auto;border:1px solid #e5ebe6;border-radius:5px}a{color:#006965}select{font:inherit;max-width:100%}.big{font-size:29px;font-weight:650}.bar{height:5px;background:#e2e9e4;margin:4px 0 9px}.bar b{height:100%;display:block;background:#337f7c}table{width:100%;border-collapse:collapse}td,th{padding:4px;text-align:right;border-bottom:1px solid #e5ebe5}td:first-child,th:first-child{text-align:left}p{margin:8px 0}.status{color:#246057;min-height:22px}.inspect{min-height:21px}.legend span{display:inline-block;margin:4px 12px 4px 0}.dot{font-style:normal}.small{font-size:13px}details{margin:7px 0}code{font-size:12px}#notice{color:#963427}@media(max-width:940px){section{grid-template-columns:1fr}article{max-width:650px;width:100%;margin:auto}}
+</style><main><div class="top"><h1>CAP 开发对照</h1><a href="/research-journal">实验研究日志与实时进度</a><span id="time"></span></div><article id="general62" style="max-width:none"><header><h2>6.2 Sol · 通用 CAP 与困难场景专家</h2><a href="/general62-journal">作者开发记录</a><a href="/general62-coverage">候选成功覆盖对照</a><a id="g62src" href="/general62-source" target="_blank" hidden>最新源码</a></header><div id="g62stats">读取进度…</div></article><p class="note">GPT‑6.1 Sol High · 160 个共用开发初态 · 每 5 秒刷新</p><article id="focus-recovery" style="max-width:none"><header><h2>单中心故障恢复 · 五轮 CAP</h2><a href="/focus-source" target="_blank">最新提交源码</a></header><iframe title="五轮作者实时进度" src="/focus-progress" style="width:100%;height:360px;border:0" onload="this.style.height=(Math.ceil(this.contentDocument.body.getBoundingClientRect().bottom)+16)+'px'"></iframe><details open><summary>160 个开发初态的覆盖分布和选区中心</summary><p><label>范围 <select id="focus-map-round" onchange="drawFocusMap()"></select></label> <span id="focus-map-legend"></span></p><canvas id="focus-map" width="720" height="330" style="max-width:720px" aria-label="开发初态的 PC1、PC2 投影"></canvas></details></article><article id="advantage"><header><h2>邻域优势与首次动作分歧</h2></header><p>96 个自然父房间 · 0、1、2、5 cm 配对扰动 · 两组冻结策略</p><p><a href="/advantage-replays">打开五组同步物理回放</a>　<a href="/advantage-chart.png">邻域与时刻对照图</a>　<a href="/advantage-report">诊断报告</a></p></article><article id="actor-replay" hidden></article><article id="actor-iteration" hidden></article><article id="single-override" hidden></article><p id="notice"></p><p id="evaluation"></p><label>查看覆盖 <select id="mode"><option value="formal">已完成的正式版本</option><option value="latest">最新提交的已测场景</option></select></label>
+<div class="legend small"><span><i class="dot" style="color:#007e74">●</i> 成功</span><span><i class="dot" style="color:#c3794a">●</i> 已测失败</span><span><i class="dot" style="color:#bac3c4">●</i> 尚无完整结果</span><span>× 执行异常</span></div><section id="arms"></section>
+<p class="note small">三图共用原 760 初态的 28 维几何 PCA 坐标，PC1 / PC2 分别解释 9.94% / 8.66% 方差。几何真值仅作离线显示。点击散点查看同一房间在三组的表现。两组库显示已提交成员的成功并集；通用组只显示开发集成功最多的一个已测全池版本，平局取最早者。Token 为各作者会话累计遥测，输入包含缓存读取；输出已含推理。未设置按 token 截停。</p>
+<article id="member-maps" style="max-width:none"><header><h2>区域组逐轮覆盖</h2><a href="/regional_member_scenes.csv">逐场景数据</a></header><a href="/regional_member_maps.png" target="_blank"><img src="/regional_member_maps.png" alt="五个区域 CAP 的单独成功、相对旧库新增成功和重点邻域" style="width:100%;display:block"></a></article>
+<article id="selection-geometry" style="max-width:none"><header><h2>选区中心与重点名单重合度</h2><a href="/regional_selection_geometry.json">逐轮数据</a></header><a href="/regional_selection_geometry.png" target="_blank"><img src="/regional_selection_geometry.png" alt="选区使用的公开特征投影与五轮重点名单交集" style="width:100%;display:block"></a></article>
+<script>
+const arms=['regular','regional','single'],titles=['常规增量覆盖','区域精化','通用单策略'];let data,chosen=null;
+const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const form=n=>Number(n).toLocaleString('en-US');
+function metric(name,n,cap){return '<div class="line small"><span>'+name+'</span><span>'+form(n)+' / '+form(cap)+'</span></div><div class="bar"><b style="width:'+Math.min(100,n/cap*100)+'%"></b></div>'}
+function showEvaluation(ev){
+ const node=$('evaluation');
+ node.textContent=ev?('封存后评估　'+ev.completed+' / '+ev.total+' 次完成'+(ev.finished?' · 已完成':ev.errors?' · 有未完成执行，见结果审计':' · '+(ev.active??''))):'';
+ if(!ev?.metrics)return;
+ let results=$('held-results');
+ if(!results){results=document.createElement('div');results.id='held-results';node.after(results)}
+ const rows=Object.entries({fresh:'独立新房间（200）',near:'开发房间扰动（160）'}).flatMap(([panel,label])=>arms.map((arm,i)=>{
+   const m=ev.metrics[panel][arm];
+   return '<tr><td>'+label+'</td><td>'+titles[i]+'</td><td>'+m.best+'</td><td>'+m.commit+'</td><td>'+m.union+'</td></tr>'
+ }));
+ results.innerHTML='<table><thead><tr><th>面板</th><th>组别</th><th>开发选定单程序</th><th>初态选择一次</th><th>成员成功并集</th></tr></thead><tbody>'+rows.join('')+'</tbody></table><p class="small">并集按每个成员真实执行后的结局统计。'+(ev.report_ready?' <a href="/report" target="_blank">完整报告</a>':'')+'</p>';
+}
+function showExtension(d){
+ if(!d)return;
+ let box=$('extension');if(!box){box=document.createElement('article');box.id='extension';$('notice').before(box)}
+ const b=d.budget??{},a=d.active,r=d.sweeps??[],p=d.process??{},f=d.fit;
+ const names={author:'困难场景族开发',directq_replay:'十成员开发轨迹重放',directq_fit:'V / Q 拟合',directq_evaluation:'新 directQ 闭环',oldq_evaluation:'旧 directQ 闭环',cap_evaluation:'冻结单 CAP 闭环',finished:'已完成',error:'中断',frozen:'已冻结'};
+ box.innerHTML='<h2>区域精化 · 第 6 至 10 轮</h2><p>'+esc(names[p.stage]??'准备开发池')+'　'+esc(p.panel??p.sid??'')+'　'+esc(p.error??'')+'</p>'+metric('追加作者 token（含缓存）',b.tokens??0,40000000)+metric('作者时间（秒）',Math.min(1800,Math.round(b.seconds??0)),1800)+'<p>新增成员 '+r.length+'/5 · 开发并集 '+(d.original_union??115)+'/160 · 探索运行 '+(d.probes??0)+'</p>'+(a?'<p>'+esc(a.sid)+' '+esc(a.kind)+'　'+a.done+'/'+a.total+'</p>':'')+(r.length?'<table><tr><th>轮次 / 版本</th><th>单成员 /160</th><th>新增原房间</th><th>新增训练邻居</th></tr>'+r.map((v,i)=>'<tr><td>'+(i+6)+' · '+esc(v.sid)+'</td><td>'+v.original+'</td><td>'+v.added_original+'</td><td>'+v.added_neighbors+'</td></tr>').join('')+'</table>':'')+'<p>原未解父房间 45 个，额外训练扰动 55 个，旧库预先覆盖其中 '+(d.neighbors_precovered??'…')+' 个。</p>';
+ if(d.latest){
+   const p=document.createElement('p'),a=document.createElement('a');a.target='_blank';a.href='/extension-source?sid='+d.latest.sid;a.textContent=d.latest.sid+' · '+d.latest.summary;p.append('最新提交 ',a);box.append(p);
+ }
+ if(d.original_gaps&&d.added_rooms){
+   const w=480,h=212,canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;canvas.style.maxWidth='600px';canvas.style.display='block';
+   const ctx=canvas.getContext('2d'),points=Object.entries(data.points),xs=points.map(e=>e[1][0]),ys=points.map(e=>e[1][1]),minX=Math.min(...xs),minY=Math.min(...ys),xr=Math.max(...xs)-minX,yr=Math.max(...ys)-minY;
+   const gaps=new Set(d.original_gaps),added=new Set(d.added_rooms);
+   for(const [id,[x,y]] of points){
+     ctx.fillStyle=added.has(id)?'#00776d':gaps.has(id)?'#b46d43':'#cbd1ce';ctx.beginPath();ctx.arc(12+(x-minX)*(w-24)/xr,h-12-(y-minY)*(h-24)/yr,gaps.has(id)?3.3:2.4,0,2*Math.PI);ctx.fill();
+   }
+   const label=document.createElement('small');label.textContent='原 160 初态 · 灰色为旧库覆盖，棕色为剩余失败，绿色为追加五轮救回';box.append(label,canvas);
+ }
+}
+function showTenMemberQ(d){
+ if(!d?.q_panels)return;
+ let box=$('ten-cap-directq');
+ if(!box){box=document.createElement('article');box.id='ten-cap-directq';$('extension').before(box)}
+ const f=d.fit,stage=d.process?.stage;
+ const status={author:'等待作者提交',frozen:'准备十个冻结成员',directq_replay:'重放开发轨迹并生成训练特征',directq_fit:'拟合 V / Q',directq_evaluation:'新模型闭环评测中',oldq_evaluation:'新模型闭环完成，正在评测旧模型',cap_evaluation:'汇总单 CAP 参照',finished:'已完成',error:'中断'};
+ const rows=Object.entries({dev:'原开发房间',aug:'新增开发扰动',fresh:'独立新房间',near:'未见困难族扰动'}).map(([k,label])=>{
+   const {total,directq:n,oldq:o}=d.q_panels[k],m=d.metrics?.[k];
+   return '<tr><td>'+label+'</td><td>'+n.completed+' / '+total+'</td><td>'+(n.completed?n.success:'—')+'</td><td>'+o.completed+' / '+total+'</td><td>'+(o.completed?o.success:'—')+'</td><td>'+(m?.best??(k==='dev'&&d.sweeps.length===5?Math.max(92,...d.sweeps.map(r=>r.original)):'—'))+'</td></tr>'
+ }).join('');
+ box.innerHTML='<h2>十成员 directQ · 新评测</h2><p>'+esc(status[stage]??stage)+' · seed 17'+(d.process?.error?' · '+esc(d.process.error):'')+'</p>'+metric('已核对开发轨迹',d.replayed,2150)+metric('V 更新',d.fit_complete||f?.stage==='Q_init'?16000:f?.updates??0,16000)+metric('Q 更新',d.fit_complete?8000:f?.stage==='Q_init'?f.updates:0,8000)+(f?'<small>最近 1,000 次 '+esc(f.stage)+' 更新 MSE　'+Number(f.mse).toFixed(5)+'</small>':'')+'<table><tr><th>面板</th><th>新 Q 已评 / 总数</th><th>新 Q 已成功</th><th>原 Q 已评 / 总数</th><th>原 Q 已成功</th><th>开发选定最佳单 CAP</th></tr>'+rows+'</table>'+metric('十个单 CAP 在相同留出场景上的参照执行',d.expert_done,2900)+(d.finished?'<p><a href="/extension-report">打开完整配对报告</a></p>':'');
+}
+function showDirectQ(d){
+ if(!d)return;
+ let box=$('directq');
+ if(!box){box=document.createElement('article');box.id='directq';$('notice').after(box)}
+ const stages={prepare:'核对五个程序并准备重放',replay:'重放开发轨迹',assemble:'合并训练样本',fit:'拟合 V / Q',evaluate_dev:'开发池闭环',evaluate_fresh:'独立新房间闭环',evaluate_near:'开发房间扰动闭环',report:'汇总配对结果',finished:'已完成',error:'运行中断'};
+ const f=d.fit;
+ const panels=Object.entries({dev:'开发池',fresh:'独立新房间',near:'开发房间扰动'}).map(([key,label])=>{
+   const p=d.panels[key],m=d.results?.[key];
+   const baseline=m?.first??(key==='dev'?92:data.evaluation?.metrics?.[key]?.regional?.best);
+   return '<tr><td>'+label+'</td><td>'+p.completed+' / '+p.total+'</td><td>'+(p.completed?p.success:'—')+'</td><td>'+(baseline??'—')+'</td><td>'+(m?m.rescued+' / '+m.lost:'—')+'</td></tr>'
+ }).join('');
+ box.innerHTML='<h2>原五成员 directQ · 上一轮</h2><p>'+esc(stages[d.stage]??d.stage)+(d.error?' · '+esc(d.error):'')+' · seed 17</p>'+metric('开发轨迹',d.shards,800)+metric('V 更新',f?(f.stage==='V'?f.updates:16000):0,16000)+metric('Q 更新',f?.stage==='Q_init'?f.updates:0,8000)+(f?'<small>最近 1,000 次更新的 '+esc(f.stage)+' MSE　'+Number(f.mse).toFixed(5)+'</small>':'')+'<table><tr><th>闭环面板</th><th>已评 / 全部</th><th>directQ 已成功</th><th>最佳单 CAP</th><th>救回 / 丢失</th></tr>'+panels+'</table>'+(d.results?'<p><a href="/directq-report" target="_blank">directQ 配对评测报告</a></p>':'');
+}
+function showInverseV(d){
+ if(!d)return;
+ let box=$('inverse-v');
+ if(!box){box=document.createElement('article');box.id='inverse-v';$('notice').after(box)}
+ const f=d.fit;
+ const stages={fit:'拟合 V 和 directQ',evaluate:'闭环评测',finished:'已完成',error:'中断'};
+ box.innerHTML='<h2>独胜场景 · 成功收益 1/N</h2><p>'+esc(stages[d.stage]??d.stage)+' '+esc(d.panel??'')+' · seed 17</p>'
+ +metric('V 更新',d.fitted||f?.stage==='Q_init'?16000:f?.updates??0,16000)
+ +metric('Q 更新',d.fitted?8000:f?.stage==='Q_init'?f.updates:0,8000)
+ +metric('闭环场景',d.completed,505)+(d.error?'<p>'+esc(d.error)+'</p>':'')
+ +(d.stage==='finished'?'<p><a href="/inverse-v-report">查看独胜场景和全体房间的配对结果</a></p>':'');
+}
+function showFastest(d){
+ if(!d)return;
+ let box=$('fastest-actor');
+ if(!box){box=document.createElement('article');box.id='fastest-actor';$('notice').after(box)}
+ const f=d.fit;
+ box.innerHTML='<h2>最快成功教师 · 训练集闭环</h2>'+metric('Actor 更新',f.step,24000)
+ +metric('多候选边界选中教师动作',f.informative_matched,f.informative)
+ +metric('整条示范动作完全一致',f.perfect,161)
+ +metric('精确查表闭环已测',d.lookup,161)+metric('Actor 闭环已测',d.actor,215)
+ +(d.polish?'<p>较小学习率续训 '+form(d.polish.extra)+' 步</p>'+metric('训练选定检查点完整复现示范动作（追加 '+form(d.polish_best.extra)+' 步）',d.polish_best.perfect,161)+metric('续训模型闭环已测',d.polish_done,215):'')
+ +(d.held?'<h3>留出集闭环</h3>'+metric('训练选定模型',d.held.polish,290)+metric('固定 24,000 步模型',d.held.fixed,290):'')
+ +(d.held_finished?'<p><a href="/fastest-held-report">查看留出配对结果</a></p>':'')
+ +(d.finished?'<p><a href="/fastest-actor-report">查看训练集拟合与闭环结果</a></p>':'');
+}
+function showSoft(d){
+ if(!d)return;
+ let box=$('soft-actor');
+ if(!box){box=document.createElement('article');box.id='soft-actor';$('notice').after(box)}
+ const f=d.fit;
+ box.innerHTML='<h2>剩余时间软标签 actor</h2>'+metric('训练更新',(f.checkpoint==='continued'?24000:0)+f.step,28500)
+ +metric('多种成功动作中选中最高权重动作',f.mixed_top,d.labels.mixed)
+ +metric('已完成闭环',d.completed,1010)+(d.finished?'<p><a href="/soft-actor-report">打开成对评测报告</a></p>':'');
+}
+function showIdentity(d){
+ if(!d)return;
+ let box=$('id-actor');
+ if(!box){box=document.createElement('article');box.id='id-actor';$('notice').after(box)}
+ const f=d.fit;
+ box.innerHTML='<h2>十维 CAP 编号 actor</h2>'+metric('训练更新',(f.checkpoint==='continued'?24000:0)+f.step,28500)
+ +metric('教师 CAP 编号命中',f.cap_correct,f.boundaries)+metric('教师实际动作命中',f.action_correct,f.boundaries)
+ +metric('已完成闭环',d.completed,1010)+(d.finished?'<p><a href="/id-actor-report">打开与动作 actor 的配对报告</a></p>':'');
+}
+function ppoChart(parent,label,series,fixedMax,xMax=2000,xLabel='2,000 episodes'){
+ const wrap=document.createElement('div'),title=document.createElement('strong'),canvas=document.createElement('canvas');
+ title.textContent=label;canvas.width=425;canvas.height=128;canvas.style.width='100%';canvas.style.height='auto';
+ wrap.append(title,canvas);parent.append(wrap);const ctx=canvas.getContext('2d');
+ const values=series.flatMap(s=>s.points.map(p=>p[1]));
+ const low=Math.min(0,...values), high=fixedMax??Math.max(.00001,...values),span=high-low;
+ ctx.font='12px sans-serif';ctx.fillStyle='#445554';ctx.strokeStyle='#ced6d2';
+ ctx.beginPath();ctx.moveTo(45,9);ctx.lineTo(45,103);ctx.lineTo(417,103);ctx.stroke();
+ ctx.fillText(high.toFixed(2),2,15);ctx.fillText(low.toFixed(2),2,102);ctx.fillText('0',42,122);ctx.fillText(xLabel,321,122);
+ for(const s of series){
+   ctx.strokeStyle=ctx.fillStyle=s.color;ctx.beginPath();
+   s.points.forEach(([x,y],i)=>{const px=45+372*x/xMax,py=103-94*(y-low)/span;if(i)ctx.lineTo(px,py);else ctx.moveTo(px,py)});
+   ctx.stroke();for(const [x,y] of s.points){ctx.beginPath();ctx.arc(45+372*x/xMax,103-94*(y-low)/span,2.3,0,Math.PI*2);ctx.fill()}
+ }
+}
+function showActorReplay(d){
+ if(!d)return;
+ const box=$('actor-replay'),h=d.history??[],last=h.at(-1),f=d.suffix;
+ box.hidden=false;
+ const stage={collect_replay:'当前 actor 采集',fit_replay:'新旧样本联合更新',monitor:'诊断闭环',final_replay:'最终配对闭环',relabel:'核对旧前缀在末轮 actor 下的标签',finished:'已完成',paused:'已暂停',error:'执行中断'};
+ box.innerHTML='<h2>十维 actor · 当前样本与历史回放</h2><p>'+esc(stage[d.stage]??'准备')+' · 第 '+(d.round??0)+' 轮</p>'+metric('已完成轮次',h.length,24);
+ if(d.error)box.innerHTML+='<p>'+esc(d.error)+'</p>';
+ if(d.live&&['collect_replay','monitor','final_replay'].includes(d.stage))box.innerHTML+=metric('当前阶段完成房间',d.live.done,d.live.total);
+ if(last){
+   box.innerHTML+='<p>48 个固定诊断房间 · 新旧混合 '+last.monitor.second+'，仅用当轮 '+last.vs_current.first+'，监督起点 '+last.monitor.first+'。本轮混合相对仅用当轮救回 '+last.vs_current.rescued+'、丢失 '+last.vs_current.lost+'。</p>';
+   const charts=document.createElement('div');charts.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px';box.append(charts);
+   const series=(color,fn)=>({color,points:h.filter(r=>fn(r)!=null).map(r=>[r.round,fn(r)])});
+   ppoChart(charts,'固定诊断成功数 · 绿为回放，棕为仅当轮',[series('#007e74',r=>r.monitor.second),series('#aa6138',r=>r.vs_current.first)],48,24,'24 轮');
+   ppoChart(charts,'更新后的排序命中率 · 绿为当轮，棕为历史',[series('#007e74',r=>r.after),series('#aa6138',r=>r.history_after)],1,24,'24 轮');
+ }
+ if(f)box.insertAdjacentHTML('beforeend','<h3>同一动作的后缀诊断</h3>'+metric('已盘点房间',f.done,96)+'<p>可配对 '+f.pure+' 个分叉点、'+2*f.pure+' 个首步动作。只由 actor 续跑成功 '+f.actor_only+'，只由对应专家续跑成功 '+f.expert_only+'，两者均成功 '+f.both+'，均失败 '+f.neither+'。</p>');
+ if(d.result)box.insertAdjacentHTML('beforeend','<p>最终 200 房间 · 回放 '+d.result.replay+'，仅当轮 '+d.result.current+'，初始 '+d.result.initial+'。 <a href="/actor-replay-report">报告</a> · <a href="/actor-suffix-report">后缀诊断</a></p>');
+}
+function showActorIteration(d){
+ if(!d)return;
+ const box=$('actor-iteration'),h=d.history??[],live=d.live,cur=h.at(-1);
+ box.hidden=false;
+ const phases={monitor_initial:'监督起点监测',collect_iterative:'当前 actor 采集分叉',collect_frozen:'冻结起点采集对照',fit:'更新 actor',monitor:'逐轮闭环监测',fit_pooled:'汇总冻结数据拟合对照',final_initial:'最终评测 · 起点',final_iterative:'最终评测 · 迭代',final_pooled:'最终评测 · 集中训练',paused:'已暂停',error:'执行中断',finished:'已完成'};
+ box.innerHTML='<h2>十维 actor · 分叉策略迭代</h2><p>'+esc(phases[d.stage]??d.stage)+' · 第 '+(d.round??0)+' 轮</p>'+metric('已完成的轮次',h.length,d.rounds);
+ if(d.error)box.innerHTML+='<p>'+esc(d.error)+'</p>';
+ if(live&&['monitor_initial','collect_iterative','collect_frozen','monitor','final_initial','final_iterative','final_pooled'].includes(d.stage)){
+   box.innerHTML+=metric('当前阶段已完成房间',live.done,live.total);
+   if(d.stage.startsWith('collect_'))box.innerHTML+='<p>已完成分叉 · 救回 '+live.rescues+'，破坏 '+live.losses+'，同结局 '+live.equal+'；原动作校验 '+live.controls+'</p>';
+ }
+ if(cur){
+   const v=cur.monitor;
+   box.innerHTML+='<p>固定诊断房间 · 监督起点 '+v.first+'/'+v.n+' → 第 '+cur.round+' 轮 '+v.second+'/'+v.n+'，救回 '+v.rescued+'，丢失 '+v.lost+'。相对上轮救回 '+cur.previous.rescued+'，丢失 '+cur.previous.lost+'。</p>';
+   const plots=document.createElement('div');plots.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:16px';box.append(plots);
+   const chart=(title,accessors,max)=>ppoChart(plots,title,accessors.map(([color,fn])=>({color,points:h.filter(r=>fn(r)!=null).map(r=>[r.round,fn(r)])})),max,d.rounds,d.rounds+' 轮');
+   chart('诊断成功数 · 绿为迭代，灰为起点',[['#007e74',r=>r.monitor.second],['#7d8381',r=>r.monitor.first]],v.n);
+   chart('当轮有成败差的分叉 · 绿为迭代，棕为冻结',[['#007e74',r=>r.iterative.wins+r.iterative.losses],['#aa6138',r=>r.frozen.wins+r.frozen.losses]]);
+   chart('当轮训练对排序命中率 · 灰为更新前，绿为更新后',[['#7d8381',r=>r.before],['#007e74',r=>r.after]],1);
+ }
+ if(d.result){const q=d.result;box.insertAdjacentHTML('beforeend','<p>最终 200 房间 · 起点 '+q.initial+'，迭代 '+q.iterative+'，冻结数据集中训练 '+q.pooled+'。 <a href="/actor-iteration-report">逐场景配对报告</a></p>');}
+}
+function showSingleOverride(d){
+ if(!d)return;
+ const box=$('single-override'), c=d.collect, a=d.accept;
+ box.hidden=false;
+ const stage={collect:'开发房间分叉采样',fit:'拟合改选模块',frozen:'已冻结改选规则',accept:'新房间配对验收',finished:'已完成',error:'执行中断'};
+ box.innerHTML='<h2>十维 actor · 每局最多一次改选</h2><p>'+esc(stage[d.stage]??d.stage)+'</p>';
+ if(d.error)box.innerHTML+='<p>'+esc(d.error)+'</p>';
+ if(c)box.innerHTML+=metric('已采集开发房间',c.done,c.total)+'<p>'+form(c.branches)+' 个替代动作后缀 · 救回 '+c.wins+'，破坏 '+c.losses+'，同结局 '+c.neutral+'</p><p>至少一个分叉救回原失败局 '+c.rescuable+' / '+(c.done-c.baseline)+' 个房间；至少一个分叉破坏原成功局 '+c.vulnerable+' / '+c.baseline+' 个房间</p>';
+ if(d.fit_curve?.length)box.innerHTML+=metric('改选模块训练步数',d.fit_curve.at(-1)[0],120);
+ if(d.frozen)box.innerHTML+='<p>40 个开发房间选阈值 · 已冻结 '+Number(d.frozen.threshold).toFixed(2)+'</p>'
+   +'<table><tr><th>候选阈值</th><th>触发房间</th><th>救回</th><th>丢失</th><th>净增</th></tr>'
+   +d.frozen.tuning.map(s=>'<tr><td>'+Number(s.threshold).toFixed(2)+'</td><td>'+s.overrides+'</td><td>'+s.rescued+'</td><td>'+s.lost+'</td><td>'+s.net+'</td></tr>').join('')+'</table>';
+ if(a)box.innerHTML+=metric('新房间已完成配对',a.done,a.total)+'<p>原 actor '+a.baseline+'，改选后 '+a.candidate+'，触发 '+a.overrides+' 次；救回 '+a.wins+'，丢失 '+a.losses+'</p>';
+ if(d.result)box.innerHTML+='<p><b>'+ (d.result.accepted?'通过验收':'保留原 actor')+'</b> · 净差单侧 95% 下界 '+(100*d.result.lower).toFixed(2)+' 个百分点 · <a href="/single-override-report">报告</a> · <a href="/single-override-chart.png">曲线图</a> · <a href="/single-override-pairs.csv">逐房间数据</a></p>';
+ const plots=document.createElement('div');plots.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,275px),1fr));gap:15px';box.append(plots);
+ for(const [rows,label,max,axis] of [[d.collect_curve,'采到的分叉 · 绿为救回，棕为破坏',200,'200 个开发房间'],[d.fit_curve,'交叉熵 · 绿为训练，棕为调参房间',120,'120 步'],[d.accept_curve,'实际闭环 · 绿为救回，棕为丢失',200,'200 个验收房间']]){
+   if(rows?.length)ppoChart(plots,label,[{color:'#007e74',points:rows.map(r=>[r[0],r[1]])},{color:'#aa6138',points:rows.map(r=>[r[0],r[2]])}],undefined,max,axis);
+ }
+}
+function showIdPpo(d){
+ if(!d)return;let box=$('id-ppo');
+ if(!box){box=document.createElement('article');box.id='id-ppo';$('notice').after(box)}
+ const h=d.rounds, n=h.length*50, stage={cpp_validation:'C++ 等价性与吞吐核对',collect:'在线采样',fit:'PPO 更新',evaluate:'冻结模型闭环',monitor:'贪心监测',finished:'已完成'};
+ box.innerHTML='<h2>十维 CAP actor · PPO</h2><p>'+esc(stage[d.stage.stage]??d.stage.stage)+' '+esc(d.stage.panel??'')+'</p>'
+ +metric('已用于 PPO 更新的 episode',n,2000)
+ +(d.backend?'<p>16 进程配对采样 · C++ 吞吐为 Cython 的 '+Number(d.backend.speedup).toFixed(2)+' 倍 · '+form(d.backend.paired_boundaries)+' 个决策边界通过核对</p>':'')
+ +(d.finished?'<p><a href="/id-ppo-report">打开配对报告</a></p>':'');
+ const charts=document.createElement('div');charts.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:15px';box.append(charts);
+ const line=(fn,color)=>({points:h.map(r=>[r.episodes,fn(r)]),color});
+ ppoChart(charts,'成功率（绿：采样 50 局，棕：固定 40 局贪心）',[line(r=>r.success/50,'#007e74'),{points:d.monitor,color:'#9e552d'}],1);
+ ppoChart(charts,'采样策略熵（nats）',[line(r=>r.entropy,'#007e74')]);
+ ppoChart(charts,'Actor 损失',[line(r=>r.actor_loss,'#007e74')]);
+ ppoChart(charts,'Critic 均方误差',[line(r=>r.critic_loss,'#007e74')]);
+}
+async function refreshGeneral62(){
+ const target=$('g62stats');
+ try{
+  const res=await fetch('/general62-data',{cache:'no-store'});if(!res.ok)throw Error(res.status);
+  const d=await res.json(),a=d.running,t=d.trials;
+  const phases={ready:'准备',author:'作者开发中',census:'成员全池扫描',grouping:'困难集构造与复测',frozen:'程序库已冻结',incomplete:'作者流程未完整完成'};
+  const topics={general:'通用策略',no_target:'缺少可见目标',paired_push:'双侧推动但进展小',navigation:'移动或准备受阻',acquisition:'接触建立与等待',idle:'制动或让行后进展小',other:'其他停滞'};
+  let msg='<p>'+esc(phases[d.stage]??d.stage)+(d.active?' · 第 '+d.active+' 轮 · '+esc(topics[d.topic]??d.topic)+' · 本轮剩余 '+Math.floor(d.time_left/60)+' 分 '+d.time_left%60+' 秒':'')+'</p>';
+  const coverage=d.candidate_coverage,best=coverage.best;
+  msg+='<div id="g62coverage" style="display:flex;gap:1em 3em;flex-wrap:wrap"><div>候选策略成功并集<br><strong style="font-size:2em">'+coverage.union+' / '+coverage.total+'</strong>（'+(100*coverage.union/coverage.total).toFixed(1)+'%）</div><div>最佳单策略（完整扫描）<br><strong style="font-size:2em">'+(best?best.score+' / '+coverage.total:'待完成')+'</strong> '+(best?esc(best.sid):'')+'</div></div>';
+  msg+='<p>原始开发池逐场景去重 · 完整扫描候选覆盖 '+coverage.full_union+' 个 · 部分扫描候选额外覆盖 '+(coverage.union-coverage.full_union)+' 个</p>';
+  msg+=metric('作者累计 tokens（含缓存输入）',d.tokens,40000000);
+  if(d.active)msg+=metric('本轮累计 tokens',d.round_tokens,d.round_cap);
+  if(d.last_sweep){
+   const l=d.last_sweep;
+   msg+='<p><strong>最近完整扫描　'+esc(l.sid)+'　'+l.score+' / '+l.total+'</strong>（'+(100*l.score/l.total).toFixed(1)+'%）</p>';
+  }
+  if(a)msg+='<p>正在运行 '+esc(a.sid)+' · 已返回 '+a.done+'/'+a.total+' · 已完成中成功 '+a.success+' · 异常 '+a.errors+'</p>';
+  if(t.length)msg+='<table><tr><th>本轮候选</th><th>测量范围</th><th>成功 / 已测</th></tr>'+t.slice(-10).map(r=>'<tr><td><a href="/general62-source?sid='+esc(r.sid)+'">'+esc(r.sid)+'</a></td><td>'+(r.kind==='sweep'?'全开发池':'开发试跑')+'</td><td>'+r.score+'/'+r.total+'</td></tr>').join('')+'</table>';
+  if(d.members.length)msg+='<h3>已选成员</h3><table><tr><th>轮次 / CAP</th><th>单成员 /160</th><th>新增</th><th>并集 /160</th></tr>'+d.members.map(r=>'<tr><td>'+r.n+' · '+esc(r.sid)+'</td><td>'+r.success+'</td><td>'+r.added+'</td><td>'+r.union+'</td></tr>').join('')+'</table>';
+  if(d.downstream){
+   const p=d.downstream;
+   msg+='<h3>五成员 GA directQ · '+esc(p.stage)+'</h3>';
+   if(p.limit)msg+=metric(p.label,p.done,p.limit);
+   if(p.error)msg+='<pre>'+esc(p.error)+'</pre>';
+  }
+  if(d.result)msg+='<p>'+d.result.rooms+' 个新房间 · 开发选定单 CAP '+esc(d.result.best_dev_sid)+' '+d.result.best_vs_mix.first+' · directQ '+d.result.best_vs_mix.second+' · 五成员并集 '+d.result.union+' · 相对单 CAP 救回 '+d.result.best_vs_mix.rescued+'、丢失 '+d.result.best_vs_mix.lost+'</p>';
+  if(d.action_actor){
+   const p=d.action_actor;
+   msg+='<h3>五成员动作评分 actor · 最快成功教师</h3>';
+   if(p.result){
+    const q=p.result.vs_directq;
+    msg+='<p>同批 '+q.n+' 个房间 · actor '+q.second+' · directQ '+q.first+' · actor 救回 '+q.rescued+'、丢失 '+q.lost+'</p>';
+   }else{
+    msg+=metric(p.label,p.done,p.limit);
+    if(p.fit?.informative)msg+='<p>训练示范中，有多个不同动作时命中 '+p.fit.informative_matched+' / '+p.fit.informative+'</p>';
+   }
+  }
+  if(d.actor_scale){
+   const p=d.actor_scale;
+   msg+='<h3>动作评分 actor · 330 对 800 个训练场景</h3>';
+   if(p.result){
+    const q=p.result;
+    msg+='<p>同批 '+q.n+' 个房间 · 330 场景模型 '+q.first+' · 800 场景模型 '+q.second+' · 救回 '+q.rescued+'、丢失 '+q.lost+'</p>';
+   }else if(p.limit){msg+=metric(p.label,p.done,p.limit)}
+  }
+  if(d.set_actor){
+   const p=d.set_actor;
+   msg+='<h3>800 场景 actor · 最快教师与成功动作集合</h3>';
+   if(p.result){
+    const q=p.result;
+    msg+='<p>同批 '+q.n+' 个房间 · 最快教师 '+q.first+' · 成功动作集合 '+q.second+' · 救回 '+q.rescued+'、丢失 '+q.lost+'</p>';
+   }else if(p.limit){msg+=metric(p.label,p.done,p.limit)}
+  }
+  if(d.actor_inputs){
+   const v=d.actor_inputs;
+   const names={action:'仅动作',action_ln:'仅动作 + LayerNorm',geometry_action:'动作 + 几何',geometry_action_ln:'动作 + 几何 + LayerNorm',router:'几何选 CAP',priority:'固定 CAP 优先级'};
+   msg+='<h3>动作与几何输入消融</h3><table><tr><th>输入</th><th>更新 / 24,000</th><th>留出教师动作命中</th><th>完成 / 200</th><th>成功</th></tr>'+Object.entries(v.arms).map(([k,r])=>'<tr><td>'+names[k]+'</td><td>'+(k==='priority'?'—':r.step)+'</td><td>'+(r.fit?(100*r.fit.held.correct/r.fit.held.multi).toFixed(1)+'%':'—')+'</td><td>'+(v.evaluation[k]||0)+'</td><td>'+(v.success[k]??'—')+'</td></tr>').join('')+'</table>';
+  }
+  if(d.actor_replan){
+   const v=d.actor_replan;
+   msg+='<h3>逐步重规划 · 200 个新房间</h3>'+metric('闭环执行',v.total,v.goal);
+   const names={actor:'原 actor',value_once:'一步 V · 单次',flags_once:'四步受阻 · 单次',value_every:'一步 V · 每步',flags_every:'四步受阻 · 每步'};
+   msg+='<table><tr><th>方法</th><th>已完成 / 房间</th>'+(v.success?'<th>成功</th>':'')+'</tr>'+Object.keys(names).map(k=>'<tr><td>'+names[k]+'</td><td>'+v.completed[k]+' / 200</td>'+(v.success?'<td>'+v.success[k]+'</td>':'')+'</tr>').join('')+'</table>';
+   if(v.matched){msg+=metric('相同起点的单次对照（含复用）',v.matched.total,v.matched.goal);
+    if(v.matched.pairs)msg+='<p>首个多候选边界介入，单次 / 每步成功数 · 一步 V '+v.matched.pairs.value.join(' / ')+' · 四步受阻 '+v.matched.pairs.flags.join(' / ')+'</p>';}
+  }
+  if(d.actor_replan?.norm_comparison){
+   const c=d.actor_replan.norm_comparison;
+   msg+='<h3>相同房间的冻结 actor 对照</h3>';
+   if(c.success)msg+='<p>330 房间原网络 '+c.success[0]+'/200 · 800 房间原网络 '+c.success[1]+'/200 · 800 房间 LayerNorm '+c.success[2]+'/200</p>';
+   else msg+=metric('无规划闭环',c.done,c.total);
+  }
+  if(d.actor_value_rollout){
+   const v=d.actor_value_rollout;
+   msg+='<h3>冻结 actor 的 V · 1 步与 4 步规划</h3>';
+   if(v.success)msg+='<p>同批 '+v.rooms+' 个房间 · 原 actor '+v.success[0]+' · 1 步 '+v.success[1]+' · 4 步 '+v.success[2]+'</p>';
+   else msg+=metric(esc(v.stage),v.completed,v.total);
+  }
+  if(d.fit_diagnostic){
+   const p=d.fit_diagnostic;
+   msg+='<h3>800 场景 · 硬标签拟合诊断</h3><p>'+esc(p.stage)+'</p>';
+   if(p.evaluation){
+    const e=p.evaluation;
+    msg+=e.paired?'<p>留出闭环 · 原硬标签 '+e.paired.first+'/'+e.paired.n+'，LayerNorm '+e.paired.second+'/'+e.paired.n+' · 救回 '+e.paired.rescued+'，丢失 '+e.paired.lost+'</p>':metric('LayerNorm 留出闭环（房间）',e.completed,e.total);
+    if(e.forks)msg+=metric('首次分叉、教师修正与时长扰动（房间）',e.forks.completed,e.forks.total)+metric('后续动作分叉（成败不同的房间）',e.forks.later,61)+metric('教师动作分歧（有成功教师的房间）',e.forks.teachers,144);
+    if(e.availability)msg+=metric('扰动后首个改选与合法性变化（房间）',e.availability.completed,e.availability.total);
+    if(e.availability?.first){const f=e.availability.first;msg+='<p>71 条固定后缀受阻且成败翻转的分支中，首次改选时原提案消失 '+f.proposal+' 条，原动作仍在但评分改选 '+f.rank+' 条，原动作已不合法 '+f.illegal+' 条。</p>'}
+    if(e.candidate_sweep){const s=e.candidate_sweep;msg+=metric('44 个提案消失边界的候选闭环（执行次数）',s.completed,s.total);if(s.failed){const f=s.failed;msg+='<p>'+f.n+' 条扰动后失败分支中，当前候选可救回 '+f.any_offered+' 条，仅旧命令可救回 '+f.only_old+' 条，均未救回 '+f.neither+' 条。</p>'}}
+   }
+   if(p.curves.length)msg+='<table><tr><th>单项改动</th><th>累计更新次数</th><th>训练教师动作命中率</th><th>留出教师动作命中率</th></tr>'+p.curves.map(r=>'<tr><td>'+esc(r.name)+'</td><td>'+r.step+'</td><td>'+(100*r.hits/r.total).toFixed(1)+'%</td><td>'+(r.held?(100*r.held.correct/r.held.multi).toFixed(1)+'%':'待评估')+'</td></tr>').join('')+'</table><p>仅统计至少有两个合法候选动作的教师决策边界。</p>';
+  }
+  $('g62src').hidden=!d.latest;target.innerHTML=msg;
+ }catch(err){target.textContent='进度暂不可用（'+String(err)+'）'}
+}
+refreshGeneral62();setInterval(refreshGeneral62,5000);
+function drawFocusMap(){
+ const ledger=data?.focus_recovery;
+ if(!ledger)return;
+ const select=$('focus-map-round'),prev=select.value;
+ const choices=[['all','累计并集'],...ledger.rounds.map(r=>[r.sid,'第 '+r.number+' 轮 · '+r.sid])];
+ if(select.options.length!==choices.length){
+   select.replaceChildren(...choices.map(([id,label])=>new Option(label,id)));
+   if(choices.some(([id])=>id===prev))select.value=prev;
+ }
+ const rounds=select.value==='all'?ledger.rounds:ledger.rounds.filter(r=>r.sid===select.value);
+ const wins=new Set(rounds.flatMap(r=>r.wins)),centers=new Set(rounds.map(r=>r.center));
+ if(select.value==='all'&&ledger.center)centers.add(ledger.center);
+ const entries=Object.entries(data.points),xs=entries.map(e=>e[1][0]),ys=entries.map(e=>e[1][1]);
+ const x0=Math.min(...xs),y0=Math.min(...ys),dx=Math.max(...xs)-x0,dy=Math.max(...ys)-y0;
+ const el=$('focus-map'),ctx=el.getContext('2d');
+ ctx.clearRect(0,0,el.width,el.height);
+ for(const [id,[px,py]] of entries){
+   const x=24+670*(px-x0)/dx,y=302-278*(py-y0)/dy;
+   ctx.fillStyle=!rounds.length?'#b9c6c6':wins.has(id)?'#087e72':'#be7d49';
+   ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fill();
+   if(centers.has(id)){ctx.strokeStyle='#162835';ctx.lineWidth=2;ctx.strokeRect(x-7,y-7,14,14)}
+ }
+ ctx.fillStyle='#415651';ctx.fillText('PC1',675,324);ctx.fillText('PC2',4,14);
+ $('focus-map-legend').textContent=(rounds.length?'绿色成功 · 棕色未覆盖':'灰色等待全池评测')+' · 方框为所选中心';
+}
+function draw(){
+ if(!data)return;const open=Array.from(document.querySelectorAll('article details')).map(d=>d.open);const formal=$('mode').value==='formal';
+ drawFocusMap();showEvaluation(data.evaluation);showDirectQ(data.directq);showExtension(data.extension);showTenMemberQ(data.extension);showInverseV(data.inverse_v);showFastest(data.fastest_actor);showSoft(data.soft_actor);showIdentity(data.id_actor);showIdPpo(data.id_ppo);showSingleOverride(data.single_override);showActorIteration(data.actor_iteration);showActorReplay(data.actor_replay);
+ $('arms').innerHTML=arms.map((a,i)=>{const v=data.arms[a],active=v.active,n=v.sweeps.length,h=v.latest,partial=Object.values(v.partial),tested=partial.filter(x=>x>=0).length;
+ const usage=data.tokens?.[a];const token=usage?'<h3>LLM token 用量</h3><small>无 token 硬上限 · 会话累计</small><div class="line small"><span>输入（含缓存）</span><b>'+form(usage.input_tokens)+'</b></div><div class="line small"><span>其中缓存输入</span><span>'+form(usage.cached_input_tokens)+'</span></div><div class="line small"><span>输出（含推理）</span><b>'+form(usage.output_tokens)+'</b></div><div class="line small"><span>其中推理输出</span><span>'+form(usage.reasoning_output_tokens)+'</span></div><div class="line small"><span>输入 + 输出合计</span><b>'+form(usage.total_tokens)+'</b></div>':'<h3>LLM token 用量</h3><small>无 token 硬上限 · 等待遥测</small>';
+ const status=v.final?'已封存 '+v.final.join('、'):active?('正在'+(active.kind==='sweep'?'全池检查':'试跑')+' '+active.sid+' · '+v.active_done+'/'+active.ids.length):'作者开发中';
+ const measured=formal?(n?(i===2?'正式覆盖：最佳全池修订 '+v.best:'正式覆盖：'+v.sweeps.map(x=>x.sid).join(' + ')):'正式覆盖：尚无完整轮次'):('最新修订：'+(h??'尚无提交'));
+ const main=formal?(n?v.wins.length+' / 160':'待首轮完成'):(tested?partial.filter(x=>x===1).length+' / '+tested:'待试跑');
+ return '<article><h2>'+titles[i]+'</h2><p class="status">'+esc(status)+'</p><strong>'+esc(measured)+'</strong><div class="big">'+main+'</div><small>'+(formal?(i===2?'最佳单程序覆盖':'已提交成员的成功并集'):'最新提交成功 / 已完成的不同场景')+(formal&&n?' · '+(100*v.wins.length/160).toFixed(1)+'%':'')+'</small><p>最新作者提交 '+(h?'<a target="_blank" href="/source?arm='+a+'&sid='+h+'">'+h+' · '+esc(v.summary)+'</a>':'尚未提交')+'</p><small>'+(h?'该修订已测 '+tested+' 个不同场景，成功 '+partial.filter(x=>x===1).length+' 个':'')+'</small><canvas id="cv'+i+'" width="445" height="267"></canvas><p class="small inspect" id="info'+i+'"></p><h3>预算</h3>'+metric('开发运行已预订',v.attempts,960)+metric('实际执行 ticks',v.ticks,1728000)+metric('探索运行',v.probes,160)+metric(i===2?'全池反馈':'正式轮次',n,5)+metric('作者会话（分钟）',Math.min(240,Math.max(0,Math.round(((v.end??data.updated)-v.created)/60))),240)+'<small>已返回 '+v.completed+' 次 · 异常 '+v.errors+' 次 · 待结算 '+form(Math.max(0,v.reserved_ticks))+' ticks</small>'+token+'<h3>全池提交记录</h3><table class="small"><tr><th>提交</th><th>单独成功</th><th>'+(i===2?'最佳单个':'新增 / 并集')+'</th></tr>'+v.sweeps.map((r,k)=>{const prev=v.sweeps.slice(0,k+1);const joined=new Set(prev.flatMap(x=>x.wins));return '<tr><td><a target="_blank" href="/source?arm='+a+'&sid='+r.sid+'">'+r.sid+'</a></td><td>'+r.wins.length+'</td><td>'+(i===2?Math.max(...prev.map(x=>x.wins.length)):r.added+' / '+joined.size)+'</td></tr>'}).join('')+'</table><details><summary>全部源码提交（'+v.subs.length+'）</summary>'+v.subs.map(r=>'<p><a target="_blank" href="/source?arm='+a+'&sid='+r.sid+'">'+r.sid+' '+esc(r.name)+'</a> <code>'+r.sha.slice(0,10)+'</code></p>').join('')+'</details></article>'}).join('');
+ document.querySelectorAll('article details').forEach((d,i)=>d.open=open[i]??false);arms.forEach((a,i)=>{const v=data.arms[a],cv=$('cv'+i),ctx=cv.getContext('2d'),dots=Object.entries(data.points);const xs=dots.map(p=>p[1][0]),ys=dots.map(p=>p[1][1]),lo=Math.min(...xs),hi=Math.max(...xs),bt=Math.min(...ys),tp=Math.max(...ys);
+ const plot=dots.map(([k,[x,y]])=>[k,27+(x-lo)*395/(hi-lo),238-(y-bt)*214/(tp-bt)]),wins=new Set(v.wins);
+ const state=k=>formal?(v.sweeps.length?Number(wins.has(k)):null):(v.partial[k]??null);const names={'1':'成功','0':'已测失败','-1':'执行异常','null':'尚无完整结果'};
+ ctx.fillStyle='#fafbf8';ctx.fillRect(0,0,445,267);ctx.strokeStyle='#e1e8e1';ctx.lineWidth=1;for(let m=0;m<5;m++){ctx.beginPath();ctx.moveTo(27+m*99,15);ctx.lineTo(27+m*99,239);ctx.moveTo(26,24+m*53);ctx.lineTo(423,24+m*53);ctx.stroke()}ctx.fillStyle='#60746e';ctx.font='12px sans-serif';ctx.fillText('PC1',206,260);ctx.fillText('PC2',3,13);
+ for(const [k,x,y] of plot){const h=state(k);ctx.beginPath();ctx.arc(x,y,h===1?3.6:2.8,0,Math.PI*2);ctx.fillStyle=h===1?'#007e74':h===0?'#c3794a':'#bac3c4';ctx.fill();if(h===-1){ctx.fillStyle='#922';ctx.fillText('×',x-4,y+4)}if(k===chosen){ctx.strokeStyle='#131d1a';ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.stroke()}}
+ $('info'+i).textContent=chosen?chosen+' · '+names[String(state(chosen))]:'点击任一房间';cv.onclick=e=>{const b=cv.getBoundingClientRect(),x=(e.clientX-b.left)*445/b.width,y=(e.clientY-b.top)*267/b.height;chosen=plot.reduce((m,p)=>(p[1]-x)**2+(p[2]-y)**2<(m[1]-x)**2+(m[2]-y)**2?p:m)[0];draw()};});
+ $('time').textContent='更新 '+new Date(data.updated*1000).toLocaleTimeString();
+}
+async function refresh(){try{const res=await fetch('/data',{cache:'no-store'});if(!res.ok)throw Error(res.status);data=await res.json();draw();$('notice').textContent=''}catch(e){$('notice').textContent='更新失败，保留上次读数。'+e}}
+$('mode').onchange=draw;refresh();setInterval(refresh,5000);
+</script></main></html>

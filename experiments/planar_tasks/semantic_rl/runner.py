@@ -35,7 +35,7 @@ def rollout(fixture, source, **kwargs):
 def _rollout(fixture, source, *, model=None, features=None, config=EventConfig(),
             max_ticks=1800, max_decisions=600, wall_seconds=300, seed=17, deterministic=False, on_progress=None,
             temperature=1., fast_feedback=False, record_details=True, training_fastpath=False,
-            prefix=()):
+            prefix=(), environment_factory=Environment):
     if min(max_ticks, max_decisions, wall_seconds) <= 0:
         raise ValueError('positive rollout budgets required')
     prefix = X.validate_commands(list(prefix), allow_empty=True)
@@ -48,7 +48,7 @@ def _rollout(fixture, source, *, model=None, features=None, config=EventConfig()
     history_factory=({'history_factory':features.new_history} if features is not None else {})
     if training_fastpath and features is not None and features.runtime=='typed_stream':
         history_factory=dict(history_factory=MemoryHistory)
-    environment = Environment(fixture, config, fast_feedback=fast_feedback,record_details=record_details,
+    environment = environment_factory(fixture, config, fast_feedback=fast_feedback,record_details=record_details,
                               **history_factory); env = environment.env
     h = environment.history
     typed_cap = model is None and features is not None and features.runtime in ('typed_batch','typed_stream')
@@ -141,7 +141,8 @@ def _rollout(fixture, source, *, model=None, features=None, config=EventConfig()
                   decisions=decisions, public_rows=rows, events=environment.events, replay=environment.replay() if record_details else None)
     from coimagine.random_start.lidar_native import runtime_info
     result['summary']['analytic_lidar_backend'] = runtime_info()
-    result['recording']=dict(details=record_details,history_identity='episode_cursor_not_evidence_hash' if isinstance(h,MemoryHistory) else 'canonical_hash')
+    default_identity = 'episode_cursor_not_evidence_hash' if isinstance(h, MemoryHistory) else 'canonical_hash'
+    result['recording'] = dict(details=record_details, history_identity=getattr(h, 'recording_identity', default_identity))
     if features is not None and features.semantic_protocol is not None:
         result["semantic_protocol"]=features.semantic_protocol
         from .stream_history import VERSION as STREAM_VERSION

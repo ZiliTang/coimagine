@@ -105,6 +105,8 @@ class TrustedStreamProgram(StreamProgram):
         directory,self.compilation=compile_host(self.source)
         spec=importlib.util.spec_from_file_location('_coimagine_semantics',directory/'semantics.so')
         self.native_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(self.native_module)
+        from .program_trace_value_v1.pose_kernel import configure
+        configure(self.native_module, self.source)
 
     def request(self,value):
         if self.native_module is None:self.start()
