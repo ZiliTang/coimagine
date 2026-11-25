@@ -1,0 +1,15 @@
+{
+  "seed": 17,
+  "dose": 1001,
+  "v": "b4be8183fafb55fdcbf57e302e46b2591ab49888daac7ef24a2fad642fd13b40",
+  "baseline": "2788fbc5afdc4476ba31e992ac5ea0580616b9ca02c73b460542efe47091a287",
+  "panel": "3f6b64adcd200d342dad49668f9811f729745c1b1c7d9ffab3f8dc0284b6a594",
+  "baseline_rows": "0424f6562b09f4d763342d8a0fee3c359ac1d8add5de018ab81a5364e3c9f0da",
+  "archived_targets": "4e9cac07f5b2b45e3f6337f47fb356494b11a7990de0693d8c17308626856739",
+  "q_updates": 8000,
+  "batch": 64,
+  "objective": "MSE on executed deduplicated action; Adam 0.0003; gamma=1; same saved V RNG state",
+  "treatment": "only nonterminal legal continuation changes: max legal V versus behavior CAP V",
+  "primary": "paired closed-loop success, max minus own, all 600; 10000 bootstrap draws stratified by movable count",
+  "secondary": "unique expert, expert union, outside union; conditional on seed17; previously inspected panel"
+}

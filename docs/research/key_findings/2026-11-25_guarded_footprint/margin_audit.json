@@ -1,0 +1,13 @@
+{
+  "development_n": 46,
+  "rank": 43,
+  "margin_m": 0.14208468886484182,
+  "review": {
+    "covered": 66,
+    "total": 69
+  },
+  "fresh": {
+    "covered": 75,
+    "total": 78
+  }
+}

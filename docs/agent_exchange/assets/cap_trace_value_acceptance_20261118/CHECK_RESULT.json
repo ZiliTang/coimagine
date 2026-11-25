@@ -1,0 +1,48 @@
+{
+  "status": "complete",
+  "scope": "existing-data acceptance only; no CAP execution, simulation, training or trace recomputation",
+  "bundle": "/home/tzl/repo/coimagine/outputs/transfers/cap_trace_value_dev_v1",
+  "archive_sha256": "afcba4390868aa894e44e89e6017c4de4ba8d6942ad112311507bd7c8b8bb1df",
+  "manifest_sha256": "bf75624f8ef2f19cf8fbda2f06d5af47898cf1ee60254fd49da925ad28e12f2a",
+  "payload_files": 6149,
+  "verified_runs": 5320,
+  "success": 1759,
+  "failure": 3561,
+  "anomalous": 0,
+  "missing": 0,
+  "decisions": 369726,
+  "observation_boundaries": 375046,
+  "stop_counts": {
+    "terminal": 5256,
+    "decision_budget": 64
+  },
+  "termination_counts": {
+    "success": 1759,
+    "task_budget_exhausted": 3497,
+    "None": 64
+  },
+  "source_files_matched": 809,
+  "original_gzip_overlap": 810,
+  "additional_original_runs": 4510,
+  "verify_exit": {
+    "command": [
+      "outputs/transfers/venv_py311/bin/python",
+      "-u",
+      "-m",
+      "tools.cap_trace_value_transfer",
+      "verify",
+      "--bundle",
+      "outputs/transfers/cap_trace_value_dev_v1",
+      "--workers",
+      "8"
+    ],
+    "exit_code": 0,
+    "seconds": 514.602578163147,
+    "finished_at": "2026-11-18T01:36:37.352535+08:00"
+  },
+  "remaining_items": [
+    "Program trace recomputation and original/instrumented behavior and memory equivalence have not been run.",
+    "Prior cap_program_trace_v1 strict feature mismatch remains unresolved; this data-only acceptance does not supersede it.",
+    "Freeze new reward/remaining-budget/bootstrap semantics before constructing value targets; preserve 64 decision_budget truncations."
+  ]
+}

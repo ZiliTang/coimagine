@@ -1,0 +1,56 @@
+[
+  {
+    "arm": "boundary",
+    "seed": 17,
+    "initial_success": 60,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.5856632996632996,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  },
+  {
+    "arm": "boundary",
+    "seed": 29,
+    "initial_success": 68,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.6192717051467053,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  },
+  {
+    "arm": "root",
+    "seed": 17,
+    "initial_success": 71,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.6141231962481962,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  },
+  {
+    "arm": "root",
+    "seed": 29,
+    "initial_success": 59,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.6182462722462723,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  },
+  {
+    "arm": "paired",
+    "seed": 17,
+    "initial_success": 64,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.6030021645021645,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  },
+  {
+    "arm": "paired",
+    "seed": 29,
+    "initial_success": 62,
+    "initial_total": 152,
+    "mixed_prefix_root_equal_ranking": 0.6149077681577682,
+    "eligible_roots": 110,
+    "eligible_prefixes": 269
+  }
+]

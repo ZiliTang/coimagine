@@ -1,0 +1,34 @@
+{
+  "training_seed": 17,
+  "collection_seed": 2026111951,
+  "doses": [
+    0,
+    250,
+    500,
+    750,
+    1001
+  ],
+  "caps": [
+    "CAP-RR-009",
+    "CAP-RR-003",
+    "CAP-RR-001",
+    "CAP-RR-010",
+    "CAP-RR-006",
+    "CAP-RR-007",
+    "CAP-RR-002"
+  ],
+  "sampling": "iid parents with replacement; fixed weight 1/k for original k>0, normalized over 200 prior training anchors; do not update weights",
+  "axes": "new distinct complete requested joint-action sequences on successful real runs within this collection; additionally report all runs, boundaries and parents",
+  "nested": "first full neighbor (all seven CAPs, successes + failures) reaching each threshold in predetermined generation order; original 4256 train runs always included",
+  "fit": "GA offline from scratch for each nonzero dose, 16000 V + 8000 Q updates, fixed original normalizers and boundary-uniform sampling; zero reuses archived seed17",
+  "primary": "1001 minus zero on previously unseen scenes solved by exactly one of the seven frozen CAPs",
+  "secondary": "all, union, multiple, outside; adjacent and intermediate differences descriptive; no best checkpoint selection",
+  "uncertainty": "10000 paired resamples of scenes stratified by movable count, fixed training seed; fractions within each subset",
+  "eval": "600 freshly generated roots with 150 for each movable count 2..5, same roots for seven CAPs and five frozen models",
+  "baseline_sha256": "f74c0e4104fcca046a9fb7241090be7949268a321c603560b0c3e2cfa9665b6d",
+  "files": {
+    "anchors.json": "e7a104baa94d619f97b1350df7f85c313dfb9fa7970940fdf8ce03bfbf47b851",
+    "evaluation_panel.json": "3f6b64adcd200d342dad49668f9811f729745c1b1c7d9ffab3f8dc0284b6a594",
+    "forbidden.json": "5ed5a10949e651ed585bf350660688707a7896f286d4e008898ee634b132fafc"
+  }
+}

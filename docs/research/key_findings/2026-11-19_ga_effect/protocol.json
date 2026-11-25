@@ -1,0 +1,18 @@
+{
+  "q": "2788fbc5afdc4476ba31e992ac5ea0580616b9ca02c73b460542efe47091a287",
+  "v": "b4be8183fafb55fdcbf57e302e46b2591ab49888daac7ef24a2fad642fd13b40",
+  "train": "15e4616b2d826b8bd7cd07e9078dffc52b41977c72e1177e2ac8bac5dc93bc48",
+  "panel": "97d15898662ec4cd75a29ea5a4176fef15c010fa178a0ad63e0871f113e324b5",
+  "warm_start": "GA_s17 highest dose, frozen first affine incl normalizers; train shared second 64-dimensional layer and scoring heads",
+  "training": "all distinct legal proposals at up to four archive boundaries per donor; require exact full-prefix hash; same 1200 minibatches of 64, Adam 3e-4; fixed last step; no trace inputs",
+  "effects": [
+    "visible target centroid goalward displacement m",
+    "visible target PCA axis signed change rad modulo pi",
+    "target contact robot0",
+    "target contact robot1",
+    "actual periods"
+  ],
+  "aux": "0.05 times equal-channel standardized masked MSE; train-set mean and scale; C reads predicted effects with state-dependent coefficients",
+  "ranking": "existing 196 diagnostic pairs with archived common GA continuation; untouched by training, previously viewed outcomes",
+  "closed_loop": "fresh 200, arms original/A/B/C plus seven frozen CAPs; primary C minus B paired, single seed17"
+}

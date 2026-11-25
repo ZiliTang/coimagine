@@ -1,0 +1,41 @@
+{
+  "version": "symbolic-cap-general-v1",
+  "counts": {
+    "author": 16,
+    "fitting": 48,
+    "calibration": 16,
+    "confirmation": 64
+  },
+  "seeds": {
+    "author": 851125101,
+    "fitting": 851125103,
+    "calibration": 851125107,
+    "confirmation": 851125109
+  },
+  "geometry": "compact20",
+  "rays": 72,
+  "push_face_degrees": 45,
+  "orbit_target_gap_m": 0.05,
+  "max_ticks": 1800,
+  "max_decisions": 450,
+  "failure_cost": "2 * environment time budget",
+  "author_seconds": 3600,
+  "author_rounds_max": 2,
+  "delta_C": 0.05,
+  "delta_F": 0.05,
+  "risk_threshold": 0.1,
+  "online": {
+    "branches": 600,
+    "ticks": 12000,
+    "seconds": 60,
+    "queries_per_boundary": 2
+  },
+  "model_versions": 3,
+  "follow_ticks": 120,
+  "primary": "fixed policy, candidate prefixes, risk threshold and online trigger; only effect model changes",
+  "coverage": "admitted and safe successor completed / all tested candidates",
+  "failure": "admitted but successor not completed / admitted; null when no admissions",
+  "online_metric": "executed online branches per 100 decision boundaries; prefixes charged separately",
+  "model_quality": "empirical conditional; no universal physical safety claim",
+  "completion": "PUSH >=2cm goal advance; orbit obtains legal goal-aligned PUSH; MOVE >=5cm each robot; stops separate"
+}

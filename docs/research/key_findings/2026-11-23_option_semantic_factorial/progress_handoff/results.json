@@ -1,0 +1,1 @@
+{"exposed":7,"lost":2,"over_fixed":{"ci":[-2.0,2.5],"difference_pp":0.25,"panels":{"select0":0.0,"select1":0.5}},"over_opening":{"ci":[-1.25,0.0],"difference_pp":-0.5,"panels":{"select0":-0.5,"select1":-0.5}},"rescued":0,"wins":{"fixed":188,"handoff":189,"opening":191}}

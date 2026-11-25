@@ -1,0 +1,198 @@
+{
+  "review": {
+    "inventory": {
+      "ready": 73,
+      "no_ready_contact": 45,
+      "unavailable_at_start": 2
+    },
+    "groups": {
+      "neither": 32,
+      "short_only": 30,
+      "both": 11
+    },
+    "totals": {
+      "visible": {
+        "wait": 30,
+        "unsafe": 11,
+        "safe": 32
+      },
+      "envelope": {
+        "wait": 30,
+        "unsafe": 11,
+        "safe": 32
+      }
+    },
+    "sub": {
+      "neither": {
+        "visible": {
+          "wait": 28,
+          "unsafe": 4,
+          "admit_short_reject_long": 2
+        },
+        "envelope": {
+          "wait": 27,
+          "unsafe": 5,
+          "admit_short_reject_long": 2
+        }
+      },
+      "short_only": {
+        "visible": {
+          "unsafe": 7,
+          "safe": 21,
+          "admit_short_reject_long": 18,
+          "wait": 2
+        },
+        "envelope": {
+          "unsafe": 6,
+          "safe": 21,
+          "admit_short_reject_long": 18,
+          "wait": 3
+        }
+      },
+      "both": {
+        "visible": {
+          "safe": 11,
+          "admit_short_reject_long": 1
+        },
+        "envelope": {
+          "safe": 11,
+          "admit_short_reject_long": 1
+        }
+      }
+    },
+    "changes": {
+      "neither": {
+        "wait->wait": 27,
+        "unsafe->unsafe": 4,
+        "wait->unsafe": 1
+      },
+      "short_only": {
+        "unsafe->unsafe": 6,
+        "safe->safe": 20,
+        "safe->wait": 1,
+        "wait->wait": 2,
+        "unsafe->safe": 1
+      },
+      "both": {
+        "safe->safe": 11
+      }
+    },
+    "visible_count": 69,
+    "interval_count": 69,
+    "interval_contains": 2,
+    "optimistic_lower": 67,
+    "median_signed_lower_m": 0.09013825233515904,
+    "median_abs_lower_m": 0.09013825233515904,
+    "median_abs_visible_m": 0.24435669761823553,
+    "median_interval_width_m": 0.14905918951813646,
+    "delta": {
+      "safe": [
+        0.0,
+        -0.0410958904109589,
+        0.0410958904109589
+      ],
+      "unsafe": [
+        0.0,
+        -0.0410958904109589,
+        0.0410958904109589
+      ]
+    }
+  },
+  "fresh": {
+    "inventory": {
+      "ready": 80,
+      "no_ready_contact": 40
+    },
+    "groups": {
+      "both": 22,
+      "neither": 27,
+      "short_only": 31
+    },
+    "totals": {
+      "visible": {
+        "safe": 43,
+        "wait": 28,
+        "unsafe": 9
+      },
+      "envelope": {
+        "safe": 41,
+        "wait": 28,
+        "unsafe": 11
+      }
+    },
+    "sub": {
+      "both": {
+        "visible": {
+          "safe": 22
+        },
+        "envelope": {
+          "safe": 22
+        }
+      },
+      "neither": {
+        "visible": {
+          "wait": 26,
+          "unsafe": 1,
+          "admit_short_reject_long": 1
+        },
+        "envelope": {
+          "wait": 25,
+          "unsafe": 2,
+          "admit_short_reject_long": 1
+        }
+      },
+      "short_only": {
+        "visible": {
+          "safe": 21,
+          "admit_short_reject_long": 15,
+          "unsafe": 8,
+          "wait": 2
+        },
+        "envelope": {
+          "safe": 19,
+          "admit_short_reject_long": 14,
+          "unsafe": 9,
+          "wait": 3
+        }
+      }
+    },
+    "changes": {
+      "both": {
+        "safe->safe": 22
+      },
+      "neither": {
+        "wait->wait": 25,
+        "unsafe->unsafe": 1,
+        "wait->unsafe": 1
+      },
+      "short_only": {
+        "safe->safe": 18,
+        "unsafe->unsafe": 7,
+        "unsafe->safe": 1,
+        "safe->wait": 1,
+        "wait->wait": 2,
+        "safe->unsafe": 2
+      }
+    },
+    "visible_count": 78,
+    "interval_count": 78,
+    "interval_contains": 1,
+    "optimistic_lower": 77,
+    "median_signed_lower_m": 0.05966936406947093,
+    "median_abs_lower_m": 0.05966936406947093,
+    "median_abs_visible_m": 0.22902358012373666,
+    "median_interval_width_m": 0.16034559494318726,
+    "delta": {
+      "safe": [
+        -0.025,
+        -0.075,
+        0.025
+      ],
+      "unsafe": [
+        0.025,
+        -0.025,
+        0.075
+      ]
+    }
+  }
+}

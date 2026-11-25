@@ -1,0 +1,125 @@
+{
+  "paired": [
+    {
+      "group": "all",
+      "reference": "GA-Q",
+      "n": 600,
+      "switch_success": 260,
+      "reference_success": 323,
+      "gain": 47,
+      "loss": 110,
+      "pp": -10.5,
+      "ci_pp": [
+        -14.333333333333334,
+        -6.5
+      ]
+    },
+    {
+      "group": "all",
+      "reference": "commit",
+      "n": 600,
+      "switch_success": 260,
+      "reference_success": 259,
+      "gain": 1,
+      "loss": 0,
+      "pp": 0.16666666666666669,
+      "ci_pp": [
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "group": "unique",
+      "reference": "GA-Q",
+      "n": 92,
+      "switch_success": 21,
+      "reference_success": 43,
+      "gain": 7,
+      "loss": 29,
+      "pp": -23.91304347826087,
+      "ci_pp": [
+        -35.41666666666667,
+        -11.827956989247312
+      ]
+    },
+    {
+      "group": "unique",
+      "reference": "commit",
+      "n": 92,
+      "switch_success": 21,
+      "reference_success": 20,
+      "gain": 1,
+      "loss": 0,
+      "pp": 1.0869565217391304,
+      "ci_pp": [
+        0.0,
+        3.669724770642202
+      ]
+    },
+    {
+      "group": "union",
+      "reference": "GA-Q",
+      "n": 449,
+      "switch_success": 260,
+      "reference_success": 307,
+      "gain": 47,
+      "loss": 94,
+      "pp": -10.46770601336303,
+      "ci_pp": [
+        -15.3512795750845,
+        -5.262869975814814
+      ]
+    },
+    {
+      "group": "union",
+      "reference": "commit",
+      "n": 449,
+      "switch_success": 260,
+      "reference_success": 259,
+      "gain": 1,
+      "loss": 0,
+      "pp": 0.22271714922048996,
+      "ci_pp": [
+        0.0,
+        0.6912442396313364
+      ]
+    },
+    {
+      "group": "outside",
+      "reference": "GA-Q",
+      "n": 151,
+      "switch_success": 0,
+      "reference_success": 16,
+      "gain": 0,
+      "loss": 16,
+      "pp": -10.596026490066226,
+      "ci_pp": [
+        -15.723270440251572,
+        -5.952380952380952
+      ]
+    },
+    {
+      "group": "outside",
+      "reference": "commit",
+      "n": 151,
+      "switch_success": 0,
+      "reference_success": 0,
+      "gain": 0,
+      "loss": 0,
+      "pp": 0.0,
+      "ci_pp": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "single_caps": {
+    "CAP-RR-009": 259,
+    "CAP-RR-003": 267,
+    "CAP-RR-001": 230,
+    "CAP-RR-010": 227,
+    "CAP-RR-006": 104,
+    "CAP-RR-007": 156,
+    "CAP-RR-002": 202
+  }
+}

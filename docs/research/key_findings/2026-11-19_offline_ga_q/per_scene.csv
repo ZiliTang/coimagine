@@ -1,0 +1,201 @@
+case_id,movable_count,ncap,successful_caps,actor_s17,q_s17,common_actions_s17,q_ticks_s17,q_stop_s17,q_invalid_s17,q_fallback_s17,actor_s29,q_s29,common_actions_s29,q_ticks_s29,q_stop_s29,q_invalid_s29,q_fallback_s29
+retention_dev_2_00,2,2,CAP-RR-003 CAP-RR-006,1,1,3,815,terminal,0,0,0,1,0,733,terminal,0,0
+retention_dev_2_01,2,4,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-002,1,1,8,247,terminal,0,0,1,1,5,245,terminal,0,0
+retention_dev_2_02,2,0,,0,1,0,933,terminal,0,0,0,1,0,933,terminal,0,0
+retention_dev_2_03,2,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,0,1,13,1002,terminal,0,0,1,1,16,1245,terminal,0,0
+retention_dev_2_04,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,1,1,10,634,terminal,0,0,1,1,3,785,terminal,0,0
+retention_dev_2_05,2,2,CAP-RR-003 CAP-RR-006,1,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_06,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,1,1,0,1104,terminal,0,0,1,1,0,829,terminal,0,0
+retention_dev_2_07,2,1,CAP-RR-001,0,1,0,977,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_08,2,4,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-002,1,1,2,696,terminal,0,0,1,1,3,521,terminal,0,0
+retention_dev_2_09,2,3,CAP-RR-009 CAP-RR-001 CAP-RR-002,1,1,0,1396,terminal,0,0,1,1,1,1014,terminal,0,0
+retention_dev_2_10,2,0,,0,1,0,1102,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_11,2,0,,0,0,18,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_2_12,2,2,CAP-RR-010 CAP-RR-007,1,1,0,1158,terminal,0,0,1,1,4,1224,terminal,0,0
+retention_dev_2_13,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-007 CAP-RR-002,0,1,0,914,terminal,0,0,1,1,0,898,terminal,0,0
+retention_dev_2_14,2,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_15,2,4,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-002,1,1,0,1010,terminal,0,0,1,1,3,453,terminal,0,0
+retention_dev_2_16,2,2,CAP-RR-006 CAP-RR-007,0,1,0,1069,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_17,2,1,CAP-RR-003,0,0,1,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_2_18,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-007 CAP-RR-002,1,1,15,1369,terminal,0,0,1,1,0,1186,terminal,0,0
+retention_dev_2_19,2,2,CAP-RR-006 CAP-RR-007,0,0,4,1800,terminal,0,0,0,0,5,1800,terminal,0,0
+retention_dev_2_20,2,2,CAP-RR-003 CAP-RR-007,0,0,1,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_2_21,2,1,CAP-RR-010,0,1,8,1467,terminal,0,0,1,1,9,1277,terminal,0,0
+retention_dev_2_22,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-006 CAP-RR-007,1,1,4,774,terminal,0,0,1,1,4,831,terminal,0,0
+retention_dev_2_23,2,1,CAP-RR-009,1,0,3,1800,terminal,0,0,0,1,3,1450,terminal,0,0
+retention_dev_2_24,2,1,CAP-RR-007,0,0,0,1800,terminal,0,0,0,0,3,1800,terminal,0,0
+retention_dev_2_25,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007,1,1,11,412,terminal,0,0,1,1,11,410,terminal,0,0
+retention_dev_2_26,2,4,CAP-RR-003 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,1,1,1053,terminal,0,0,0,1,1,1027,terminal,0,0
+retention_dev_2_27,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-007 CAP-RR-002,1,1,0,391,terminal,0,0,1,1,0,391,terminal,0,0
+retention_dev_2_28,2,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,1,7,558,terminal,0,0,1,1,7,867,terminal,0,0
+retention_dev_2_29,2,3,CAP-RR-009 CAP-RR-010 CAP-RR-007,0,1,0,710,terminal,0,0,1,1,1,962,terminal,0,0
+retention_dev_2_30,2,4,CAP-RR-009 CAP-RR-001 CAP-RR-007 CAP-RR-002,0,0,0,1800,terminal,0,0,1,1,0,756,terminal,0,0
+retention_dev_2_31,2,2,CAP-RR-009 CAP-RR-010,1,1,0,720,terminal,0,0,1,1,0,905,terminal,0,0
+retention_dev_2_32,2,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,0,3,1800,terminal,0,0,1,1,0,294,terminal,0,0
+retention_dev_2_33,2,3,CAP-RR-003 CAP-RR-001 CAP-RR-002,0,1,6,1355,terminal,0,0,0,1,4,805,terminal,0,0
+retention_dev_2_34,2,1,CAP-RR-003,1,1,3,635,terminal,0,0,1,1,2,804,terminal,0,0
+retention_dev_2_35,2,1,CAP-RR-009,1,0,7,1800,terminal,0,0,1,0,1,1800,terminal,0,0
+retention_dev_2_36,2,4,CAP-RR-009 CAP-RR-010 CAP-RR-006 CAP-RR-007,1,1,5,1068,terminal,0,0,1,1,3,546,terminal,0,0
+retention_dev_2_37,2,2,CAP-RR-009 CAP-RR-010,1,0,4,1800,terminal,0,0,0,1,0,700,terminal,0,0
+retention_dev_2_38,2,1,CAP-RR-009,0,1,1,1313,terminal,0,0,0,1,12,1149,terminal,0,0
+retention_dev_2_39,2,1,CAP-RR-001,0,1,4,740,terminal,0,0,0,1,4,740,terminal,0,0
+retention_validation_2_40,2,4,CAP-RR-009 CAP-RR-010 CAP-RR-006 CAP-RR-007,0,1,9,1169,terminal,0,0,1,1,5,1163,terminal,0,0
+retention_validation_2_41,2,4,CAP-RR-009 CAP-RR-001 CAP-RR-010 CAP-RR-007,1,1,4,1205,terminal,0,0,1,1,20,1771,terminal,0,0
+retention_validation_2_42,2,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_validation_2_43,2,2,CAP-RR-003 CAP-RR-006,1,0,1,1800,terminal,0,0,1,1,2,1026,terminal,0,0
+retention_validation_2_44,2,0,,0,0,0,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_test_2_45,2,2,CAP-RR-001 CAP-RR-010,1,1,2,1271,terminal,0,0,1,1,2,1104,terminal,0,0
+retention_test_2_46,2,5,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-006 CAP-RR-002,1,1,8,698,terminal,0,0,1,1,8,579,terminal,0,0
+retention_test_2_47,2,4,CAP-RR-009 CAP-RR-001 CAP-RR-010 CAP-RR-007,1,1,0,1038,terminal,0,0,1,1,0,1212,terminal,0,0
+retention_test_2_48,2,2,CAP-RR-009 CAP-RR-003,0,1,5,1793,terminal,0,0,1,1,9,1310,terminal,0,0
+retention_test_2_49,2,0,,1,1,1,1147,terminal,0,0,1,1,1,856,terminal,0,0
+retention_dev_3_00,3,2,CAP-RR-003 CAP-RR-002,1,0,2,1800,terminal,0,0,0,1,0,1753,terminal,0,0
+retention_dev_3_01,3,2,CAP-RR-010 CAP-RR-007,0,0,2,1800,terminal,0,0,0,1,1,982,terminal,0,0
+retention_dev_3_02,3,5,CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,1,0,753,terminal,0,0,1,1,0,433,terminal,0,0
+retention_dev_3_03,3,0,,0,0,12,1800,terminal,0,0,0,0,6,1800,terminal,0,0
+retention_dev_3_04,3,4,CAP-RR-003 CAP-RR-001 CAP-RR-006 CAP-RR-007,1,0,0,1800,terminal,0,0,1,1,0,750,terminal,0,0
+retention_dev_3_05,3,1,CAP-RR-003,1,0,0,1800,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_3_06,3,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-007 CAP-RR-002,1,1,0,664,terminal,0,0,0,1,0,992,terminal,0,0
+retention_dev_3_07,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_3_08,3,1,CAP-RR-001,0,0,2,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_dev_3_09,3,0,,0,0,1,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_3_10,3,3,CAP-RR-009 CAP-RR-001 CAP-RR-002,0,0,4,1800,terminal,0,0,0,0,9,1800,terminal,0,0
+retention_dev_3_11,3,3,CAP-RR-009 CAP-RR-003 CAP-RR-010,1,0,0,1800,terminal,0,0,1,1,3,1281,terminal,0,0
+retention_dev_3_12,3,0,,0,0,0,1800,terminal,0,0,0,0,1,1781,decision_budget,0,0
+retention_dev_3_13,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_3_14,3,3,CAP-RR-003 CAP-RR-010 CAP-RR-007,1,0,1,1800,terminal,0,0,1,0,1,1800,terminal,0,0
+retention_dev_3_15,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_3_16,3,0,,0,0,1,1800,terminal,0,0,0,1,0,1160,terminal,0,0
+retention_dev_3_17,3,0,,0,1,5,715,terminal,0,0,0,1,4,1391,terminal,0,0
+retention_dev_3_18,3,2,CAP-RR-009 CAP-RR-001,0,1,5,605,terminal,0,0,1,1,4,951,terminal,0,0
+retention_dev_3_19,3,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,0,652,terminal,0,0,0,1,0,695,terminal,0,0
+retention_dev_3_20,3,2,CAP-RR-001 CAP-RR-006,1,0,10,1800,terminal,0,0,0,0,10,1800,terminal,0,0
+retention_dev_3_21,3,1,CAP-RR-009,1,1,1,1724,terminal,0,0,0,1,0,623,terminal,0,0
+retention_dev_3_22,3,0,,0,1,5,904,terminal,0,0,0,1,5,1555,terminal,0,0
+retention_dev_3_23,3,2,CAP-RR-003 CAP-RR-007,1,0,1,1800,terminal,0,0,0,1,1,1087,terminal,0,0
+retention_dev_3_24,3,7,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,0,358,terminal,0,0,1,1,1,359,terminal,0,0
+retention_dev_3_25,3,3,CAP-RR-003 CAP-RR-010 CAP-RR-006,1,1,1,1234,terminal,0,0,1,1,2,674,terminal,0,0
+retention_dev_3_26,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_3_27,3,6,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,0,1,1,649,terminal,0,0,0,1,1,567,terminal,0,0
+retention_dev_3_28,3,0,,1,0,0,1800,terminal,0,0,1,1,0,813,terminal,0,0
+retention_dev_3_29,3,1,CAP-RR-001,0,1,0,1304,terminal,0,0,0,1,1,651,terminal,0,0
+retention_dev_3_30,3,2,CAP-RR-001 CAP-RR-010,0,1,5,1549,terminal,0,0,0,1,5,1274,terminal,0,0
+retention_dev_3_31,3,3,CAP-RR-009 CAP-RR-003 CAP-RR-010,0,0,0,1800,terminal,0,0,1,1,0,1146,terminal,0,0
+retention_dev_3_32,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_3_33,3,0,,0,0,2,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_3_34,3,4,CAP-RR-003 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,0,0,1800,terminal,0,0,1,1,0,705,terminal,0,0
+retention_dev_3_35,3,2,CAP-RR-009 CAP-RR-010,1,0,1,1800,terminal,0,0,1,1,0,855,terminal,0,0
+retention_dev_3_36,3,1,CAP-RR-006,0,1,7,1383,terminal,0,0,0,1,7,861,terminal,0,0
+retention_dev_3_37,3,1,CAP-RR-009,1,0,2,1800,terminal,0,0,0,0,4,1800,terminal,0,0
+retention_dev_3_38,3,2,CAP-RR-003 CAP-RR-010,0,1,9,1792,terminal,0,0,0,1,10,1346,terminal,0,0
+retention_dev_3_39,3,0,,0,0,1,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_validation_3_40,3,4,CAP-RR-009 CAP-RR-001 CAP-RR-010 CAP-RR-007,0,1,2,1132,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_validation_3_41,3,0,,0,0,3,1800,terminal,0,0,0,0,3,1800,terminal,0,0
+retention_validation_3_42,3,5,CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_validation_3_43,3,1,CAP-RR-002,0,0,2,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_validation_3_44,3,3,CAP-RR-003 CAP-RR-001 CAP-RR-010,0,0,4,1800,terminal,0,0,0,1,4,1219,terminal,0,0
+retention_test_3_45,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_test_3_46,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_test_3_47,3,2,CAP-RR-001 CAP-RR-010,0,1,1,532,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_test_3_48,3,0,,0,0,2,1800,terminal,0,0,0,0,3,1800,terminal,0,0
+retention_test_3_49,3,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_4_00,4,2,CAP-RR-006 CAP-RR-007,1,1,1,1589,terminal,0,0,1,0,1,1800,terminal,0,0
+retention_dev_4_01,4,2,CAP-RR-010 CAP-RR-002,1,0,3,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_dev_4_02,4,4,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-002,1,1,1,917,terminal,0,0,1,1,1,1076,terminal,0,0
+retention_dev_4_03,4,0,,0,0,2,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_dev_4_04,4,1,CAP-RR-003,1,0,1,1800,terminal,0,0,1,1,2,986,terminal,0,0
+retention_dev_4_05,4,4,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-007,1,1,2,1067,terminal,0,0,1,1,1,1088,terminal,0,0
+retention_dev_4_06,4,2,CAP-RR-003 CAP-RR-001,0,0,2,1800,terminal,0,0,0,1,0,1312,terminal,0,0
+retention_dev_4_07,4,2,CAP-RR-009 CAP-RR-003,1,1,6,993,terminal,0,0,1,1,6,1730,terminal,0,0
+retention_dev_4_08,4,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,4,205,terminal,0,0,1,1,0,314,terminal,0,0
+retention_dev_4_09,4,1,CAP-RR-003,0,0,0,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_4_10,4,0,,0,0,0,1782,decision_budget,0,0,0,0,0,1782,decision_budget,0,0
+retention_dev_4_11,4,1,CAP-RR-010,0,0,5,1800,terminal,0,0,0,0,5,1800,terminal,0,0
+retention_dev_4_12,4,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,1,9,1133,terminal,0,0,1,1,2,581,terminal,0,0
+retention_dev_4_13,4,2,CAP-RR-009 CAP-RR-003,1,0,2,1800,terminal,0,0,1,1,1,1755,terminal,0,0
+retention_dev_4_14,4,5,CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-002,1,1,0,1779,terminal,0,0,0,1,0,1203,terminal,0,0
+retention_dev_4_15,4,3,CAP-RR-003 CAP-RR-001 CAP-RR-002,1,1,0,637,terminal,0,0,1,1,0,958,terminal,0,0
+retention_dev_4_16,4,0,,1,0,1,1800,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_dev_4_17,4,0,,0,0,6,1800,terminal,0,0,0,0,12,1800,terminal,0,0
+retention_dev_4_18,4,1,CAP-RR-001,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_4_19,4,3,CAP-RR-010 CAP-RR-006 CAP-RR-007,0,0,0,1800,terminal,0,0,0,1,0,1704,terminal,0,0
+retention_dev_4_20,4,1,CAP-RR-007,0,1,0,380,terminal,0,0,0,0,10,1800,terminal,0,0
+retention_dev_4_21,4,2,CAP-RR-009 CAP-RR-007,0,0,1,1800,terminal,0,0,1,1,12,1376,terminal,0,0
+retention_dev_4_22,4,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,1,1,0,671,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_4_23,4,3,CAP-RR-009 CAP-RR-003 CAP-RR-010,1,1,0,676,terminal,0,0,1,1,0,960,terminal,0,0
+retention_dev_4_24,4,0,,0,0,4,1800,terminal,0,0,0,0,7,1800,terminal,0,0
+retention_dev_4_25,4,3,CAP-RR-009 CAP-RR-001 CAP-RR-010,1,1,6,1115,terminal,0,0,1,1,6,1086,terminal,0,0
+retention_dev_4_26,4,6,CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,0,1,0,1144,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_4_27,4,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,1,1,8,390,terminal,0,0,1,1,8,384,terminal,0,0
+retention_dev_4_28,4,0,,0,0,7,1800,terminal,0,0,0,0,7,1800,terminal,0,0
+retention_dev_4_29,4,0,,0,0,1,1800,terminal,0,0,0,1,0,1766,terminal,0,0
+retention_dev_4_30,4,7,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,0,965,terminal,0,0,1,1,0,850,terminal,0,0
+retention_dev_4_31,4,3,CAP-RR-001 CAP-RR-010 CAP-RR-002,0,1,1,1348,terminal,0,0,0,1,3,1060,terminal,0,0
+retention_dev_4_32,4,3,CAP-RR-009 CAP-RR-003 CAP-RR-002,1,1,6,851,terminal,0,0,1,1,6,593,terminal,0,0
+retention_dev_4_33,4,1,CAP-RR-003,0,1,4,1745,terminal,0,0,0,0,4,1800,terminal,0,0
+retention_dev_4_34,4,6,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,1,528,terminal,0,0,1,1,8,1015,terminal,0,0
+retention_dev_4_35,4,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,1,1,1,821,terminal,0,0,1,1,1,942,terminal,0,0
+retention_dev_4_36,4,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,1,671,terminal,0,0,1,1,1,442,terminal,0,0
+retention_dev_4_37,4,2,CAP-RR-003 CAP-RR-010,0,1,0,1505,terminal,0,0,1,1,6,1076,terminal,0,0
+retention_dev_4_38,4,3,CAP-RR-009 CAP-RR-010 CAP-RR-007,1,1,3,489,terminal,0,0,1,1,3,735,terminal,0,0
+retention_dev_4_39,4,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,0,9,1800,terminal,0,0,1,1,7,756,terminal,0,0
+retention_validation_4_40,4,3,CAP-RR-010 CAP-RR-006 CAP-RR-007,0,0,9,1800,terminal,0,0,0,0,14,1800,terminal,0,0
+retention_validation_4_41,4,4,CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-002,0,1,4,604,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_validation_4_42,4,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-007 CAP-RR-002,0,1,5,931,terminal,0,0,1,1,8,1237,terminal,0,0
+retention_validation_4_43,4,0,,0,0,42,1800,terminal,0,0,0,0,42,1800,terminal,0,0
+retention_validation_4_44,4,2,CAP-RR-003 CAP-RR-001,1,0,0,1800,terminal,0,0,0,1,0,859,terminal,0,0
+retention_test_4_45,4,0,,0,0,0,1658,decision_budget,0,0,0,0,0,1800,terminal,0,0
+retention_test_4_46,4,5,CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007,0,1,7,1354,terminal,0,0,1,1,5,1111,terminal,0,0
+retention_test_4_47,4,2,CAP-RR-003 CAP-RR-010,1,0,7,1800,terminal,0,0,0,1,3,564,terminal,0,0
+retention_test_4_48,4,2,CAP-RR-003 CAP-RR-010,1,1,0,1161,terminal,0,0,0,0,3,1800,terminal,0,0
+retention_test_4_49,4,0,,0,0,2,1800,terminal,0,0,0,0,10,1800,terminal,0,0
+retention_dev_5_00,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_01,5,3,CAP-RR-009 CAP-RR-003 CAP-RR-010,1,0,0,1800,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_5_02,5,0,,0,0,11,1800,terminal,0,0,0,0,13,1800,terminal,0,0
+retention_dev_5_03,5,3,CAP-RR-003 CAP-RR-010 CAP-RR-007,1,0,0,1800,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_5_04,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_05,5,3,CAP-RR-009 CAP-RR-003 CAP-RR-001,0,1,1,866,terminal,0,0,0,1,0,1617,terminal,0,0
+retention_dev_5_06,5,5,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,0,5,1800,terminal,0,0,1,1,5,582,terminal,0,0
+retention_dev_5_07,5,0,,1,0,3,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_08,5,2,CAP-RR-003 CAP-RR-001,0,1,0,1564,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_09,5,1,CAP-RR-001,0,0,3,1800,terminal,0,0,0,1,3,1152,terminal,0,0
+retention_dev_5_10,5,1,CAP-RR-009,1,0,0,1800,terminal,0,0,0,1,0,1354,terminal,0,0
+retention_dev_5_11,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_12,5,1,CAP-RR-009,0,1,0,705,terminal,0,0,1,1,1,693,terminal,0,0
+retention_dev_5_13,5,0,,0,0,0,1800,terminal,0,0,0,1,0,891,terminal,0,0
+retention_dev_5_14,5,0,,0,0,2,1800,terminal,0,0,0,0,2,1800,terminal,0,0
+retention_dev_5_15,5,6,CAP-RR-009 CAP-RR-001 CAP-RR-010 CAP-RR-006 CAP-RR-007 CAP-RR-002,1,1,0,1111,terminal,0,0,1,1,0,1386,terminal,0,0
+retention_dev_5_16,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_17,5,6,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,1,1,2,633,terminal,0,0,1,1,2,536,terminal,0,0
+retention_dev_5_18,5,0,,0,0,9,1800,terminal,0,0,0,0,9,1800,terminal,0,0
+retention_dev_5_19,5,1,CAP-RR-009,1,1,1,1580,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_5_20,5,4,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-002,1,1,2,951,terminal,0,0,1,1,6,794,terminal,0,0
+retention_dev_5_21,5,0,,0,0,4,1800,terminal,0,0,0,0,5,1800,terminal,0,0
+retention_dev_5_22,5,3,CAP-RR-010 CAP-RR-006 CAP-RR-007,0,0,0,1800,terminal,0,0,1,0,4,1800,terminal,0,0
+retention_dev_5_23,5,2,CAP-RR-001 CAP-RR-002,1,1,8,1105,terminal,0,0,0,1,0,1296,terminal,0,0
+retention_dev_5_24,5,2,CAP-RR-009 CAP-RR-007,0,1,0,429,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_25,5,4,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-007,0,1,0,590,terminal,0,0,1,1,0,646,terminal,0,0
+retention_dev_5_26,5,3,CAP-RR-009 CAP-RR-010 CAP-RR-006,0,0,1,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_27,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_dev_5_28,5,3,CAP-RR-009 CAP-RR-010 CAP-RR-007,0,1,1,788,terminal,0,0,1,1,1,822,terminal,0,0
+retention_dev_5_29,5,5,CAP-RR-009 CAP-RR-003 CAP-RR-001 CAP-RR-010 CAP-RR-007,1,1,4,340,terminal,0,0,1,1,1,340,terminal,0,0
+retention_dev_5_30,5,1,CAP-RR-001,1,0,0,1800,terminal,0,0,0,0,14,1800,terminal,0,0
+retention_dev_5_31,5,0,,0,0,6,1800,terminal,0,0,0,0,42,1800,terminal,0,0
+retention_dev_5_32,5,1,CAP-RR-007,0,0,4,1800,terminal,0,0,0,0,4,1800,terminal,0,0
+retention_dev_5_33,5,2,CAP-RR-009 CAP-RR-007,1,1,3,1099,terminal,0,0,1,1,3,1372,terminal,0,0
+retention_dev_5_34,5,2,CAP-RR-009 CAP-RR-002,1,1,2,830,terminal,0,0,1,1,1,1186,terminal,0,0
+retention_dev_5_35,5,3,CAP-RR-003 CAP-RR-001 CAP-RR-002,0,1,0,646,terminal,0,0,0,1,0,779,terminal,0,0
+retention_dev_5_36,5,2,CAP-RR-001 CAP-RR-007,0,0,3,1800,terminal,0,0,1,0,0,1800,terminal,0,0
+retention_dev_5_37,5,3,CAP-RR-009 CAP-RR-001 CAP-RR-002,1,1,1,629,terminal,0,0,0,1,0,883,terminal,0,0
+retention_dev_5_38,5,0,,0,0,2,1800,terminal,0,0,0,0,3,1800,terminal,0,0
+retention_dev_5_39,5,4,CAP-RR-001 CAP-RR-010 CAP-RR-007 CAP-RR-002,0,1,0,591,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_validation_5_40,5,0,,1,0,4,1800,terminal,0,0,0,0,9,1800,terminal,0,0
+retention_validation_5_41,5,3,CAP-RR-003 CAP-RR-006 CAP-RR-007,1,0,1,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_validation_5_42,5,0,,0,1,5,963,terminal,0,0,0,0,1,1800,terminal,0,0
+retention_validation_5_43,5,3,CAP-RR-001 CAP-RR-007 CAP-RR-002,1,1,3,309,terminal,0,0,1,1,3,362,terminal,0,0
+retention_validation_5_44,5,0,,0,0,9,1800,terminal,0,0,0,0,71,1800,terminal,0,0
+retention_test_5_45,5,2,CAP-RR-009 CAP-RR-006,0,1,3,1585,terminal,0,0,1,1,3,1551,terminal,0,0
+retention_test_5_46,5,4,CAP-RR-009 CAP-RR-003 CAP-RR-010 CAP-RR-006,1,1,6,637,terminal,0,0,1,1,6,504,terminal,0,0
+retention_test_5_47,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0
+retention_test_5_48,5,3,CAP-RR-003 CAP-RR-010 CAP-RR-006,0,1,0,1076,terminal,0,0,1,1,6,1396,terminal,0,0
+retention_test_5_49,5,0,,0,0,0,1800,terminal,0,0,0,0,0,1800,terminal,0,0

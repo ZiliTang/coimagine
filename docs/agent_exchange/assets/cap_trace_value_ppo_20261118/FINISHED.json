@@ -1,0 +1,51 @@
+{
+  "complete": true,
+  "success": 117,
+  "within_union7": 109,
+  "outside_union7": 8,
+  "comparisons": {
+    "initial200": {
+      "difference_pp": 2.5,
+      "ci95_pp": [
+        -4.0,
+        9.0
+      ],
+      "gains": 26,
+      "losses": 21
+    },
+    "shuffle500_final2000": {
+      "difference_pp": 12.0,
+      "ci95_pp": [
+        4.5,
+        20.0
+      ],
+      "gains": 46,
+      "losses": 22
+    },
+    "fixed1500_final2000": {
+      "difference_pp": 4.5,
+      "ci95_pp": [
+        -4.0,
+        12.5
+      ],
+      "gains": 41,
+      "losses": 32
+    },
+    "CAP_003": {
+      "difference_pp": 15.5,
+      "ci95_pp": [
+        8.5,
+        22.5
+      ],
+      "gains": 47,
+      "losses": 16
+    }
+  },
+  "counts": {
+    "training": 1800,
+    "monitor": 288,
+    "diagnostic": 800
+  },
+  "updates": 3332,
+  "confirmation": 0
+}

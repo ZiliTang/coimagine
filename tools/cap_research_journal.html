@@ -1,20 +1,325 @@
-<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CAP 实验研究日志</title>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAP 实验研究日志</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f5f7f7;color:#192f34;font-family:"Inter","Noto Sans CJK SC",system-ui,sans-serif;line-height:1.65}header{background:#17363d;color:white;border-bottom:4px solid #d58c50}header>div,main{max-width:1180px;margin:auto;padding:1.25rem 2rem}header>div{display:flex;align-items:baseline;gap:1rem;justify-content:space-between}h1{font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:-.04em;margin:0}header a{color:#d8e8e9}main{display:grid;grid-template-columns:285px minmax(0,1fr);gap:2rem}aside{align-self:start;position:sticky;top:1rem}nav{border-left:2px solid #b5cacc;display:grid;gap:.25rem;margin-top:.7rem}nav button{font:inherit;text-align:left;padding:.42rem .8rem;border:none;background:transparent;color:#315257;cursor:pointer}nav button:hover,nav button.chosen{background:#dbe9e8;color:#075a58}small,#sync,.meta{font-size:.87rem;color:#536a70}#sync{display:block;margin-top:1rem}article{background:white;border:1px solid #c9d6d7;border-top:3px solid #337d7a;border-radius:7px;padding:clamp(1rem,3vw,2rem);margin-bottom:1.4rem;scroll-margin-top:1rem}h2{font-size:1.5rem;line-height:1.4;margin:.35rem 0 1rem}.meta{display:flex;justify-content:space-between;align-items:center}.status{color:#225f5a;font-weight:650}.ongoing{color:#954607}dl{display:grid;grid-template-columns:3.3rem 1fr;gap:.55rem .85rem;margin:0}dt{color:#536a70}dd{margin:0}.phases{background:#f0f5f4;border-radius:5px;padding:.8rem 1rem;margin:1rem 0}.phase{display:grid;grid-template-columns:1fr auto;gap:0 .8rem;margin:.4rem 0}.phase span{font-variant-numeric:tabular-nums}.phase progress{grid-column:1/-1;width:100%;height:.4rem;accent-color:#1f8079}.links{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:1rem;padding-top:.6rem;border-top:1px solid #e1e8e7}a{color:#126762;text-underline-offset:.2em}select{font:inherit;background:white;border:1px solid #9bb2b5;border-radius:4px;padding:.3rem .55rem}button:focus-visible,a:focus-visible{outline:3px solid #bc731f}#error{color:#953c23}aside label{display:grid;gap:.2rem}@media(max-width:800px){main{display:block}header>div,main{padding:1rem}aside{position:static;margin-bottom:1rem}nav{display:none}article{margin-bottom:1rem}aside label{display:inline-flex;align-items:center;gap:.5rem}}
-</style><header><div><h1>CAP 实验研究日志</h1><a href="/">开发监测面板</a></div></header>
-<main><aside><label>显示记录 <select id="filter"><option>全部尝试</option><option>进行中</option><option>已完成</option></select></label><nav id="nav" aria-label="按研究顺序"></nav><span id="sync">正在读取本机实验记录…</span><p id="error" role="status"></p></aside><section id="cards" aria-label="实验记录"></section></main>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7f7;color:#192f34;font-family:"Inter","Noto Sans CJK SC",system-ui,sans-serif;line-height:1.65}
+header{background:#17363d;color:white;border-bottom:4px solid #d58c50}
+header>div,main{max-width:1180px;margin:auto;padding:1.25rem 2rem}
+header>div,.meta,.links{display:flex;align-items:baseline;justify-content:space-between;gap:1rem}
+h1{font-size:clamp(1.6rem,4vw,2.5rem);letter-spacing:-.04em;margin:0}
+header a{color:#d8e8e9}a{color:#126762;text-underline-offset:.2em}
+main{display:grid;grid-template-columns:minmax(220px,285px) minmax(0,1fr);gap:2rem}
+aside{position:sticky;align-self:start;top:1rem;max-height:calc(100vh - 2rem);overflow:auto}
+aside label{display:grid;gap:.2rem}
+select{font:inherit;background:white;border:1px solid #9bb2b5;border-radius:4px;padding:.3rem .55rem}
+nav{margin-top:.8rem}nav button{font:inherit;color:#315257;text-align:left;cursor:pointer}
+.group{display:flex;align-items:baseline;gap:.5rem;width:100%;padding:.6rem;border:0;background:transparent;font-weight:650}
+.group::before{content:"▸";width:1em;flex:none;text-align:center}.group[aria-expanded=true]::before{content:"▾"}
+.group.current{color:#075a58;background:#dbe9e8}
+.items{list-style:none;margin:.25rem 0 .6rem 1rem;padding:0 0 0 .65rem;border-left:2px solid #b5cacc}
+.items a{display:block;padding:.3rem .5rem;color:#315257;text-decoration:none}
+.items a:hover,.items a[aria-current],.group:hover{color:#075a58;background:#e3eeed}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #bc731f;outline-offset:-2px}
+#sync,.meta{font-size:.87rem;color:#536a70}#sync{display:block;margin-top:1rem}#error{color:#953c23}
+.overview,article{scroll-margin-top:1rem}
+.overview{margin:0 0 1.4rem;padding:0 0 1.4rem;border-bottom:1px solid #bccdcd}
+.overview p{margin:.6rem 0 1rem}.overview dt{font-weight:600;color:#225f5a}
+.route-method{margin-top:1.4rem;border-top:1px solid #c9d6d7;padding-top:.8rem}
+.route-method summary{font-weight:650;color:#225f5a;cursor:pointer}
+.route-method h3{font-size:1.05rem;margin:1.25rem 0 .5rem}
+.route-method dl{grid-template-columns:fit-content(30%) minmax(0,1fr)}
+.route-method pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eaf1f0;padding:.8rem 1rem;border-radius:5px;font-size:.93rem;line-height:1.7}
+article{background:white;border:1px solid #c9d6d7;border-top:3px solid #337d7a;border-radius:7px;padding:clamp(1rem,3vw,2rem);margin-bottom:1.4rem}
+h2,h3{line-height:1.4;margin:.35rem 0 1rem}h2{font-size:1.8rem}h3{font-size:1.5rem}
+.status{color:#225f5a;font-weight:650}.ongoing{color:#954607}
+dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:.55rem .85rem;margin:0}dt{color:#536a70}dd{margin:0}
+.phases{background:#f0f5f4;border-radius:5px;padding:.8rem 1rem;margin:1rem 0}
+.phase{display:grid;grid-template-columns:1fr auto;gap:0 .8rem;margin:.4rem 0}
+.phase span{font-variant-numeric:tabular-nums}.phase progress{grid-column:1/-1;width:100%;height:.4rem;accent-color:#1f8079}
+.links{justify-content:start;flex-wrap:wrap;gap:.5rem 1rem;margin-top:1rem;padding-top:.6rem;border-top:1px solid #e1e8e7}
+@media(max-width:800px){main{display:block}header>div,main{padding:1rem}aside{position:static;max-height:none;margin-bottom:1.2rem}.items{max-height:11rem;overflow:auto}article{margin-bottom:1rem}}
+</style>
+</head>
+<body>
+<header><div><h1>CAP 实验研究日志</h1><a href="/">开发监测面板</a></div></header>
+<main>
+<aside>
+<label>显示记录 <select id="filter"><option>全部尝试</option><option>进行中</option><option>已完成</option><option>按请求停止</option><option>待启动</option><option>运行异常</option></select></label>
+<nav id="nav" aria-label="研究方向与实验尝试"></nav>
+<span id="sync">正在读取本机实验记录…</span><p id="error" role="status"></p>
+</aside>
+<section aria-label="所选研究方向"><div id="overview" class="overview"></div><div id="cards"></div></section>
+</main>
+<template id="recovery-method">
+<details class="route-method" open>
+<summary>数学描述与伪代码</summary>
+<h3>程序在什么时候交接</h3>
+<dl>
+  <dt><var>h</var></dt><dd>在动作边界或执行器开放的动作内部事件上，程序可读取的公开历史，包括截至此刻的观测、已执行的动作及其反馈。程序自己的记忆由这段历史更新。</dd>
+  <dt><var>P</var>，<var>M</var></dt><dd><var>P</var> 是本轮开始时已经能运行的完整程序，含此前接纳的模块。<var>M</var> 是作者这轮为一种故障写的新模块，自带动作、局部目标和交还条件。</dd>
+  <dt><var>g</var><sub>θ</sub>(<var>h</var>)</dt><dd>模块的接手判断，取 1 表示请求接手，取 0 表示让原程序继续。θ 是允许调整的少量参数，如等待多久或推进多慢才算卡住。θ₀ 是作者写下的原值。动作是否合法、是否满足安全前提，另行检查。</dd>
+</dl>
+<p>作者可直接修改母策略、增加补丁或合用。下面是增加补丁时的一种交接顺序。模块持有控制期间，每一步都重新读观测，再决定继续还是交还。</p>
+<pre>每到一个决策边界，读取 h
+  若 M 正在执行：
+    若已达局部目标、接手依据消失或用完模块预算，交还给 P，由 P 选本步动作
+    否则，由 M 选本步动作
+  若此前由 P 控制：
+    满足安全前提且 g_θ(h) = 1 时，让 M 接手并选本步动作
+    其余情况由 P 继续；在动作内部事件可以继续执行剩余指令
+执行所选动作，用新观测和反馈更新历史，再进入下一边界</pre>
+<h3>从作者选定的同一时刻试不同做法</h3>
+<dl>
+  <dt><var>x</var>，<var>h</var>(<var>x</var>)</dt><dd><var>x</var> 是开发仿真中可重放的一个起点，包含物理状态、程序记忆和剩余时间。<var>h</var>(<var>x</var>) 是程序在这个起点可见的历史。完整快照只供测台复现。</dd>
+  <dt><var>Y</var>₀(<var>x</var>)，<var>Y</var>₁(<var>x</var>)，<var>Y</var>作(<var>x</var>)</dt><dd>三条分支各自的整局结果，成功记 1，失败或用尽任务预算记 0。下标 0 表示本次由原程序继续，1 表示本次直接让模块接手，作表示本次由作者原规则决定。只在满足硬性前提的起点试直接接手。</dd>
+</dl>
+<p>这次测量只改变眼前这一次交接机会。模块接手后执行到主动交还；交还后，以及原程序继续的分支，都用冻结的 <var>P</var> 续跑到终局。三次从相同快照开始、沿用相同剩余预算。下式给出单次配对的记法；有随机性时用相同种子配对，报告多次配对的平均收益。</p>
+<pre>分叉收益 Δ(x) = Y₁(x) − Y₀(x)
+  +1：接手救回了这一局          −1：接手丢掉了这一局
+   0：两条分支的任务成败一致（仍记录局部目标是否达到）</pre>
+<p>例如，若 Δ(<var>x</var>) = +1 而 <var>Y</var>作(<var>x</var>) = 0，这里已有能解决问题的动作，作者的规则却错过了接手机会。若两条都失败，先看模块能否完成局部目标，再决定改模块动作还是改交还后的衔接。</p>
+<h3>怎样校准，怎样决定是否纳入</h3>
+<dl>
+  <dt><var>D</var>，<var>S</var>(θ)</dt><dd><var>D</var> 是用于校准的开发分叉起点集合，包括卡住的例子和看似卡住却自行恢复的例子。<var>S</var>(θ) 是采用参数 θ 决定本次接手，相对原程序继续的平均分叉收益。先在每个房间内平均，再对房间平均。</dd>
+</dl>
+<pre>S(θ) = 在 D 中按房间平均 [ g_θ(h(x)) × Δ(x) ]
+在预先列出的少量参数里选 S(θ) 最高者；并列时优先保留作者原值。</pre>
+<p>这个公式用两条已经跑完的分支给候选门槛打分，适用于固定模块动作、只调整本次接手判断的情形。若简单门槛仍系统性地错过一类局面，再试一个小修正。例如，按“连续没有推进的时长 ≥ θ + r(h)”决定是否接手。这里 θ 是等待时长的门槛，r(h) 是根据公开反馈给出的修正时长，两者单位相同。预先限定修正幅度；r(h) 取零时就回到原门槛。</p>
+<pre>每轮开发：
+  用 P 跑开发房间 → 在故障图里选反复卡住的位置，同时找会自行恢复的相似例子
+  作者沿时间线选时刻，对照自行恢复的前缀，试改 P、写 M 或合用
+  从同一起点比较原程序和候选的局部效果；有补丁时加测直接接手与按条件接手
+  分别记录局部承诺、交还后进展和终局；接手条件可在后续开发轮校准
+  在与选参房间分开的开发验收房间里，从原始起点分别跑原程序和各完整候选，允许整局多次交接
+  对每个候选计算净救回 = 原败今胜的房间数 − 原胜今败的房间数
+  按开发验收选默认程序；若没有整局改善，保留 P，单独保存已兑现承诺的候选
+  将选中的完整程序作为下一轮的 P，重新收集它实际遇到的故障
+冻结版本后，在未参与选参和接纳的新房间上复测选定的候选和原程序，逐间报告救回和丢失。</pre>
+</details>
+</template>
+<template id="verification-method">
+<details class="route-method">
+<summary>数学描述与伪代码</summary>
+<h3>作者写什么，宿主负责什么</h3>
+<dl>
+  <dt><var>t</var>，<var>x</var>，<var>h</var></dt><dd><var>t</var> 是决策边界，可以是命令结束，也可以是执行器开放的接触或推进事件。<var>x</var> 是该时刻完整的物理和控制器状态。<var>h</var> 是机器人截至该时刻可以读取的公开观测、已执行的命令、实际耗时和反馈，程序记忆由此更新。</dd>
+  <dt><var>X</var>(<var>h</var>)，<var>z</var><sub>j</sub></dt><dd><var>X</var>(<var>h</var>) 是与 <var>h</var> 相容的物理状态集合。<var>z</var><sub>j</sub>(<var>x</var>, <var>h</var>) 是编号为 <var>j</var> 的基础量，例如箱体边缘坐标，或计划推动区域中曾被扫描过的范围。宿主说明它的单位、证据来源、哪些动作会改变它，以及何时需要新观测。</dd>
+  <dt><var>r</var> = (<var>g</var>, <var>a</var>, <var>E</var>, <var>b</var>)</dt><dd><var>r</var> 是可执行规则。<var>g</var>(<var>h</var>) 决定它是否启用，按程序优先级选中后发出命令 <var>a</var>。命令包含目标、机器人分工、方向、目标进度和执行上限。<var>E</var> 是作者承诺的效果范围。<var>b</var>(<var>o′</var>) 是程序看到下一边界的公开结果 <var>o′</var> 后实际选择的动作。检查器和执行器读取同一份规则。</dd>
+  <dt><var>D</var><sub>a</sub>，<var>T</var><sub>a</sub>(<var>x</var>)</dt><dd><var>D</var><sub>a</sub> 是宿主规定的命令 <var>a</var> 的可开动状态集合。<var>T</var><sub>a</sub>(<var>x</var>) 是从 <var>x</var> 执行该命令时，宿主模型允许的全部结果。每个结果写作 <var>ω</var> = (<var>ξ</var>, <var>x′</var>, <var>o′</var>)，依次是执行过程与实际耗时、结束状态、结束时的公开观测。</dd>
+</dl>
+<h3>一次动作的检查能推到哪里</h3>
+<pre>对当前历史 h 中选中的规则 r：
+  对每个与观测相容的 x ∈ X(h)，检查 x ∈ Dₐ
+  对每个可能的结果 ω ∈ Tₐ(x)，检查执行过程满足规定的约束，动作效果落入 E
+  对每个非终止结果，检查 x′ ∈ D<sub>b(o′)</sub>，即实际接续动作在 x′ 可开动
+  对终止结果，按预先声明的任务成功或允许的安全终止条件单独检查</pre>
+<p>例如在无旋转的一维情形，令 <var>c</var> 为当前墙隙，<var>d</var> 为本次箱体朝墙的实际位移。换面要保住 15 cm，代入后得到 <var>c</var> − <var>d</var> ≥ 15 cm。若墙隙下界为 28 cm，只要宿主保证箱体最多推进 13 cm，就能证明这一项净空条件。同一公开结果可能对应两种隐藏局面，两种都得允许程序选定的同一个后继。</p>
+<p>上述证明以宿主模型覆盖真实后果为前提。途中碰撞需要覆盖整段运动。整局持续安全还要求起点和每一段动作，包括停止和回退，都保持相应性质。接续动作能否按时完成，可在测台实际执行该动作来核验。安全停止另计。</p>
+<h3>怎样使用经验模型的预测</h3>
+<dl>
+  <dt><var>k</var>，<var>P̂</var><sub>k</sub>(<var>ω</var> | <var>h</var>, <var>a</var>)</dt><dd><var>k</var> 是冻结版本号。<var>P̂</var><sub>k</sub> 用公开历史和候选动作估计联合后果，例如轴向推进、侧移、转角与下一帧接触面可见性。可以估计均值和波动，也可以分别描述“卡住”和“推通”两类后果。推导净空时保留同一后果中各量的关联。</dd>
+  <dt><var>V</var><sub>r</sub>，<var>p̂</var><sub>k</sub></dt><dd><var>V</var><sub>r</sub>(<var>h</var>, <var>ω</var>) 在结果违反任一受检规格时取 1，否则取 0。<var>p̂</var><sub>k</sub> 是抽取 <var>P̂</var><sub>k</sub> 的联合后果时，<var>V</var><sub>r</sub> 取 1 的预测概率。例如净空预测位于 25–45 cm 时，整个区间都满足 15 cm 门槛；14–16 cm 的预测才需要判断门槛两侧的风险。</dd>
+  <dt><var>S</var><sub>k</sub>，<var>α</var></dt><dd><var>S</var><sub>k</sub>(<var>h</var>, <var>a</var>) 是第 <var>k</var> 版给出的联合预测集合。若集合内每个后果都满足规格，且在目标场景中，获准动作的实际后果落到集合外的概率至多为 <var>α</var>，则获准动作的违约概率也至多为 <var>α</var>。开发时估计的区间需要在独立房间的放行子集上核验。记录分别标明模型内证明、经验放行和依据不足。</dd>
+</dl>
+<h3>开发和部署怎样形成闭环</h3>
+<p>令 <var>𝒟</var><sub>k</sub> 为第 <var>k</var> 轮开发前已有的数据，<var>ℬ</var><sub>k</sub> 为本轮从相同前缀试跑各候选所得的新记录。开发仿真可以用完整状态恢复起点、测量物理效果。部署时，试算的起点只能由当时的公开历史构造。</p>
+<pre>开发
+  当不同后果会改变放行判断时，从同一前缀做分叉；另抽查部分高置信动作
+  记录公开输入、命令、实际效果、下一观测；测量接续能力时实际执行约定的后继
+  以 𝒟ₖ ∪ ℬₖ 作为下一版开发数据，在分开的房间校准风险，冻结模型并复查规则
+  若实测越出效果范围，追踪依赖它的规则；若允许的后果使后继无法开动，记录需修订的规则
+
+部署
+  由 h 选择规则，传播有硬依据的范围，再检查经验风险
+  若现有依据足以放行，发送对应命令
+  若可行与不可行的后果都存在、试算可能改变选择，在预算内模拟相容的局面
+  仍有歧义时，优先选择在这些局面都可执行的动作，例如短推、观察或安全停止
+  执行后用真实观测更新历史</pre>
+<p>程序修改和模型修改分别留版本，便于查明一次放行的依据。母策略和恢复模块都可使用这里的规则接口。主动观察的专门对照留待后续研究。</p>
+<h3>怎样衡量迭代收益</h3>
+<dl>
+  <dt><var>C</var><sub>k</sub></dt><dd>有效覆盖率。获准且在规定预算内实测后继达成的候选数，除以全部受测候选数。</dd>
+  <dt><var>F</var><sub>k</sub></dt><dd>接续失败率。获准但实测后继未达成的候选数，除以获准候选数。无放行时记为未定义。该实测指标与执行前的预测违约概率分别报告。</dd>
+  <dt><var>K</var><sub>k</sub></dt><dd>在线仿真次数除以受测决策边界数，再乘 100。一个边界试算五个分支计五次。开发采样、离线核验、整局成功和停止另行记录。</dd>
+</dl>
+<pre>相对第 0 版，最终版 m 的主假设
+  Cₘ ≥ C₀ − δC      Fₘ ≤ F₀ + δF      Kₘ &lt; K₀</pre>
+<p><var>δC</var> 是有效覆盖率允许下降的幅度，<var>δF</var> 是接续失败率允许上升的幅度，均在查看确认结果前确定。第 0 版已有初始预测模型和同样的试算能力。主对照固定规则、候选、风险门槛与试算触发规则及预算上限，只更新效果模型。在同一批新房间的相同前缀比较各版，按房间配对给出差值与区间。相邻轮差值用于定位本轮修订的作用。</p>
+</details>
+</template>
+<template id="verification-history">
+<details class="route-method">
+<summary>两次转向的实验依据</summary>
+<h3>从选专家到修复具体故障</h3>
+<p>在同一批 200 个新房间，两位专家分别成功 102、106 间，作者编写的路由成功 118 间。这对专家的互补确实可以利用。在另一项六轮训练中，固定开发池的成功数从 226 增至 251/271，同一份种子模型在新面板的第 0、2、6 轮分别成功 110、111、104/200。继续提高开发成绩能否稳定惠及新房间，仍缺证据。后续工作因此保留同前缀分叉，追查某一次交接到底解决了哪种故障。 <a href="#authored-router">程序路由</a> · <a href="#union-trend">六轮迭代</a></p>
+<h3>从修复故障到检查动作承诺</h3>
+<p>加入靠墙重新接触模块后，同一故障前缀上在 150 ticks 内恢复接触且靠近目标至少 12 cm 的从 1/23 增至 5/23。200 个新房间的整局成功从 131 增至 132，救回 2 间、丢失 1 间。新增 4 个局部达标案例与整局救回的 2 间没有重合。于是把下一个问题单独拿出来检验：模块交还时，主程序具体还需要什么条件，这些条件在动作发出之前能检查到多少？ <a href="#cap-free-repair">修复与逐前缀对照</a> · <a href="#safe-nominal-cap">保守母策略的代价</a></p>
+</details>
+</template>
 <script>
-const $=s=>document.querySelector(s), el=(tag,txt,cls)=>{const n=document.createElement(tag);if(txt!==undefined)n.textContent=txt;if(cls)n.className=cls;return n};
-let entries=[],signature='',initial=true;
-function render(force=false){let filtered=entries.filter(e=>$('#filter').value==='全部尝试'||($('#filter').value==='已完成')===(e.status==='已完成'));
-const key=JSON.stringify(filtered);if(key===signature&&!force)return;signature=key;
-const nav=$('#nav'),cards=$('#cards');nav.replaceChildren();cards.replaceChildren();
-for(const e of filtered){const btn=el('button',e.title);btn.onclick=()=>{location.hash=e.id;document.getElementById(e.id).scrollIntoView()};nav.append(btn);
-const card=el('article');card.id=e.id;const meta=el('div',undefined,'meta');meta.append(el('span',e.date),el('span',e.status,'status '+(e.status==='已完成'?'':'ongoing')));card.append(meta,el('h2',e.title));
-const dl=el('dl');for(const [key,title] of [['motivation','动机'],['goal','目标'],['result','结果'],['analysis','分析']])if(e[key])dl.append(el('dt',title),el('dd',e[key]));card.append(dl);
-if(e.phases.length){const p=el('div',undefined,'phases');for(const [title,n,max] of e.phases){const row=el('div',undefined,'phase'),bar=el('progress');bar.value=n;bar.max=max;bar.setAttribute('aria-label',title);row.append(el('span',title),el('span',n+' / '+max),bar);p.append(row)}card.append(p)}
-if(e.links.length){const links=el('div',undefined,'links');for(const l of e.links){const a=el('a',l.title);a.href=l.url;links.append(a)}card.append(links)}cards.append(card)}
-if(!filtered.length)cards.append(el('p','当前没有符合条件的实验。'));
-if(initial){initial=false;const id=location.hash.slice(1)||entries.find(e=>e.status!=='已完成')?.id||entries.at(-1)?.id;if(id)requestAnimationFrame(()=>document.getElementById(id)?.scrollIntoView())}}
-async function refresh(){try{const r=await fetch('/research-journal-data',{cache:'no-store'});if(!r.ok)throw Error(r.status);const d=await r.json();entries=d.entries;render();$('#sync').textContent='每 5 秒刷新 · '+new Date(d.updated*1000).toLocaleTimeString('zh-CN');$('#error').textContent=''}catch(e){$('#error').textContent='无法读取最新进度，保留上次数据。'}finally{setTimeout(refresh,5000)}}$('#filter').onchange=()=>render(true);refresh()
-</script></html>
+const directions = [
+  {
+    id: 'cap-verification', title: 'CAP 的静态验证与仿真校准',
+    description: '推箱之前，程序能否说明推到哪里还能换面、哪种情况下应该缩短推动或先观察？让作者用同一份可编辑规则选择动作、写下预期，并让检查器追踪一次修改会影响哪些后续动作。',
+    goal: '以开始迭代前冻结的第 0 版为基准。各版在同一批新房间、同一批候选上配对比较。检验新版能否在预定容差内保住有效推进覆盖率、控制放行后的接续失败率，同时减少每百次决策的临场仿真次数。相邻两轮的差值用来追踪单轮变化。',
+    loop: '从公开观测估计箱体位置、位姿误差等基础量。把动作可能造成的变化代入后续条件。若可能结果分布在放行门槛两侧，就从同一前缀试不同动作，并实际执行约定的下一步。用记录校准动作效果范围，冻结新版，复查哪些旧判断可以保留、放宽或需要撤回。',
+    deployment: '拟由机器人根据公开历史选择动作。需要临场试算时，从与当前观测相容的几种局面出发。若遮挡仍影响选择，就实际观察或改选。开发测台的真实状态只用于复现和核对。',
+    stage: '已完成可抽取规则、联合元表达式预测、真实后继选择检查及在线试算，并冻结复测第 0、1、2 版。64 间确认房的每版 1,024 个候选中，有效覆盖 48.44%→60.45%，接续失败 9.12%→8.18%，每百边界在线分支 155.08→91.80，局部主假设得到配对区间支持。但 v2 整局仅完成 1/64，同一 CAP 无预测门为 33/64；v2 仍有 14/64 间箱体静态接触，安全保证尚未成立。本轮进一步复现14个首次接触：8个障碍此前未见，6个已见且仍在记忆中。新增unknown安全测台的12组冻结对照中，空场景观察后推进并完整停止12/12，遮挡障碍观察后拒绝12/12，不观察推进0/12，36局无接触或范围越界。这是明确几何与运动假设下的局部验收，尚未替代旧整局结论。历史结果保留在各自条目中。',
+    detailTemplates: ['verification-method', 'verification-history']
+  },
+  {
+    id: 'cap-recovery', title: '从失败案例逐步改进 CAP',
+    description: '同样看起来推不动，有些房间再推一下就能通过，有些房间继续推会更难处理。给作者两种回放和能从同一时刻试不同动作的工具，让它自己判断哪一步值得改、改通用规则还是加局部补丁。',
+    goal: '在有限开发预算里，每轮多解决一些房间，同时保住原来能完成的路线。',
+    loop: '每轮给出反复发生的故障、可干预的时刻和相似的自行恢复案例。作者可以改母策略、写补丁，或两种都试。从同一前缀检查局部承诺、交还后能否继续推进，再从房间起点重跑，逐间统计救回和丢失。已兑现局部承诺的补丁可单独保留。',
+    deployment: '机器人只看当时的雷达、接触和动作反馈。符合接手条件时，模块可以先做一段可退回的观察动作，确认侧面能走再继续；到达约定位置、发现走不通或用完时间，就交回原程序。试探和退回都要实际执行并计时。故障图与分叉试跑只在开发时使用。',
+    stage: '已完成单故障簇补丁、PUSH 中途接管和多轮修复的逐前缀与整局比较。局部恢复与整局救回分别列在各次实验中。',
+    detailTemplates: ['recovery-method']
+  },
+  {
+    id: 'cap-mixture', title: 'CAP 递进开发与混合',
+    description: '让作者分轮写出有不同长处的 CAP 程序。同一个房间里，每个程序都能提出动作，再由规则或学出来的策略决定执行哪一个。',
+    goal: '检验多个程序的长处能否合在一起，让机器人在新房间里的成功数超过最好的单个程序。',
+    loop: '分别运行各个程序，记录谁在哪些房间成功、在哪一步提出不同动作。用这些记录编写或训练选择规则，再让混合策略从头跑完整局。在同一批房间与单策略逐间比较，查看救回了哪些、又丢掉了哪些。'
+  }
+];
+const $ = selector => document.querySelector(selector);
+function el(tag, text, className) {
+  const node = document.createElement(tag);
+  if (text !== undefined) node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+let entries = [], active = directions[0].id, expanded = true;
+let ready = false, navKey = '', cardsKey = '', overviewId = '';
+const directionOf = entry => entry.direction || 'cap-mixture';
+const hash = () => location.hash.slice(1);
+function visible(entry) {
+  const filter = $('#filter').value;
+  return filter === '全部尝试' || entry.status === filter || (filter === '进行中' && entry.status === '汇总中');
+}
+function cardFor(entry) {
+  const card = el('article');
+  card.id = entry.id;
+  const meta = el('div', undefined, 'meta');
+  meta.append(el('span', entry.date), el('span', entry.status, 'status' + (entry.status === '已完成' ? '' : ' ongoing')));
+  card.append(meta, el('h3', entry.title));
+  const dl = el('dl');
+  for (const [key, title] of [['motivation','动机'],['goal','目标'],['result','结果'],['analysis','分析']]) {
+    if (entry[key]) dl.append(el('dt', title), el('dd', entry[key]));
+  }
+  card.append(dl);
+  if (entry.phases.length) {
+    const phases = el('div', undefined, 'phases');
+    for (const [title, n, max] of entry.phases) {
+      const row = el('div', undefined, 'phase'), bar = el('progress');
+      bar.max = max; bar.value = n; bar.setAttribute('aria-label', title);
+      row.append(el('span', title), el('span', n + ' / ' + max), bar); phases.append(row);
+    }
+    card.append(phases);
+  }
+  if (entry.links.length) {
+    const links = el('div', undefined, 'links');
+    for (const link of entry.links) {
+      const a = el('a', link.title); a.href = link.url; links.append(a);
+    }
+    card.append(links);
+  }
+  return card;
+}
+function render() {
+  const direction = directions.find(d => d.id === active);
+  if (overviewId !== active) {
+    const dl = el('dl');
+    for (const [label, value] of [['目标', direction.goal], ['最小闭环', direction.loop], ['部署时', direction.deployment]]) {
+      if (value) dl.append(el('dt', label), el('dd', value));
+    }
+    const title = el('h2', direction.title);
+    title.id = direction.id;
+    $('#overview').replaceChildren(title, el('p', direction.description), dl);
+    if (direction.stage) $('#overview').append(el('p', direction.stage));
+    for (const id of direction.detailTemplates || []) {
+      $('#overview').append(document.getElementById(id).content.cloneNode(true));
+    }
+    overviewId = active;
+  }
+  const groupEntries = entries.filter(e => directionOf(e) === active && visible(e));
+  const signature = JSON.stringify([active, groupEntries]);
+  if (signature !== cardsKey) {
+    $('#cards').replaceChildren(...groupEntries.map(cardFor));
+    if (!groupEntries.length) $('#cards').append(el('p', '该方向下没有符合当前筛选条件的尝试。'));
+    cardsKey = signature;
+  }
+  const key = JSON.stringify([active, expanded, hash(), groupEntries.map(e => [e.id, e.title])]);
+  if (key === navKey) return;
+  navKey = key;
+  const focused = $('#nav').contains(document.activeElement) && document.activeElement.id;
+  const groups = directions.map(d => {
+    const section = el('div'), current = d.id === active, open = current && expanded;
+    const button = el('button', d.title, 'group' + (current ? ' current' : ''));
+    const list = el('ul', undefined, 'items');
+    list.id = 'items-' + d.id; list.hidden = !open;
+    button.id = 'nav-' + d.id;
+    button.setAttribute('aria-controls', list.id);
+    button.setAttribute('aria-expanded', String(open));
+    button.onclick = () => {
+      const switchGroup = active !== d.id;
+      expanded = switchGroup || !expanded;
+      active = d.id;
+      if (hash() !== d.id) history.pushState(null, '', '#' + d.id);
+      render();
+      if (switchGroup || expanded) $('#overview').scrollIntoView();
+    };
+    if (open) {
+      for (const e of groupEntries) {
+        const a = el('a', e.title), li = el('li');
+        a.id = 'nav-' + e.id; a.href = '#' + e.id;
+        if (hash() === e.id) a.setAttribute('aria-current', 'location');
+        li.append(a); list.append(li);
+      }
+      if (!groupEntries.length) list.append(el('li', '无匹配记录'));
+    }
+    section.append(button, list);
+    return section;
+  });
+  $('#nav').replaceChildren(...groups);
+  if (focused) document.getElementById(focused)?.focus({preventScroll:true});
+}
+function openLocation() {
+  if (!ready) return;
+  const id = hash(), entry = entries.find(e => e.id === id);
+  active = entry ? directionOf(entry) : (directions.find(d => d.id === id) || directions[0]).id;
+  expanded = true;
+  if (entry && !visible(entry)) $('#filter').value = '全部尝试';
+  render();
+  if (id) document.getElementById(id)?.scrollIntoView();
+}
+window.addEventListener('hashchange', openLocation);
+$('#filter').onchange = () => {
+  const entry = entries.find(e => e.id === hash());
+  if (entry && !visible(entry)) history.replaceState(null, '', '#' + active);
+  render();
+};
+async function refresh() {
+  try {
+    const response = await fetch('/research-journal-data', {cache:'no-store'});
+    if (!response.ok) throw Error(response.status);
+    const data = await response.json();
+    entries = data.entries;
+    if (ready) render();
+    else { ready = true; openLocation(); }
+    $('#sync').textContent = '每 5 秒刷新 · ' + new Date(data.updated * 1000).toLocaleTimeString('zh-CN');
+    $('#error').textContent = '';
+  } catch (error) {
+    $('#error').textContent = '无法读取最新进度，请稍后重试。';
+  } finally {
+    setTimeout(refresh, 5000);
+  }
+}
+refresh();
+</script>
+</body></html>

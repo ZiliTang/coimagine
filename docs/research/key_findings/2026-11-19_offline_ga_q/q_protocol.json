@@ -1,0 +1,25 @@
+{
+  "actor_per_scene_sha256": "520910539f8d746d34a5bb986b9d525492aaf889990d2333a882100fd3a6a0b9",
+  "weights": {
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GA_s17/offline.pt": "f74c0e4104fcca046a9fb7241090be7949268a321c603560b0c3e2cfa9665b6d",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GA_s29/offline.pt": "9d683411d7af71722c8c8540670fd4eae36888ad8a8c61c4402aae858795fe84"
+  },
+  "panel_sha256": "6cee11c6087e4c3006dcabe1becc3cd114f92a750853003d288f47a97afde803",
+  "seeds": [
+    17,
+    29
+  ],
+  "workers": 12,
+  "max_ticks": 1800,
+  "max_decisions": 300,
+  "wall_seconds": 1800,
+  "epsilon": 0,
+  "primary": "Offline Q minus 24k actor retention in seven-CAP success union",
+  "secondary": [
+    "all",
+    "one successful CAP",
+    "multiple successful CAPs",
+    "outside union"
+  ],
+  "ci": "10,000 paired scene bootstrap draws stratified by movable count, both fixed seeds kept together"
+}

@@ -1,0 +1,92 @@
+{
+  "complete": true,
+  "per_cap": {
+    "CAP-RR-009": {
+      "success": 311,
+      "failure": 449,
+      "anomalous": 0,
+      "decisions": 47837,
+      "observation_boundaries": 48597,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 755,
+        "decision_budget": 5
+      }
+    },
+    "CAP-RR-003": {
+      "failure": 451,
+      "success": 309,
+      "anomalous": 0,
+      "decisions": 50698,
+      "observation_boundaries": 51458,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 743,
+        "decision_budget": 17
+      }
+    },
+    "CAP-RR-001": {
+      "success": 280,
+      "failure": 480,
+      "anomalous": 0,
+      "decisions": 49336,
+      "observation_boundaries": 50096,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 745,
+        "decision_budget": 15
+      }
+    },
+    "CAP-RR-010": {
+      "failure": 491,
+      "success": 269,
+      "anomalous": 0,
+      "decisions": 57411,
+      "observation_boundaries": 58171,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 756,
+        "decision_budget": 4
+      }
+    },
+    "CAP-RR-006": {
+      "failure": 634,
+      "success": 126,
+      "anomalous": 0,
+      "decisions": 55886,
+      "observation_boundaries": 56646,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 759,
+        "decision_budget": 1
+      }
+    },
+    "CAP-RR-007": {
+      "success": 203,
+      "failure": 557,
+      "anomalous": 0,
+      "decisions": 56897,
+      "observation_boundaries": 57657,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 755,
+        "decision_budget": 5
+      }
+    },
+    "CAP-RR-002": {
+      "success": 261,
+      "failure": 499,
+      "anomalous": 0,
+      "decisions": 51661,
+      "observation_boundaries": 52421,
+      "missing_fields": [],
+      "stop_counts": {
+        "terminal": 743,
+        "decision_budget": 17
+      }
+    }
+  },
+  "records": 5320,
+  "decision_boundaries": 369726,
+  "observation_boundaries": 375046
+}

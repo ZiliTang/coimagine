@@ -1,0 +1,400 @@
+{
+  "versions": {
+    "v0": {
+      "n_rooms": 16,
+      "n_boundaries": 27,
+      "n_candidates": 54,
+      "admitted": 32,
+      "useful": 0,
+      "failed": 32,
+      "rejected_but_completed": 0,
+      "coverage": 0.0,
+      "failure_rate": 1.0,
+      "calls": 16,
+      "calls_per_100_boundaries": 59.25925925925926,
+      "probes_requested": 22,
+      "issued_contract_violations": 0,
+      "n_forward_predictions": 54,
+      "forward_mae_m": 0.03150041033671522,
+      "n_risk_predictions": 54,
+      "contract_brier": 0.10185185185185185,
+      "sources": {
+        "fallback": 8,
+        "insufficient": 14,
+        "model": 32
+      },
+      "by_mode": {
+        "model": {
+          "n_rooms": 16,
+          "n_boundaries": 16,
+          "n_candidates": 32,
+          "admitted": 32,
+          "useful": 0,
+          "failed": 32,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": 1.0,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 0,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 32,
+          "forward_mae_m": 6.938893903907228e-18,
+          "n_risk_predictions": 32,
+          "contract_brier": 0.0
+        },
+        "fallback": {
+          "n_rooms": 4,
+          "n_boundaries": 4,
+          "n_candidates": 8,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": null,
+          "calls": 16,
+          "calls_per_100_boundaries": 400.0,
+          "probes_requested": 8,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 8,
+          "forward_mae_m": 0.08337400618199474,
+          "n_risk_predictions": 8,
+          "contract_brier": 0.25
+        },
+        "insufficient": {
+          "n_rooms": 7,
+          "n_boundaries": 7,
+          "n_candidates": 14,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": null,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 14,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 14,
+          "forward_mae_m": 0.07385929348047596,
+          "n_risk_predictions": 14,
+          "contract_brier": 0.25
+        }
+      },
+      "model_support": {
+        "local": 32,
+        "pooled": 22
+      },
+      "query_match_counts": {
+        "0": 10,
+        "1": 4,
+        "2": 8
+      },
+      "probe_prefix_ticks": 8720,
+      "probe_push_ticks": 16,
+      "train_count": 12,
+      "rooms_with_admission": 16,
+      "selected_boundaries": 16,
+      "selected_followup_completed": 0
+    },
+    "v1": {
+      "n_rooms": 16,
+      "n_boundaries": 27,
+      "n_candidates": 54,
+      "admitted": 32,
+      "useful": 0,
+      "failed": 32,
+      "rejected_but_completed": 0,
+      "coverage": 0.0,
+      "failure_rate": 1.0,
+      "calls": 16,
+      "calls_per_100_boundaries": 59.25925925925926,
+      "probes_requested": 22,
+      "issued_contract_violations": 0,
+      "n_forward_predictions": 54,
+      "forward_mae_m": 0.03143626620102965,
+      "n_risk_predictions": 54,
+      "contract_brier": 0.12123842592592593,
+      "sources": {
+        "fallback": 8,
+        "insufficient": 14,
+        "model": 32
+      },
+      "by_mode": {
+        "model": {
+          "n_rooms": 16,
+          "n_boundaries": 16,
+          "n_candidates": 32,
+          "admitted": 32,
+          "useful": 0,
+          "failed": 32,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": 1.0,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 0,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 32,
+          "forward_mae_m": 6.938893903907228e-18,
+          "n_risk_predictions": 32,
+          "contract_brier": 0.0
+        },
+        "fallback": {
+          "n_rooms": 4,
+          "n_boundaries": 4,
+          "n_candidates": 8,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": null,
+          "calls": 16,
+          "calls_per_100_boundaries": 400.0,
+          "probes_requested": 8,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 8,
+          "forward_mae_m": 0.08312659308720756,
+          "n_risk_predictions": 8,
+          "contract_brier": 0.3203125
+        },
+        "insufficient": {
+          "n_rooms": 7,
+          "n_boundaries": 7,
+          "n_candidates": 14,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": null,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 14,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 14,
+          "forward_mae_m": 0.07375325929699575,
+          "n_risk_predictions": 14,
+          "contract_brier": 0.2845982142857143
+        }
+      },
+      "model_support": {
+        "local": 32,
+        "pooled": 22
+      },
+      "query_match_counts": {
+        "0": 10,
+        "1": 4,
+        "2": 8
+      },
+      "probe_prefix_ticks": 8720,
+      "probe_push_ticks": 16,
+      "train_count": 24,
+      "rooms_with_admission": 16,
+      "selected_boundaries": 16,
+      "selected_followup_completed": 0
+    },
+    "v2": {
+      "n_rooms": 16,
+      "n_boundaries": 27,
+      "n_candidates": 54,
+      "admitted": 32,
+      "useful": 0,
+      "failed": 32,
+      "rejected_but_completed": 0,
+      "coverage": 0.0,
+      "failure_rate": 1.0,
+      "calls": 0,
+      "calls_per_100_boundaries": 0.0,
+      "probes_requested": 14,
+      "issued_contract_violations": 0,
+      "n_forward_predictions": 54,
+      "forward_mae_m": 0.01721736413988752,
+      "n_risk_predictions": 54,
+      "contract_brier": 0.06542566872427985,
+      "sources": {
+        "insufficient": 14,
+        "model": 40
+      },
+      "by_mode": {
+        "model": {
+          "n_rooms": 16,
+          "n_boundaries": 20,
+          "n_candidates": 40,
+          "admitted": 32,
+          "useful": 0,
+          "failed": 32,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": 1.0,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 0,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 40,
+          "forward_mae_m": 0.0002062024284559693,
+          "n_risk_predictions": 40,
+          "contract_brier": 0.0
+        },
+        "fallback": {
+          "n_rooms": 0,
+          "n_boundaries": 0,
+          "n_candidates": 0,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": null,
+          "failure_rate": null,
+          "calls": 0,
+          "calls_per_100_boundaries": null,
+          "probes_requested": 0,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 0,
+          "forward_mae_m": null,
+          "n_risk_predictions": 0,
+          "contract_brier": null
+        },
+        "insufficient": {
+          "n_rooms": 7,
+          "n_boundaries": 7,
+          "n_candidates": 14,
+          "admitted": 0,
+          "useful": 0,
+          "failed": 0,
+          "rejected_but_completed": 0,
+          "coverage": 0.0,
+          "failure_rate": null,
+          "calls": 0,
+          "calls_per_100_boundaries": 0.0,
+          "probes_requested": 14,
+          "issued_contract_violations": 0,
+          "n_forward_predictions": 14,
+          "forward_mae_m": 0.06582068331540623,
+          "n_risk_predictions": 14,
+          "contract_brier": 0.2523561507936508
+        }
+      },
+      "model_support": {
+        "local": 40,
+        "pooled": 14
+      },
+      "query_match_counts": {
+        "0": 10,
+        "1": 4
+      },
+      "probe_prefix_ticks": 0,
+      "probe_push_ticks": 0,
+      "train_count": 37,
+      "rooms_with_admission": 16,
+      "selected_boundaries": 16,
+      "selected_followup_completed": 0
+    }
+  },
+  "paired_v2_minus_v0": {
+    "baseline": "v0",
+    "final": "v2",
+    "n_rooms": 16,
+    "n_candidates": 54,
+    "seed": 17,
+    "draws": 4000,
+    "method": "paired room percentile bootstrap, pooled candidate ratios; intervals use defined draws",
+    "metrics": {
+      "coverage": {
+        "baseline": 0.0,
+        "final": 0.0,
+        "difference": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "defined_draws": 4000,
+        "undefined_draws": 0
+      },
+      "failure_rate": {
+        "baseline": 1.0,
+        "final": 1.0,
+        "difference": 0.0,
+        "interval": [
+          0.0,
+          0.0
+        ],
+        "defined_draws": 4000,
+        "undefined_draws": 0
+      },
+      "calls_per_100_boundaries": {
+        "baseline": 59.25925925925926,
+        "final": 0.0,
+        "difference": -59.25925925925926,
+        "interval": [
+          -106.66666666666667,
+          -14.814814814814815
+        ],
+        "defined_draws": 4000,
+        "undefined_draws": 0
+      }
+    }
+  },
+  "development": {
+    "rooms": 16,
+    "eligible": 16,
+    "boundaries": 30,
+    "candidates": 60,
+    "entry": 60,
+    "completed": 0,
+    "forward_20mm": 36,
+    "contract_ok": 34,
+    "endpoint_static": 2,
+    "followup_reasons": {
+      "unavailable": 28,
+      "budget": 32
+    },
+    "candidate_prefix_ticks": 20992,
+    "push_ticks": 529,
+    "followup_ticks": 7200
+  },
+  "diagnostic": {
+    "rooms": 16,
+    "eligible": 16,
+    "boundaries": 27,
+    "candidates": 54,
+    "entry": 54,
+    "completed": 0,
+    "forward_20mm": 36,
+    "contract_ok": 36,
+    "endpoint_static": 2,
+    "followup_reasons": {
+      "unavailable": 32,
+      "budget": 22
+    },
+    "candidate_prefix_ticks": 18308,
+    "push_ticks": 581,
+    "followup_ticks": 6480
+  },
+  "selected_replay_v2": {
+    "room": "diag_safe_nominal_v1_confirm_001",
+    "anchor_id": "early",
+    "progress_m": 0.2,
+    "reproduced": true,
+    "outcome": {
+      "prefix_ticks": 167,
+      "forward_m": 0.15446033248696084,
+      "lateral_m": -0.006064861622336701,
+      "yaw_rad": -0.3190603333391712,
+      "peer_motion_m": 0.00910181315900785,
+      "object_static": false,
+      "push_reason": "review_switch",
+      "push_ticks": 17,
+      "endpoint_terminal": null,
+      "progress_reached": true,
+      "endpoint_followup_available": true,
+      "followup_completed": false,
+      "followup_reason": "unavailable",
+      "followup_ticks": 120,
+      "orbit_ticks": 120,
+      "approach_ticks": 0
+    }
+  }
+}

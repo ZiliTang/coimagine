@@ -1,0 +1,16 @@
+{
+  "seed": 17,
+  "v_updates": 16000,
+  "q_updates": 8000,
+  "dose": 1001,
+  "baseline_q": "2788fbc5afdc4476ba31e992ac5ea0580616b9ca02c73b460542efe47091a287",
+  "baseline_v": "b4be8183fafb55fdcbf57e302e46b2591ab49888daac7ef24a2fad642fd13b40",
+  "panel": "3f6b64adcd200d342dad49668f9811f729745c1b1c7d9ffab3f8dc0284b6a594",
+  "source": "da52bf2f05e6afb9e8ad21f69a04c784fe6fa4ea3c8c6835ecdbe71889e9fae8",
+  "learner": "4181ecebb37081d344f2797d2849171b94ba3a0cb117be5c02ebaded33295d34",
+  "sampling": "50 ordinary boundary rows plus two independent uniform singleton training roots with all seven expert rows per update; original 64-index stream, replace final 14; separate root RNG seed 1707",
+  "targets": "binary MC expert outcome; one-step max legal expert V at factual successor; gamma=1; unchanged Q initialization and sampling rule",
+  "primary": "paired greedy Q successes on non-009 singleton roots on archived 600 development diagnostic rooms; report all and 009 singleton as well",
+  "ranking": "initial top legal V vs seven archived outcomes; Brier averaged over legal experts; winner minus 009 V on non-009 singleton roots",
+  "evaluation": "single training seed, inspected held-out families, no checkpoint or dose selection"
+}

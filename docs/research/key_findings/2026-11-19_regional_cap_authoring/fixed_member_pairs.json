@@ -1,0 +1,78 @@
+{
+  "fresh": {
+    "regional_vs_single": {
+      "n": 200,
+      "first": 80,
+      "second": 119,
+      "rescued": 53,
+      "lost": 14,
+      "pp": 19.5,
+      "ci": [
+        12.0,
+        27.0
+      ]
+    },
+    "regional_router_vs_best": {
+      "n": 200,
+      "first": 119,
+      "second": 113,
+      "rescued": 9,
+      "lost": 15,
+      "pp": -3.0,
+      "ci": [
+        -8.0,
+        1.5
+      ]
+    },
+    "regular_router_vs_best": {
+      "n": 200,
+      "first": 91,
+      "second": 86,
+      "rescued": 0,
+      "lost": 5,
+      "pp": -2.5,
+      "ci": [
+        -5.0,
+        -0.5
+      ]
+    }
+  },
+  "near": {
+    "regional_vs_single": {
+      "n": 160,
+      "first": 65,
+      "second": 93,
+      "rescued": 45,
+      "lost": 17,
+      "pp": 17.5,
+      "ci": [
+        8.125,
+        26.25
+      ]
+    },
+    "regional_router_vs_best": {
+      "n": 160,
+      "first": 93,
+      "second": 84,
+      "rescued": 10,
+      "lost": 19,
+      "pp": -5.625,
+      "ci": [
+        -12.5,
+        0.625
+      ]
+    },
+    "regular_router_vs_best": {
+      "n": 160,
+      "first": 79,
+      "second": 76,
+      "rescued": 0,
+      "lost": 3,
+      "pp": -1.875,
+      "ci": [
+        -4.375,
+        0.0
+      ]
+    }
+  }
+}

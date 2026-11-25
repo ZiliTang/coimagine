@@ -37,7 +37,7 @@ def mask(obs):
     for action in ACTIVE_ACTIONS:
         if action.kind == 'push' and action.effect_kind == 'translate':
             if action.type_index not in valid_types:
-                valid_types[action.type_index] = any(direction_matches(f[1], action.effect_direction) for f in faces)
+                valid_types[action.type_index] = any(direction_matches(f[1], action.effect_direction, obs) for f in faces)
             result[action.index] = valid_types[action.type_index]
         elif action.kind in ('wait', 'yield', 'follow'):
             result[action.index] = True

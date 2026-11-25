@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "campaign": "cap_free_repair_20261124_01",
+  "panel": {
+    "id": "freerepair_confirm",
+    "rooms": 200,
+    "fixtures": "outputs/semantic_rl/cap_free_repair_20261124_01/fixtures.json",
+    "sha256": "06d8f7e91604fb5f939742e60172c60d98244621a010934bea1a0ce75ed4c6a6",
+    "start": "整局初态",
+    "execution": "fixed72-local，冻结的 PUSH 进度事件与普通 option 边界"
+  },
+  "arms": {
+    "parent_without_old_recovery": {
+      "composition": "P绕行.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_free_repair_20261124_01/sealed/trial999/composed.py",
+      "sha256": "660e2f3a1a13eff1abb8126c48435c277364e8b6576dac97cc6b750ed893755b",
+      "submission": "trial999"
+    },
+    "parent": {
+      "composition": "P绕行.v1+R换位.v1+R侧推.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_free_repair_20261124_01/sealed/P/composed.py",
+      "sha256": "e193d645615a77b13811d97d69ae387c304d67b79b8ccbdc041c4067e23d5d80",
+      "submission": "P"
+    },
+    "without_old_recovery": {
+      "composition": "P绕行.v1+R复接.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_free_repair_20261124_01/sealed/trial05/composed.py",
+      "sha256": "39d7fb8a474ecfb14714c62a85ba5e164f19350c3c8ee18b0c6bbe63fa430b82",
+      "submission": "trial05"
+    },
+    "selected": {
+      "composition": "P绕行.v1+R换位.v1+R侧推.v1+R复接.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_free_repair_20261124_01/sealed/trial04/composed.py",
+      "sha256": "73758d004c2d156d2f795600af7bf5121cce4875ea69f4250364132d548322a3",
+      "submission": "trial04"
+    }
+  }
+}

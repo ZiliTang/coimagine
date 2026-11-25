@@ -1,0 +1,13 @@
+arm,seed,band,n,once_success,once_failure,rescued,lost
+boundary,17,below_015,143,44,99,44,7
+boundary,17,at_least_015,36,11,25,7,3
+boundary,29,below_015,143,48,95,25,17
+boundary,29,at_least_015,36,10,26,10,3
+root,17,below_015,138,47,91,28,14
+root,17,at_least_015,42,9,33,7,4
+root,29,below_015,139,51,88,23,14
+root,29,at_least_015,42,12,30,6,4
+paired,17,below_015,126,45,81,24,11
+paired,17,at_least_015,70,14,56,17,4
+paired,29,below_015,127,44,83,19,8
+paired,29,at_least_015,67,20,47,16,6

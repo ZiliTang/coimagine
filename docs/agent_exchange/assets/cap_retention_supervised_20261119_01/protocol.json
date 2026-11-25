@@ -1,0 +1,31 @@
+{
+  "seeds": [
+    17,
+    29
+  ],
+  "arms": [
+    "boundary",
+    "root",
+    "paired"
+  ],
+  "modes": [
+    "once",
+    "free",
+    "guard"
+  ],
+  "steps": 6000,
+  "batch": 64,
+  "primary": "paired minus boundary under free reselect: proportion retained among new roots solved by any of the seven fixed CAPs",
+  "secondary": "root vs boundary; paired vs root; once/guard vs free; rescue outside union; retain CAP009 and descriptive best of ten",
+  "strata": "200 new scenes, 50 each object count, 10000 paired stratified scene bootstrap resamples; two fixed training seeds",
+  "architecture": "shared GA geometry+advice+budget with train normalizers and validity bits; 64/64 ReLU, seven continuation logits, BCE on recorded CAP only",
+  "sampling": "boundary uniform; root then CAP then boundary uniform; paired half root and half 16 success/failure pairs sampled root then shared prefix then different first action",
+  "router": "same scoring network for all three execution rules; retain incumbent when same action; guard switches if same challenger leads by >=.15 at two consecutive different-action boundaries",
+  "emergency": "invalid incumbent forced to legal best, no legal advice uses library fallback; report all exceptions",
+  "training": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/arrays/train",
+  "panel_sha": "6cee11c6087e4c3006dcabe1becc3cd114f92a750853003d288f47a97afde803",
+  "normalizers": "1d00bb6950e74aa5be6734cad547881e5a61a3a73a7e3c27cdc43beddc0d463d",
+  "baseline": "frozen GA PPO 2000 episode policies, external reference with different supervision and budget",
+  "total_evaluations": 6000,
+  "training_scoring": "6 fresh supervised fits; fixed budgets; no panel-based selection"
+}

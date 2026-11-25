@@ -1,0 +1,28 @@
+{
+  "layout": {
+    "width": 14004,
+    "geometry_width": 11304,
+    "advice_width": 602,
+    "trace_width": 2096,
+    "trace_widths": [
+      361,
+      267,
+      222,
+      372,
+      327,
+      321,
+      226
+    ]
+  },
+  "extraction_seconds": 214.56903345700266,
+  "train": {
+    "boundaries": 294285,
+    "episodes": 4256,
+    "width": 14004
+  },
+  "validation": {
+    "boundaries": 75441,
+    "episodes": 1064,
+    "width": 14004
+  }
+}

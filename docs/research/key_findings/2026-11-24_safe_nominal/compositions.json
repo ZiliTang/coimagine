@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "campaign": "cap_safe_nominal_v1",
+  "panel": {
+    "id": "safe_nominal_v1_confirm",
+    "rooms": 64,
+    "fixtures": "outputs/semantic_rl/cap_safe_nominal_v1/fixtures.json",
+    "sha256": "92fd62a9ad40eee8a3a78b5f21a657a3fc47824e137c138fae46de55a07be37f",
+    "start": "整局初态",
+    "execution": "fixed72-local-v1，普通边界及 PUSH 接触与进度事件，1800 ticks 或 300 次决策"
+  },
+  "arms": {
+    "P": {
+      "composition": "P绕行.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_safe_nominal_v1/sealed/P/composed.py",
+      "sha256": "660e2f3a1a13eff1abb8126c48435c277364e8b6576dac97cc6b750ed893755b",
+      "submission": "cap_free_repair_20261124_01 / trial999",
+      "rooms_csv_prefix": "base",
+      "recovery_branches": [],
+      "notes": "关闭顶层恢复，沿用底座内置绕行。P 内部推动检查属于母策略自身。"
+    },
+    "trial03": {
+      "composition": "P保守推进.v1@G程序.v1",
+      "source": "outputs/semantic_rl/cap_safe_nominal_v1/sealed/trial03/composed.py",
+      "sha256": "adf79ad691026c2eefb3a516fd717ba129f9b782cdf905f7e343d8569c8cb432",
+      "submission": "cap_safe_nominal_v1 / trial03",
+      "rooms_csv_prefix": "safe",
+      "recovery_branches": [],
+      "notes": "关闭顶层恢复，沿用底座内置绕行。P 内部推动检查属于母策略自身。"
+    }
+  }
+}

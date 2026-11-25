@@ -1,0 +1,56 @@
+{
+  "base": {
+    "success": 43,
+    "ticks": 73931,
+    "commands": 2631,
+    "pushes": 1707,
+    "pushes_moving_2cm": 1124,
+    "pushes_near_static_little_motion": 165,
+    "object_static_at_any_boundary": 11,
+    "stalled_failure": 17,
+    "all_hold_ticks": 161,
+    "median_ticks": 1021.5
+  },
+  "safe": {
+    "success": 10,
+    "ticks": 111241,
+    "commands": 5364,
+    "pushes": 1953,
+    "pushes_moving_2cm": 1086,
+    "pushes_near_static_little_motion": 45,
+    "object_static_at_any_boundary": 10,
+    "stalled_failure": 51,
+    "all_hold_ticks": 8219,
+    "median_ticks": 1800.0
+  },
+  "n": 64,
+  "rescued": 4,
+  "lost": 37,
+  "ci_percentage_points": [
+    -65.625,
+    -35.9375
+  ],
+  "delta_percentage_points": -51.5625,
+  "strata": {
+    "both": {
+      "rooms": 16,
+      "base_success": 7,
+      "safe_success": 4
+    },
+    "clear": {
+      "rooms": 16,
+      "base_success": 12,
+      "safe_success": 4
+    },
+    "movable": {
+      "rooms": 16,
+      "base_success": 13,
+      "safe_success": 1
+    },
+    "static": {
+      "rooms": 16,
+      "base_success": 11,
+      "safe_success": 1
+    }
+  }
+}

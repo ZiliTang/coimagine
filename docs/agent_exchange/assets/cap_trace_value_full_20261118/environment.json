@@ -1,0 +1,21 @@
+{
+  "recorded_at": 1794940709.579056,
+  "python": "3.11.18",
+  "platform": "Linux-6.18.58.1-microsoft-standard-WSL2-x86_64-with-glibc2.35",
+  "packages": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.4.6",
+    "pymunk": "6.9.0",
+    "matplotlib": "3.11.1",
+    "PyYAML": "6.0.3",
+    "pytest": "9.1.1"
+  },
+  "git_head": "6e7a038878da5c366e18277b22b70a526bf98d59",
+  "git_status": " M docs/agent_exchange/CURRENT.md\n M docs/agent_exchange/README.md\n?? PROGRAM_TRACE_HANDOFF.md\n?? cap_trace_value_dev_v1.tar.gz.sha256\n?? docs/agent_exchange/assets/cap_trace_value_acceptance_20261118/\n?? docs/agent_exchange/assets/cap_trace_value_plan_20261118/\n?? docs/agent_exchange/reviews/CAP_Trace_Value_Dev_Acceptance_20261118.md\n?? docs/agent_exchange/tasks/CAP_Trace_Value_Full_20261118.md\n?? docs/agent_exchange/tasks/CAP_Trace_Value_RL_20261118.md\n?? experiments/planar_tasks/authoring_v2/cap_trace_value_full.py\n?? experiments/planar_tasks/authoring_v2/cap_trace_value_panels.py\n?? experiments/planar_tasks/authoring_v2/cap_trace_value_pilot.py\n?? experiments/planar_tasks/semantic_rl/program_trace_value_v1/\n?? tests/test_cap_trace_value_pilot.py\n?? tests/test_cap_trace_value_rl.py\n?? tools/cap_trace_value_report.py\n?? tools/cap_trace_value_transfer.py\n",
+  "threads": {
+    "OMP_NUM_THREADS": 1,
+    "MKL_NUM_THREADS": 1,
+    "OPENBLAS_NUM_THREADS": 1
+  },
+  "physics_backend": "numpy"
+}

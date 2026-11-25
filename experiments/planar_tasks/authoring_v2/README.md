@@ -6,6 +6,9 @@ entries. Their files/seals are unchanged. All new backend comparisons should use
 same authoring_v2 information and budget profile; task/control/search behavior is not
 changed. Read [experiment_api.md](experiment_api.md) for the full tool contract.
 
+For the guarded planar transport research line, author the option effects and
+successor obligations using the [symbolic transport protocol](symbolic_transport.md).
+
 ```python
 from experiments.planar_tasks.authoring_v2 import campaign_config, create_session, drive, verify_frozen
 config = campaign_config(explicit_model_dict, development_tasks=three_or_nine_allowed_names)

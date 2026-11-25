@@ -1,0 +1,11 @@
+{
+  "runtime_source_count": 809,
+  "different_local_sources": [],
+  "missing_before_tool_install": [
+    "tools/cap_trace_value_transfer.py"
+  ],
+  "installed_new_tool": "tools/cap_trace_value_transfer.py",
+  "python": "/home/tzl/repo/coimagine/outputs/transfers/venv_py311/bin/python",
+  "head": "6e7a038878da5c366e18277b22b70a526bf98d59",
+  "git_status": " M docs/agent_exchange/CURRENT.md\n M docs/agent_exchange/README.md\n?? PROGRAM_TRACE_HANDOFF.md\n?? cap_trace_value_dev_v1.tar.gz.sha256\n?? docs/agent_exchange/assets/cap_trace_value_plan_20261118/\n?? docs/agent_exchange/tasks/CAP_Trace_Value_RL_20261118.md\n?? tools/cap_trace_value_transfer.py\n"
+}

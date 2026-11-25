@@ -1,0 +1,22 @@
+{
+  "stage": "before v0 and confirmation",
+  "author_source_unchanged": true,
+  "changes": [
+    {
+      "file": "simulation.py",
+      "reason": "path includes initial contact even if command rejected at zero ticks; historical development labels normalized from recorded before-state"
+    },
+    {
+      "file": "online.py",
+      "reason": "exhausted online budget checked before reconstructing geometry; no uncharged repeated construction"
+    },
+    {
+      "file": "prediction.py",
+      "reason": "public-context-v2 neighborhood includes lateral geometry and legal-face summaries, contact modes and explicit position-distance limits; vectors preserve scalar distance semantics"
+    },
+    {
+      "file": "tools/cap_symbolic_general_runtime.py",
+      "reason": "online nominal successes cannot erase unresolved model counterexamples"
+    }
+  ]
+}

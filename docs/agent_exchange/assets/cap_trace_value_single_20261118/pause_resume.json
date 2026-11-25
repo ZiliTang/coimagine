@@ -1,0 +1,9 @@
+{
+  "updates_preserved": 12023,
+  "episodes_preserved": 450,
+  "interrupted_round": 9,
+  "remaining_updates_in_round": 1477,
+  "unsaved_fine_grained_metric_updates": 23,
+  "discarded_training_updates": 0,
+  "original_stop": "user requested pause; STOP checkpoint saved, supervisor then exited"
+}

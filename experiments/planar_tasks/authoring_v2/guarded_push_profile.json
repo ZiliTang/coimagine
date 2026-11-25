@@ -1,0 +1,25 @@
+{
+  "units": {"wall_mm": "mm", "advance_mm": "mm"},
+  "cells": {"start": {"wall_mm": [280, 320]}},
+  "options": {
+    "push_short": {
+      "requires": {"wall_mm": [200, null]},
+      "quality": "model",
+      "outcomes": [{
+        "observe": "scan",
+        "change": {"advance_mm": [40, 80]},
+        "post": {"wall_mm": ["sub", "wall_mm", "advance_mm"]}
+      }]
+    },
+    "push_long": {
+      "requires": {"wall_mm": [200, null]},
+      "quality": "model",
+      "outcomes": [{
+        "observe": "scan",
+        "change": {"advance_mm": [150, 200]},
+        "post": {"wall_mm": ["sub", "wall_mm", "advance_mm"]}
+      }]
+    },
+    "change_side": {"requires": {"wall_mm": [150, null]}}
+  }
+}

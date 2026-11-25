@@ -1,0 +1,13 @@
+{
+  "seed": 17,
+  "dose": 1001,
+  "v_sha256": "b4be8183fafb55fdcbf57e302e46b2591ab49888daac7ef24a2fad642fd13b40",
+  "q_sha256": "2788fbc5afdc4476ba31e992ac5ea0580616b9ca02c73b460542efe47091a287",
+  "panel_sha256": "3f6b64adcd200d342dad49668f9811f729745c1b1c7d9ffab3f8dc0284b6a594",
+  "inputs": "same GA geometry, proposals, candidate set and boundaries as GA-Q",
+  "v": "recompute all seven expert V estimates at every boundary; each legal pool action takes maximum over its supporters; greedy first pool tie",
+  "primary": "switch V minus offline Q on all 600 paired scenes",
+  "secondary": "exactly one CAP, union, outside; reselecting vs committing to the first selected expert using recorded single CAP outcomes",
+  "uncertainty": "10000 scene-paired bootstrap draws, stratified by movable count; conditional on seed17",
+  "optional_fallback": "if no expert proposes a legal action at the opening, omit that scene only from commitment comparison"
+}

@@ -4,8 +4,8 @@
 *{box-sizing:border-box}body{margin:0;background:#f3f5f1;color:#173033;font:16px system-ui,sans-serif}main{max-width:1250px;margin:auto;padding:24px}h1{font-size:clamp(24px,4vw,34px);margin:8px 0 12px}p{line-height:1.55;margin:7px 0}section,article{background:#fff;border:1px solid #d8dfd9;border-radius:10px;padding:16px;margin:12px 0}section header,.tools,.time{display:flex;align-items:center;gap:10px;flex-wrap:wrap}label{font-weight:600}select,button{background:white;color:#153737;border:1px solid #9eafac;border-radius:6px;padding:8px 12px;font:inherit;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #08766c}#play{color:white;background:#155a56;min-width:75px}.tools{margin:12px 0}.time input{flex:1;min-width:140px;accent-color:#007e74}output{font-variant-numeric:tabular-nums}.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}.pair article{min-width:0;margin:0}h2{font-size:18px;margin:0}.sub{font-size:14px;color:#41605e}canvas{display:block;width:100%;height:auto}.board{background:#f7f9f6;border:1px solid #d7dfd7;border-radius:4px;margin:8px 0}.meta{font-size:14px;min-height:3em;line-height:1.6}b.ok{color:#006b54}b.fail{color:#99512d}button:hover{border-color:#155a56}#id{font:14px monospace}#chart{max-height:130px}footer{color:#536763;font-size:13px;padding-bottom:15px}@media(max-width:680px){main{padding:12px}.pair{grid-template-columns:1fr}.pair article{padding:10px}.board{max-height:310px;object-fit:contain}.tools{gap:5px}button{padding:7px}}
 </style><main><h1>首次分歧 · 同步物理回放</h1>
 <section><header><label for="cases">选择案例</label><select id="cases"></select><span id="id"></span></header><p id="intro"></p>
-<div class="tools"><button id="play">播放</button><button id="start">开局</button><button id="fork">定位干预</button><button id="split">首次指令或时长分歧</button><button id="prev">前一决策</button><button id="next">后一决策</button><button id="end">终局</button><label>速度 <select id="rate"><option value=".5">0.5×</option><option value="1">1×</option><option value="2">2×</option><option selected value="4">4×</option><option value="8">8×</option></select></label></div>
-<div class="time"><label for="slider">物理时间</label><input id="slider" type="range" min="0" step="1"><output id="clock"></output></div></section>
+<div class="tools"><button id="play">播放</button><button id="start">开局</button><button id="fork">定位干预</button><button id="release" hidden>定位交还</button><button id="split">首次指令或时长分歧</button><button id="prev">前一决策</button><button id="next">后一决策</button><button id="end">终局</button><label>速度 <select id="rate"><option value=".5">0.5×</option><option value="1">1×</option><option value="2">2×</option><option selected value="4">4×</option><option value="8">8×</option></select></label></div>
+<p id="handoff" hidden></p><div class="time"><label for="slider">物理时间</label><input id="slider" type="range" min="0" step="1"><output id="clock"></output></div></section>
 <div class="pair" id="panels"></div><section><h2>目标物体中心到终点的距离</h2><p class="sub">蓝线为左侧轨迹，橙线为右侧轨迹。虚线标出干预，点击曲线区域可跳转。</p><canvas id="chart" width="1150" height="120"></canvas></section>
 <footer>蓝绿色长条为目标物体，绿色圆圈为终点，灰色物体为可移动障碍，深色区域为固定障碍。R0、R1 为机器人。图形采用逐 tick 的物理记录，距离仅供回看。动作与接触取自当时的决策边界，提前结束的一侧停在最后一帧。</footer></main>
 <script>
@@ -24,6 +24,13 @@ function select(){stop();c=samples[+$('cases').value];max=Math.max(...c.runs.map
  distances=c.runs.map(r=>r.frames.map(v=>Math.hypot(v[0]-c.scene.goal.x,v[1]-c.scene.goal.y)));
  c.runs.forEach((r,i)=>{const p=panels.children[i];p.querySelector('h2').textContent=c.labels[i];
  p.querySelector('.result').innerHTML='<b class="'+(r.success?'ok':'fail')+'">'+(r.success?'成功':'失败')+'</b> · '+r.ticks+' ticks · '+({'task_budget_exhausted':'任务预算耗尽','decision_budget':'决策预算耗尽','success':'达成目标'}[r.reason]??r.reason)});
+ const span=c.spans?.[0];
+ $('release').hidden=!span?.returned;$('handoff').hidden=!span;
+ if(span){
+   $('fork').textContent='定位接手';
+   $('handoff').textContent='模块接手 tick '+span.start+' → '+(span.returned?'交还母程序':'终局')+' tick '+span.end+' · 目标物中心净位移 '+(100*span.displacement).toFixed(1)+' cm';
+   $('release').onclick=()=>jump(span.end);
+ }
  seek(c.marker)}
 function board(i,t){const r=c.runs[i],p=panels.children[i],ctx=p.querySelector('canvas').getContext('2d'),sc=c.scene,v=r.frames[t],entities=1+sc.movable_objects.length;
  const W=660,H=528,S=W/sc.arena[0],X=x=>S*x,Y=y=>H-S*y;
@@ -32,13 +39,15 @@ function board(i,t){const r=c.runs[i],p=panels.children[i],ctx=p.querySelector('
  for(const o of sc.obstacles)box(o.cx,o.cy,o.angle,2*o.half_w,2*o.half_h,'#59676c');
  ctx.beginPath();ctx.arc(X(sc.goal.x),Y(sc.goal.y),S*sc.goal.radius,0,2*Math.PI);ctx.lineWidth=3;ctx.fillStyle='#e2f4d7';ctx.fill();ctx.strokeStyle='#528547';ctx.stroke();
  ctx.beginPath();for(let j=0;j<=t;j+=4){const xy=r.frames[j];if(j===0)ctx.moveTo(X(xy[0]),Y(xy[1]));else ctx.lineTo(X(xy[0]),Y(xy[1]))}ctx.lineTo(X(v[0]),Y(v[1]));ctx.lineWidth=2;ctx.strokeStyle='#589892';ctx.stroke();
+ if(i===1&&c.spans){for(const s of c.spans){if(t<s.start)break;ctx.beginPath();for(let j=s.start;j<=Math.min(s.end,t);j++){const xy=r.frames[j];if(j===s.start)ctx.moveTo(X(xy[0]),Y(xy[1]));else ctx.lineTo(X(xy[0]),Y(xy[1]))}ctx.lineWidth=4;ctx.strokeStyle='#c38121';ctx.stroke()}}
  sc.movable_objects.forEach((o,k)=>{const off=3*(k+1);box(v[off],v[off+1],v[off+2],o.width,o.height,'#aebcba')});
  ctx.save();ctx.translate(X(v[0]),Y(v[1]));ctx.rotate(-v[2]);ctx.beginPath();sc.object_polygon.forEach(([x,y],j)=>j?ctx.lineTo(x*S,-y*S):ctx.moveTo(x*S,-y*S));ctx.closePath();ctx.fillStyle='#127e72';ctx.fill();ctx.restore();
  for(let j=0;j<2;j++){let k=3*(entities+j),x=X(v[k]),y=Y(v[k+1]),a=v[k+2];ctx.save();ctx.translate(x,y);ctx.rotate(-a);ctx.fillStyle=j?'#b76b34':'#40658c';ctx.beginPath();ctx.arc(0,0,sc.robot_radius*S,0,2*Math.PI);ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(.17*S,0);ctx.stroke();ctx.restore();ctx.fillStyle='#1c302f';ctx.font='bold 14px sans-serif';ctx.fillText('R'+j,x+13,y-13)}
  const e=r.events.find(ev=>ev.end>t)??r.events.at(-1),a=e.a,seg=e.segments.find(v=>v.end_tick>t)??e.segments.at(-1);
- const phase=t===r.ticks?'已终止 · ':'';p.querySelector('.meta').innerText=phase+'tick '+t+' · 距终点 '+distances[i][t].toFixed(2)+' m\n指令 R0 '+action(a.a0)+' ['+a.a0+']　R1 '+action(a.a1)+' ['+a.a1+']\n目标 '+(a.target_id??'无绑定请求')+' · 请求 '+a.ticks+' / 实际 '+(e.end-e.t)+' ticks · 实际控制 '+(seg?seg.pair.join(' / '):'—')+'\n边界 '+e.t+' · 接触物体 '+(e.contacts.map((v,j)=>v?'R'+j:null).filter(Boolean).join('、')||'无')+' · 提案 '+(e.caps.join('、')||'回退')}
+ const phase=t===r.ticks?'已终止 · ':'';p.querySelector('.meta').innerText=phase+'tick '+t+' · 距终点 '+distances[i][t].toFixed(2)+' m\n指令 R0 '+action(a.a0)+' ['+a.a0+']　R1 '+action(a.a1)+' ['+a.a1+']\n目标 '+(a.target_id??'无绑定请求')+' · 请求 '+a.ticks+' / 实际 '+(e.end-e.t)+' ticks'+(seg?' · 实际控制 '+seg.pair.join(' / '):'')+'\n边界 '+e.t+' · 接触物体 '+(e.contacts.map((v,j)=>v?'R'+j:null).filter(Boolean).join('、')||'无')+(e.owner?' · 本段指令来自 '+e.owner:' · 提案 '+(e.caps.join('、')||'回退'))}
 function chart(){const cn=$('chart'),ctx=cn.getContext('2d'),W=cn.width,H=cn.height,L=40,R=W-15,T=8,B=H-21,ym=Math.ceil(Math.max(...distances[0],...distances[1]));const x=t=>L+(R-L)*t/max,y=d=>B-(B-T)*d/Math.max(ym,1);
  ctx.clearRect(0,0,W,H);ctx.font='13px sans-serif';ctx.fillStyle='#4a605e';ctx.fillText(ym+' m',2,T+10);ctx.fillText('0',20,B);ctx.fillText('0 s',L,H-3);ctx.fillText((max*.05)+' s',R-40,H-3);
+ if(c.spans){ctx.fillStyle='#f6e5bd';for(const s of c.spans)ctx.fillRect(x(s.start),T,x(s.end)-x(s.start),B-T)}
  distances.forEach((dd,i)=>{ctx.beginPath();dd.forEach((d,t)=>{if(!t)ctx.moveTo(x(t),y(d));else ctx.lineTo(x(t),y(d))});ctx.strokeStyle=i?'#ae672f':'#316692';ctx.lineWidth=2;ctx.stroke()});
  for(const [t,line,col] of [[c.marker,[4,4],'#956529'],[pos,[],'#172c30']]){ctx.beginPath();ctx.setLineDash(line);ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.moveTo(x(t),T);ctx.lineTo(x(t),B);ctx.stroke()}ctx.setLineDash([])}
 function seek(t){pos=Math.max(0,Math.min(max,Math.round(t)));$('slider').value=pos;$('clock').textContent=(pos*.05).toFixed(2)+' s · '+pos+' / '+max+' ticks';c.runs.forEach((r,i)=>board(i,Math.min(pos,r.ticks)));chart()}

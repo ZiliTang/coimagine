@@ -1,0 +1,17 @@
+{
+  "roots": 608,
+  "trajectories": 4256,
+  "boundaries": 294285,
+  "mixed_prefixes": 1041,
+  "noninitial_prefixes": 615,
+  "eligible_roots": 434,
+  "cap_train_successes": [
+    252,
+    250,
+    223,
+    222,
+    105,
+    171,
+    202
+  ]
+}

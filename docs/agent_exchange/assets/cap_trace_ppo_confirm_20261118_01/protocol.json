@@ -1,0 +1,86 @@
+{
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "arms": [
+    "GA",
+    "GLOBAL"
+  ],
+  "parents": {
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GA_s17/online_r4.pt": "3ca8d05ae6e7812a653d12055d319319b90a366cb6fb7ff506a2505264634015",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GA_s29/online_r4.pt": "c9a84c1f1a8d31e67a92ebc42da5dcae8239af01d96d66b1cfa3c1647f943808",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GA_s43/online_r4.pt": "6e008f1f6ad1ff5d7bb62198dbc62f968cedfdfbce0f9b0cac0c1c3911520030",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GLOBAL_s17/online_r4.pt": "f9260ab56ae7519f06e5bf1e62027c9e9effe63f3bcd4bc65c9e298197472c7b",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GLOBAL_s29/online_r4.pt": "9998eb612a438f22101f5aaaa7fd231a81c5f759f9e178d36053884943ce2dee",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/models/GLOBAL_s43/online_r4.pt": "2559a30e4212a873e787cfbd9d607056178541214c1a1dd601b44307f824447a"
+  },
+  "ppo": {
+    "parent": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02",
+    "baseline": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_shuffle500_20261118_01",
+    "checkpoint_sha256": "f9260ab56ae7519f06e5bf1e62027c9e9effe63f3bcd4bc65c9e298197472c7b",
+    "schedule_sha256": "cd6d980b9453d0a91baf39acac00d7e5e4d23c0ffacaeca9541e31f1c8bda0d9",
+    "seed": 17,
+    "temperature": 0.03,
+    "gamma": 1,
+    "gae_lambda": 0.95,
+    "clip": 0.2,
+    "epochs": 4,
+    "target_kl": 0.015,
+    "minibatch": 128,
+    "actor_lr": 3e-05,
+    "critic_lr": 0.0003,
+    "entropy_bonus": 0,
+    "value_weight": 0.5,
+    "grad_clip": 0.5,
+    "episodes": 1800,
+    "final_cumulative_episodes": 2000,
+    "source_hashes": {
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/model.py": "12a3a11eaa6506ecd94f73a2978d9b21afbf4eca205e5e7a18f6e325a015e7d2",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/__init__.py": "0686797206541f5c6579e275a406d4af7935a1ebaa9e8711469c7dded7f6d1a0",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/dataset.py": "e2a8a9032b88f2c7df4aa432a0a830643a487259713e9d4858dbcbf4aa040804",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_learner.py": "19d1aa4f126baf81b5b34197095c342fbc8ffd8dce0e73653cbb31a5b23aa1ee",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/q_model.py": "2b3f54596df6f5b7a26bba59aef1a3ef3682808c5612c2121da363c76d329c75",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/runtime.py": "3545e776bc9d65cba0d0ed3a112d85c2f10d95990fc63b5491b55439423fb699",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_worker.py": "8edc356644eabad74a861d1a40fb9c595849b740f91fcb10be671f23c4ba6c84",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/instrumentation.py": "e545fdf4d98a967b54760229eb08bf9b2b67bc96cd1a0564cd3a9385d262ff55",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_data.py": "412492169d78cccf05e9b8ebabb4948299860f2e7ee13886911c41174c501e94",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/evaluation.py": "1aafdf15cbfed366f23b6870a0cf8dff68b1583d22d05861245b246d8f95c60e",
+      "experiments/planar_tasks/authoring_v2/cap_trace_value_full.py": "a1c01895569bd8c8b0517a27957f14646978b54b8722a79ab0569a8994238fcf",
+      "experiments/planar_tasks/authoring_v2/cap_trace_value_panels.py": "bbee2c64d90107b1345cc9685ae92bb04c2a24fa8fc052d4a57e88e580aec2bc",
+      "experiments/planar_tasks/authoring_v2/cap_trace_value_long.py": "a8bdba00c824c555377d07fbfd43e72864af4ab8728bdd58e9a9f7c1c2be7327",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/long_online.py": "72ad47a20e99cf990a70a0166f2612c89fd9e3ade5c76d22bd24b3ee33b2a6ee",
+      "tools/cap_trace_value_long_report.py": "cc9b68ed0539af7d5a0318b90c0487f26e609b9da5cbe1a3e221e189e436d2b5",
+      "tests/test_cap_trace_value_long.py": "e2ef06f4849254c767b2b5a455d764c96931bd1fc2f6a1ec418cec621a1d8f1c",
+      "experiments/planar_tasks/authoring_v2/cap_trace_value_single.py": "3f070b43c9e641b27e15ff58c52584fd7f43ef8253fbf9c8fab561bebe54db97",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/fast_runtime.py": "df03071b2bf6bd49c6d10c05c472c76f50576277f4b2fb10f311a7ae01ee949e",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/fast_learner.py": "b220f96867cdf988b8e47ee7917fa8ef52c8f73c5ec451f99420f8ed44d8b2a4",
+      "experiments/planar_tasks/semantic_rl/program_trace_value_v1/resident_replay.py": "5af68ecfb94c834312ef034e5b47c15436b1cd67563a8bced814f6e4265cd04d",
+      "tools/cap_trace_value_single_report.py": "6582fef4c3f747f286442ec2290ab367676355a539b56922d247efafa7d26c81",
+      "tests/test_cap_trace_value_perf.py": "2341f20048259166000eda97e6abfa37fc92ab6c8efcd6d0a1ace8dcbec81a1a",
+      "experiments/planar_tasks/authoring_v2/cap_trace_value_shuffle.py": "4bae52fb06ce2a91aed27dd42c7211c2e47247dfbb81956d29245d38ad2e367b",
+      "tools/cap_trace_value_shuffle_report.py": "855c18bcb9cb8593ed59ad4841f30a334e0309bed460a0c43de19a89b6a4ec5f",
+      "tests/test_cap_trace_value_shuffle.py": "68ea62277bf7fd5d1a74312c093dc600e6e4125103ed32329d2536a22350b1c9",
+      "/home/tzl/repo/coimagine/experiments/planar_tasks/authoring_v2/cap_trace_value_ppo.py": "00ff84aa25b991c205bcdfbf1c0e280b813063b61a30596d2ee5d7af249d0da1",
+      "tools/cap_trace_value_ppo_report.py": "b477b89508ad87d9b80210f749e61206ea736955136ceeccab77598ec07aaedb"
+    }
+  },
+  "sealed_sha": "eeb11bb2a7fb7af224c7e4b56eda68fc6bbe5bc1f365ecce0c21ec8b985925d4",
+  "sources": {
+    "/home/tzl/repo/coimagine/experiments/planar_tasks/authoring_v2/cap_trace_ppo_comparison.py": "afabad14a7df322259487d7d6fdc3ca0f319c90c80e1358db0458a995043ae5e",
+    "tools/cap_trace_ppo_comparison_report.py": "b1f8a4704512659cfe719d94d10d6e6f9f03af9c1e46a829417749d0159b59c0"
+  },
+  "reuse": {
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_ppo_20261118_01/initial.pt": "16adce169fadc402aa180ead46f4c9fe8ce0f49747673f7e98afef8304ada4c5",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_ppo_20261118_01/actor_critic_r40.pt": "b650ed1b564611573b28730d4c60c7d6dc8ca46cff7e686d64fabd4b8abdf9c9",
+    "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_ppo_20261118_01/FINISHED.json": "003bc4d92343f7651669ba520141ba6d41487ff2b573ccf890582d510a66806f"
+  },
+  "primary": "GLOBAL minus GA at fixed PPO round40, mean paired success difference across seeds",
+  "secondary": "each arm post minus pre; difference in improvements",
+  "uncertainty": "10000 paired scene bootstrap within object count; seed pairs fixed; show every seed",
+  "training": "same 36x50 schedule, paired action seeds; each arm own same-seed r4 checkpoint; frozen GLOBAL17 reused",
+  "scope": "trace available to entire training pipeline; actor and critic both blinded for GA",
+  "confirmation_executions": 2400,
+  "additional_training": 9000
+}

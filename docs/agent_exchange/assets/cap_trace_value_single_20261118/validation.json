@@ -1,0 +1,6 @@
+{
+  "command": "outputs/transfers/venv_py311/bin/python -m pytest -q tests/test_cap_trace_value_perf.py tests/test_cap_trace_value_long.py tests/test_cap_trace_value_rl.py",
+  "tests_passed": 8,
+  "exit_code": 0,
+  "full_suite": false
+}

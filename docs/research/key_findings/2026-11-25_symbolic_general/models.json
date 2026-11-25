@@ -1,0 +1,23 @@
+[
+  {
+    "version": 0,
+    "sha256": "43eebbcc0c683b957de0f143e02f175ffd56662c4602985b1ce1a9a549eab097",
+    "rows": 2515,
+    "rooms": 8,
+    "calibrated_actions": 4
+  },
+  {
+    "version": 1,
+    "sha256": "79969e5b91892df0bd9ea60ef6905df30fc1d829396e53a082503f7026a83ad3",
+    "rows": 7633,
+    "rooms": 24,
+    "calibrated_actions": 8
+  },
+  {
+    "version": 2,
+    "sha256": "86fa571b915dc049fcd0411703635fc6af04a6780935697c8dc033ef97ecb2a5",
+    "rows": 12855,
+    "rooms": 48,
+    "calibrated_actions": 9
+  }
+]

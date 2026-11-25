@@ -1,0 +1,54 @@
+{
+  "dev": {
+    "early": {
+      "rooms": 16,
+      "candidates": 32,
+      "swapped": 30,
+      "old_contact": 0,
+      "new_contact": 26,
+      "gained": 26,
+      "lost": 0,
+      "distinct_features": 4
+    },
+    "late": {
+      "rooms": 14,
+      "candidates": 28,
+      "swapped": 0,
+      "old_contact": 22,
+      "new_contact": 22,
+      "gained": 0,
+      "lost": 0,
+      "distinct_features": 9
+    },
+    "versions": {
+      "change-face-ccw-standoff05-v2": "edcce691534b847583391739debb67c693f9dfcb988ddeb657c536d3fe4e0a2d",
+      "change-face-ccw-joint-orbit-v3": "3c6a3ffd90d60986ef8751ab45d08da52ea69ecc2a8c198be9ef1846b2dbdc40"
+    }
+  },
+  "diagnostic": {
+    "early": {
+      "rooms": 16,
+      "candidates": 32,
+      "swapped": 32,
+      "old_contact": 0,
+      "new_contact": 32,
+      "gained": 32,
+      "lost": 0,
+      "distinct_features": 2
+    },
+    "late": {
+      "rooms": 11,
+      "candidates": 22,
+      "swapped": 0,
+      "old_contact": 10,
+      "new_contact": 10,
+      "gained": 0,
+      "lost": 0,
+      "distinct_features": 10
+    },
+    "versions": {
+      "change-face-ccw-standoff05-v2": "edcce691534b847583391739debb67c693f9dfcb988ddeb657c536d3fe4e0a2d",
+      "change-face-ccw-joint-orbit-v3": "3c6a3ffd90d60986ef8751ab45d08da52ea69ecc2a8c198be9ef1846b2dbdc40"
+    }
+  }
+}

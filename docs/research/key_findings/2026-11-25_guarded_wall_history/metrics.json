@@ -1,0 +1,136 @@
+{
+  "inventory": {
+    "validation": {
+      "status": {
+        "ready": 73,
+        "no_ready_contact": 45,
+        "unavailable_at_start": 2
+      },
+      "with_geometry": {
+        "current": 16,
+        "history": 69
+      }
+    },
+    "development": {
+      "status": {
+        "ready": 48,
+        "no_ready_contact": 24
+      },
+      "with_geometry": {
+        "current": 11,
+        "history": 46
+      }
+    }
+  },
+  "groups": {
+    "neither": 32,
+    "short_only": 30,
+    "both": 11
+  },
+  "totals": {
+    "current": {
+      "unsafe": 7,
+      "decision_admit": 22,
+      "invalid_admits": 10,
+      "wait": 62,
+      "decision_defer": 124,
+      "safe": 4,
+      "valid_admits": 12
+    },
+    "history": {
+      "wait": 30,
+      "decision_defer": 35,
+      "unsafe": 11,
+      "decision_admit": 59,
+      "valid_admits": 46,
+      "invalid_admits": 13,
+      "safe": 32,
+      "decision_reject": 52
+    },
+    "fixed_short": {
+      "unsafe": 32,
+      "decision_admit": 73,
+      "invalid_admits": 32,
+      "decision_reject": 73,
+      "safe": 41,
+      "valid_admits": 41
+    }
+  },
+  "strata": {
+    "current": {
+      "neither": {
+        "unsafe": 3,
+        "long_chosen": 3,
+        "wait": 29
+      },
+      "short_only": {
+        "wait": 26,
+        "unsafe": 4,
+        "long_chosen": 4
+      },
+      "both": {
+        "safe": 4,
+        "long_chosen": 4,
+        "wait": 7
+      }
+    },
+    "history": {
+      "neither": {
+        "wait": 28,
+        "reject_both": 10,
+        "unsafe": 4,
+        "long_chosen": 2,
+        "admit_short_reject_long": 2
+      },
+      "short_only": {
+        "unsafe": 7,
+        "long_chosen": 7,
+        "safe": 21,
+        "admit_short_reject_long": 18,
+        "wait": 2,
+        "admit_short_defer_long": 3
+      },
+      "both": {
+        "safe": 11,
+        "long_chosen": 7,
+        "admit_short_defer_long": 3,
+        "admit_short_reject_long": 1
+      }
+    },
+    "fixed_short": {
+      "neither": {
+        "unsafe": 32,
+        "admit_short_reject_long": 32
+      },
+      "short_only": {
+        "safe": 30,
+        "admit_short_reject_long": 30
+      },
+      "both": {
+        "safe": 11,
+        "admit_short_reject_long": 11
+      }
+    }
+  },
+  "changes": {
+    "unsafe->wait": 1,
+    "wait->unsafe": 7,
+    "wait->safe": 26,
+    "wait->wait": 29,
+    "safe->safe": 4,
+    "unsafe->unsafe": 4,
+    "unsafe->safe": 2
+  },
+  "paired_difference_and_interval": {
+    "safe": [
+      0.3835616438356164,
+      0.273972602739726,
+      0.4931506849315068
+    ],
+    "unsafe": [
+      0.0547945205479452,
+      -0.0273972602739726,
+      0.136986301369863
+    ]
+  }
+}

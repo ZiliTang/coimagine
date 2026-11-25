@@ -1,0 +1,107 @@
+{
+  "development": {
+    "ready": 48,
+    "no_pairable_start": 24
+  },
+  "fresh": {
+    "ready": 77,
+    "no_pairable_start": 43
+  },
+  "dev_forced": 352,
+  "dev_twins": 352,
+  "ready_headings": {
+    "2": 62,
+    "1": 15
+  },
+  "stats": {
+    "symbolic_live": {
+      "wait": 52,
+      "invalid": 16,
+      "valid": 9
+    },
+    "symbolic_before_recheck": {
+      "wait": 52,
+      "invalid": 16,
+      "valid": 9
+    },
+    "union": {
+      "any_valid": 51
+    },
+    "matched_symbolic": {
+      "wait": 52,
+      "valid": 25
+    },
+    "matched_vote": {
+      "valid": 38,
+      "wait": 27,
+      "invalid": 12
+    },
+    "matched_short": {
+      "valid": 51,
+      "invalid": 26
+    },
+    "matched_short_only:symbolic": {
+      "wait": 19,
+      "valid": 15
+    },
+    "matched_short_only:vote": {
+      "valid": 21,
+      "invalid": 8,
+      "wait": 5
+    },
+    "matched_neither:symbolic": {
+      "wait": 26
+    },
+    "matched_neither:vote": {
+      "wait": 22,
+      "invalid": 4
+    },
+    "selected_action": {
+      "44/11 0.4 ccw": 11,
+      "44/7 0.1 ccw": 9,
+      "44/11 0.4 cw": 5
+    },
+    "matched_both:symbolic": {
+      "valid": 10,
+      "wait": 7
+    },
+    "matched_both:vote": {
+      "valid": 17
+    },
+    "endpoint_hold": {
+      "invalid": 4
+    }
+  },
+  "candidates": {
+    "branches": 556,
+    "withheld_valid": 73,
+    "forward_tested": 492,
+    "forward_outside": 8,
+    "push_sweep_tested": 492,
+    "push_sweep_outside": 2,
+    "endpoint_loss_tested": 492,
+    "endpoint_loss_outside": 2,
+    "full_sweep_tested": 492,
+    "full_sweep_outside": 2,
+    "admitted": 76,
+    "invalid_admitted": 47,
+    "admitted_push_contact": 0,
+    "admitted_follow_contact": 0,
+    "admitted_incomplete_face": 47
+  },
+  "obligations": {
+    "full_min_gap": 422,
+    "push_min_gap": 318,
+    "route_entry_gap": 468,
+    "forward": 64,
+    "push_sweep": 64,
+    "endpoint_loss": 64,
+    "full_sweep": 64
+  },
+  "paired_changes": {
+    "valid->wait": 13,
+    "wait->wait": 27,
+    "invalid->wait": 12,
+    "valid->valid": 25
+  }
+}

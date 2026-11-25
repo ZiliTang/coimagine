@@ -422,7 +422,7 @@ def reposition_peer_cases():
             c=json.loads(json.dumps(next(c for c in source if c['name']==f'scale2_rp_{direction}_solo_1.80')))
             c['name']=f'scale2_rp_{direction}_static_gap_{gap:.2f}'
             c['instance']['obstacles']=[asdict(Box(2.5+sign*(.5+gap+.10),2.,.10,.9))]
-            c['negative_control']='static_narrow' if gap<.36 else None
+            c['negative_control']='static_narrow' if gap<spec.ROBOT_DIAMETER else None
             panel.append(c)
         c=json.loads(json.dumps(next(c for c in panel if c['name']==f'scale2_rp_{direction}_push_same_1.80')))
         c['name']=f'scale2_rp_{direction}_peer_static_blocked'
@@ -575,6 +575,7 @@ def run_one(case, feedback, overrides=None, comparison="contact_feedback"):
     metric["option_outcomes"] = outcomes
     metric["termination"] = boundary["termination"]
     return {"case": case, "config": asdict(config), "metric": metric,
+            "geometry": {"robot_radius_m": spec.ROBOT_RADIUS, "orbit_gap_m": spec.REPOSITION_GAP},
             "requested_actions":[asdict(table[i]) for i in case['actions']],
             "availability_mask": mask.tolist(), "boundary": boundary, "rows": world.rows,
             "initial_object": list(initial.as_tuple())}

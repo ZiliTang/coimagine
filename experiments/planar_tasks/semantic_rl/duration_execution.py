@@ -1,24 +1,31 @@
 """Execute one duration-capped joint request; normal skill phases stay internal."""
 from copy import deepcopy
 from dataclasses import asdict
-from experiments.planar_tasks.relational_search.contract import validate_action
+from experiments.planar_tasks.relational_search.contract import NoLegalPushFace, validate_action
 from .scale import protocol, CONTROL_DT
 from .memory_flow import current_event
 
 
-def step_duration(world, requested, remaining_ticks):
+def step_duration(world, requested, remaining_ticks, *, review=None):
+    """Optionally review an in-flight command after a live, nonterminal tick.
+
+    The review receives the public feedback and unused ticks. A review that
+    returns None leaves the active controller, binding, and history untouched.
+    """
     env=world.env
     if env.termination is not None:raise ValueError('terminal environment')
     if remaining_ticks is not None and remaining_ticks<1:raise ValueError('no execution budget')
     before=current_event(world.history)['observation'];validate_action(requested,before)
     start=env.total_periods;limit=min(requested['ticks'],remaining_ticks or requested['ticks'])
     env.command_index=world.decision_count
-    handoffs=[];segments=[];handoff=None;reason='duration'
+    handoffs=[];segments=[];handoff=None;reason='duration';replacement=None
     for _ in range(limit):
         if handoff is None or handoff['phase']=='switch_brake':
             if env.total_periods!=start:
                 before=env.public()
                 try:validate_action(requested,before)
+                except NoLegalPushFace:
+                    reason='push_no_legal_face';break
                 except (ValueError,TypeError,KeyError):
                     reason='target_unavailable';break
             handoff=env.binding.select(requested,before)
@@ -37,12 +44,19 @@ def step_duration(world, requested, remaining_ticks):
             reason='terminal';break
         if handoff['phase']=='switch_brake':
             continue  # internal braking/ownership handshake, no actor call
-        if detected in ('contact_lost','blocked','controller_end'):
+        if detected in ('contact_lost','blocked','controller_end','push_no_legal_face'):
             reason=detected;break
+        if review is not None and env.total_periods-start<limit:
+            replacement=review(feedback,limit-(env.total_periods-start))
+            if replacement is not None:
+                reason='review_switch'
+                break
         # Stable contact and ordinary travel are normal internal milestones.
     periods=env.total_periods-start
     if periods==limit and limit<requested['ticks'] and reason=='duration':reason='collector_cut'
     public=env.public()  # maintain historical boundary numbering
+    if replacement is not None:
+        replacement=validate_action(replacement,public)
     env.command_prefix.append(deepcopy(requested))
     world._append_public(public,requested)
     event=dict(start_tick=start,end_tick=env.total_periods,requested=deepcopy(requested),
@@ -52,5 +66,7 @@ def step_duration(world, requested, remaining_ticks):
                scale=dict(kind='duration_cap',requested_ticks=requested['ticks'],executed_ticks=periods,
                           requested_seconds=requested['ticks']*CONTROL_DT,executed_seconds=periods*CONTROL_DT))
     world.decision_count+=1
+    if replacement is not None:
+        event['replacement']=replacement
     if world.record_details:world.events.append(event)
     return event

@@ -19,11 +19,16 @@ def local_position(robot,obj):
     return (c*x+s*y,-s*x+c*y)
 
 
-def true_gap(robot,obj):
+def geometry(record):
+    # Archived logs predate geometry metadata and used 36 cm discs.
+    return record.get("geometry", {"robot_radius_m": .18, "orbit_gap_m": .10})
+
+
+def true_gap(robot,obj,radius):
     # Privileged object geometry is used ONLY for this offline physical label.
     x,y=local_position(robot,obj);dx,dy=max(abs(x)-.5,0),max(abs(y)-.125,0)
     distance=math.hypot(dx,dy) if dx or dy else -min(.5-abs(x),.125-abs(y))
-    return distance-.18
+    return distance-radius
 
 
 def audit(record):
@@ -36,7 +41,7 @@ def audit(record):
         for row in rows:
             info=row[f'r{i}'];robot=row['true']['robots'][i];obj=row['true']['object']
             total+=math.dist(previous,robot[:2]);previous=robot[:2]
-            gaps.append(true_gap(robot,obj))
+            gaps.append(true_gap(robot,obj,geometry(record)['robot_radius_m']))
             t=info['tangent_world']
             if t and last_tangent:
                 turns.append(abs(math.atan2(last_tangent[0]*t[1]-last_tangent[1]*t[0],last_tangent[0]*t[0]+last_tangent[1]*t[1])))
@@ -62,6 +67,10 @@ def audit(record):
 def main(out):
     records=[json.loads(p.read_text()) for p in sorted((out/'logs').glob('*.json'))]
     results=[audit(r) for r in records if r['metric']['status']=='completed']
+    dimensions = {(geometry(r)['robot_radius_m'],geometry(r)['orbit_gap_m']) for r in records}
+    if len(dimensions) != 1:
+        raise ValueError('a matched arc comparison requires one robot geometry')
+    radius, orbit_gap = dimensions.pop()
     sensitivity=[]
     for base in ('arc_rp_CW_corner_1.00','arc_rp_CCW_corner_1.00'):
         for v in (False,True):
@@ -70,9 +79,9 @@ def main(out):
             sensitivity.append({'base':base,'rounded':v,'samples':len(group),
                 'max_endpoint_separation_m':max(math.dist(a,b) for a in xy for b in xy)})
     report={'version':'reposition-arc-audit-v1','results':results,'local_sensitivity':sensitivity,
-            'ideal_geometry':{'object_size_m':[1.,.25],'robot_radius_m':.18,'clearance_m':.10,
-                              'front_midpoint_to_opposite_face_m':.5+.25+math.pi*.28,
-                              'near_corner_to_opposite_face_m':.05+.25+math.pi*.28},
+            'ideal_geometry':{'object_size_m':[1.,.25],'robot_radius_m':radius,'clearance_m':orbit_gap,
+                              'front_midpoint_to_opposite_face_m':.5+.25+math.pi*(radius+orbit_gap),
+                              'near_corner_to_opposite_face_m':.05+.25+math.pi*(radius+orbit_gap)},
             'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
             'truth_use':'offline labels only; runtime accepts own scan/pose/contact and public clock'}
     (out/'arc_audit.json').write_text(json.dumps(report,indent=2)+'\n')
@@ -106,7 +115,7 @@ def plot(records,out):
         poses=[x['true']['robots'][0] for x in rows]
         axes[0,0].plot([p[0] for p in poses],[p[1] for p in poses],color=color,label=label)
         axes[0,0].scatter(poses[-1][0],poses[-1][1],color=color,marker='x')
-        axes[0,1].plot(t,[true_gap(p,x['true']['object']) for p,x in zip(poses,rows)],color=color,label=label)
+        axes[0,1].plot(t,[true_gap(p,x['true']['object'],geometry(r)['robot_radius_m']) for p,x in zip(poses,rows)],color=color,label=label)
         moving=[x for x in rows if x['r0']['stage']=='move' and x['time']>.5]
         axes[0,2].plot([x['time'] for x in moving],[math.hypot(*x['true']['robots'][0][3:5]) for x in moving],color=color,label=label)
         vectors=[x for x in rows if x['r0']['tangent_world']];variation=0.;vs=[0.]
@@ -121,11 +130,13 @@ def plot(records,out):
             q=next(r for r in records if r['metric']['case']==name+dx and r['metric']['variant']==v)
             x=q['rows'][-1]['true']['robots'][0];axes[1,2].scatter(x[0],x[1],color=color,marker=marker,label=label+(dx or ' base'))
     axes[0,0].add_patch(Rectangle((2.,1.875),1.,.25,color='#aeb9c9',alpha=.4))
+    dimensions = geometry(records[0])
+    offset = dimensions["robot_radius_m"] + dimensions["orbit_gap_m"]
     for cx,cy,start in ((3.,1.875,-math.pi/2),(3.,2.125,0.)):
         angles=[start+i*math.pi/2/100 for i in range(101)]
-        axes[0,0].plot([cx+.28*math.cos(a) for a in angles],[cy+.28*math.sin(a) for a in angles],color='gray',linestyle='--')
+        axes[0,0].plot([cx+offset*math.cos(a) for a in angles],[cy+offset*math.sin(a) for a in angles],color='gray',linestyle='--')
     axes[0,0].set(xlim=(2.75,3.45),ylim=(1.50,2.48),aspect='equal',title='Matched 1 m request: centre paths',xlabel='World x / m',ylabel='World y / m')
-    axes[0,1].axhline(.1,color='gray',linestyle='--');axes[0,1].set(title='True body clearance (offline)',xlabel='Time / s',ylabel='Gap / m')
+    axes[0,1].axhline(dimensions["orbit_gap_m"],color='gray',linestyle='--');axes[0,1].set(title='True body clearance (offline)',xlabel='Time / s',ylabel='Gap / m')
     axes[0,2].set(title='Speed during MOVE, after 0.5 s',xlabel='Time / s',ylabel='Body speed / m/s')
     axes[1,0].set(title='Command direction variation',xlabel='Time / s',ylabel='Accumulated absolute turn / degrees')
     axes[1,1].set(title='Distance budget kept unchanged',xlabel='Time / s',ylabel='Distance / m')

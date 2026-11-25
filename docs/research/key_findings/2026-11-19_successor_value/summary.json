@@ -1,0 +1,228 @@
+{
+  "scenes": 200,
+  "no_fork": 4,
+  "no_fork_success": 4,
+  "no_fork_ids": [
+    "succ_dev_dev_2_34",
+    "succ_dev_dev_4_15",
+    "succ_dev_dev_5_20",
+    "succ_dev_dev_5_27"
+  ],
+  "executions": 788,
+  "ga": {
+    "all": {
+      "pairs": 196,
+      "both_win": 68,
+      "both_lose": 88,
+      "informative": 40,
+      "q_correct": 27,
+      "v_correct": 23,
+      "q_success": 95,
+      "v_success": 91,
+      "union": 108,
+      "reversed": 98,
+      "rescues": 6,
+      "losses": 10,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 0.454498291015625,
+      "success_delta_ci_pp": [
+        -6.12,
+        2.04
+      ],
+      "informative_delta_ci_pp": [
+        -30.0,
+        7.56
+      ]
+    },
+    "excluded_fallback": 0,
+    "nonterminal": {
+      "pairs": 195,
+      "both_win": 67,
+      "both_lose": 88,
+      "informative": 40,
+      "q_correct": 27,
+      "v_correct": 23,
+      "q_success": 94,
+      "v_success": 90,
+      "union": 107,
+      "reversed": 97,
+      "rescues": 6,
+      "losses": 10,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 0.454498291015625,
+      "success_delta_ci_pp": [
+        -6.15,
+        2.05
+      ],
+      "informative_delta_ci_pp": [
+        -30.0,
+        7.56
+      ]
+    },
+    "duration_only": {
+      "pairs": 47,
+      "both_win": 20,
+      "both_lose": 22,
+      "informative": 5,
+      "q_correct": 4,
+      "v_correct": 4,
+      "q_success": 24,
+      "v_success": 24,
+      "union": 25,
+      "reversed": 21,
+      "rescues": 0,
+      "losses": 0,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 1.0,
+      "success_delta_ci_pp": [
+        0.0,
+        0.0
+      ],
+      "informative_delta_ci_pp": [
+        0.0,
+        0.0
+      ]
+    },
+    "different_command": {
+      "pairs": 149,
+      "both_win": 48,
+      "both_lose": 66,
+      "informative": 35,
+      "q_correct": 23,
+      "v_correct": 19,
+      "q_success": 71,
+      "v_success": 67,
+      "union": 83,
+      "reversed": 77,
+      "rescues": 6,
+      "losses": 10,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 0.454498291015625,
+      "success_delta_ci_pp": [
+        -8.05,
+        2.68
+      ],
+      "informative_delta_ci_pp": [
+        -34.29,
+        11.43
+      ]
+    }
+  },
+  "009": {
+    "all": {
+      "pairs": 196,
+      "both_win": 53,
+      "both_lose": 106,
+      "informative": 37,
+      "q_correct": 21,
+      "v_correct": 21,
+      "q_success": 74,
+      "v_success": 74,
+      "union": 90,
+      "reversed": 98,
+      "rescues": 8,
+      "losses": 8,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 1.0,
+      "success_delta_ci_pp": [
+        -4.08,
+        4.08
+      ],
+      "informative_delta_ci_pp": [
+        -21.62,
+        21.62
+      ]
+    },
+    "excluded_fallback": 0,
+    "nonterminal": {
+      "pairs": 195,
+      "both_win": 52,
+      "both_lose": 106,
+      "informative": 37,
+      "q_correct": 21,
+      "v_correct": 21,
+      "q_success": 73,
+      "v_success": 73,
+      "union": 89,
+      "reversed": 97,
+      "rescues": 8,
+      "losses": 8,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 1.0,
+      "success_delta_ci_pp": [
+        -4.1,
+        4.1
+      ],
+      "informative_delta_ci_pp": [
+        -21.62,
+        21.62
+      ]
+    },
+    "duration_only": {
+      "pairs": 47,
+      "both_win": 13,
+      "both_lose": 23,
+      "informative": 11,
+      "q_correct": 6,
+      "v_correct": 7,
+      "q_success": 19,
+      "v_success": 20,
+      "union": 24,
+      "reversed": 21,
+      "rescues": 2,
+      "losses": 1,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 1.0,
+      "success_delta_ci_pp": [
+        -4.26,
+        8.51
+      ],
+      "informative_delta_ci_pp": [
+        -18.18,
+        36.36
+      ]
+    },
+    "different_command": {
+      "pairs": 149,
+      "both_win": 40,
+      "both_lose": 83,
+      "informative": 26,
+      "q_correct": 15,
+      "v_correct": 14,
+      "q_success": 55,
+      "v_success": 54,
+      "union": 66,
+      "reversed": 77,
+      "rescues": 6,
+      "losses": 7,
+      "identical_q": 0,
+      "identical_v": 0,
+      "paired_p": 1.0,
+      "success_delta_ci_pp": [
+        -5.37,
+        4.03
+      ],
+      "informative_delta_ci_pp": [
+        -30.77,
+        23.08
+      ]
+    }
+  },
+  "next_max_v_cap": {
+    "CAP-RR-009": 391
+  },
+  "next_legal_cap_counts": {
+    "7": 391
+  },
+  "suffix_diagnostic": {
+    "both_informative": 8,
+    "opposite_preference": 0
+  }
+}

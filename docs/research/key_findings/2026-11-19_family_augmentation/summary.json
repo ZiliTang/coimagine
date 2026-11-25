@@ -1,0 +1,220 @@
+{
+  "collection": {
+    "uniform": {
+      "runs": 1120,
+      "variants": 160,
+      "families": 160,
+      "successes": 374,
+      "distinct_sequences": 364,
+      "added_boundaries": 77728,
+      "singleton_variants": 84,
+      "sole_cap_still_succeeds": 26,
+      "sole_cap_still_unique": 6,
+      "success_total_sd": 3.249919229765564,
+      "success_total_min": 1,
+      "success_total_max": 13
+    },
+    "targeted": {
+      "runs": 1120,
+      "variants": 160,
+      "families": 108,
+      "successes": 231,
+      "distinct_sequences": 226,
+      "added_boundaries": 93767,
+      "singleton_variants": 151,
+      "sole_cap_still_succeeds": 39,
+      "sole_cap_still_unique": 11,
+      "success_total_sd": 1.5270559911149297,
+      "success_total_min": 1,
+      "success_total_max": 7
+    }
+  },
+  "evaluation": {
+    "unique": {
+      "n": 26,
+      "wins": {
+        "baseline": 10,
+        "uniform": 11,
+        "targeted": 16
+      },
+      "comparisons": {
+        "targeted-uniform": {
+          "delta_pp": 19.230769230769234,
+          "ci_pp": [
+            -10.0,
+            47.82608695652174
+          ],
+          "gained": 10,
+          "lost": 5
+        },
+        "targeted-baseline": {
+          "delta_pp": 23.076923076923077,
+          "ci_pp": [
+            3.8461538461538463,
+            42.857142857142854
+          ],
+          "gained": 7,
+          "lost": 1
+        },
+        "uniform-baseline": {
+          "delta_pp": 3.8461538461538463,
+          "ci_pp": [
+            -28.000000000000004,
+            35.714285714285715
+          ],
+          "gained": 9,
+          "lost": 8
+        }
+      }
+    },
+    "all": {
+      "n": 200,
+      "wins": {
+        "baseline": 96,
+        "uniform": 102,
+        "targeted": 112
+      },
+      "comparisons": {
+        "targeted-uniform": {
+          "delta_pp": 5.0,
+          "ci_pp": [
+            -2.0,
+            12.0
+          ],
+          "gained": 30,
+          "lost": 20
+        },
+        "targeted-baseline": {
+          "delta_pp": 8.0,
+          "ci_pp": [
+            1.5,
+            14.499999999999998
+          ],
+          "gained": 32,
+          "lost": 16
+        },
+        "uniform-baseline": {
+          "delta_pp": 3.0,
+          "ci_pp": [
+            -4.5,
+            10.5
+          ],
+          "gained": 32,
+          "lost": 26
+        }
+      }
+    },
+    "union": {
+      "n": 143,
+      "wins": {
+        "baseline": 92,
+        "uniform": 94,
+        "targeted": 102
+      },
+      "comparisons": {
+        "targeted-uniform": {
+          "delta_pp": 5.594405594405594,
+          "ci_pp": [
+            -3.076923076923077,
+            14.062789351851848
+          ],
+          "gained": 24,
+          "lost": 16
+        },
+        "targeted-baseline": {
+          "delta_pp": 6.993006993006993,
+          "ci_pp": [
+            -1.3425086159985486,
+            15.217751223725882
+          ],
+          "gained": 24,
+          "lost": 14
+        },
+        "uniform-baseline": {
+          "delta_pp": 1.3986013986013985,
+          "ci_pp": [
+            -8.609867073228834,
+            11.03448275862069
+          ],
+          "gained": 26,
+          "lost": 24
+        }
+      }
+    },
+    "multiple": {
+      "n": 117,
+      "wins": {
+        "baseline": 82,
+        "uniform": 83,
+        "targeted": 86
+      },
+      "comparisons": {
+        "targeted-uniform": {
+          "delta_pp": 2.564102564102564,
+          "ci_pp": [
+            -5.785123966942149,
+            10.92436974789916
+          ],
+          "gained": 14,
+          "lost": 11
+        },
+        "targeted-baseline": {
+          "delta_pp": 3.418803418803419,
+          "ci_pp": [
+            -5.4549005681818175,
+            12.295081967213115
+          ],
+          "gained": 17,
+          "lost": 13
+        },
+        "uniform-baseline": {
+          "delta_pp": 0.8547008547008548,
+          "ci_pp": [
+            -8.928571428571429,
+            10.185185185185185
+          ],
+          "gained": 17,
+          "lost": 16
+        }
+      }
+    },
+    "outside": {
+      "n": 57,
+      "wins": {
+        "baseline": 4,
+        "uniform": 8,
+        "targeted": 10
+      },
+      "comparisons": {
+        "targeted-uniform": {
+          "delta_pp": 3.508771929824561,
+          "ci_pp": [
+            -7.142857142857142,
+            14.285714285714285
+          ],
+          "gained": 6,
+          "lost": 4
+        },
+        "targeted-baseline": {
+          "delta_pp": 10.526315789473683,
+          "ci_pp": [
+            0.0,
+            21.052631578947366
+          ],
+          "gained": 8,
+          "lost": 2
+        },
+        "uniform-baseline": {
+          "delta_pp": 7.017543859649122,
+          "ci_pp": [
+            -2.127659574468085,
+            16.9811320754717
+          ],
+          "gained": 6,
+          "lost": 2
+        }
+      }
+    }
+  },
+  "original_family_sd": 1.7708119606553372
+}

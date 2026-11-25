@@ -1,0 +1,32 @@
+[
+  {
+    "kind": "recovered",
+    "case_id": "final_test_2_004",
+    "common_action_prefix": 1
+  },
+  {
+    "kind": "recovered",
+    "case_id": "final_test_2_005",
+    "common_action_prefix": 9
+  },
+  {
+    "kind": "lost",
+    "case_id": "final_test_2_003",
+    "common_action_prefix": 1
+  },
+  {
+    "kind": "lost",
+    "case_id": "final_test_2_011",
+    "common_action_prefix": 3
+  },
+  {
+    "kind": "high_value_failure",
+    "case_id": "final_test_5_024",
+    "common_action_prefix": 0
+  },
+  {
+    "kind": "high_value_failure",
+    "case_id": "final_test_2_015",
+    "common_action_prefix": 5
+  }
+]

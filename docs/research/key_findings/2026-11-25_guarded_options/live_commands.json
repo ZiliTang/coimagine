@@ -1,0 +1,1077 @@
+{
+  "scope": "All 16 prior development reset states. Logical time and public issue menu only.",
+  "window_ticks": 8,
+  "bindings_a0_a1_ticks": {
+    "short": [
+      4,
+      46,
+      6
+    ],
+    "long": [
+      4,
+      46,
+      8
+    ],
+    "brake": [
+      44,
+      44,
+      2
+    ]
+  },
+  "short_check": {
+    "status": "no_action",
+    "cases": [
+      {
+        "cell": "available",
+        "rule": "push_then_brake",
+        "option": "short",
+        "status": "proved",
+        "issues": [],
+        "branches": [
+          {
+            "index": 0,
+            "observation": "boundary",
+            "change": {
+              "elapsed": [
+                0,
+                6
+              ]
+            },
+            "post": {
+              "remaining": [
+                2,
+                8
+              ]
+            },
+            "next_option": "brake",
+            "issues": []
+          }
+        ],
+        "enabled": [
+          "push_then_brake"
+        ]
+      },
+      {
+        "cell": "unavailable",
+        "rule": null,
+        "option": null,
+        "status": "no_action",
+        "issues": [],
+        "branches": [],
+        "enabled": []
+      }
+    ],
+    "unselected_rules": []
+  },
+  "long_check": {
+    "status": "counterexample",
+    "cases": [
+      {
+        "cell": "available",
+        "rule": "push_then_brake",
+        "option": "long",
+        "status": "counterexample",
+        "issues": [
+          {
+            "property": "continuation",
+            "metric": "remaining",
+            "status": "counterexample",
+            "actual": [
+              0,
+              8
+            ],
+            "required": [
+              2,
+              null
+            ],
+            "endpoint": 0,
+            "branch": 0,
+            "observation": "boundary"
+          }
+        ],
+        "branches": [
+          {
+            "index": 0,
+            "observation": "boundary",
+            "change": {
+              "elapsed": [
+                0,
+                8
+              ]
+            },
+            "post": {
+              "remaining": [
+                0,
+                8
+              ]
+            },
+            "next_option": "brake",
+            "issues": [
+              {
+                "property": "continuation",
+                "metric": "remaining",
+                "status": "counterexample",
+                "actual": [
+                  0,
+                  8
+                ],
+                "required": [
+                  2,
+                  null
+                ],
+                "endpoint": 0
+              }
+            ]
+          }
+        ],
+        "enabled": [
+          "push_then_brake"
+        ]
+      },
+      {
+        "cell": "unavailable",
+        "rule": null,
+        "option": null,
+        "status": "no_action",
+        "issues": [],
+        "branches": [],
+        "enabled": []
+      }
+    ],
+    "unselected_rules": []
+  },
+  "rooms": [
+    {
+      "room": "diag_dev_nat_001",
+      "fixture_sha256": "9a6b35453ca066407df96ffd87b1617463c6203c73b01e8cf6a849820792c109",
+      "cell": "available",
+      "public_history": "eb1a95f4eb286bfa647ea4988c011619edac7312219b2ca74b32eb813e8308ef",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_002",
+      "fixture_sha256": "e4b648ad4acca1100575d567fee67005113c9992be09f1ae52ec6fd1bbed54ad",
+      "cell": "available",
+      "public_history": "f11fb4c1e8411ac09c5ad0701020dc1dbf04eaa963d03175f795005de3522409",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_003",
+      "fixture_sha256": "6927fd5b33656ed427304c02afbbf855f7a854f90e04a158ec12b420a55963b8",
+      "cell": "available",
+      "public_history": "572c49a2b7985e1977ac99fa63d191ddd7a2559365f48761cb740ab73fbcc47c",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_004",
+      "fixture_sha256": "4190819525c2a357460ba85e478916722add39f762186af046539df90fcd75b5",
+      "cell": "available",
+      "public_history": "62feafeb4c2c85b12bf259af7548c33fed563229a15b015f6be72f75dc9f977d",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_005",
+      "fixture_sha256": "e4a9d5b1127915192c561508a88776dfa5ce1254db2d5642a345eed25cfef872",
+      "cell": "available",
+      "public_history": "8b1da73aa6d2d139db124a198746685562bedc308f0e363a4059c1ae81f25031",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_006",
+      "fixture_sha256": "2010df4bf2b84022907831a5ee15f4029b3de940073bba615bfb81a18b52058d",
+      "cell": "available",
+      "public_history": "f11fb4c1e8411ac09c5ad0701020dc1dbf04eaa963d03175f795005de3522409",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_007",
+      "fixture_sha256": "3aa50b4a56d9e3391ea68f040a3413bb31a6eeef5e13163eff2f1bf4c705254d",
+      "cell": "available",
+      "public_history": "f11fb4c1e8411ac09c5ad0701020dc1dbf04eaa963d03175f795005de3522409",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_008",
+      "fixture_sha256": "46fce02dd682e8b79155e2527de31eff3337beff9827830f9af3e49e5ec35961",
+      "cell": "available",
+      "public_history": "98533d4128def6c9fbed557159f4d0096ecc0ef4daa4fe6368ac66efca3c2749",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_009",
+      "fixture_sha256": "27eac9e203f18ca27289d37b438e1868b29850d5b123492ad738737d7a3646ae",
+      "cell": "available",
+      "public_history": "e3a9eb1a33ec5d87953a561ae44ce6e7a0df63b8f37bd83d30bd4d668a81442f",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_010",
+      "fixture_sha256": "b9ca8c38ed5e1faed10f52f927a4a60e0f6b41aebef7df75d16886363a487986",
+      "cell": "available",
+      "public_history": "65519f35f67dd2713a82bccb1c4d0787cf2f8a85c45776e3464279ee9d139f03",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_011",
+      "fixture_sha256": "ce8fcf48cb088be8fbcbffe14e7435c0fe62fa56d72948636414f2ea1ed39f7b",
+      "cell": "available",
+      "public_history": "c03c628c80b96c0075b48aadf39683b072d512a2f98d376ecf34568ecdeabe49",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_012",
+      "fixture_sha256": "53d8a61b307648764fab3a2d92e1fa81a6b6746b6e3478c2379d89b2f77e5632",
+      "cell": "available",
+      "public_history": "6c514a510d8f0d472468608af6c48928c849868ff3ca2440f5c42e0e0802a615",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_013",
+      "fixture_sha256": "7a15df01476dbe3ec8cfd60eb2f896fc908909522adf36db947235801fd1b211",
+      "cell": "available",
+      "public_history": "9013a87c108e4eeb2fc2fa671fd94df9d5b37539df58bf3e4189319fbdd11731",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_014",
+      "fixture_sha256": "b8112f59667209dfa0e0bf5e1058897d7a3eb0bab774637bd419a2e55d4f1d0e",
+      "cell": "available",
+      "public_history": "4c9de5fa3e5510e3730b26c364278d53a4bca03287abf2eae14be931ebfe11aa",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_015",
+      "fixture_sha256": "19d8520c35a14496f1643c169fa1128ac619c4e8581a4b6ace56f66c136dae13",
+      "cell": "available",
+      "public_history": "dbf796482bab5dedfd00345af92b264fe7732205e83c1e451ad39b4d61bc1e9f",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    },
+    {
+      "room": "diag_dev_nat_016",
+      "fixture_sha256": "a4f590afedc6b46bbbed48c0ea9f70be33b9ae8e0d6eeeab349962d87ec90f4d",
+      "cell": "available",
+      "public_history": "35827d957f3f828b59121d39db91fcda8aa26925035921d9bebf051bf4219477",
+      "start_tick": 0,
+      "long_issued": false,
+      "events": [
+        {
+          "token": "short",
+          "requested": {
+            "a0": 4,
+            "a1": 46,
+            "ticks": 6,
+            "target_id": "entity-a"
+          },
+          "reason": "duration",
+          "periods": 6,
+          "controls": [
+            {
+              "start_tick": 0,
+              "end_tick": 6,
+              "pair": [
+                4,
+                46
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        },
+        {
+          "token": "brake",
+          "requested": {
+            "a0": 44,
+            "a1": 44,
+            "ticks": 2,
+            "target_id": null
+          },
+          "reason": "duration",
+          "periods": 2,
+          "controls": [
+            {
+              "start_tick": 6,
+              "end_tick": 8,
+              "pair": [
+                44,
+                44
+              ]
+            }
+          ],
+          "object_displacement_m": 0.0,
+          "peer_displacement_m": 0.0
+        }
+      ],
+      "end_tick": 8,
+      "terminal": null
+    }
+  ],
+  "short_sent": 16,
+  "long_sent": 0,
+  "brake_sent": 16,
+  "with_physical_push_control": 16
+}

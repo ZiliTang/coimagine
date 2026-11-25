@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>A/B/C 事件 PPO 实时曲线</title>
+<style>
+  :root {color-scheme:dark;--bg:#10141d;--card:#171d2a;--line:#303a4c;--ink:#edf2f8;--muted:#a9b7ca;--focus:#8be9ff}
+  * {box-sizing:border-box}
+  body {margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Noto Sans CJK SC",system-ui,sans-serif;line-height:1.55}
+  main {max-width:1260px;margin:auto;padding:26px clamp(14px,4vw,46px) 40px}
+  a {color:#8edfff;text-underline-offset:.25em}
+  h1 {font-size:clamp(1.75rem,4vw,2.7rem);letter-spacing:-.035em;line-height:1.2;margin:16px 0 8px}
+  p {margin:.3rem 0;color:var(--muted)}
+  #status {font-variant-numeric:tabular-nums}
+  #error {color:#ffb39a}
+  .arms {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:22px 0 16px}
+  .arm,.chart {border:1px solid var(--line);border-radius:10px;background:var(--card)}
+  .arm {padding:12px 16px;min-height:82px;text-align:left;color:var(--ink);font:inherit;cursor:pointer}
+  .arm[aria-pressed=false] .color {opacity:.35}
+  .arm[aria-pressed=false] .count {color:var(--muted)}
+  .arm[aria-pressed=false] {border-style:dashed}
+  .arm:hover,.arm:focus-visible {border-color:var(--color)}
+  :focus-visible {outline:2px solid var(--focus);outline-offset:3px}
+  .color {display:inline-block;width:18px;height:3px;vertical-align:middle;margin-right:8px;border-radius:2px;background:var(--color)}
+  .count {display:block;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:3px}
+  .controls {display:flex;flex-wrap:wrap;gap:8px 22px;margin:0 0 20px}
+  label {display:inline-flex;gap:8px;align-items:center;color:var(--muted);font-size:.9rem}
+  select {font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+  #charts {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .chart {min-width:0;padding:12px 12px 4px;position:relative}
+  .wide {grid-column:1/-1}
+  h2 {margin:0 4px;color:var(--ink);font-size:1rem;font-weight:650}
+  .chart p {margin:2px 4px;font-size:.82rem}
+  canvas {display:block;width:100%;height:222px}
+  .tip {pointer-events:none;position:absolute;z-index:1;min-width:160px;background:#242e40;border:1px solid #45546d;border-radius:7px;padding:7px 9px;font-size:.82rem;box-shadow:0 5px 16px #0b0e16b0}
+  .tip[hidden] {display:none}
+  .tip strong {display:block}
+  .tip span {display:block;font-variant-numeric:tabular-nums}
+  @media (max-width:740px) {.arms,#charts {grid-template-columns:1fr}.arm {min-height:0}.wide {grid-column:auto}}
+</style>
+</head>
+<body>
+<main>
+  <a href="/research-journal#abc-ppo-event-comparison">← 返回 CAP 实验研究日志</a>
+  <h1>A/B/C 事件 PPO 实时曲线</h1>
+  <p id="status" aria-live="polite">正在读取本机训练指标…</p>
+  <p id="error" role="status" hidden></p>
+  <section class="arms" aria-label="显示或隐藏实验组"></section>
+  <div class="controls">
+    <label>训练曲线 <select id="smoothing"><option value="1">逐轮</option><option value="10" selected>最近 10 轮平均</option><option value="20">最近 20 轮平均</option></select></label>
+    <label>显示范围 <select id="range"><option value="0">全部新增局数</option><option value="5000">最近 5,000 局</option><option value="10000">最近 10,000 局</option></select></label>
+  </div>
+  <section id="charts" aria-label="训练与固定面板曲线"></section>
+</main>
+<script>
+const $ = selector => document.querySelector(selector);
+const number = new Intl.NumberFormat('zh-CN');
+const decimal = new Intl.NumberFormat('zh-CN', {maximumFractionDigits:3});
+const time = new Intl.DateTimeFormat('zh-CN', {timeStyle:'medium', timeZone:'Asia/Shanghai'});
+const arms = [
+  {id:'original', label:'原命令边界', color:'#6ce4ff', dash:[]},
+  {id:'time', label:'每 0.6 秒检查', color:'#ffd479', dash:[7,4]},
+  {id:'progress', label:'接触／推进事件', color:'#d7aaff', dash:[2,4]},
+];
+const specs = [
+  {id:'diagnostic', title:'固定面板贪心成功数', detail:'相同的 64 间，每新增 1,000 局评估一次。0 局为各组更新前。', key:'success', limits:[0,64], value:p=>`${p.success} / ${p.n}`, wide:true},
+  {id:'success', title:'训练成功率', detail:'按各组实际采样的成功局数计算。', key:'success', get:p=>100*p.success/p.n, limits:[0,100], unit:'%'},
+  {id:'reward', title:'有符号距离奖励', detail:'每局距离项均值。', key:'reward'},
+  {id:'entropy', title:'动作熵', detail:'每轮采样的路由决策均值，单位 nat。', key:'entropy', floor:0},
+  {id:'switches', title:'每局中途改选次数', detail:'按实际选中的替代命令计数。', key:'switches', get:p=>p.switches/p.n, floor:0},
+  {id:'actor_loss', title:'Actor 损失', key:'actor_loss'},
+  {id:'critic_loss', title:'Critic 损失', key:'critic_loss', floor:0},
+];
+const hiddenArms = new Set();
+let latest = null;
+
+function element(tag, text) {
+  const node = document.createElement(tag);
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+for (const arm of arms) {
+  const button = element('button');
+  button.type = 'button';
+  button.className = 'arm';
+  button.style.setProperty('--color', arm.color);
+  button.setAttribute('aria-pressed', 'true');
+  const color = element('span');
+  color.className = 'color';
+  arm.count = element('span', '等待首批记录');
+  arm.count.className = 'count';
+  button.append(color, element('span', arm.label), arm.count);
+  button.addEventListener('click', () => {
+    if (hiddenArms.has(arm.id)) hiddenArms.delete(arm.id);
+    else if (hiddenArms.size < arms.length-1) hiddenArms.add(arm.id);
+    button.setAttribute('aria-pressed', String(!hiddenArms.has(arm.id)));
+    drawAll();
+  });
+  $('.arms').append(button);
+}
+
+function rolling(rows, get, count) {
+  const values = rows.map(get);
+  let sum = 0;
+  return rows.map((row, i) => {
+    sum += values[i];
+    if (i >= count) sum -= values[i-count];
+    return {...row, y:sum/Math.min(i+1,count)};
+  });
+}
+
+function display(value, unit='') {
+  return decimal.format(value)+unit;
+}
+
+function nearest(points, x) {
+  let lo=0, hi=points.length;
+  while (lo<hi) {
+    const mid=(lo+hi)>>1;
+    if (points[mid].x<x) lo=mid+1; else hi=mid;
+  }
+  if (lo>0 && (lo===points.length || x-points[lo-1].x <= points[lo].x-x)) lo--;
+  return points[lo];
+}
+
+function draw(chart) {
+  const {spec,canvas,tip} = chart;
+  const diagnostic = spec.id === 'diagnostic';
+  const shown = arms.filter(arm=>!hiddenArms.has(arm.id));
+  const end = Math.max(50, ...arms.map(arm=>latest?.arms[arm.id].training.at(-1)?.x || 0));
+  const windowSize = Number($('#range').value);
+  const start = windowSize ? Math.max(0,end-windowSize) : 0;
+  const series = shown.map(arm=>{
+    const rows = latest?.arms[arm.id][diagnostic?'diagnostic':'training'] || [];
+    const get = spec.get || (row=>row[spec.key]);
+    const points = diagnostic ? rows.map(row=>({...row,y:get(row)})) : rolling(rows,get,Number($('#smoothing').value));
+    return {arm, points:points.filter(row=>row.x>=start && Number.isFinite(row.y))};
+  });
+  const box = canvas.getBoundingClientRect();
+  const ratio = window.devicePixelRatio || 1;
+  const width = box.width, height = box.height;
+  if (width < 110) return;
+  canvas.width = Math.round(width*ratio);
+  canvas.height = Math.round(height*ratio);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(ratio, ratio);
+  const left = 57, right = width-15, top = 12, bottom = height-39;
+  const values = series.flatMap(line=>line.points.map(row=>row.y));
+  let [low, high] = spec.limits || (values.length ? [Math.min(...values), Math.max(...values)] : [0,1]);
+  if (!spec.limits && values.length) {
+    const pad = Math.max((high-low)*.12, (high===low ? Math.abs(high)*.1 : 0), .001);
+    low = Math.max(spec.floor ?? -Infinity, low-pad);
+    high += pad;
+  }
+  const x = value=>left+(value-start)/(end-start)*(right-left);
+  const y = value=>bottom-(value-low)/(high-low)*(bottom-top);
+  const activeX = chart.cursor!==undefined && chart.cursor>=left && chart.cursor<=right;
+  const picked = activeX ? start+(chart.cursor-left)/(right-left)*(end-start) : null;
+
+  ctx.font = '12px system-ui';
+  ctx.lineWidth = 1;
+  for (let tick=0; tick<=4; tick++) {
+    const value = low+(high-low)*tick/4;
+    const py = y(value);
+    ctx.strokeStyle='#303c50';
+    ctx.beginPath(); ctx.moveTo(left,py); ctx.lineTo(right,py); ctx.stroke();
+    ctx.fillStyle='#a9b7ca'; ctx.textAlign='right'; ctx.textBaseline='middle';
+    ctx.fillText(display(value,spec.unit),left-7,py);
+  }
+  for (let i=0; i<=4; i++) {
+    const label = Math.round(start+(end-start)*i/4);
+    ctx.fillStyle='#a9b7ca'; ctx.textBaseline='top';
+    ctx.textAlign=i===0?'left':i===4?'right':'center';
+    ctx.fillText(number.format(label),x(label),bottom+6);
+  }
+  ctx.textAlign='center'; ctx.fillText('每组累计新增局数',(left+right)/2,bottom+22);
+  if (!values.length) {
+    ctx.textBaseline='middle'; ctx.fillText(diagnostic?'等待固定面板评估':'等待训练记录',(left+right)/2,(top+bottom)/2);
+  }
+  for (const {arm,points} of series) {
+    ctx.strokeStyle = ctx.fillStyle = arm.color;
+    ctx.lineWidth = 2;
+    ctx.setLineDash(arm.dash);
+    ctx.beginPath();
+    points.forEach(({x:step,y:value},i)=>(i?ctx.lineTo(x(step),y(value)):ctx.moveTo(x(step),y(value))));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    if (diagnostic || points.length===1) for (const p of points) {
+      ctx.beginPath(); ctx.arc(x(p.x), y(p.y), 3, 0, 2*Math.PI); ctx.fill();
+    }
+  }
+  tip.hidden = picked===null || !values.length;
+  if (!tip.hidden) {
+    const points = series.map(({arm,points})=>({arm,row:nearest(points,picked)})).filter(p=>p.row);
+    const ref = points.reduce((a,b)=>Math.abs(a.row.x-picked)<=Math.abs(b.row.x-picked)?a:b).row.x;
+    ctx.strokeStyle='#72819a'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(x(ref),top); ctx.lineTo(x(ref),bottom); ctx.stroke(); ctx.setLineDash([]);
+    tip.replaceChildren(element('strong', `新增 ${number.format(ref)} 局`));
+    for (const {arm,row} of points.filter(point=>point.row.x===ref)) {
+      const line = element('span', `${arm.label}　${spec.value?spec.value(row):display(row.y,spec.unit)}`);
+      line.style.color=arm.color;
+      tip.append(line);
+    }
+    tip.style.left = `${Math.min(chart.cursor+20, width-tip.offsetWidth)}px`;
+    tip.style.top = `${canvas.offsetTop+17}px`;
+  }
+}
+
+const charts = specs.map(spec=>{
+  const card = element('article');
+  card.className = spec.wide?'chart wide':'chart';
+  card.append(element('h2',spec.title));
+  if (spec.detail) card.append(element('p',spec.detail));
+  const canvas = element('canvas');
+  canvas.setAttribute('role','img');
+  canvas.setAttribute('aria-label',spec.title);
+  const tip = element('div');
+  tip.className='tip'; tip.hidden=true;
+  const chart = {spec,canvas,tip};
+  canvas.addEventListener('pointermove', event=>{chart.cursor=event.offsetX;draw(chart);});
+  canvas.addEventListener('pointerleave', ()=>{chart.cursor=undefined;draw(chart);});
+  card.append(canvas,tip);
+  $('#charts').append(card);
+  return chart;
+});
+
+function drawAll() {charts.forEach(draw);}
+new ResizeObserver(drawAll).observe($('#charts'));
+for (const id of ['smoothing','range']) $('#'+id).addEventListener('change',drawAll);
+
+async function refresh() {
+  try {
+    const response = await fetch('live-data.json',{cache:'no-store'});
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    latest = await response.json();
+    for (const arm of arms) {
+      const n = latest.arms[arm.id].training.at(-1)?.x || 0;
+      arm.count.textContent = `${number.format(n)} / ${number.format(latest.budget)} 局`;
+    }
+    const status = latest.error?'运行异常':latest.finished?'训练与终点评估已完成':latest.budget?'运行中':'等待启动';
+    $('#status').textContent = `${status} · 每 10 秒刷新 · ${time.format(latest.updated*1000)}`;
+    $('#error').hidden = true;
+    drawAll();
+  } catch (error) {
+    $('#error').textContent = '暂时无法读取实时指标，正等待重试。';
+    $('#error').hidden = false;
+  } finally {
+    setTimeout(refresh,10000);
+  }
+}
+refresh();
+</script>
+</body>
+</html>

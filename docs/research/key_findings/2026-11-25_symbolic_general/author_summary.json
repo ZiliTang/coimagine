@@ -1,0 +1,416 @@
+{
+  "policy": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/policy.py",
+  "checked_submission": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/checked_final",
+  "development_evidence": [
+    {
+      "kind": "selected_program",
+      "trial": 12,
+      "rooms": 16,
+      "successes": 11,
+      "actual_ticks": 17925,
+      "object_static_ticks": 6273,
+      "task_cost_seconds": 1346.25,
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0012/summary.json",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "rules": 37,
+      "physical_termination_count": 16,
+      "rules_path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/route_contact_retry_rules.json",
+      "development_promises": {
+        "checks": {
+          "push": 2651,
+          "orbit": 248
+        },
+        "satisfied": {
+          "push": 2642,
+          "orbit": 105
+        },
+        "orbit_followed_by_newly_legal_selected_push": 11,
+        "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/final_promises.json"
+      }
+    },
+    {
+      "kind": "development_search",
+      "trials": [
+        {
+          "trial": 0,
+          "rooms": 16,
+          "successes": 9,
+          "actual_ticks": 19380,
+          "object_static_ticks": 7852,
+          "task_cost_seconds": 1599.0,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0000/summary.json"
+        },
+        {
+          "trial": 2,
+          "rooms": 16,
+          "successes": 8,
+          "actual_ticks": 20181,
+          "object_static_ticks": 6584,
+          "task_cost_seconds": 1752.8,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0002/summary.json"
+        },
+        {
+          "trial": 6,
+          "rooms": 16,
+          "successes": 10,
+          "actual_ticks": 18368,
+          "object_static_ticks": 5609,
+          "task_cost_seconds": 1496.4,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0006/summary.json"
+        },
+        {
+          "trial": 7,
+          "rooms": 16,
+          "successes": 9,
+          "actual_ticks": 18522,
+          "object_static_ticks": 6541,
+          "task_cost_seconds": 1592.5,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0007/summary.json"
+        },
+        {
+          "trial": 8,
+          "rooms": 16,
+          "successes": 9,
+          "actual_ticks": 19896,
+          "object_static_ticks": 5584,
+          "task_cost_seconds": 1624.8,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0008/summary.json"
+        },
+        {
+          "trial": 9,
+          "rooms": 16,
+          "successes": 10,
+          "actual_ticks": 18519,
+          "object_static_ticks": 5609,
+          "task_cost_seconds": 1503.95,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0009/summary.json"
+        },
+        {
+          "trial": 10,
+          "rooms": 16,
+          "successes": 10,
+          "actual_ticks": 17781,
+          "object_static_ticks": 6695,
+          "task_cost_seconds": 1467.05,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0010/summary.json"
+        },
+        {
+          "trial": 11,
+          "rooms": 16,
+          "successes": 11,
+          "actual_ticks": 17261,
+          "object_static_ticks": 5609,
+          "task_cost_seconds": 1351.05,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0011/summary.json"
+        },
+        {
+          "trial": 12,
+          "rooms": 16,
+          "successes": 11,
+          "actual_ticks": 17925,
+          "object_static_ticks": 6273,
+          "task_cost_seconds": 1346.25,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0012/summary.json"
+        },
+        {
+          "trial": 13,
+          "rooms": 16,
+          "successes": 11,
+          "actual_ticks": 18004,
+          "object_static_ticks": 6273,
+          "task_cost_seconds": 1350.2,
+          "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/trials/0013/summary.json"
+        }
+      ],
+      "policy_test_calls": 10,
+      "policy_episodes": 160,
+      "metered_physics_ticks": 200707,
+      "metered_resets": 182,
+      "elapsed_wall_seconds": 1271.4,
+      "ledger": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/clock.json"
+    },
+    {
+      "kind": "author_effect_model",
+      "id": 14,
+      "model": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/models/0014.json",
+      "rows": 29993,
+      "rooms": 16,
+      "sha256": "948a186a00334edb8aa987eae7ec6024c5949ce2535b8744d8579d87425b50f5"
+    },
+    {
+      "kind": "earlier_diagnostic_repair",
+      "trial": 2,
+      "room": "diag_symbolic_author_006",
+      "boundary": 141,
+      "acquired_probe": 4,
+      "refit_model": 5,
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/diagnose_directional.log"
+    },
+    {
+      "kind": "empirical_effect_diagnostic",
+      "model": 14,
+      "calibrated": false,
+      "trial": 12,
+      "room": "diag_symbolic_author_001",
+      "boundary": 97,
+      "option": "orbit_0_ccw",
+      "support_rooms": 13,
+      "status": "counterexample",
+      "issues": [
+        {
+          "branch": 3,
+          "property": "path_safety",
+          "status": "counterexample"
+        }
+      ],
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/final_diagnose.log"
+    },
+    {
+      "kind": "empirical_effect_diagnostic",
+      "model": 14,
+      "calibrated": false,
+      "trial": 12,
+      "room": "diag_symbolic_author_002",
+      "boundary": 122,
+      "option": "orbit_0_ccw",
+      "support_rooms": 8,
+      "status": "counterexample",
+      "issues": [
+        {
+          "branch": 0,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 0,
+          "property": "path_safety",
+          "status": "counterexample"
+        },
+        {
+          "branch": 1,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 1,
+          "property": "path_safety",
+          "status": "counterexample"
+        },
+        {
+          "branch": 2,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 3,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 4,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 4,
+          "property": "path_safety",
+          "status": "counterexample"
+        },
+        {
+          "branch": 5,
+          "property": "effect_promise",
+          "status": "counterexample"
+        },
+        {
+          "branch": 6,
+          "property": "effect_promise",
+          "status": "counterexample"
+        }
+      ],
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/final_stall_diagnose.log"
+    },
+    {
+      "kind": "physical_prefix_probe",
+      "id": 15,
+      "trial": 12,
+      "room": "diag_symbolic_author_001",
+      "boundary": 97,
+      "branches": [
+        {
+          "action": "orbit_0_ccw",
+          "successor": "push_r0_2_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": 1.990709294075188e-06,
+          "successor_measured_follow_ticks": 84,
+          "successor_follow_goal_gain_m": 0.0253696439451796,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_0_cw",
+          "successor": "push_r0_2_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": 1.990709294075188e-06,
+          "successor_measured_follow_ticks": 84,
+          "successor_follow_goal_gain_m": 0.05195400925928917,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_1_ccw",
+          "successor": "push_r0_2_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": 1.990709294075188e-06,
+          "successor_measured_follow_ticks": 96,
+          "successor_follow_goal_gain_m": 0.033673923172830356,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_1_cw",
+          "successor": "push_r0_2_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": 1.990709294075188e-06,
+          "successor_measured_follow_ticks": 96,
+          "successor_follow_goal_gain_m": 0.033673923172830356,
+          "successor_completed": true,
+          "object_static": false
+        }
+      ],
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/probes/0015.json.gz"
+    },
+    {
+      "kind": "physical_prefix_probe",
+      "id": 16,
+      "trial": 12,
+      "room": "diag_symbolic_author_008",
+      "boundary": 110,
+      "branches": [
+        {
+          "action": "orbit_0_ccw",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6999455885180481e-06,
+          "successor_measured_follow_ticks": 84,
+          "successor_follow_goal_gain_m": 0.033231178660945715,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_0_cw",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6999455885180481e-06,
+          "successor_measured_follow_ticks": 78,
+          "successor_follow_goal_gain_m": 0.023644165434200642,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_1_ccw",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6999455885180481e-06,
+          "successor_measured_follow_ticks": 96,
+          "successor_follow_goal_gain_m": 0.04462108478503771,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "orbit_1_cw",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6999455885180481e-06,
+          "successor_measured_follow_ticks": 96,
+          "successor_follow_goal_gain_m": 0.04462108478503771,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "move_0",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6999455885180481e-06,
+          "successor_measured_follow_ticks": 78,
+          "successor_follow_goal_gain_m": 0.046203956188734435,
+          "successor_completed": true,
+          "object_static": false
+        },
+        {
+          "action": "brake",
+          "successor": "push_r0_3_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -4.997343358792428e-06,
+          "successor_measured_follow_ticks": 84,
+          "successor_follow_goal_gain_m": 0.045710556481495135,
+          "successor_completed": true,
+          "object_static": false
+        }
+      ],
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/probes/0016.json.gz"
+    },
+    {
+      "kind": "physical_prefix_probe",
+      "id": 17,
+      "trial": 12,
+      "room": "diag_symbolic_author_011",
+      "boundary": 78,
+      "branches": [
+        {
+          "action": "orbit_0_ccw",
+          "successor": "push_r0_1_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6117557644967917e-05,
+          "successor_measured_follow_ticks": 120,
+          "successor_follow_goal_gain_m": -3.0200528671198157e-05,
+          "successor_completed": false,
+          "object_static": true
+        },
+        {
+          "action": "orbit_0_cw",
+          "successor": "push_r0_1_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.4208078950916914e-05,
+          "successor_measured_follow_ticks": 5,
+          "successor_follow_goal_gain_m": -1.4208078950916914e-05,
+          "successor_completed": false,
+          "object_static": true
+        },
+        {
+          "action": "orbit_1_ccw",
+          "successor": "push_r0_1_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -1.6117557644967917e-05,
+          "successor_measured_follow_ticks": 120,
+          "successor_follow_goal_gain_m": -3.0200528671198157e-05,
+          "successor_completed": false,
+          "object_static": true
+        },
+        {
+          "action": "brake",
+          "successor": "push_r0_1_6",
+          "successor_newly_legal": true,
+          "successor_first_window_goal_gain_m": -4.4566791991940136e-05,
+          "successor_measured_follow_ticks": 66,
+          "successor_follow_goal_gain_m": 0.055852579117448675,
+          "successor_completed": true,
+          "object_static": true
+        }
+      ],
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/probes/0017.json.gz"
+    },
+    {
+      "kind": "checked_policy",
+      "boundaries": 3,
+      "verify": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/author/final_verify.log"
+    }
+  ],
+  "limitations": [
+    "Policy selection reused the same 16 permitted development rooms. The result measures development performance.",
+    "Five selected-policy rooms reached the task tick limit. Partially observed obstacles and stalled controllers remained failure sources.",
+    "Directional gaps are estimates from visible scan returns. Occlusion and fit jitter leave the obstacle clearance and stagnation signals uncertain.",
+    "The orbit declaration is a short-window visibility and compatible-face commitment with a continuation case. Its measured misses are retained.",
+    "New legal PUSH support and selected successor execution are separate from physical progress and path safety. Both MOVE and BRAKE produced the same new visible PUSH at the room 008 comparison prefix, so the selected orbit was not established as necessary there.",
+    "The author effect model is uncalibrated on independent rooms. Its joint-branch diagnostics retain counterexamples to the promises and to model path safety."
+  ]
+}

@@ -1,12 +1,13 @@
 """Seeded random rooms. Sampling filters geometry only, never policy outcomes."""
+from coimagine.random_start.spec import GEOMETRY_PROFILE, ROBOT_DIAMETER
 import math,random,json,hashlib
 from pathlib import Path
 from collections import Counter
 from experiments.planar_tasks.relational_search import pipeline_execution as X
 
-VERSION='random-room-200-v1'
+VERSION='random-room-200-v1' if GEOMETRY_PROFILE == 'legacy36' else 'random-room-200-compact20-v2'
 ROOT=Path(__file__).resolve().parents[3]
-OUT=ROOT/'outputs/research/random_room_20261117_01'
+OUT=ROOT/'outputs/research'/('random_room_20261117_01' if GEOMETRY_PROFILE == 'legacy36' else 'random_room_compact20_v2')
 
 def polygon(x,y,w,h,a):
     c,s=math.cos(a),math.sin(a)
@@ -50,7 +51,7 @@ def generate(seed=2026111703):
                 gx,gy=rng.uniform(.6,5.4),rng.uniform(.6,4.2);p=polygon(gx,gy,.25,1.,a)
                 if math.hypot(gx-x,gy-y)>=1.8 and inside(p) and all(separated(p,q,.1) for q in occupied):break
             else:raise RuntimeError('goal rejection limit')
-            robots=[dict(zip(('x','y','angle'),place(.36,.36,near=(x,y)))) for _ in range(2)]
+            robots=[dict(zip(('x','y','angle'),place(ROBOT_DIAMETER,ROBOT_DIAMETER,near=(x,y)))) for _ in range(2)]
             f=dict(scene_id='random_room_v1',room=dict(arena=[6.,4.8],obstacles=obstacles),object=target,robots=robots,goal=dict(x=gx,y=gy,radius=.2),movable_objects=boxes,overrides={})
             split='dev' if j<40 else 'validation' if j<45 else 'test'
             rows.append(dict(id=f'{split}_{count}_{j:02d}',split=split,movable_count=count,fixture=f))

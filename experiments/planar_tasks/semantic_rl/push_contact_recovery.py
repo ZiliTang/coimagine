@@ -74,7 +74,7 @@ class ContactRecovery:
             self.status='anchor_unavailable'
             return
         _,face,_,_=push.track_contact_q(obs,old,anchor)
-        if face is None or not push.direction_matches(face[1],ACTIONS[request[f'a{i}']].effect_direction):
+        if face is None or not push.direction_matches(face[1],ACTIONS[request[f'a{i}']].effect_direction, obs):
             self.status='face_unavailable'
             return
         normal,tangent=face[1:3]

@@ -20,6 +20,17 @@ Use its `verify_frozen` before evaluation. Historical baseline/search entry poin
 remain for reproduction only; do not silently retrofit new knowledge into old runs.
 This default does not authorize additional model calls or experiments.
 
+For newly authored general planning policies on the P / recovery line, supply
+`experiments/planar_tasks/authoring_v2/checked_policy_guide.md` and its Python
+example along with the ordinary v2 guides. Use the checked submission from
+`tools.cap_policy_check submit` and `verify` on host-selected development
+boundaries before whole-room evaluation. Evaluate the submitted `policy.py`
+and record its digest in the existing campaign freeze. Historical policies
+can be inspected with a versioned adapter and remain historical submissions.
+
+For P + recovery CAP evaluations, use the composition names and per-arm source mapping in
+`docs/research/CAP_组合命名.md` in reports, per-room exports and the dashboard.
+
 For subsequent planar CAP experiments, use the fixed 72 body-frame rays each tick.
 When estimating a target centre from scan points and fitted faces, express points,
 plane intercepts, and the prior centre in the visible points' local frame, then

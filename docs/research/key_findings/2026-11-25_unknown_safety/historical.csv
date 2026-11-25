@@ -1,0 +1,15 @@
+room,first_contact_tick,replay_ticks,public_hash_matches,boundaries,reproduced_contact,audited_obstacle_index,endpoint_distance_to_obstacle_m,ever_observed_hit_count,first_observed_tick,current_hit_count,retained_hit_count,classification
+diag_symbolic_confirmation_002,78,84,14,14,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_014,114,120,20,20,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_017,251,255,44,44,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_021,102,108,18,18,True,0,0.0,8,0,0,6,seen_and_retained_but_summary_or_gate_failed
+diag_symbolic_confirmation_024,156,162,27,27,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_025,90,96,16,16,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_037,90,96,16,16,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_039,102,108,18,18,True,0,0.0,5,0,0,4,seen_and_retained_but_summary_or_gate_failed
+diag_symbolic_confirmation_045,84,90,15,15,True,0,0.0,2,0,0,1,seen_and_retained_but_summary_or_gate_failed
+diag_symbolic_confirmation_047,516,522,90,90,True,0,0.0,10,294,0,6,seen_and_retained_but_summary_or_gate_failed
+diag_symbolic_confirmation_049,126,132,22,22,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_051,76,82,14,14,True,0,0.0,42,0,3,5,seen_and_retained_but_summary_or_gate_failed
+diag_symbolic_confirmation_060,78,84,14,14,True,0,0.0,0,,0,0,never_seen_in_boundary_scans
+diag_symbolic_confirmation_064,144,150,25,25,True,0,0.0,2,0,0,2,seen_and_retained_but_summary_or_gate_failed

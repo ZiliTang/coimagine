@@ -163,7 +163,7 @@ def face_support(obs, action):
         n = np.asarray(patch.normal_world, float)
         n = n / max(1e-12, np.linalg.norm(n))
         align = float(n @ d)
-        if align < math.cos(math.radians(35)):
+        if not direction_matches(n, d, obs):
             continue
         pts = np.asarray(patch.points_world, float)
         t = np.asarray(t90(n), float)
@@ -323,7 +323,7 @@ def _optimize_face_pair(f0, f1, obs0, obs1, desired_force, desired_torque, sep,
 def select_contact_point(obs, desired_force=(0., -1.), prev_q=None, local_radius=None,
                          margin=.04, steps=(.20, .10, .05), o_ref_override=None):
     """Single-contact version of the visible-support selector."""
-    faces = [f for f in visible_faces(obs) if direction_matches(f[1], desired_force)]
+    faces = push_faces(obs, desired_force)
     if local_radius is not None and prev_q is not None:
         faces = [f for f in faces if abs(float(np.asarray(prev_q, float) @ np.asarray(f[1], float))-float(f[3])) <= .05]
     if not faces:
@@ -406,16 +406,29 @@ SIMPLE_SELECTOR = os.environ.get('D013_SIMPLE_SELECTOR', '1') != '0'
 
 
 PUSH_DIRECTION_COS = math.cos(math.radians(35.))
+LOCAL_PUSH_CONE_DEGREES = 22.5 if spec.GEOMETRY_PROFILE == 'legacy36' else 45.0
+LOCAL_PUSH_COS = math.cos(math.radians(LOCAL_PUSH_CONE_DEGREES))
 
 
-def direction_matches(normal, direction):
-    """Normals point INTO the observed surface; sign is part of PUSH intent."""
-    return dot(unit(normal), unit(direction)) >= PUSH_DIRECTION_COS - 1e-12
+def local_push(obs):
+    return getattr(obs, 'skill_parameters', {}).get('local_push', False)
+
+
+def direction_matches(normal, direction, obs=None):
+    """Signed inward normal. Frozen controllers retain their original cone."""
+    threshold = LOCAL_PUSH_COS if local_push(obs) else PUSH_DIRECTION_COS
+    return dot(unit(normal), unit(direction)) >= threshold - 1e-12
+
+
+def push_faces(obs, direction):
+    faces = [f for f in visible_faces(obs) if direction_matches(f[1], direction, obs)]
+    if faces and local_push(obs):
+        return [max(faces, key=lambda f: dot(f[1], direction))]
+    return faces
 
 
 def compatible_faces(obs, action):
-    return [f for f in visible_faces(obs)
-            if direction_matches(f[1], action.effect_direction)]
+    return push_faces(obs, action.effect_direction)
 
 
 def _best_action_face(obs, action):
@@ -1099,9 +1112,9 @@ class UnknownShapePush(ContinuousPush):
             n = n / max(1e-12, np.linalg.norm(n))
             align = float(n @ d)
             gap = patch_gap(p)
-            if align >= math.cos(math.radians(35)):
+            if direction_matches(n, d, obs):
                 scored.append((gap, -align, p))
-        scored.sort(key=lambda x: (x[0], x[1]))
+        scored.sort(key=(lambda x: (x[1], x[0])) if local_push(obs) else (lambda x: (x[0], x[1])))
         # No direction-compatible face: do not silently push the nearest
         # (possibly orthogonal/opposite) surface.  Wait for a valid view.
         patch = (getattr(self, 'allocated_face', None)
@@ -1109,7 +1122,7 @@ class UnknownShapePush(ContinuousPush):
                  else (scored[0][2] if scored else None))
         self.direction_alignment = (max((dot(unit(p.normal_world), unit(d)) for p in patches), default=None)
                                     if patch is None else dot(unit(patch.normal_world), unit(d)))
-        self.direction_valid = patch is not None and direction_matches(patch.normal_world, d)
+        self.direction_valid = patch is not None and direction_matches(patch.normal_world, d, obs)
         tracking = (getattr(self, 'allocated_debug', None) or {}).get('q_tracking') or {}
         self.direction_unavailable = (not bool(scored)
             or (patch is not None and not self.direction_valid)
@@ -1142,6 +1155,9 @@ class UnknownShapePush(ContinuousPush):
             self.stage = "find"
             self.ready = self.contact_ready = False
             self.face = None
+            if local_push(obs) and not scored:
+                self.stop('push_no_legal_face')
+                return (0., 0.), self._info_unknown(obs, (0., 0.), False, (0., 0.), raw, None, None)
         else:
             n = np.asarray(patch.normal_world, float)
             n = n / max(1e-12, np.linalg.norm(n))
@@ -1714,10 +1730,14 @@ class UnknownShapeEnvMixin:
             self.motion_estimator.update(observations, now, spec.CONTROL_DT)
             paired = all(isinstance(slot.skill, UnknownShapePush) for slot in self.slots)
             def _aligned(o, action):
-                p = getattr(o, 'patch', None)
+                if local_push(o):
+                    face = _best_action_face(o, action)
+                    p = face[0] if face is not None else None
+                else:
+                    p = getattr(o, 'patch', None)
                 if p is None or not getattr(p, 'valid', False) or patch_gap(p) > .02:
                     return False
-                if not direction_matches(p.normal_world, action.effect_direction):
+                if not direction_matches(p.normal_world, action.effect_direction, o):
                     return False
                 nn = np.asarray(p.normal_world, float)
                 hh = math.atan2(float(nn[1]), float(nn[0]))
@@ -1810,7 +1830,7 @@ class UnknownShapeEnvMixin:
                              commit_source=('pair_selector' if paired else 'single_selector'))
                 self._commit_q[i] = q
                 self._commit_anchor[i] = anchor
-                if f is not None and not direction_matches(f[1], slot.action.effect_direction):
+                if f is not None and not direction_matches(f[1], slot.action.effect_direction, observations[i]):
                     debug.update(source='direction_mismatch_hold', matched=False)
                     f = None
                 if f is not None:

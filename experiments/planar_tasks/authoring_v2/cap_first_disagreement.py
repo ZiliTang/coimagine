@@ -1,4 +1,5 @@
 """Frozen-pair replay for independent and near-neighbor semantic gate diagnostics."""
+from coimagine.random_start.spec import ROBOT_DIAMETER
 import copy
 import csv
 import hashlib
@@ -24,9 +25,9 @@ SEED=2026111933
 def legal_shift(f):
     rooms=scale.family.rooms
     robot=f['robots'][0]
-    shape=rooms.polygon(robot['x'],robot['y'],.36,.36,robot['angle'])
+    shape=rooms.polygon(robot['x'],robot['y'],ROBOT_DIAMETER,ROBOT_DIAMETER,robot['angle'])
     bodies=[f['object'],*f['movable_objects'],f['robots'][1]]
-    sizes=[(.25,1.)]+[(b['width'],b['height']) for b in f['movable_objects']]+[(.36,.36)]
+    sizes=[(.25,1.)]+[(b['width'],b['height']) for b in f['movable_objects']]+[(ROBOT_DIAMETER,ROBOT_DIAMETER)]
     obstacles=[rooms.polygon(b['cx'],b['cy'],2*b['half_w'],2*b['half_h'],b['angle']) for b in f['room']['obstacles']]
     others=[rooms.polygon(b['x'],b['y'],*size,b['angle']) for b,size in zip(bodies,sizes,strict=True)]
     return (rooms.inside(shape) and all(rooms.separated(shape,q) for q in obstacles+others)

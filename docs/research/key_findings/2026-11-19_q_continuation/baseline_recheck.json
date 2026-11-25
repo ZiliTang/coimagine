@@ -1,0 +1,29 @@
+{
+  "exact_public_histories_and_scored_actions": true,
+  "cases": [
+    {
+      "case_id": "inverse_test_0_dev_2_00",
+      "decisions": 64,
+      "ticks": 1800,
+      "success": false
+    },
+    {
+      "case_id": "inverse_test_0_dev_3_00",
+      "decisions": 19,
+      "ticks": 480,
+      "success": true
+    },
+    {
+      "case_id": "inverse_test_0_dev_4_00",
+      "decisions": 90,
+      "ticks": 1800,
+      "success": false
+    },
+    {
+      "case_id": "inverse_test_0_dev_5_00",
+      "decisions": 104,
+      "ticks": 1800,
+      "success": false
+    }
+  ]
+}

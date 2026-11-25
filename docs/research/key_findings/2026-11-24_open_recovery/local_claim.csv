@@ -1,0 +1,11 @@
+room,tick,common_visible_boundary,candidate_entry,released_to_parent,parent,candidate,P_observed,P_physical,P_available_ticks,candidate_observed,candidate_physical,candidate_available_ticks
+diag_open_recovery_010,334,1,1,1,0,0,0,1,320,0,0,320
+diag_open_recovery_015,426,1,1,1,0,0,1,1,320,0,0,320
+diag_open_recovery_050,394,1,1,1,0,1,1,1,320,1,1,320
+diag_open_recovery_079,478,1,1,1,1,0,1,1,245,0,0,320
+diag_open_recovery_114,304,1,1,1,0,1,0,0,320,1,1,320
+diag_open_recovery_122,887,1,1,1,0,0,0,0,320,1,1,320
+diag_open_recovery_145,565,1,1,1,0,0,0,0,320,0,0,320
+diag_open_recovery_161,334,1,1,1,1,0,1,1,320,0,0,320
+diag_open_recovery_180,426,1,1,1,1,0,1,1,320,0,0,320
+diag_open_recovery_198,426,1,1,1,1,0,1,1,320,0,0,320

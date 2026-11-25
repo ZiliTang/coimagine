@@ -1,0 +1,695 @@
+{
+  "push": {
+    "all_pairs": 116,
+    "measurable": 64,
+    "opposite": 14,
+    "opposite_before_margin": 20,
+    "nominal": {
+      "correct": 57.0,
+      "balanced": {
+        "rooms": 30,
+        "mean": 0.825,
+        "ci": [
+          0.7083333333333334,
+          0.925
+        ]
+      }
+    },
+    "actions": {
+      "correct": 47.0,
+      "balanced": {
+        "rooms": 30,
+        "mean": 0.5722222222222222,
+        "ci": [
+          0.3944444444444445,
+          0.7388888888888889
+        ]
+      }
+    },
+    "semantics": {
+      "correct": 53.0,
+      "balanced": {
+        "rooms": 30,
+        "mean": 0.7388888888888888,
+        "ci": [
+          0.5833333333333334,
+          0.8777777777777779
+        ]
+      }
+    },
+    "semantic_increment": {
+      "rooms": 30,
+      "mean": 0.16666666666666666,
+      "ci": [
+        0.011111111111111108,
+        0.3444444444444444
+      ]
+    },
+    "actual_terminal": {
+      "correct": 3.0,
+      "balanced": {
+        "rooms": 9,
+        "mean": 0.3333333333333333,
+        "ci": [
+          0.0,
+          0.6666666666666666
+        ]
+      }
+    },
+    "semantics_terminal": {
+      "correct": 4.0,
+      "balanced": {
+        "rooms": 9,
+        "mean": 0.4444444444444444,
+        "ci": [
+          0.1111111111111111,
+          0.7777777777777778
+        ]
+      }
+    },
+    "same_nominal": {
+      "n": 8,
+      "rooms": 7,
+      "semantics_correct": 3.0
+    },
+    "public_post_vs_true": {
+      "n": 64,
+      "correct": 62.0
+    },
+    "budget": {
+      "dev_candidates": 95,
+      "dev_rooms": 65,
+      "dev_pairs": 30,
+      "held_candidates": 187,
+      "held_rooms": 103
+    },
+    "mae_m": {
+      "nominal": 0.4347552788963203,
+      "actions": 0.18914080546077308,
+      "semantics": 0.11323476329742953
+    },
+    "delta_mae_m": {
+      "nominal": 0.1106149696689132,
+      "actions": 0.11136685442782182,
+      "semantics": 0.09792394363581829
+    },
+    "measured_terminal_excluding_immediate": {
+      "correct": 3.0,
+      "balanced": {
+        "rooms": 9,
+        "mean": 0.3333333333333333,
+        "ci": [
+          0.0,
+          0.6666666666666666
+        ]
+      }
+    },
+    "terminal_nonimmediate_n": 14
+  },
+  "move": {
+    "all_pairs": 207,
+    "measurable": 183,
+    "opposite": 45,
+    "opposite_before_margin": 52,
+    "nominal": {
+      "correct": 152.5,
+      "balanced": {
+        "rooms": 106,
+        "mean": 0.864622641509434,
+        "ci": [
+          0.8050314465408805,
+          0.9166666666666667
+        ]
+      }
+    },
+    "actions": {
+      "correct": 137.0,
+      "balanced": {
+        "rooms": 106,
+        "mean": 0.8025157232704402,
+        "ci": [
+          0.7370990566037735,
+          0.8638364779874214
+        ]
+      }
+    },
+    "semantics": {
+      "correct": 149.0,
+      "balanced": {
+        "rooms": 106,
+        "mean": 0.860691823899371,
+        "ci": [
+          0.8062893081761008,
+          0.9119496855345911
+        ]
+      }
+    },
+    "semantic_increment": {
+      "rooms": 106,
+      "mean": 0.05817610062893081,
+      "ci": [
+        0.020440251572327043,
+        0.10220125786163523
+      ]
+    },
+    "actual_terminal": {
+      "correct": 27.0,
+      "balanced": {
+        "rooms": 35,
+        "mean": 0.6142857142857143,
+        "ci": [
+          0.45714285714285713,
+          0.7714285714285715
+        ]
+      }
+    },
+    "semantics_terminal": {
+      "correct": 25.0,
+      "balanced": {
+        "rooms": 35,
+        "mean": 0.5952380952380952,
+        "ci": [
+          0.43809523809523804,
+          0.7428571428571429
+        ]
+      }
+    },
+    "same_nominal": {
+      "n": 9,
+      "rooms": 8,
+      "semantics_correct": 4.0
+    },
+    "public_post_vs_true": {
+      "n": 0,
+      "correct": 0
+    },
+    "budget": {
+      "dev_candidates": 282,
+      "dev_rooms": 158,
+      "dev_pairs": 124,
+      "held_candidates": 307,
+      "held_rooms": 149
+    },
+    "mae_m": {
+      "nominal": 0.24403844123816348,
+      "actions": 0.079855693957362,
+      "semantics": 0.0675617226590104
+    },
+    "delta_mae_m": {
+      "nominal": 0.07455492453254844,
+      "actions": 0.06534579284395556,
+      "semantics": 0.056200859650547455
+    },
+    "measured_terminal_excluding_immediate": {
+      "correct": 27.0,
+      "balanced": {
+        "rooms": 35,
+        "mean": 0.6142857142857143,
+        "ci": [
+          0.45714285714285713,
+          0.7714285714285715
+        ]
+      }
+    },
+    "terminal_nonimmediate_n": 45
+  },
+  "goal": {
+    "all_pairs": 426,
+    "measurable": 89,
+    "opposite": 26,
+    "opposite_before_margin": 98,
+    "nominal": {
+      "correct": 60.0,
+      "balanced": {
+        "rooms": 49,
+        "mean": 0.722108843537415,
+        "ci": [
+          0.6187074829931972,
+          0.8221088435374148
+        ]
+      }
+    },
+    "actions": {
+      "correct": 54.0,
+      "balanced": {
+        "rooms": 49,
+        "mean": 0.6938775510204082,
+        "ci": [
+          0.5755102040816327,
+          0.8034013605442175
+        ]
+      }
+    },
+    "semantics": {
+      "correct": 59.0,
+      "balanced": {
+        "rooms": 49,
+        "mean": 0.7353741496598639,
+        "ci": [
+          0.6299319727891156,
+          0.8346938775510204
+        ]
+      }
+    },
+    "semantic_increment": {
+      "rooms": 49,
+      "mean": 0.04149659863945578,
+      "ci": [
+        -0.0673469387755102,
+        0.14967687074829908
+      ]
+    },
+    "actual_terminal": {
+      "correct": 14.0,
+      "balanced": {
+        "rooms": 17,
+        "mean": 0.5294117647058824,
+        "ci": [
+          0.29411764705882354,
+          0.7450980392156863
+        ]
+      }
+    },
+    "semantics_terminal": {
+      "correct": 16.0,
+      "balanced": {
+        "rooms": 17,
+        "mean": 0.5686274509803921,
+        "ci": [
+          0.3333333333333333,
+          0.784313725490196
+        ]
+      }
+    },
+    "same_nominal": {
+      "n": 6,
+      "rooms": 6,
+      "semantics_correct": 4.0
+    },
+    "public_post_vs_true": {
+      "n": 0,
+      "correct": 0
+    },
+    "budget": {
+      "dev_candidates": 378,
+      "dev_rooms": 189,
+      "dev_pairs": 189,
+      "held_candidates": 500,
+      "held_rooms": 197
+    },
+    "mae_m": {
+      "nominal": 0.12695073938332924,
+      "actions": 0.06396982578119392,
+      "semantics": 0.04865674707858024
+    },
+    "delta_mae_m": {
+      "nominal": 0.12152325799374675,
+      "actions": 0.05376846030504037,
+      "semantics": 0.04201951980689245
+    },
+    "measured_terminal_excluding_immediate": {
+      "correct": 14.0,
+      "balanced": {
+        "rooms": 17,
+        "mean": 0.5294117647058824,
+        "ci": [
+          0.29411764705882354,
+          0.7450980392156863
+        ]
+      }
+    },
+    "terminal_nonimmediate_n": 26,
+    "by_subtype": {
+      "both": {
+        "all_pairs": 6,
+        "measurable": 0,
+        "opposite": 0,
+        "opposite_before_margin": 0,
+        "nominal": {
+          "correct": 0,
+          "balanced": null
+        },
+        "actions": {
+          "correct": 0,
+          "balanced": null
+        },
+        "semantics": {
+          "correct": 0,
+          "balanced": null
+        },
+        "semantic_increment": null,
+        "actual_terminal": {
+          "correct": 0,
+          "balanced": null
+        },
+        "semantics_terminal": {
+          "correct": 0,
+          "balanced": null
+        },
+        "same_nominal": {
+          "n": 0,
+          "rooms": 0,
+          "semantics_correct": 0
+        },
+        "public_post_vs_true": {
+          "n": 0,
+          "correct": 0
+        }
+      },
+      "clear": {
+        "all_pairs": 91,
+        "measurable": 13,
+        "opposite": 6,
+        "opposite_before_margin": 31,
+        "nominal": {
+          "correct": 6.0,
+          "balanced": {
+            "rooms": 9,
+            "mean": 0.5777777777777778,
+            "ci": [
+              0.35555555555555557,
+              0.7777777777777778
+            ]
+          }
+        },
+        "actions": {
+          "correct": 7.0,
+          "balanced": {
+            "rooms": 9,
+            "mean": 0.6888888888888889,
+            "ci": [
+              0.3777777777777778,
+              1.0
+            ]
+          }
+        },
+        "semantics": {
+          "correct": 8.0,
+          "balanced": {
+            "rooms": 9,
+            "mean": 0.7111111111111111,
+            "ci": [
+              0.4222222222222222,
+              1.0
+            ]
+          }
+        },
+        "semantic_increment": {
+          "rooms": 9,
+          "mean": 0.022222222222222223,
+          "ci": [
+            -0.3111111111111111,
+            0.3333333333333333
+          ]
+        },
+        "actual_terminal": {
+          "correct": 4.0,
+          "balanced": {
+            "rooms": 4,
+            "mean": 0.6666666666666666,
+            "ci": [
+              0.25,
+              1.0
+            ]
+          }
+        },
+        "semantics_terminal": {
+          "correct": 4.0,
+          "balanced": {
+            "rooms": 4,
+            "mean": 0.5,
+            "ci": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "same_nominal": {
+          "n": 4,
+          "rooms": 4,
+          "semantics_correct": 3.0
+        },
+        "public_post_vs_true": {
+          "n": 0,
+          "correct": 0
+        }
+      },
+      "movable": {
+        "all_pairs": 71,
+        "measurable": 13,
+        "opposite": 4,
+        "opposite_before_margin": 19,
+        "nominal": {
+          "correct": 10.5,
+          "balanced": {
+            "rooms": 7,
+            "mean": 0.8333333333333334,
+            "ci": [
+              0.5476190476190477,
+              1.0
+            ]
+          }
+        },
+        "actions": {
+          "correct": 8.0,
+          "balanced": {
+            "rooms": 7,
+            "mean": 0.619047619047619,
+            "ci": [
+              0.2857142857142857,
+              0.9047619047619049
+            ]
+          }
+        },
+        "semantics": {
+          "correct": 11.0,
+          "balanced": {
+            "rooms": 7,
+            "mean": 0.8571428571428571,
+            "ci": [
+              0.5714285714285714,
+              1.0
+            ]
+          }
+        },
+        "semantic_increment": {
+          "rooms": 7,
+          "mean": 0.23809523809523808,
+          "ci": [
+            0.0,
+            0.5714285714285714
+          ]
+        },
+        "actual_terminal": {
+          "correct": 2.0,
+          "balanced": {
+            "rooms": 2,
+            "mean": 0.5,
+            "ci": [
+              0.0,
+              1.0
+            ]
+          }
+        },
+        "semantics_terminal": {
+          "correct": 4.0,
+          "balanced": {
+            "rooms": 2,
+            "mean": 1.0,
+            "ci": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "same_nominal": {
+          "n": 1,
+          "rooms": 1,
+          "semantics_correct": 1.0
+        },
+        "public_post_vs_true": {
+          "n": 0,
+          "correct": 0
+        }
+      },
+      "static": {
+        "all_pairs": 50,
+        "measurable": 7,
+        "opposite": 3,
+        "opposite_before_margin": 8,
+        "nominal": {
+          "correct": 6.0,
+          "balanced": {
+            "rooms": 6,
+            "mean": 0.8333333333333334,
+            "ci": [
+              0.5,
+              1.0
+            ]
+          }
+        },
+        "actions": {
+          "correct": 6.0,
+          "balanced": {
+            "rooms": 6,
+            "mean": 0.8333333333333334,
+            "ci": [
+              0.5,
+              1.0
+            ]
+          }
+        },
+        "semantics": {
+          "correct": 7.0,
+          "balanced": {
+            "rooms": 6,
+            "mean": 1.0,
+            "ci": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "semantic_increment": {
+          "rooms": 6,
+          "mean": 0.16666666666666666,
+          "ci": [
+            0.0,
+            0.5
+          ]
+        },
+        "actual_terminal": {
+          "correct": 3.0,
+          "balanced": {
+            "rooms": 2,
+            "mean": 1.0,
+            "ci": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "semantics_terminal": {
+          "correct": 3.0,
+          "balanced": {
+            "rooms": 2,
+            "mean": 1.0,
+            "ci": [
+              1.0,
+              1.0
+            ]
+          }
+        },
+        "same_nominal": {
+          "n": 0,
+          "rooms": 0,
+          "semantics_correct": 0
+        },
+        "public_post_vs_true": {
+          "n": 0,
+          "correct": 0
+        }
+      },
+      "unknown": {
+        "all_pairs": 208,
+        "measurable": 56,
+        "opposite": 13,
+        "opposite_before_margin": 40,
+        "nominal": {
+          "correct": 37.5,
+          "balanced": {
+            "rooms": 27,
+            "mean": 0.7166666666666667,
+            "ci": [
+              0.571604938271605,
+              0.8493827160493828
+            ]
+          }
+        },
+        "actions": {
+          "correct": 33.0,
+          "balanced": {
+            "rooms": 27,
+            "mean": 0.6839506172839507,
+            "ci": [
+              0.5246913580246914,
+              0.825925925925926
+            ]
+          }
+        },
+        "semantics": {
+          "correct": 33.0,
+          "balanced": {
+            "rooms": 27,
+            "mean": 0.6530864197530865,
+            "ci": [
+              0.5147530864197531,
+              0.7888888888888888
+            ]
+          }
+        },
+        "semantic_increment": {
+          "rooms": 27,
+          "mean": -0.030864197530864196,
+          "ci": [
+            -0.1728395061728395,
+            0.08641975308641975
+          ]
+        },
+        "actual_terminal": {
+          "correct": 5.0,
+          "balanced": {
+            "rooms": 9,
+            "mean": 0.37037037037037035,
+            "ci": [
+              0.1111111111111111,
+              0.6666666666666666
+            ]
+          }
+        },
+        "semantics_terminal": {
+          "correct": 5.0,
+          "balanced": {
+            "rooms": 9,
+            "mean": 0.4074074074074074,
+            "ci": [
+              0.1111111111111111,
+              0.7037037037037037
+            ]
+          }
+        },
+        "same_nominal": {
+          "n": 1,
+          "rooms": 1,
+          "semantics_correct": 0.0
+        },
+        "public_post_vs_true": {
+          "n": 0,
+          "correct": 0
+        }
+      }
+    },
+    "once_over_200": {
+      "actual": {
+        "wins": 80,
+        "rescued": 6,
+        "lost": 3
+      },
+      "nominal": {
+        "wins": 76,
+        "rescued": 5,
+        "lost": 6
+      },
+      "actions": {
+        "wins": 76,
+        "rescued": 15,
+        "lost": 16
+      },
+      "semantics": {
+        "wins": 81,
+        "rescued": 19,
+        "lost": 15
+      }
+    }
+  }
+}

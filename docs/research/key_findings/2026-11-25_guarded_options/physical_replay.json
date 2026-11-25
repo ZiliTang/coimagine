@@ -1,0 +1,952 @@
+{
+  "schema": "guarded_option_physical_replay_v1",
+  "archive": "outputs/semantic_rl/cap_safe_nominal_v1",
+  "policy": "trial03",
+  "policy_sha256": "adf79ad691026c2eefb3a516fd717ba129f9b782cdf905f7e343d8569c8cb432",
+  "panel_content_overlap": 0,
+  "evidence": "Historical issued target PUSH commands. Object truth is an offline endpoint label. Peer displacement is public odometry at consecutive boundaries. No next odometry is available for the last command. Movement within a window can exceed endpoint motion.",
+  "inference": "Descriptive, room-clustered observations of the frozen policy. Robot progress units are requested review distances. Duration, initial state, and peer mode were not randomized. Development extrema are an empirical range, not physical guarantees.",
+  "development_box_forward_range_m": {
+    "1": [
+      -2.493700043957752e-07,
+      0.17010551633289783
+    ],
+    "2": [
+      -1.5780866604592242e-14,
+      0.2494651794137286
+    ]
+  },
+  "trace_sha256": {
+    "dev": {
+      "diag_dev_nat_001": "c2ef881a04f6bf13d36c9949725505a050ab2ad1e69d9eddb30686e685cd20a4",
+      "diag_dev_nat_002": "12625b17b7101cc2db6bf3c1272b2bde88fdfe9c623614405bc88a1130cb310a",
+      "diag_dev_nat_003": "2327999e84db228125b942afc35a2893511f44a46190155dbde6eefa5e05b309",
+      "diag_dev_nat_004": "ad34a25ed6b368cec785fe7995877f176ab1b742bae57e6ec75defcc9058d15e",
+      "diag_dev_nat_005": "85584d308199191e35d5614bee73d58bb18d0bf3f6a3899b89e14e64d66aa308",
+      "diag_dev_nat_006": "ac6aea22ff9eb07718516206abed6246b7941e4e68f27c5e071b719571fd8f38",
+      "diag_dev_nat_007": "857f5f032e68ba6bfd1494efea0cd13ac5e5b1fbf344c82761278abfc9ba2966",
+      "diag_dev_nat_008": "6904bbd2a211c61c6648d6fafb8d2dd5af38d76ea3879b0165a6c7462beaf63b",
+      "diag_dev_nat_009": "4f4b8085fcc19e5568f7883d8b46e5866f83a0cb821081f9c478774a13bcb117",
+      "diag_dev_nat_010": "aa07864b98b33bd94c675ac98a08192190cc2f84351b9ba891c39f4c99c50194",
+      "diag_dev_nat_011": "d23abd5b06271a46ab99fbe430cb29b537aee006699a0b1e2d4c2431ca880a58",
+      "diag_dev_nat_012": "975776604cde1f2df29c396949c05c5d403a0ba58c15338cac6a72a015d110c7",
+      "diag_dev_nat_013": "89c12ba005bb75f13bdc2983fc1d24ef34ad64750474257374ac5fc01d436b98",
+      "diag_dev_nat_014": "d7393c04e4310e5fd9bd487ea2acd1350834f5a794a3c2fab92822a4cfb518d5",
+      "diag_dev_nat_015": "15d87280fb8ea3cfa66da7162184792c79aac63706b485758441cd489e620e65",
+      "diag_dev_nat_016": "d2e7af8d75c0f1a63c947f6ffd84de89fe5c44d11d14dcc32bace3d854ab3361"
+    },
+    "confirm": {
+      "diag_safe_nominal_v1_confirm_001": "d8a3f2a7b091e8ca5e600095f87a8cbf57edbcde3394ad657c958e37c5232fdb",
+      "diag_safe_nominal_v1_confirm_002": "348ee41177f9f74d9076e3f5c3cff1c4b5524ae3b3e8c117769701509b6953de",
+      "diag_safe_nominal_v1_confirm_003": "944776887852fbe6bd12e11a885a79ef6422d4b82157c241a1f6e7d10fcb2e6b",
+      "diag_safe_nominal_v1_confirm_004": "e6a5ebdfdb4f652b51cacca6f04eb071d5d2882a57b5cbe14246a7317edfe5b8",
+      "diag_safe_nominal_v1_confirm_005": "67b2d03c11723cc41cf8f125924ace1c6768567aef04517b1e672479fdddffe9",
+      "diag_safe_nominal_v1_confirm_006": "d49884588244bd31721cfdbb95f5ca6be78815a4ecb3938c4653f26be1097fc9",
+      "diag_safe_nominal_v1_confirm_007": "5ae31c1fa05a2af09af0d62a020dbd71b3b6787793b510eeb55006dfb2ef1613",
+      "diag_safe_nominal_v1_confirm_008": "8f4875c1e90335b3270542f7020d838cbba1152e6577fddb9c49db4b8fad63b1",
+      "diag_safe_nominal_v1_confirm_009": "9a3548d5ad5e686cf4afc06bab3277cfa8b8a0d5bb883d9e1ad9bb9f4aeeb706",
+      "diag_safe_nominal_v1_confirm_010": "aadecc5ebf48891e4f84dc7645cd3b83595182c1c39510030f2ec0d7c72e5c57",
+      "diag_safe_nominal_v1_confirm_011": "af0d20954f1ca3c960a4d0881e4516109ddc73d214731bb253e5a26da0ed796e",
+      "diag_safe_nominal_v1_confirm_012": "5009234dddfd20f276e026e562fd814b7885f13160d2b5a9e4c3ead6bf0b0989",
+      "diag_safe_nominal_v1_confirm_013": "7195421a837c875038fe30d5a2d50c4747b95191e5d3de5c3cbed5fe7cc92187",
+      "diag_safe_nominal_v1_confirm_014": "e0813f43ad1e5a789f232f215e4bf2758754b571fa21eb4b45e6e9ba39d3441c",
+      "diag_safe_nominal_v1_confirm_015": "c4f9cf4d78452db2f22e80d276e61342037cd4969e3030fed4bdc0738ec65e3c",
+      "diag_safe_nominal_v1_confirm_016": "cbc475a1737dfe03a05cb1e5aaf84c94f49a440e6fc93340fb06dca749042321",
+      "diag_safe_nominal_v1_confirm_017": "0c12ab81e62ace8f5fc5496c6c4af48c0a052b6fc67bcf0f8fe15ecdddf24cb5",
+      "diag_safe_nominal_v1_confirm_018": "bc0021b85cb657ffc37f894e39ed0db0edf198020cac8a7e9214f5b6e649ef04",
+      "diag_safe_nominal_v1_confirm_019": "655a6e4204c0c6d62648a0c754fddbcf36863a8698b6d140272b67c8f0ee339f",
+      "diag_safe_nominal_v1_confirm_020": "ed17e72c0b3df7c541c84eb0eb9a26cf3564f158328a972f5e6fdc17375f27ed",
+      "diag_safe_nominal_v1_confirm_021": "3479e2a575252d22e33b36dc80315c7529cd49d2650ecb1f4ee424874e45e454",
+      "diag_safe_nominal_v1_confirm_022": "8ec461650f5cdf0f5b51cb5cc868f215dc6f94f5f42914f98aff2da821867888",
+      "diag_safe_nominal_v1_confirm_023": "3f39190695e0d0767ab48f6081dc915f1692efc6be49de459434eb9944d81fe3",
+      "diag_safe_nominal_v1_confirm_024": "dbe0a17eef248dc37932b6a9f81b193d51034c44f056b9cc4176b6bc8664f481",
+      "diag_safe_nominal_v1_confirm_025": "e4610649c26e0e7081c2519712c3118c5208d9daeda9cec3d2588ac0935b9871",
+      "diag_safe_nominal_v1_confirm_026": "e066608a4ba894f17d434e87c5133dccc85865a2640d9fa9abd17caf4ce1c866",
+      "diag_safe_nominal_v1_confirm_027": "fe6a47c34a47867b121e0c1d7d303cb59de66382c1981fb38d1d1b8ef024ecca",
+      "diag_safe_nominal_v1_confirm_028": "f4f206738cfe7724f166d9482c40e42c0282a0885b8cec71b267e17dc993e4b1",
+      "diag_safe_nominal_v1_confirm_029": "3cf9da3154c14a2c74ec69f078a16d2ba63e767757eb7b70c7bd8a249c4c5443",
+      "diag_safe_nominal_v1_confirm_030": "e630ea94730238a886053769acdb852a00583e39f0634361648ad1a10647d582",
+      "diag_safe_nominal_v1_confirm_031": "4c4f5d38b7af8808d69acab1c21032426d403db6089e43bf7b1fef416bfa01ab",
+      "diag_safe_nominal_v1_confirm_032": "9efdd67f8e7834a9004bd9c62340e76b31cc103af5e1e473b2f3ae86eaac8077",
+      "diag_safe_nominal_v1_confirm_033": "13459ed5bd7d6f107d324892be357932a37f6f2ed4e13012c37c8f78aa302efe",
+      "diag_safe_nominal_v1_confirm_034": "9b285fa56734b22d7e5a75d2e07ae36242a1b41542f249ad5e4e76fa1d8f1cd3",
+      "diag_safe_nominal_v1_confirm_035": "5e6a5977a383949eb1de03bcc40e297143d2429ef95603ac334cd4beeb05bf46",
+      "diag_safe_nominal_v1_confirm_036": "cd43ceb3115706578928f83baa8d0b9c37711015df38ee5de0e25ddc0eea541d",
+      "diag_safe_nominal_v1_confirm_037": "bf478619ff60787806c24afe6f348066146a329f52c1582ed8f72244c2c342e0",
+      "diag_safe_nominal_v1_confirm_038": "83839c31f3028b7bff77c325d955c732d212d780528c3690bab7feaf31238bf2",
+      "diag_safe_nominal_v1_confirm_039": "b1297e1d2f86d39ecdc9f69f1aa00ab2347c405dd2c8220f806ecd26dfec17de",
+      "diag_safe_nominal_v1_confirm_040": "76d01522673e1c47a4d2346d2b47e491a411ab80189fe933611cdc456f887e98",
+      "diag_safe_nominal_v1_confirm_041": "ebd72534ac9c91aa446ec44874b5ba45a322ef092a73f6045e65971abc85fdc9",
+      "diag_safe_nominal_v1_confirm_042": "62c5b11cfa940117217b55a90fe5b79efcae99a848d3bdac5ab5a286052e4a4b",
+      "diag_safe_nominal_v1_confirm_043": "94107d9e5fae155b79dc58fe6d62827992968c27f169bb417ce8ffd8309b6d59",
+      "diag_safe_nominal_v1_confirm_044": "08a69070af7b13b92ee98abd7746a27682ef1bb84866fd5ef1e582e894893648",
+      "diag_safe_nominal_v1_confirm_045": "603961836a1402345d6a9b526b19fb6bb7560b2bb0a1956f2459246f89acf87a",
+      "diag_safe_nominal_v1_confirm_046": "71f2736bb494e1cf54f4c82016b999875e9991979ab911809aebc7fdac9e6ec7",
+      "diag_safe_nominal_v1_confirm_047": "7459d714084dd202e762b41c7ac1bfdf5fc518865c40a5ff17ddf1c6e8910191",
+      "diag_safe_nominal_v1_confirm_048": "a78bab0c75e8ba5d01abfeeeef29d04b06fd4e8df84464a7caffa91770bc72dd",
+      "diag_safe_nominal_v1_confirm_049": "3abd0a8da86a7fd4e7ac4f2323c4411e4b77d8f35565edfe47ef249c0f4ac7b9",
+      "diag_safe_nominal_v1_confirm_050": "c90c127a6c0a1d8b499b685a9b314f7392a650c6fc7064ddda36c118795c17df",
+      "diag_safe_nominal_v1_confirm_051": "45f293ee1de1871b66be45f72a3402c133eaed3c24caad0fae9ab363198a5ecb",
+      "diag_safe_nominal_v1_confirm_052": "cd3003586a2f3c511282b9fc387d1da7000428b79a95a440808e588be49d98af",
+      "diag_safe_nominal_v1_confirm_053": "0f1f563057c91049ee4128c6e636dbbfdab8d1bb3091473e7c66161ab3f21216",
+      "diag_safe_nominal_v1_confirm_054": "00b993b643c783ea171d8bc478b57adda2032e1e9f9142bff92b2d38063b2140",
+      "diag_safe_nominal_v1_confirm_055": "fd7e01b657328a9ac51af4e465437707081879870957b4a3668c22775e3eacbc",
+      "diag_safe_nominal_v1_confirm_056": "9ab5ceee149504f04cc3f16ba6dd2e63ea31f17b0f6c3c04277e854ac947b5c1",
+      "diag_safe_nominal_v1_confirm_057": "c4f7d44a41841673c6a3589f769b0eed9ec53bdd0a74c473ccccec0cd30bf6fd",
+      "diag_safe_nominal_v1_confirm_058": "adffbc4ed38fb2a5f5cbdc027f42b0b205188c013d5da56566d9aaae73175b64",
+      "diag_safe_nominal_v1_confirm_059": "04cac4a6fcfd60c8eb293b12abd044e0475bbae9083495ae7cea75f1f7099a2d",
+      "diag_safe_nominal_v1_confirm_060": "baf3e8396bff4771e57255632fa16a1a072cf49b3915fc6d530a6dbc64a2516b",
+      "diag_safe_nominal_v1_confirm_061": "ec0a244f3fb1ba8f5a6ef5431465a2815985f41b33a1ba58a44e1904f07df118",
+      "diag_safe_nominal_v1_confirm_062": "fcb49129776801d11895cffd24793a9642b6dd93117be5fe3f25f878a1969c31",
+      "diag_safe_nominal_v1_confirm_063": "2ce6708f72589f8d0d07aedc48b389eed5d197fb0de3ba1b8173a935c4c89644",
+      "diag_safe_nominal_v1_confirm_064": "5ce83103c1f955c332d53be5065e8fe70259b86a6a2f35573b20437df3218ad8"
+    }
+  },
+  "yield_empirical_contract": {
+    "scope": "Check only the physical claim on endpoint displacement of the YIELD peer. The continuation has no preconditions. No route or swept-volume safety is tested.",
+    "host_profile": {
+      "units": {
+        "peer_endpoint_motion_mm": "mm"
+      },
+      "cells": {
+        "issued_target_push_with_yield": {}
+      },
+      "options": {
+        "push_with_yield": {
+          "requires": {},
+          "quality": "empirical",
+          "outcomes": [
+            {
+              "observe": "boundary",
+              "change": {
+                "peer_endpoint_motion_mm": [
+                  0,
+                  454
+                ]
+              },
+              "post": {}
+            }
+          ]
+        },
+        "inspect_next_boundary": {
+          "requires": {}
+        }
+      }
+    },
+    "calibration_rooms_with_observation": 14,
+    "calibration_commands": 22,
+    "calibration_raw_range_mm": [
+      0.25470148557370437,
+      453.6999755800174
+    ],
+    "confirmation_commands": 107,
+    "confirmation_raw_range_mm": [
+      0.0,
+      312.9276800601293
+    ],
+    "confirmation_outside_interval": 0,
+    "checks": {
+      "declared_development_range": {
+        "program": {
+          "rules": [
+            {
+              "name": "declared_development_range",
+              "when": {},
+              "option": "push_with_yield",
+              "expect": {
+                "peer_endpoint_motion_mm": [
+                  0,
+                  454
+                ]
+              },
+              "then": {
+                "boundary": "inspect_next_boundary"
+              }
+            }
+          ]
+        },
+        "check": {
+          "status": "conditional",
+          "cases": [
+            {
+              "cell": "issued_target_push_with_yield",
+              "rule": "declared_development_range",
+              "option": "push_with_yield",
+              "status": "conditional",
+              "issues": [
+                {
+                  "property": "model_quality",
+                  "status": "conditional"
+                }
+              ],
+              "branches": [
+                {
+                  "index": 0,
+                  "observation": "boundary",
+                  "change": {
+                    "peer_endpoint_motion_mm": [
+                      0,
+                      454
+                    ]
+                  },
+                  "post": {},
+                  "next_option": "inspect_next_boundary",
+                  "issues": []
+                }
+              ],
+              "enabled": [
+                "declared_development_range"
+              ]
+            }
+          ],
+          "unselected_rules": []
+        },
+        "default_dispatch": null,
+        "empirical_opt_in_dispatch": "push_with_yield"
+      },
+      "declared_stationary": {
+        "program": {
+          "rules": [
+            {
+              "name": "declared_stationary",
+              "when": {},
+              "option": "push_with_yield",
+              "expect": {
+                "peer_endpoint_motion_mm": [
+                  0,
+                  0
+                ]
+              },
+              "then": {
+                "boundary": "inspect_next_boundary"
+              }
+            }
+          ]
+        },
+        "check": {
+          "status": "counterexample",
+          "cases": [
+            {
+              "cell": "issued_target_push_with_yield",
+              "rule": "declared_stationary",
+              "option": "push_with_yield",
+              "status": "counterexample",
+              "issues": [
+                {
+                  "property": "model_quality",
+                  "status": "conditional"
+                },
+                {
+                  "property": "effect",
+                  "metric": "peer_endpoint_motion_mm",
+                  "status": "counterexample",
+                  "actual": [
+                    0,
+                    454
+                  ],
+                  "required": [
+                    0,
+                    0
+                  ],
+                  "endpoint": 454,
+                  "branch": 0,
+                  "observation": "boundary"
+                }
+              ],
+              "branches": [
+                {
+                  "index": 0,
+                  "observation": "boundary",
+                  "change": {
+                    "peer_endpoint_motion_mm": [
+                      0,
+                      454
+                    ]
+                  },
+                  "post": {},
+                  "next_option": "inspect_next_boundary",
+                  "issues": [
+                    {
+                      "property": "effect",
+                      "metric": "peer_endpoint_motion_mm",
+                      "status": "counterexample",
+                      "actual": [
+                        0,
+                        454
+                      ],
+                      "required": [
+                        0,
+                        0
+                      ],
+                      "endpoint": 454
+                    }
+                  ]
+                }
+              ],
+              "enabled": [
+                "declared_stationary"
+              ]
+            }
+          ],
+          "unselected_rules": []
+        },
+        "default_dispatch": null,
+        "empirical_opt_in_dispatch": null
+      }
+    }
+  },
+  "panels": {
+    "dev": {
+      "rooms": 16,
+      "push_commands": 514,
+      "envelope_inside": 309,
+      "by_robot_progress_units": {
+        "1": {
+          "commands": 397,
+          "rooms": 16,
+          "nominal_robot_progress_m": [
+            0.1
+          ],
+          "box_min_m": -2.493700043957752e-07,
+          "box_median_m": 0.02645334316026128,
+          "box_max_m": 0.17010551633289783,
+          "box_advanced_at_least_2cm": 228,
+          "outside_development_forward_range": 0,
+          "outside_development_examples": []
+        },
+        "2": {
+          "commands": 117,
+          "rooms": 16,
+          "nominal_robot_progress_m": [
+            0.2
+          ],
+          "box_min_m": -1.5780866604592242e-14,
+          "box_median_m": 0.004871551133450984,
+          "box_max_m": 0.2494651794137286,
+          "box_advanced_at_least_2cm": 50,
+          "outside_development_forward_range": 0,
+          "outside_development_examples": []
+        }
+      },
+      "by_peer": {
+        "BRAKE_HOLD": {
+          "commands": 316,
+          "measurable": 315,
+          "rooms_with_measurement": 16,
+          "moved_over_2cm": 67,
+          "rooms_moving_over_2cm": 16,
+          "max_motion_example": {
+            "room": "diag_dev_nat_002",
+            "tick": 1592,
+            "end_tick": 1620,
+            "command": {
+              "a0": 44,
+              "a1": 31,
+              "target_id": "entity-a",
+              "ticks": 28
+            },
+            "robot_units": 1,
+            "robot_unit_m": 0.1,
+            "forward_m": 0.0,
+            "declared_max_forward_m": 0.075,
+            "endpoint_in_declared_envelope": true,
+            "peer_mode": "BRAKE_HOLD",
+            "peer_endpoint_motion_m": 0.14687725203812554
+          }
+        },
+        "YIELD_CLEARANCE": {
+          "commands": 22,
+          "measurable": 22,
+          "rooms_with_measurement": 14,
+          "moved_over_2cm": 8,
+          "rooms_moving_over_2cm": 6,
+          "max_motion_example": {
+            "room": "diag_dev_nat_004",
+            "tick": 214,
+            "end_tick": 254,
+            "command": {
+              "a0": 46,
+              "a1": 11,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "robot_units": 2,
+            "robot_unit_m": 0.1,
+            "forward_m": 3.082530734347116e-09,
+            "declared_max_forward_m": 0.16,
+            "endpoint_in_declared_envelope": true,
+            "peer_mode": "YIELD_CLEARANCE",
+            "peer_endpoint_motion_m": 0.4536999755800174
+          }
+        }
+      },
+      "per_room": {
+        "diag_dev_nat_001": {
+          "push_commands": 44,
+          "envelope_inside": 27
+        },
+        "diag_dev_nat_002": {
+          "push_commands": 21,
+          "envelope_inside": 14
+        },
+        "diag_dev_nat_003": {
+          "push_commands": 31,
+          "envelope_inside": 20
+        },
+        "diag_dev_nat_004": {
+          "push_commands": 22,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_005": {
+          "push_commands": 27,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_006": {
+          "push_commands": 18,
+          "envelope_inside": 10
+        },
+        "diag_dev_nat_007": {
+          "push_commands": 25,
+          "envelope_inside": 13
+        },
+        "diag_dev_nat_008": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_009": {
+          "push_commands": 33,
+          "envelope_inside": 18
+        },
+        "diag_dev_nat_010": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_011": {
+          "push_commands": 43,
+          "envelope_inside": 27
+        },
+        "diag_dev_nat_012": {
+          "push_commands": 46,
+          "envelope_inside": 29
+        },
+        "diag_dev_nat_013": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_014": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_dev_nat_015": {
+          "push_commands": 32,
+          "envelope_inside": 20
+        },
+        "diag_dev_nat_016": {
+          "push_commands": 32,
+          "envelope_inside": 17
+        }
+      }
+    },
+    "confirm": {
+      "rooms": 64,
+      "push_commands": 1953,
+      "envelope_inside": 1183,
+      "by_robot_progress_units": {
+        "1": {
+          "commands": 1479,
+          "rooms": 64,
+          "nominal_robot_progress_m": [
+            0.1
+          ],
+          "box_min_m": -0.00012740353458284815,
+          "box_median_m": 0.02645334316026128,
+          "box_max_m": 0.2596647609180003,
+          "box_advanced_at_least_2cm": 848,
+          "outside_development_forward_range": 8,
+          "outside_development_examples": [
+            {
+              "room": "diag_safe_nominal_v1_confirm_003",
+              "tick": 1191,
+              "end_tick": 1205,
+              "command": {
+                "a0": 31,
+                "a1": 9,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": 0.17028136402244612
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_012",
+              "tick": 962,
+              "end_tick": 990,
+              "command": {
+                "a0": 46,
+                "a1": 3,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": -0.00012740353458284815
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_019",
+              "tick": 549,
+              "end_tick": 577,
+              "command": {
+                "a0": 3,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": 0.19840102006235347
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_034",
+              "tick": 1021,
+              "end_tick": 1049,
+              "command": {
+                "a0": 31,
+                "a1": 11,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": 0.2596647609180003
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_056",
+              "tick": 700,
+              "end_tick": 723,
+              "command": {
+                "a0": 3,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": -7.1485809993691385e-06
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_062",
+              "tick": 511,
+              "end_tick": 538,
+              "command": {
+                "a0": 7,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": 0.19250041321078398
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_063",
+              "tick": 1357,
+              "end_tick": 1385,
+              "command": {
+                "a0": 44,
+                "a1": 3,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": -2.7750470441354102e-05
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_064",
+              "tick": 1021,
+              "end_tick": 1049,
+              "command": {
+                "a0": 31,
+                "a1": 11,
+                "target_id": "entity-a",
+                "ticks": 28
+              },
+              "forward_m": 0.2596647609180003
+            }
+          ]
+        },
+        "2": {
+          "commands": 474,
+          "rooms": 64,
+          "nominal_robot_progress_m": [
+            0.2
+          ],
+          "box_min_m": -0.008549180431772635,
+          "box_median_m": 0.008607145967428015,
+          "box_max_m": 0.2516351625140036,
+          "box_advanced_at_least_2cm": 205,
+          "outside_development_forward_range": 5,
+          "outside_development_examples": [
+            {
+              "room": "diag_safe_nominal_v1_confirm_012",
+              "tick": 554,
+              "end_tick": 594,
+              "command": {
+                "a0": 7,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 40
+              },
+              "forward_m": -0.00012329722538780745
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_012",
+              "tick": 646,
+              "end_tick": 686,
+              "command": {
+                "a0": 11,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 40
+              },
+              "forward_m": -0.0006174028307668004
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_012",
+              "tick": 892,
+              "end_tick": 932,
+              "command": {
+                "a0": 7,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 40
+              },
+              "forward_m": -0.00032310856548045154
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_038",
+              "tick": 1668,
+              "end_tick": 1689,
+              "command": {
+                "a0": 44,
+                "a1": 7,
+                "target_id": "entity-a",
+                "ticks": 40
+              },
+              "forward_m": 0.2516351625140036
+            },
+            {
+              "room": "diag_safe_nominal_v1_confirm_063",
+              "tick": 545,
+              "end_tick": 585,
+              "command": {
+                "a0": 3,
+                "a1": 44,
+                "target_id": "entity-a",
+                "ticks": 40
+              },
+              "forward_m": -0.008549180431772635
+            }
+          ]
+        }
+      },
+      "by_peer": {
+        "BRAKE_HOLD": {
+          "commands": 1173,
+          "measurable": 1171,
+          "rooms_with_measurement": 64,
+          "moved_over_2cm": 243,
+          "rooms_moving_over_2cm": 64,
+          "max_motion_example": {
+            "room": "diag_safe_nominal_v1_confirm_023",
+            "tick": 969,
+            "end_tick": 997,
+            "command": {
+              "a0": 11,
+              "a1": 44,
+              "target_id": "entity-a",
+              "ticks": 28
+            },
+            "robot_units": 1,
+            "robot_unit_m": 0.1,
+            "forward_m": 5.5196108455979653e-14,
+            "declared_max_forward_m": 0.075,
+            "endpoint_in_declared_envelope": true,
+            "peer_mode": "BRAKE_HOLD",
+            "peer_endpoint_motion_m": 0.14687725203813518
+          }
+        },
+        "YIELD_CLEARANCE": {
+          "commands": 107,
+          "measurable": 107,
+          "rooms_with_measurement": 58,
+          "moved_over_2cm": 38,
+          "rooms_moving_over_2cm": 22,
+          "max_motion_example": {
+            "room": "diag_safe_nominal_v1_confirm_040",
+            "tick": 496,
+            "end_tick": 524,
+            "command": {
+              "a0": 46,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 28
+            },
+            "robot_units": 1,
+            "robot_unit_m": 0.1,
+            "forward_m": 3.8075870102323626e-06,
+            "declared_max_forward_m": 0.075,
+            "endpoint_in_declared_envelope": true,
+            "peer_mode": "YIELD_CLEARANCE",
+            "peer_endpoint_motion_m": 0.31292768006012933
+          }
+        }
+      },
+      "per_room": {
+        "diag_safe_nominal_v1_confirm_001": {
+          "push_commands": 46,
+          "envelope_inside": 29
+        },
+        "diag_safe_nominal_v1_confirm_002": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_003": {
+          "push_commands": 37,
+          "envelope_inside": 18
+        },
+        "diag_safe_nominal_v1_confirm_004": {
+          "push_commands": 39,
+          "envelope_inside": 24
+        },
+        "diag_safe_nominal_v1_confirm_005": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_006": {
+          "push_commands": 33,
+          "envelope_inside": 18
+        },
+        "diag_safe_nominal_v1_confirm_007": {
+          "push_commands": 22,
+          "envelope_inside": 14
+        },
+        "diag_safe_nominal_v1_confirm_008": {
+          "push_commands": 21,
+          "envelope_inside": 15
+        },
+        "diag_safe_nominal_v1_confirm_009": {
+          "push_commands": 16,
+          "envelope_inside": 9
+        },
+        "diag_safe_nominal_v1_confirm_010": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_011": {
+          "push_commands": 44,
+          "envelope_inside": 32
+        },
+        "diag_safe_nominal_v1_confirm_012": {
+          "push_commands": 28,
+          "envelope_inside": 17
+        },
+        "diag_safe_nominal_v1_confirm_013": {
+          "push_commands": 10,
+          "envelope_inside": 6
+        },
+        "diag_safe_nominal_v1_confirm_014": {
+          "push_commands": 18,
+          "envelope_inside": 11
+        },
+        "diag_safe_nominal_v1_confirm_015": {
+          "push_commands": 22,
+          "envelope_inside": 17
+        },
+        "diag_safe_nominal_v1_confirm_016": {
+          "push_commands": 22,
+          "envelope_inside": 13
+        },
+        "diag_safe_nominal_v1_confirm_017": {
+          "push_commands": 37,
+          "envelope_inside": 22
+        },
+        "diag_safe_nominal_v1_confirm_018": {
+          "push_commands": 45,
+          "envelope_inside": 30
+        },
+        "diag_safe_nominal_v1_confirm_019": {
+          "push_commands": 36,
+          "envelope_inside": 22
+        },
+        "diag_safe_nominal_v1_confirm_020": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_021": {
+          "push_commands": 18,
+          "envelope_inside": 10
+        },
+        "diag_safe_nominal_v1_confirm_022": {
+          "push_commands": 21,
+          "envelope_inside": 13
+        },
+        "diag_safe_nominal_v1_confirm_023": {
+          "push_commands": 37,
+          "envelope_inside": 21
+        },
+        "diag_safe_nominal_v1_confirm_024": {
+          "push_commands": 42,
+          "envelope_inside": 24
+        },
+        "diag_safe_nominal_v1_confirm_025": {
+          "push_commands": 38,
+          "envelope_inside": 20
+        },
+        "diag_safe_nominal_v1_confirm_026": {
+          "push_commands": 38,
+          "envelope_inside": 22
+        },
+        "diag_safe_nominal_v1_confirm_027": {
+          "push_commands": 30,
+          "envelope_inside": 16
+        },
+        "diag_safe_nominal_v1_confirm_028": {
+          "push_commands": 24,
+          "envelope_inside": 15
+        },
+        "diag_safe_nominal_v1_confirm_029": {
+          "push_commands": 21,
+          "envelope_inside": 12
+        },
+        "diag_safe_nominal_v1_confirm_030": {
+          "push_commands": 47,
+          "envelope_inside": 31
+        },
+        "diag_safe_nominal_v1_confirm_031": {
+          "push_commands": 37,
+          "envelope_inside": 22
+        },
+        "diag_safe_nominal_v1_confirm_032": {
+          "push_commands": 21,
+          "envelope_inside": 13
+        },
+        "diag_safe_nominal_v1_confirm_033": {
+          "push_commands": 11,
+          "envelope_inside": 8
+        },
+        "diag_safe_nominal_v1_confirm_034": {
+          "push_commands": 42,
+          "envelope_inside": 26
+        },
+        "diag_safe_nominal_v1_confirm_035": {
+          "push_commands": 33,
+          "envelope_inside": 18
+        },
+        "diag_safe_nominal_v1_confirm_036": {
+          "push_commands": 40,
+          "envelope_inside": 23
+        },
+        "diag_safe_nominal_v1_confirm_037": {
+          "push_commands": 13,
+          "envelope_inside": 7
+        },
+        "diag_safe_nominal_v1_confirm_038": {
+          "push_commands": 49,
+          "envelope_inside": 34
+        },
+        "diag_safe_nominal_v1_confirm_039": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_040": {
+          "push_commands": 18,
+          "envelope_inside": 12
+        },
+        "diag_safe_nominal_v1_confirm_041": {
+          "push_commands": 5,
+          "envelope_inside": 3
+        },
+        "diag_safe_nominal_v1_confirm_042": {
+          "push_commands": 49,
+          "envelope_inside": 33
+        },
+        "diag_safe_nominal_v1_confirm_043": {
+          "push_commands": 30,
+          "envelope_inside": 16
+        },
+        "diag_safe_nominal_v1_confirm_044": {
+          "push_commands": 49,
+          "envelope_inside": 33
+        },
+        "diag_safe_nominal_v1_confirm_045": {
+          "push_commands": 15,
+          "envelope_inside": 9
+        },
+        "diag_safe_nominal_v1_confirm_046": {
+          "push_commands": 9,
+          "envelope_inside": 7
+        },
+        "diag_safe_nominal_v1_confirm_047": {
+          "push_commands": 36,
+          "envelope_inside": 20
+        },
+        "diag_safe_nominal_v1_confirm_048": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_049": {
+          "push_commands": 17,
+          "envelope_inside": 9
+        },
+        "diag_safe_nominal_v1_confirm_050": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_051": {
+          "push_commands": 42,
+          "envelope_inside": 24
+        },
+        "diag_safe_nominal_v1_confirm_052": {
+          "push_commands": 23,
+          "envelope_inside": 16
+        },
+        "diag_safe_nominal_v1_confirm_053": {
+          "push_commands": 7,
+          "envelope_inside": 5
+        },
+        "diag_safe_nominal_v1_confirm_054": {
+          "push_commands": 58,
+          "envelope_inside": 38
+        },
+        "diag_safe_nominal_v1_confirm_055": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_056": {
+          "push_commands": 22,
+          "envelope_inside": 15
+        },
+        "diag_safe_nominal_v1_confirm_057": {
+          "push_commands": 23,
+          "envelope_inside": 12
+        },
+        "diag_safe_nominal_v1_confirm_058": {
+          "push_commands": 31,
+          "envelope_inside": 17
+        },
+        "diag_safe_nominal_v1_confirm_059": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_060": {
+          "push_commands": 21,
+          "envelope_inside": 18
+        },
+        "diag_safe_nominal_v1_confirm_061": {
+          "push_commands": 35,
+          "envelope_inside": 19
+        },
+        "diag_safe_nominal_v1_confirm_062": {
+          "push_commands": 25,
+          "envelope_inside": 15
+        },
+        "diag_safe_nominal_v1_confirm_063": {
+          "push_commands": 43,
+          "envelope_inside": 33
+        },
+        "diag_safe_nominal_v1_confirm_064": {
+          "push_commands": 42,
+          "envelope_inside": 26
+        }
+      }
+    }
+  }
+}

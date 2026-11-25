@@ -1,0 +1,408 @@
+[
+  {
+    "room": "diag_symbolic_confirmation_002",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 78,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 3.2140510474287076,
+      "wall_seen_2": true,
+      "gap_3": 1.0739548578252283,
+      "wall_seen_3": true,
+      "gap_4": 1.1329480243732564,
+      "wall_seen_4": true,
+      "gap_5": 0.9879599953097884,
+      "wall_seen_5": true,
+      "gap_6": 0.7829718918785433,
+      "wall_seen_6": true,
+      "gap_7": 0.5713755565968618,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_014",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_r0_1_6",
+      "option": "push_r0_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 114,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.372638149766078,
+      "wall_seen_3": true,
+      "gap_4": 1.3190406948661275,
+      "wall_seen_4": true,
+      "gap_5": 1.2153619719303712,
+      "wall_seen_5": true,
+      "gap_6": 0.9690772487544812,
+      "wall_seen_6": true,
+      "gap_7": 0.8347315548183998,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_017",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "brake",
+      "option": "brake",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 251,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.7272609738544293,
+      "wall_seen_3": true,
+      "gap_4": 1.4598701631738307,
+      "wall_seen_4": true,
+      "gap_5": 1.772383683984062,
+      "wall_seen_5": true,
+      "gap_6": 1.811404756214209,
+      "wall_seen_6": true,
+      "gap_7": 1.7507486231346943,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_021",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 102,
+    "gaps": {
+      "gap_0": 0.18066716855917742,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.2469289520076337,
+      "wall_seen_3": true,
+      "gap_4": 1.2570219950988657,
+      "wall_seen_4": true,
+      "gap_5": 1.1637760085656097,
+      "wall_seen_5": true,
+      "gap_6": 0.0801874568813738,
+      "wall_seen_6": true,
+      "gap_7": 0.1844520745528906,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_024",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_r0_1_6",
+      "option": "push_r0_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 156,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.4875323644514182,
+      "wall_seen_3": true,
+      "gap_4": 1.4010600086298708,
+      "wall_seen_4": true,
+      "gap_5": 1.4228690626988756,
+      "wall_seen_5": true,
+      "gap_6": 1.2616726512782948,
+      "wall_seen_6": true,
+      "gap_7": 1.0667339040315706,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_025",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 90,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 3.1520639203661824,
+      "wall_seen_2": true,
+      "gap_3": 1.177743305235066,
+      "wall_seen_3": true,
+      "gap_4": 1.1949962130365175,
+      "wall_seen_4": true,
+      "gap_5": 1.035627441434751,
+      "wall_seen_5": true,
+      "gap_6": 0.8450256377295571,
+      "wall_seen_6": true,
+      "gap_7": 0.7061171978237708,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_037",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 90,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 3.1520639203661833,
+      "wall_seen_2": true,
+      "gap_3": 1.177743305235066,
+      "wall_seen_3": true,
+      "gap_4": 1.1949962130365175,
+      "wall_seen_4": true,
+      "gap_5": 1.035627441434751,
+      "wall_seen_5": true,
+      "gap_6": 0.8450256377295571,
+      "wall_seen_6": true,
+      "gap_7": 0.7061171978237708,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_039",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 102,
+    "gaps": {
+      "gap_0": 0.25886905502327373,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.2469289520076337,
+      "wall_seen_3": true,
+      "gap_4": 1.2570219950988657,
+      "wall_seen_4": true,
+      "gap_5": 1.1637760085656097,
+      "wall_seen_5": true,
+      "gap_6": 0.04372131834099807,
+      "wall_seen_6": true,
+      "gap_7": 0.21396370492764583,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_045",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 84,
+    "gaps": {
+      "gap_0": 0.6972848147731872,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.1431430602634933,
+      "wall_seen_3": true,
+      "gap_4": 1.1639766725728335,
+      "wall_seen_4": true,
+      "gap_5": 1.0117902208722764,
+      "wall_seen_5": true,
+      "gap_6": 0.8140034840484178,
+      "wall_seen_6": true,
+      "gap_7": 0.3442766674337717,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_047",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 516,
+    "gaps": {
+      "gap_0": 0.6215733859939174,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 2.03325019005511,
+      "wall_seen_2": true,
+      "gap_3": 2.017382955629868,
+      "wall_seen_3": true,
+      "gap_4": 1.8398474699861005,
+      "wall_seen_4": true,
+      "gap_5": 2.2979595098842402,
+      "wall_seen_5": true,
+      "gap_6": 1.8956370860278335,
+      "wall_seen_6": true,
+      "gap_7": 0.3607714350047869,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_049",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_r0_1_6",
+      "option": "push_r0_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 126,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.5166238670557504,
+      "wall_seen_3": true,
+      "gap_4": 1.3775634312116123,
+      "wall_seen_4": true,
+      "gap_5": 1.3545108358001827,
+      "wall_seen_5": true,
+      "gap_6": 1.044292215684105,
+      "wall_seen_6": true,
+      "gap_7": 1.032655708659516,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_051",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 76,
+    "gaps": {
+      "gap_0": 0.2609142482036435,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 5.0,
+      "wall_seen_2": false,
+      "gap_3": 1.2063586580735695,
+      "wall_seen_3": true,
+      "gap_4": 1.139245920740964,
+      "wall_seen_4": true,
+      "gap_5": 0.9589615305008622,
+      "wall_seen_5": true,
+      "gap_6": 0.03179458065814472,
+      "wall_seen_6": true,
+      "gap_7": 0.20697639780134314,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_060",
+    "classification": "never_seen_in_boundary_scans",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 78,
+    "gaps": {
+      "gap_0": 5.0,
+      "wall_seen_0": false,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 3.2140510474287067,
+      "wall_seen_2": true,
+      "gap_3": 1.0739548578252283,
+      "wall_seen_3": true,
+      "gap_4": 1.1329480243732564,
+      "wall_seen_4": true,
+      "gap_5": 0.9879599953097884,
+      "wall_seen_5": true,
+      "gap_6": 0.7829718918785433,
+      "wall_seen_6": true,
+      "gap_7": 0.5713755565968618,
+      "wall_seen_7": true
+    }
+  },
+  {
+    "room": "diag_symbolic_confirmation_064",
+    "classification": "seen_and_retained_but_summary_or_gate_failed",
+    "choice": {
+      "rule": "push_both_1_6",
+      "option": "push_both_1_6",
+      "terminal": false,
+      "executable": true
+    },
+    "tick": 144,
+    "gaps": {
+      "gap_0": 0.8242568360868892,
+      "wall_seen_0": true,
+      "gap_1": 5.0,
+      "wall_seen_1": false,
+      "gap_2": 2.8729938267576385,
+      "wall_seen_2": true,
+      "gap_3": 1.5963284523622134,
+      "wall_seen_3": true,
+      "gap_4": 1.4740819162903256,
+      "wall_seen_4": true,
+      "gap_5": 1.4413800783886537,
+      "wall_seen_5": true,
+      "gap_6": 1.1241211585649102,
+      "wall_seen_6": true,
+      "gap_7": 0.50925176054098,
+      "wall_seen_7": true
+    }
+  }
+]

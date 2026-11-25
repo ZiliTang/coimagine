@@ -1,0 +1,119 @@
+{
+  "complete": true,
+  "seconds": 18266.344069242477,
+  "final_executions": 5600,
+  "conditions": {
+    "CAP-RR-001": {
+      "success": 75,
+      "total": 200
+    },
+    "CAP-RR-002": {
+      "success": 60,
+      "total": 200
+    },
+    "CAP-RR-003": {
+      "success": 86,
+      "total": 200
+    },
+    "CAP-RR-004": {
+      "success": 49,
+      "total": 200
+    },
+    "CAP-RR-005": {
+      "success": 48,
+      "total": 200
+    },
+    "CAP-RR-006": {
+      "success": 42,
+      "total": 200
+    },
+    "CAP-RR-007": {
+      "success": 58,
+      "total": 200
+    },
+    "CAP-RR-008": {
+      "success": 57,
+      "total": 200
+    },
+    "CAP-RR-009": {
+      "success": 82,
+      "total": 200
+    },
+    "CAP-RR-010": {
+      "success": 78,
+      "total": 200
+    },
+    "GA_s17_offline": {
+      "success": 105,
+      "total": 200
+    },
+    "GA_s17_online": {
+      "success": 103,
+      "total": 200
+    },
+    "GA_s29_offline": {
+      "success": 108,
+      "total": 200
+    },
+    "GA_s29_online": {
+      "success": 109,
+      "total": 200
+    },
+    "GA_s43_offline": {
+      "success": 108,
+      "total": 200
+    },
+    "GA_s43_online": {
+      "success": 107,
+      "total": 200
+    },
+    "GLOBAL_s17_offline": {
+      "success": 99,
+      "total": 200
+    },
+    "GLOBAL_s17_online": {
+      "success": 112,
+      "total": 200
+    },
+    "GLOBAL_s29_offline": {
+      "success": 103,
+      "total": 200
+    },
+    "GLOBAL_s29_online": {
+      "success": 113,
+      "total": 200
+    },
+    "GLOBAL_s43_offline": {
+      "success": 111,
+      "total": 200
+    },
+    "GLOBAL_s43_online": {
+      "success": 107,
+      "total": 200
+    },
+    "LOCAL_s17_offline": {
+      "success": 101,
+      "total": 200
+    },
+    "LOCAL_s17_online": {
+      "success": 97,
+      "total": 200
+    },
+    "LOCAL_s29_offline": {
+      "success": 99,
+      "total": 200
+    },
+    "LOCAL_s29_online": {
+      "success": 102,
+      "total": 200
+    },
+    "LOCAL_s43_offline": {
+      "success": 99,
+      "total": 200
+    },
+    "LOCAL_s43_online": {
+      "success": 110,
+      "total": 200
+    }
+  }
+}

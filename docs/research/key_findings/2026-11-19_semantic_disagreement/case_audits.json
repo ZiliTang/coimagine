@@ -1,0 +1,1289 @@
+{
+  "inverse_test_0_dev_3_20": {
+    "tick": 358,
+    "step": 13,
+    "goal": [
+      1.1803986141417548,
+      4.078673099163833
+    ],
+    "geometry": [
+      1.2418644194684503,
+      3.4424928362443428,
+      -0.9558249670166084,
+      0.293936442837052,
+      358
+    ],
+    "robots": [
+      [
+        1.8917366238169961,
+        3.2437827198162776
+      ],
+      [
+        3.9559818443313626,
+        3.4116219922815127
+      ]
+    ],
+    "contacts": [
+      true,
+      false
+    ],
+    "cases": {
+      "G": {
+        "action": {
+          "codes": [
+            15,
+            46
+          ],
+          "ticks": 40,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 0,
+              "distance": 0.3288882577863127,
+              "alignment": 0.7718311999539991,
+              "clearance": 0.9,
+              "held": true
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "001",
+            "002"
+          ],
+          "slot": 1
+        },
+        "representative_cap": "001",
+        "phase": 1,
+        "desired_dir": 3,
+        "route_direction": [
+          -0.8427005973792662,
+          0.5383824878064182
+        ],
+        "legal_fast_drivers": [
+          0
+        ],
+        "stall": null,
+        "recover_until": 0,
+        "still": 0
+      },
+      "T": {
+        "action": {
+          "codes": [
+            75,
+            65
+          ],
+          "ticks": 25,
+          "kind": "move",
+          "target": null,
+          "pushes": [],
+          "stage_gain": -0.08259831289866071,
+          "caps": [
+            "009",
+            "003",
+            "010",
+            "006",
+            "007"
+          ],
+          "slot": 0
+        },
+        "representative_cap": "009",
+        "phase": 2,
+        "desired_dir": 2,
+        "route_direction": [
+          0.293936442837052,
+          0.9558249670166084
+        ],
+        "legal_fast_drivers": [],
+        "stall": 0,
+        "recover_until": 0,
+        "still": 0
+      }
+    },
+    "trajectories": {
+      "GG": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 358,
+            "periods": 40,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 15,
+              "a1": 46,
+              "ticks": 40
+            }
+          },
+          {
+            "tick": 398,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 75,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 423,
+            "periods": 40,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 15,
+              "a1": 46,
+              "ticks": 40
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 358,
+            "distance": 0.639457482238451
+          },
+          {
+            "tick": 398,
+            "distance": 0.6697162143166354
+          },
+          {
+            "tick": 478,
+            "distance": 0.7355346950279158
+          },
+          {
+            "tick": 1800,
+            "distance": 0.6961683182040821
+          }
+        ]
+      },
+      "TT": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 358,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 75,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 383,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 71,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 408,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 71,
+              "a1": 65,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 358,
+            "distance": 0.639457482238451
+          },
+          {
+            "tick": 398,
+            "distance": 0.5972123200663774
+          },
+          {
+            "tick": 478,
+            "distance": 0.5970872735845936
+          },
+          {
+            "tick": 827,
+            "distance": 0.08474174656836543
+          }
+        ]
+      },
+      "GT": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 358,
+            "periods": 40,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 15,
+              "a1": 46,
+              "ticks": 40
+            }
+          },
+          {
+            "tick": 398,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 75,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 423,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 75,
+              "a1": 65,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 358,
+            "distance": 0.639457482238451
+          },
+          {
+            "tick": 398,
+            "distance": 0.6697162143166354
+          },
+          {
+            "tick": 478,
+            "distance": 0.7461730663140106
+          },
+          {
+            "tick": 1800,
+            "distance": 0.7461725047867374
+          }
+        ]
+      },
+      "TG": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 358,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 75,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 383,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 71,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 408,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 71,
+              "a1": 65,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 358,
+            "distance": 0.639457482238451
+          },
+          {
+            "tick": 398,
+            "distance": 0.5972123200663774
+          },
+          {
+            "tick": 478,
+            "distance": 0.5970872735845936
+          },
+          {
+            "tick": 827,
+            "distance": 0.08474174656836543
+          }
+        ]
+      }
+    }
+  },
+  "inverse_test_0_validation_3_43": {
+    "tick": 40,
+    "step": 3,
+    "goal": [
+      3.072266318430512,
+      2.4331062858190444
+    ],
+    "geometry": [
+      1.184212686894998,
+      2.6608896248988216,
+      0.4888477124001801,
+      -0.8723691386569741,
+      40
+    ],
+    "robots": [
+      [
+        0.892715857611838,
+        3.3913762007431045
+      ],
+      [
+        1.1623026848932478,
+        4.028295406073889
+      ]
+    ],
+    "contacts": [
+      false,
+      false
+    ],
+    "cases": {
+      "G": {
+        "action": {
+          "codes": [
+            31,
+            46
+          ],
+          "ticks": 20,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 0,
+              "distance": 0.31332912468496,
+              "alignment": 0.7867107006363444,
+              "clearance": 0.30000000000000004,
+              "held": false
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "010"
+          ],
+          "slot": 2
+        },
+        "representative_cap": "010",
+        "phase": 1,
+        "desired_dir": 7,
+        "route_direction": [
+          0.4888477124001801,
+          -0.8723691386569741
+        ],
+        "legal_fast_drivers": [
+          0
+        ],
+        "stall": 0,
+        "recover_until": 0,
+        "still": 0
+      },
+      "T": {
+        "action": {
+          "codes": [
+            65,
+            65
+          ],
+          "ticks": 25,
+          "kind": "move",
+          "target": null,
+          "pushes": [],
+          "stage_gain": -0.08648921318542646,
+          "caps": [
+            "003",
+            "001",
+            "002"
+          ],
+          "slot": 1
+        },
+        "representative_cap": "003",
+        "phase": 2,
+        "desired_dir": 1,
+        "route_direction": [
+          0.8723691386569741,
+          0.4888477124001801
+        ],
+        "legal_fast_drivers": [],
+        "stall": null,
+        "recover_until": 0,
+        "still": 0
+      }
+    },
+    "trajectories": {
+      "GG": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 40,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 60,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 80,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 59,
+              "a1": 69,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 40,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 80,
+            "distance": 1.8471368605663097
+          },
+          {
+            "tick": 160,
+            "distance": 1.7773153840026872
+          },
+          {
+            "tick": 737,
+            "distance": 0.17465690045937574
+          }
+        ]
+      },
+      "TT": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 40,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 65,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 65,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 85,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 40,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 80,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 160,
+            "distance": 1.7128184773327282
+          },
+          {
+            "tick": 1800,
+            "distance": 0.32590655556981707
+          }
+        ]
+      },
+      "GT": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 40,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 60,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 80,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 59,
+              "a1": 69,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 40,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 80,
+            "distance": 1.8471368605663097
+          },
+          {
+            "tick": 160,
+            "distance": 1.7773153840026872
+          },
+          {
+            "tick": 737,
+            "distance": 0.17465690045937574
+          }
+        ]
+      },
+      "TG": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 40,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 65,
+              "a1": 65,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 65,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 85,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 31,
+              "a1": 46,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 40,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 80,
+            "distance": 1.9017444005745816
+          },
+          {
+            "tick": 160,
+            "distance": 1.7128184773327282
+          },
+          {
+            "tick": 1800,
+            "distance": 0.3655210992215886
+          }
+        ]
+      }
+    }
+  },
+  "inverse_test_0_dev_2_38": {
+    "tick": 310,
+    "step": 11,
+    "goal": [
+      3.0848988367374286,
+      2.9927589079795287
+    ],
+    "geometry": [
+      3.470013247856561,
+      1.2641349151513286,
+      0.8802032270696853,
+      -0.4745969648618835,
+      310
+    ],
+    "robots": [
+      [
+        4.573861378996876,
+        1.4776730391662054
+      ],
+      [
+        4.062424530125109,
+        0.9322987831161298
+      ]
+    ],
+    "contacts": [
+      false,
+      true
+    ],
+    "cases": {
+      "G": {
+        "action": {
+          "codes": [
+            46,
+            15
+          ],
+          "ticks": 40,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 1,
+              "distance": 0.18614443489248655,
+              "alignment": 0.8439501170201094,
+              "clearance": 1.2000000000000002,
+              "held": true
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "009"
+          ],
+          "slot": 0
+        },
+        "representative_cap": "009",
+        "phase": 1,
+        "desired_dir": 3,
+        "route_direction": [
+          -0.8802032270696853,
+          0.4745969648618835
+        ],
+        "legal_fast_drivers": [
+          1
+        ],
+        "stall": 80,
+        "recover_until": 0,
+        "still": 0
+      },
+      "T": {
+        "action": {
+          "codes": [
+            46,
+            15
+          ],
+          "ticks": 20,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 1,
+              "distance": 0.18614443489248655,
+              "alignment": 0.8439501170201094,
+              "clearance": 1.2000000000000002,
+              "held": true
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "010"
+          ],
+          "slot": 2
+        },
+        "representative_cap": "010",
+        "phase": 1,
+        "desired_dir": 3,
+        "route_direction": [
+          -0.8802032270696853,
+          0.4745969648618835
+        ],
+        "legal_fast_drivers": [
+          1
+        ],
+        "stall": 80,
+        "recover_until": 0,
+        "still": 0
+      }
+    },
+    "trajectories": {
+      "GG": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 310,
+            "periods": 40,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 40
+            }
+          },
+          {
+            "tick": 350,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 75,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 375,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 71,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 310,
+            "distance": 1.7710036753866278
+          },
+          {
+            "tick": 350,
+            "distance": 1.4550796778378339
+          },
+          {
+            "tick": 430,
+            "distance": 1.3950554262999317
+          },
+          {
+            "tick": 1800,
+            "distance": 0.520215699415484
+          }
+        ]
+      },
+      "TT": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 310,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 330,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 350,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 310,
+            "distance": 1.7710036753866278
+          },
+          {
+            "tick": 350,
+            "distance": 1.4550796778378339
+          },
+          {
+            "tick": 430,
+            "distance": 1.3284224760852303
+          },
+          {
+            "tick": 1206,
+            "distance": 0.1700256823824777
+          }
+        ]
+      },
+      "GT": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 310,
+            "periods": 40,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 40
+            }
+          },
+          {
+            "tick": 350,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 75,
+              "ticks": 25
+            }
+          },
+          {
+            "tick": 375,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 71,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 310,
+            "distance": 1.7710036753866278
+          },
+          {
+            "tick": 350,
+            "distance": 1.4550796778378339
+          },
+          {
+            "tick": 430,
+            "distance": 1.3950554262999317
+          },
+          {
+            "tick": 1800,
+            "distance": 0.8157189655523419
+          }
+        ]
+      },
+      "TG": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 310,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 330,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 46,
+              "a1": 15,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 350,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 75,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 310,
+            "distance": 1.7710036753866278
+          },
+          {
+            "tick": 350,
+            "distance": 1.4550796778378339
+          },
+          {
+            "tick": 430,
+            "distance": 1.3950554262999317
+          },
+          {
+            "tick": 1361,
+            "distance": 0.14068753074281143
+          }
+        ]
+      }
+    }
+  },
+  "inverse_test_0_dev_4_13": {
+    "tick": 0,
+    "step": 1,
+    "goal": [
+      3.624422874484205,
+      2.5992552952063113
+    ],
+    "geometry": [
+      1.1468060117951537,
+      2.1607493926686416,
+      -0.8678850233638593,
+      0.49676512178363885,
+      0
+    ],
+    "robots": [
+      [
+        0.7103905759389106,
+        1.4241968553821318
+      ],
+      [
+        1.206331868955915,
+        2.86906369925018
+      ]
+    ],
+    "contacts": [
+      false,
+      false
+    ],
+    "cases": {
+      "G": {
+        "action": {
+          "codes": [
+            7,
+            46
+          ],
+          "ticks": 31,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 0,
+              "distance": 0.56573029970404,
+              "alignment": 0.819518974774284,
+              "clearance": 0.6000000000000001,
+              "held": false
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "009"
+          ],
+          "slot": 0
+        },
+        "representative_cap": "009",
+        "phase": 1,
+        "desired_dir": 1,
+        "route_direction": [
+          0.49676512178363885,
+          0.8678850233638593
+        ],
+        "legal_fast_drivers": [
+          0
+        ],
+        "stall": 0,
+        "recover_until": 0,
+        "still": 0
+      },
+      "T": {
+        "action": {
+          "codes": [
+            7,
+            46
+          ],
+          "ticks": 20,
+          "kind": "push",
+          "target": "entity-a",
+          "pushes": [
+            {
+              "driver": 0,
+              "distance": 0.56573029970404,
+              "alignment": 0.819518974774284,
+              "clearance": 0.6000000000000001,
+              "held": false
+            }
+          ],
+          "stage_gain": 0.0,
+          "caps": [
+            "010"
+          ],
+          "slot": 3
+        },
+        "representative_cap": "010",
+        "phase": 1,
+        "desired_dir": 1,
+        "route_direction": [
+          0.49676512178363885,
+          0.8678850233638593
+        ],
+        "legal_fast_drivers": [
+          0
+        ],
+        "stall": 0,
+        "recover_until": 0,
+        "still": 0
+      }
+    },
+    "trajectories": {
+      "GG": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 0,
+            "periods": 31,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 31
+            }
+          },
+          {
+            "tick": 31,
+            "periods": 31,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 31
+            }
+          },
+          {
+            "tick": 62,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 0,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 40,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 120,
+            "distance": 1.9530927165865712
+          },
+          {
+            "tick": 1800,
+            "distance": 0.6085005951440512
+          }
+        ]
+      },
+      "TT": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 0,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 20,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 40,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 0,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 40,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 120,
+            "distance": 1.9530927165865712
+          },
+          {
+            "tick": 498,
+            "distance": 0.07085589372074655
+          }
+        ]
+      },
+      "GT": {
+        "success": true,
+        "termination": "success",
+        "first_three": [
+          {
+            "tick": 0,
+            "periods": 31,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 31
+            }
+          },
+          {
+            "tick": 31,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 51,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 0,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 40,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 120,
+            "distance": 1.9530927165865712
+          },
+          {
+            "tick": 1358,
+            "distance": 0.1416867656503609
+          }
+        ]
+      },
+      "TG": {
+        "success": false,
+        "termination": "task_budget_exhausted",
+        "first_three": [
+          {
+            "tick": 0,
+            "periods": 20,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 20
+            }
+          },
+          {
+            "tick": 20,
+            "periods": 31,
+            "action": {
+              "target_id": "entity-a",
+              "a0": 7,
+              "a1": 46,
+              "ticks": 31
+            }
+          },
+          {
+            "tick": 51,
+            "periods": 25,
+            "action": {
+              "target_id": null,
+              "a0": 69,
+              "a1": 47,
+              "ticks": 25
+            }
+          }
+        ],
+        "frames": [
+          {
+            "tick": 0,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 40,
+            "distance": 2.5015210371237586
+          },
+          {
+            "tick": 120,
+            "distance": 2.409640357441637
+          },
+          {
+            "tick": 1800,
+            "distance": 0.6456972329787973
+          }
+        ]
+      }
+    }
+  }
+}

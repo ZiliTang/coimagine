@@ -8,7 +8,8 @@ skill or environment code may use a hard-coded literal that is not declared here
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+import os
+from dataclasses import dataclass, replace
 from typing import Dict, Tuple
 
 from ..continuous2d.config import Continuous2DConfig, default_config
@@ -18,11 +19,25 @@ from ..continuous2d.config import Continuous2DConfig, default_config
 # silently diverge from this module.
 # ---------------------------------------------------------------------------
 
-_PHYSICS = default_config().physics
+# Imported by both physics and controller modules. Select once per interpreter so
+# a worker cannot accidentally simulate one body and plan with another radius.
+GEOMETRY_PROFILE = os.environ.get("COIMAGINE_PLANAR_GEOMETRY", "compact20")
+_GEOMETRIES = {"compact20": (0.10, 0.05), "legacy36": (0.18, 0.10)}
+if GEOMETRY_PROFILE not in _GEOMETRIES:
+    raise ValueError(f"Unknown COIMAGINE_PLANAR_GEOMETRY: {GEOMETRY_PROFILE!r}")
+ROBOT_RADIUS, REPOSITION_GAP = _GEOMETRIES[GEOMETRY_PROFILE]
+ROBOT_DIAMETER = 2 * ROBOT_RADIUS
+
+
+def planar_base_config() -> Continuous2DConfig:
+    base = default_config()
+    return replace(base, physics=replace(base.physics, robot_radius=ROBOT_RADIUS))
+
+
+_PHYSICS = planar_base_config().physics
 CONTROL_DT: float = _PHYSICS.control_dt                       # s, 0.05
 PHYSICS_DT: float = _PHYSICS.physics_dt                       # s, 1/120
 SUBSTEPS: int = _PHYSICS.substeps                             # physics steps per control period
-ROBOT_RADIUS: float = _PHYSICS.robot_radius                   # m, 0.18
 ROBOT_MASS: float = _PHYSICS.robot_mass                       # kg, 4.0
 OBJECT_WIDTH: float = _PHYSICS.object_width                   # m, 1.0
 OBJECT_HEIGHT: float = _PHYSICS.object_height                 # m, 0.25
@@ -35,7 +50,7 @@ ANGULAR_DAMPING: float = _PHYSICS.angular_damping
 MAX_ACCEL: float = MAX_FORCE / ROBOT_MASS                     # m/s^2, 3.75 (no torque channel)
 BOUNDARY_RADIUS: float = 0.05                                 # m, arena wall capsule radius
 
-CONFIG_HASH: str = default_config().config_hash()
+CONFIG_HASH: str = planar_base_config().config_hash()
 
 # ---------------------------------------------------------------------------
 # arena and maps
@@ -172,7 +187,8 @@ APPROACH_GAIN: float = 2.0            # 1/s, gap-proportional approach speed
 BRAKE_MAX_SECONDS: float = 0.80       # s of braking before the skill ends regardless
 BRAKE_SPEED: float = 0.03             # m/s, below this the robot counts as braked
 NO_PROGRESS_SECONDS: float = 3.0      # continuous seconds without progress -> blocked (v4.2)
-REPOSITION_GAP: float = 0.10          # m, target robot-edge to object-surface gap
+# REPOSITION_GAP above is measured from the robot edge to the object surface.
+REPOSITION_SWEEP_MARGIN: float = 0.04  # m, robot edge to a measured static return
 REPOSITION_SPEED_MAX: float = 0.30    # m/s, D011 requested faster reposition
 REPOSITION_ALIGN_TOLERANCE: float = 0.035  # m, gap error considered aligned
 REPOSITION_SPEED: float = 0.30        # m/s, D011 requested faster reposition
@@ -213,7 +229,8 @@ DISTANCE_COST: float = 0.02           # reward / (m s), integrated at CONTROL_DT
 # v4.7 repairs REPOSITION corner continuation and signed boundary-path accounting.
 # Costs, physical horizon, action IDs and observation layout are unchanged. Behaviour
 # has changed: do not silently restore old branches or compare against old run9 curves.
-ENV_VERSION: str = "random-start-oriented-v4.7"
+ENV_VERSION: str = ("random-start-oriented-v4.7" if GEOMETRY_PROFILE == "legacy36"
+                    else "random-start-oriented-v4.8-compact20")
 
 # ---------------------------------------------------------------------------
 # the 15 discrete robot actions and the 225 joint actions

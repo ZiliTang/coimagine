@@ -1,0 +1,9 @@
+round,cohort,visits,forks,informative,signal_rooms,first_signal_1,first_signal_2,first_signal_3,ticks,signals_per_10k
+1,new,66,175,25,18,15,3,0,856507,0.292
+1,revisit,0,0,0,0,0,0,0,0,0
+2,new,72,189,39,28,18,10,0,884633,0.441
+2,revisit,32,96,18,13,10,3,0,203765,0.883
+3,new,69,183,27,20,12,5,3,899655,0.3
+3,revisit,32,96,28,18,12,6,0,240878,1.162
+4,new,65,179,31,24,14,8,2,861464,0.36
+4,revisit,32,96,20,15,13,2,0,232096,0.862

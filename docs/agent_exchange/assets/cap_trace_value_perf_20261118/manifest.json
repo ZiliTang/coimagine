@@ -1,0 +1,22 @@
+{
+  "fast_profile.txt": {
+    "sha256": "c98e3f1d8803f64fd2b150f635f21a4b934aae7c6f1614e0959e11deee5097e8",
+    "bytes": 6955
+  },
+  "original_profile.txt": {
+    "sha256": "3890a26747dc4fdb27abba6d82c14449f200044c135269d4aefe021b62ea1bd5",
+    "bytes": 9791
+  },
+  "replay_benchmark.json": {
+    "sha256": "904bc9a802a4175de1573cb10dc696c0a4344c473c97f75373ca1635c592ba51",
+    "bytes": 1247
+  },
+  "physical_benchmark.json": {
+    "sha256": "735f689906f644b41bb6fdba9308bad03e12696498a79301de9d86d6b3f735e8",
+    "bytes": 3690
+  },
+  "training_benchmark.json": {
+    "sha256": "0277192dd0d04c2af0f1cf3046fa706925c0405ea1f507eeecee37b4ce60297c",
+    "bytes": 1505
+  }
+}

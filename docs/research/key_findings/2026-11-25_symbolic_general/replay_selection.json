@@ -1,0 +1,52 @@
+[
+  {
+    "room": "diag_symbolic_confirmation_001",
+    "version": "0",
+    "reason": "首个失败"
+  },
+  {
+    "room": "diag_symbolic_confirmation_002",
+    "version": "0",
+    "reason": "首个箱体静态接触"
+  },
+  {
+    "room": "diag_symbolic_confirmation_001",
+    "version": "1",
+    "reason": "首个失败"
+  },
+  {
+    "room": "diag_symbolic_confirmation_002",
+    "version": "1",
+    "reason": "首个箱体静态接触"
+  },
+  {
+    "room": "diag_symbolic_confirmation_003",
+    "version": "2",
+    "reason": "首个成功"
+  },
+  {
+    "room": "diag_symbolic_confirmation_001",
+    "version": "2",
+    "reason": "首个失败"
+  },
+  {
+    "room": "diag_symbolic_confirmation_002",
+    "version": "2",
+    "reason": "首个箱体静态接触"
+  },
+  {
+    "room": "diag_symbolic_confirmation_003",
+    "version": "ungated",
+    "reason": "首个成功"
+  },
+  {
+    "room": "diag_symbolic_confirmation_001",
+    "version": "ungated",
+    "reason": "首个失败"
+  },
+  {
+    "room": "diag_symbolic_confirmation_002",
+    "version": "ungated",
+    "reason": "首个箱体静态接触"
+  }
+]

@@ -1,0 +1,167 @@
+{
+  "policy_sha256": "a5a085b4c5da532e1c48b23d9dde7e442302dc412fe6df3860a3606e8306612b",
+  "query": "actual selected action executable under arbitrary non-brake evidence permissions",
+  "assumptions": [
+    "brake publicly legal",
+    "brake permission true",
+    "primitive values within declared domains"
+  ],
+  "result": {
+    "status": "proved",
+    "availability": {
+      "status": "proved"
+    },
+    "rules": [
+      {
+        "rule": "push_both_0_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_0_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_0_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_1_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_1_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_1_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_2_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_2_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_2_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_3_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_3_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_3_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_4_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_4_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_4_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_5_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_5_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_5_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_6_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_6_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_6_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_both_7_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r0_7_6",
+        "status": "proved"
+      },
+      {
+        "rule": "push_r1_7_6",
+        "status": "proved"
+      },
+      {
+        "rule": "r0_ccw_seek_face",
+        "status": "proved"
+      },
+      {
+        "rule": "r1_cw_seek_face",
+        "status": "proved"
+      },
+      {
+        "rule": "r1_ccw_seek_face",
+        "status": "proved"
+      },
+      {
+        "rule": "r0_cw_seek_face",
+        "status": "proved"
+      },
+      {
+        "rule": "look_0",
+        "status": "proved"
+      },
+      {
+        "rule": "look_1",
+        "status": "proved"
+      },
+      {
+        "rule": "look_2",
+        "status": "proved"
+      },
+      {
+        "rule": "look_3",
+        "status": "proved"
+      },
+      {
+        "rule": "look_4",
+        "status": "proved"
+      },
+      {
+        "rule": "look_5",
+        "status": "proved"
+      },
+      {
+        "rule": "look_6",
+        "status": "proved"
+      },
+      {
+        "rule": "look_7",
+        "status": "proved"
+      },
+      {
+        "rule": "brake",
+        "status": "proved"
+      }
+    ],
+    "argument": "Finite typed real scores select an enabled maximum with fixed ties. Every enabled rule implies its own executable condition; an enabled rule always exists under the stated brake assumption."
+  },
+  "scope": "startability only; neither completion nor physical safety follows"
+}

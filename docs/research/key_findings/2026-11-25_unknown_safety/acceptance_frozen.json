@@ -1,0 +1,95 @@
+{
+  "sources": {
+    "experiments/planar_tasks/authoring_v2/symbolic_unknown/__init__.py": "fa2505a1915ac277463c2f6a849d18861696fa53b64de587c2c91fb56df45659",
+    "experiments/planar_tasks/authoring_v2/symbolic_unknown/evidence.py": "6570473f658bad1901c9f0d90ea8053ec9a5a921764513c18aa8874ee4443499",
+    "experiments/planar_tasks/authoring_v2/symbolic_unknown/geometry.py": "c31e6ffbc9dadb360acdf1615e8a62ba0c8961cd96789c881430a2b3f1f20e1b",
+    "experiments/planar_tasks/authoring_v2/symbolic_unknown/policy.py": "e132548f3ccf9d117fb1f687d77990109d5bca7e35ece4f8052cfadd4401572b",
+    "experiments/planar_tasks/authoring_v2/symbolic_unknown/runtime.py": "302f8400d1dcf339b2fd6ef73fc420e33f41241987b7f06409a35899653c3f69",
+    "tools/cap_unknown_safety.py": "19bb981221192f044d0165b46b7874b229a9cbe6444cf9fcc913ccd1aac17640",
+    "tools/cap_unknown_safety_confirm.py": "51424201d6d753731bada49b5332e44ee635de21037204229eb092024393e3d2",
+    "tests/test_symbolic_unknown.py": "5a90fd0a8a17f2fb4e7b64a72936f8a8eac00b9b8ab0a1ae5c58fb6738dfc933"
+  },
+  "panels": {
+    "pair00": {
+      "x": 2.558370655866877,
+      "y": 2.2941054646912145,
+      "robot_gap": 0.6914467701842921,
+      "obstacle_gap": 0.13662253284040848
+    },
+    "pair01": {
+      "x": 2.644687302866439,
+      "y": 2.315396152003699,
+      "robot_gap": 0.6879196409503424,
+      "obstacle_gap": 0.12350676210189736
+    },
+    "pair02": {
+      "x": 2.437373067952524,
+      "y": 2.266130086722466,
+      "robot_gap": 0.6504051922832306,
+      "obstacle_gap": 0.12259926898805404
+    },
+    "pair03": {
+      "x": 2.4463543795170564,
+      "y": 2.5676882362889337,
+      "robot_gap": 0.6847224559242181,
+      "obstacle_gap": 0.12062304002547422
+    },
+    "pair04": {
+      "x": 2.5731660894716057,
+      "y": 2.286283950676354,
+      "robot_gap": 0.6663430510425935,
+      "obstacle_gap": 0.12267980850402876
+    },
+    "pair05": {
+      "x": 2.393365980044889,
+      "y": 2.2683095270427085,
+      "robot_gap": 0.655078665091912,
+      "obstacle_gap": 0.1324583491203131
+    },
+    "pair06": {
+      "x": 2.4249334534102456,
+      "y": 2.5121024209941973,
+      "robot_gap": 0.6785945133938645,
+      "obstacle_gap": 0.13061577877455
+    },
+    "pair07": {
+      "x": 2.5565662143702643,
+      "y": 2.3212230946418777,
+      "robot_gap": 0.6822495615494982,
+      "obstacle_gap": 0.1103941711210301
+    },
+    "pair08": {
+      "x": 2.6452827817552143,
+      "y": 2.2646495298833558,
+      "robot_gap": 0.6999786893606311,
+      "obstacle_gap": 0.11556140257216693
+    },
+    "pair09": {
+      "x": 2.5729133343603663,
+      "y": 2.250757888246506,
+      "robot_gap": 0.6758368518122161,
+      "obstacle_gap": 0.11573775214829164
+    },
+    "pair10": {
+      "x": 2.3967094810167864,
+      "y": 2.484038806421013,
+      "robot_gap": 0.6591009698785678,
+      "obstacle_gap": 0.12969663328066416
+    },
+    "pair11": {
+      "x": 2.353373498558338,
+      "y": 2.557854615256456,
+      "robot_gap": 0.6537767977281863,
+      "obstacle_gap": 0.1177695713489254
+    }
+  },
+  "seed": 2026112507,
+  "arms": [
+    "empty_observe",
+    "blocked_observe",
+    "empty_no_observe"
+  ],
+  "old_policy_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+  "endpoint": "at least .02m x progress and complete 40 tick brake; all physical contacts and envelope violations count",
+  "scope": "local conditional-safety acceptance; no whole-task or online-cost improvement claim"
+}

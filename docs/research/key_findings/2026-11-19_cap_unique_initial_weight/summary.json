@@ -1,0 +1,325 @@
+{
+  "ranking": {
+    "base_v": {
+      "rooms": 600,
+      "legal": 4200,
+      "picks": [
+        600,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_success": 259,
+      "rare_hits": 0,
+      "rare": 72,
+      "main_hits": 20,
+      "main": 20,
+      "rare_margin": -0.057414511761938535,
+      "brier": 0.2274683092845668
+    },
+    "v": {
+      "rooms": 600,
+      "legal": 4200,
+      "picks": [
+        599,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_success": 259,
+      "rare_hits": 0,
+      "rare": 72,
+      "main_hits": 20,
+      "main": 20,
+      "rare_margin": -0.07523594569000933,
+      "brier": 0.22875170086451055
+    }
+  },
+  "closed": {
+    "all": {
+      "n": 600,
+      "baseline": 323,
+      "weighted": 297,
+      "gained": 58,
+      "lost": 84,
+      "pp": -4.333333333333334,
+      "ci": [
+        -8.166666666666666,
+        -0.5
+      ]
+    },
+    "unique_other": {
+      "n": 72,
+      "baseline": 30,
+      "weighted": 28,
+      "gained": 10,
+      "lost": 12,
+      "pp": -2.7777777777777777,
+      "ci": [
+        -15.277777777777779,
+        9.722222222222221
+      ]
+    },
+    "unique_009": {
+      "n": 20,
+      "baseline": 13,
+      "weighted": 10,
+      "gained": 0,
+      "lost": 3,
+      "pp": -15.0,
+      "ci": [
+        -30.0,
+        0.0
+      ]
+    },
+    "multiple": {
+      "n": 357,
+      "baseline": 264,
+      "weighted": 238,
+      "gained": 38,
+      "lost": 64,
+      "pp": -7.282913165266107,
+      "ci": [
+        -12.88515406162465,
+        -1.680672268907563
+      ]
+    },
+    "outside": {
+      "n": 151,
+      "baseline": 16,
+      "weighted": 21,
+      "gained": 10,
+      "lost": 5,
+      "pp": 3.3112582781456954,
+      "ci": [
+        -1.3245033112582782,
+        8.609271523178808
+      ]
+    }
+  },
+  "fit": {
+    "base": {
+      "train": {
+        "rooms": 1154,
+        "legal": 8078,
+        "picks": [
+          1154,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "initial_success": 443,
+        "rare_hits": 0,
+        "rare": 178,
+        "main_hits": 52,
+        "main": 52,
+        "rare_margin": -0.047892926757883154,
+        "brier": 0.16479559068726202
+      },
+      "validation": {
+        "rooms": 152,
+        "legal": 1064,
+        "picks": [
+          152,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "initial_success": 59,
+        "rare_hits": 0,
+        "rare": 24,
+        "main_hits": 3,
+        "main": 3,
+        "rare_margin": -0.05004159306796888,
+        "brier": 0.20831964641952877
+      }
+    },
+    "weighted": {
+      "train": {
+        "rooms": 1154,
+        "legal": 8078,
+        "picks": [
+          1154,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "initial_success": 443,
+        "rare_hits": 0,
+        "rare": 178,
+        "main_hits": 52,
+        "main": 52,
+        "rare_margin": -0.0424371948151776,
+        "brier": 0.1698905798752751
+      },
+      "validation": {
+        "rooms": 152,
+        "legal": 1064,
+        "picks": [
+          151,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "initial_success": 59,
+        "rare_hits": 0,
+        "rare": 24,
+        "main_hits": 3,
+        "main": 3,
+        "rare_margin": -0.07671662761519353,
+        "brier": 0.2136540114315986
+      }
+    }
+  },
+  "targets": {
+    "nonterminal": 565458,
+    "sample": 16384,
+    "fallback": 0,
+    "cap_order": [
+      "CAP-RR-009",
+      "CAP-RR-003",
+      "CAP-RR-001",
+      "CAP-RR-010",
+      "CAP-RR-006",
+      "CAP-RR-007",
+      "CAP-RR-002"
+    ],
+    "base_to_weighted": [
+      [
+        16319,
+        25,
+        12,
+        6,
+        10,
+        0,
+        0
+      ],
+      [
+        4,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "base_target_mean": 0.18032589554786682,
+    "weighted_target_mean": 0.2218954861164093,
+    "mean_absolute_change": 0.0696352869272232
+  },
+  "singleton_scores": {
+    "baseline": {
+      "train_unique": 230,
+      "winner_probability": 0.19764909148216248,
+      "loser_probability": 0.1914019137620926,
+      "brier": 0.13947877287864685,
+      "mean_each_cap": [
+        0.23471404612064362,
+        0.2001904398202896,
+        0.1928928643465042,
+        0.2003684937953949,
+        0.16088978946208954,
+        0.17543147504329681,
+        0.18157334625720978
+      ],
+      "cap009_on_rare": 0.24285799264907837,
+      "winner_on_rare": 0.19496506452560425,
+      "median_winner_rank_on_rare": 4.0
+    },
+    "weighted": {
+      "train_unique": 230,
+      "winner_probability": 0.16938650608062744,
+      "loser_probability": 0.14932507276535034,
+      "brier": 0.1197207123041153,
+      "mean_each_cap": [
+        0.20222924649715424,
+        0.1617460548877716,
+        0.1405266523361206,
+        0.16668866574764252,
+        0.1265653371810913,
+        0.12969811260700226,
+        0.137882798910141
+      ],
+      "cap009_on_rare": 0.18908897042274475,
+      "winner_on_rare": 0.14665178954601288,
+      "median_winner_rank_on_rare": 4.0
+    }
+  },
+  "input_check": {
+    "identical": 230,
+    "total": 230
+  },
+  "baseline_check": {
+    "matched": 4,
+    "fields": [
+      "success",
+      "ticks",
+      "decisions",
+      "terminal history hash"
+    ]
+  }
+}

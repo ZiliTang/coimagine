@@ -1,0 +1,314 @@
+{
+  "development": {
+    "rooms": 200,
+    "forks": 189,
+    "mixed": 63,
+    "opposite_pairs": 63,
+    "upper": 123,
+    "actor": {
+      "success": 85,
+      "mixed_success": 25,
+      "pairwins": 25.0,
+      "room_rank": 0.3968253968253968
+    },
+    "actions": {
+      "success": 98,
+      "mixed_success": 38,
+      "pairwins": 38.0,
+      "room_rank": 0.6031746031746031
+    },
+    "semantics": {
+      "success": 94,
+      "mixed_success": 34,
+      "pairwins": 34.0,
+      "room_rank": 0.5396825396825397
+    },
+    "semantics_vs_actions": {
+      "rescued": 2,
+      "lost": 6,
+      "success_ci": [
+        -0.05,
+        0.005
+      ],
+      "rank_ci": [
+        -0.15873015873015872,
+        0.015873015873015872
+      ]
+    },
+    "semantics_vs_actor": {
+      "rescued": 25,
+      "lost": 16,
+      "success_ci": [
+        -0.015,
+        0.105
+      ],
+      "rank_ci": [
+        -0.047619047619047616,
+        0.3333333333333333
+      ]
+    },
+    "actions_vs_actor": {
+      "rescued": 29,
+      "lost": 16,
+      "success_ci": [
+        0.0,
+        0.13
+      ],
+      "rank_ci": [
+        0.0,
+        0.4126984126984127
+      ]
+    },
+    "contrasts": {
+      "changed": 14,
+      "mixed_changed": 8,
+      "sweep_differs": 6,
+      "both_repeat_box_observed": 4,
+      "both_repeat_box_progress_differs": 0,
+      "any_feature_differs": 62,
+      "feature_contrasts": {
+        "push_box_seen": {
+          "winner_higher": 8,
+          "loser_higher": 5
+        },
+        "sweep_static": {
+          "winner_higher": 1,
+          "loser_higher": 1
+        },
+        "sweep_movable": {
+          "winner_higher": 2,
+          "loser_higher": 2
+        },
+        "push_goal_progress": {
+          "winner_higher": 7,
+          "loser_higher": 8
+        },
+        "contact_alignment": {
+          "winner_higher": 8,
+          "loser_higher": 5
+        },
+        "move_close_target": {
+          "winner_higher": 29,
+          "loser_higher": 28
+        },
+        "move_surface_shortfall": {
+          "winner_higher": 4,
+          "loser_higher": 3
+        },
+        "move_teammate_shortfall": {
+          "winner_higher": 1,
+          "loser_higher": 0
+        },
+        "repeat_blocked": {
+          "winner_higher": 0,
+          "loser_higher": 0
+        },
+        "repeat_robot_progress": {
+          "winner_higher": 7,
+          "loser_higher": 12
+        },
+        "repeat_box_observed": {
+          "winner_higher": 4,
+          "loser_higher": 4
+        },
+        "repeat_box_progress": {
+          "winner_higher": 5,
+          "loser_higher": 3
+        }
+      }
+    }
+  },
+  "held": {
+    "rooms": 200,
+    "forks": 197,
+    "mixed": 60,
+    "opposite_pairs": 98,
+    "upper": 111,
+    "actor": {
+      "success": 77,
+      "mixed_success": 26,
+      "pairwins": 50.0,
+      "room_rank": 0.4930555555555555
+    },
+    "actions": {
+      "success": 82,
+      "mixed_success": 31,
+      "pairwins": 50.0,
+      "room_rank": 0.5555555555555555
+    },
+    "semantics": {
+      "success": 83,
+      "mixed_success": 32,
+      "pairwins": 52.0,
+      "room_rank": 0.5652777777777778
+    },
+    "semantics_vs_actions": {
+      "rescued": 2,
+      "lost": 1,
+      "success_ci": [
+        -0.01,
+        0.025
+      ],
+      "rank_ci": [
+        -0.025,
+        0.04583333333333333
+      ]
+    },
+    "semantics_vs_actor": {
+      "rescued": 14,
+      "lost": 8,
+      "success_ci": [
+        -0.015,
+        0.08
+      ],
+      "rank_ci": [
+        -0.05562499999999999,
+        0.20555555555555557
+      ]
+    },
+    "actions_vs_actor": {
+      "rescued": 12,
+      "lost": 7,
+      "success_ci": [
+        -0.015,
+        0.07
+      ],
+      "rank_ci": [
+        -0.06250000000000001,
+        0.18614583333333282
+      ]
+    },
+    "contrasts": {
+      "changed": 21,
+      "mixed_changed": 4,
+      "sweep_differs": 11,
+      "both_repeat_box_observed": 18,
+      "both_repeat_box_progress_differs": 0,
+      "any_feature_differs": 96,
+      "feature_contrasts": {
+        "push_box_seen": {
+          "winner_higher": 13,
+          "loser_higher": 16
+        },
+        "sweep_static": {
+          "winner_higher": 1,
+          "loser_higher": 3
+        },
+        "sweep_movable": {
+          "winner_higher": 4,
+          "loser_higher": 3
+        },
+        "push_goal_progress": {
+          "winner_higher": 20,
+          "loser_higher": 22
+        },
+        "contact_alignment": {
+          "winner_higher": 14,
+          "loser_higher": 15
+        },
+        "move_close_target": {
+          "winner_higher": 40,
+          "loser_higher": 38
+        },
+        "move_surface_shortfall": {
+          "winner_higher": 0,
+          "loser_higher": 2
+        },
+        "move_teammate_shortfall": {
+          "winner_higher": 2,
+          "loser_higher": 0
+        },
+        "repeat_blocked": {
+          "winner_higher": 4,
+          "loser_higher": 0
+        },
+        "repeat_robot_progress": {
+          "winner_higher": 19,
+          "loser_higher": 7
+        },
+        "repeat_box_observed": {
+          "winner_higher": 12,
+          "loser_higher": 7
+        },
+        "repeat_box_progress": {
+          "winner_higher": 12,
+          "loser_higher": 4
+        }
+      }
+    }
+  },
+  "weights": {
+    "actions": {
+      "actor_logit": -0.02973392344308849,
+      "votes": 0.06388363844704624,
+      "ticks": 0.010683267354768355,
+      "target_present": -0.3104237372762574,
+      "task_target": -0.3104237372762574,
+      "cap0": 0.24571907176629257,
+      "cap1": 0.20752776856653468,
+      "cap2": -0.04570460167513862,
+      "cap3": -0.01621804294366633,
+      "cap4": -0.09895853975824749,
+      "r0_move": -0.3473932884103388,
+      "r0_rotate": 0.0,
+      "r0_translate": 0.7606127509076536,
+      "r0_reposition": 0.0,
+      "r0_wait": -0.40853271839736666,
+      "r0_speed": 0.7465223794509408,
+      "r0_dx": -0.06921667479365815,
+      "r0_dy": -0.051602074472959086,
+      "r0_turn": 0.0,
+      "r1_move": -0.25617002689128504,
+      "r1_rotate": 0.0,
+      "r1_translate": -0.01957731058040628,
+      "r1_reposition": 0.0,
+      "r1_wait": 0.07234797977581357,
+      "r1_speed": -0.8569919788735533,
+      "r1_dx": -0.5250155007181211,
+      "r1_dy": -0.10862638728607252,
+      "r1_turn": 0.0
+    },
+    "semantics": {
+      "actor_logit": -0.028726562484657367,
+      "votes": 0.06775512320705675,
+      "ticks": 0.00013340678148679357,
+      "target_present": -0.5201137165820395,
+      "task_target": -0.5201137165820395,
+      "cap0": 0.25461153368634015,
+      "cap1": 0.26253494845774533,
+      "cap2": -0.06510075435900722,
+      "cap3": -0.01503602578044801,
+      "cap4": -0.13349861441444072,
+      "r0_move": -0.23984706619540758,
+      "r0_rotate": 0.0,
+      "r0_translate": 0.6171152551684341,
+      "r0_reposition": 0.0,
+      "r0_wait": -0.4058241341484811,
+      "r0_speed": 0.810361760023092,
+      "r0_dx": -0.06425603734680983,
+      "r0_dy": -0.04948175702056838,
+      "r0_turn": 0.0,
+      "r1_move": -0.17234877867673637,
+      "r1_rotate": 0.0,
+      "r1_translate": -0.48269522749623667,
+      "r1_reposition": 0.0,
+      "r1_wait": 0.1250568206062035,
+      "r1_speed": -0.813386114124921,
+      "r1_dx": -0.5240511896802826,
+      "r1_dy": -0.19989533065968026,
+      "r1_turn": 0.0,
+      "push_box_seen": 0.27871202973315085,
+      "sweep_static": 0.05793239028754108,
+      "sweep_movable": 0.23891297277982487,
+      "push_goal_progress": 0.5966083747958828,
+      "contact_alignment": -0.023312610787129855,
+      "move_close_target": 0.3030457799862526,
+      "move_surface_shortfall": 2.6146113273757265,
+      "move_teammate_shortfall": 1.0500834006286648,
+      "repeat_blocked": 0.0,
+      "repeat_robot_progress": -1.2806966783765388,
+      "repeat_box_observed": 0.07909180987415401,
+      "repeat_box_progress": 4.140508363910789
+    }
+  }
+}

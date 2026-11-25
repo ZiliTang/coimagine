@@ -1,0 +1,476 @@
+{
+  "collection": {
+    "original": {
+      "scenes": 304,
+      "planned": 1216,
+      "mismatch": 275,
+      "verified": 458,
+      "forks": 445,
+      "transitions": 1516,
+      "contributing_scenes": 302,
+      "terminal_or_no_legal": 6,
+      "v009_top": 1509
+    },
+    "all": {
+      "scenes": 608,
+      "planned": 2432,
+      "mismatch": 275,
+      "verified": 1674,
+      "forks": 1635,
+      "transitions": 5568,
+      "contributing_scenes": 606,
+      "terminal_or_no_legal": 39,
+      "v009_top": 5518
+    },
+    "augment": {
+      "scenes": 304,
+      "planned": 1216,
+      "mismatch": 0,
+      "verified": 1216,
+      "forks": 1190,
+      "transitions": 4052,
+      "contributing_scenes": 304,
+      "terminal_or_no_legal": 33,
+      "v009_top": 4009
+    }
+  },
+  "effect_differences": {
+    "B": [
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.05190812796354294,
+        "predicted_delta_mae": 0.052208997309207916,
+        "mean_abs_pred_delta": 0.0011227438226342201
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.07140541076660156,
+        "predicted_delta_mae": 0.07178516685962677,
+        "mean_abs_pred_delta": 0.001223000232130289
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.08163265138864517,
+        "predicted_delta_mae": 0.08454946428537369,
+        "mean_abs_pred_delta": 0.0031319954432547092
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.0714285746216774,
+        "predicted_delta_mae": 0.07374048233032227,
+        "mean_abs_pred_delta": 0.0025131693109869957
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 9.137755393981934,
+        "predicted_delta_mae": 9.165515899658203,
+        "mean_abs_pred_delta": 0.1735001653432846
+      }
+    ],
+    "C": [
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.05190812796354294,
+        "predicted_delta_mae": 0.05221808701753616,
+        "mean_abs_pred_delta": 0.0011090586194768548
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.07140541076660156,
+        "predicted_delta_mae": 0.07175099849700928,
+        "mean_abs_pred_delta": 0.0012888506753370166
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.08163265138864517,
+        "predicted_delta_mae": 0.08437961339950562,
+        "mean_abs_pred_delta": 0.0029368954710662365
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 0.0714285746216774,
+        "predicted_delta_mae": 0.0738154947757721,
+        "mean_abs_pred_delta": 0.002504219301044941
+      },
+      {
+        "observed_pairs": 196,
+        "zero_delta_mae": 9.137755393981934,
+        "predicted_delta_mae": 9.159615516662598,
+        "mean_abs_pred_delta": 0.1674157679080963
+      }
+    ],
+    "nominal_ticks_baseline": {
+      "mae": 0.34438775510204084,
+      "paired_delta_mae": 0.42346938775510207
+    }
+  },
+  "fresh": {
+    "all": {
+      "n": 200,
+      "success": {
+        "original": 99,
+        "A": 99,
+        "B": 96,
+        "C": 96,
+        "CAP-RR-009": 79,
+        "CAP-RR-003": 74,
+        "CAP-RR-001": 73,
+        "CAP-RR-010": 67,
+        "CAP-RR-006": 40,
+        "CAP-RR-007": 50,
+        "CAP-RR-002": 66
+      },
+      "comparisons": {
+        "A-original": {
+          "n": 200,
+          "rescue": 11,
+          "loss": 11,
+          "delta_pp": 0.0,
+          "ci_pp": [
+            -4.5,
+            4.5
+          ]
+        },
+        "B-A": {
+          "n": 200,
+          "rescue": 8,
+          "loss": 11,
+          "delta_pp": -1.5,
+          "ci_pp": [
+            -5.5,
+            2.5
+          ]
+        },
+        "C-B": {
+          "n": 200,
+          "rescue": 8,
+          "loss": 8,
+          "delta_pp": 0.0,
+          "ci_pp": [
+            -4.0,
+            4.0
+          ]
+        },
+        "C-A": {
+          "n": 200,
+          "rescue": 12,
+          "loss": 15,
+          "delta_pp": -1.5,
+          "ci_pp": [
+            -6.5,
+            3.5
+          ]
+        },
+        "C-original": {
+          "n": 200,
+          "rescue": 12,
+          "loss": 15,
+          "delta_pp": -1.5,
+          "ci_pp": [
+            -6.5,
+            3.5
+          ]
+        }
+      }
+    },
+    "union": {
+      "n": 136,
+      "success": {
+        "original": 93,
+        "A": 93,
+        "B": 92,
+        "C": 89,
+        "CAP-RR-009": 79,
+        "CAP-RR-003": 74,
+        "CAP-RR-001": 73,
+        "CAP-RR-010": 67,
+        "CAP-RR-006": 40,
+        "CAP-RR-007": 50,
+        "CAP-RR-002": 66
+      },
+      "comparisons": {
+        "A-original": {
+          "n": 136,
+          "rescue": 8,
+          "loss": 8,
+          "delta_pp": 0.0,
+          "ci_pp": [
+            -5.88,
+            5.88
+          ]
+        },
+        "B-A": {
+          "n": 136,
+          "rescue": 7,
+          "loss": 8,
+          "delta_pp": -0.7352941176470588,
+          "ci_pp": [
+            -5.88,
+            5.15
+          ]
+        },
+        "C-B": {
+          "n": 136,
+          "rescue": 4,
+          "loss": 7,
+          "delta_pp": -2.2058823529411766,
+          "ci_pp": [
+            -6.62,
+            2.21
+          ]
+        },
+        "C-A": {
+          "n": 136,
+          "rescue": 8,
+          "loss": 12,
+          "delta_pp": -2.941176470588235,
+          "ci_pp": [
+            -9.56,
+            3.68
+          ]
+        },
+        "C-original": {
+          "n": 136,
+          "rescue": 9,
+          "loss": 13,
+          "delta_pp": -2.941176470588235,
+          "ci_pp": [
+            -9.56,
+            3.68
+          ]
+        }
+      }
+    },
+    "unique": {
+      "n": 19,
+      "success": {
+        "original": 6,
+        "A": 6,
+        "B": 7,
+        "C": 5,
+        "CAP-RR-009": 3,
+        "CAP-RR-003": 6,
+        "CAP-RR-001": 2,
+        "CAP-RR-010": 5,
+        "CAP-RR-006": 1,
+        "CAP-RR-007": 1,
+        "CAP-RR-002": 1
+      },
+      "comparisons": {
+        "A-original": {
+          "n": 19,
+          "rescue": 1,
+          "loss": 1,
+          "delta_pp": 0.0,
+          "ci_pp": [
+            -15.79,
+            15.79
+          ]
+        },
+        "B-A": {
+          "n": 19,
+          "rescue": 1,
+          "loss": 0,
+          "delta_pp": 5.263157894736842,
+          "ci_pp": [
+            0.0,
+            15.79
+          ]
+        },
+        "C-B": {
+          "n": 19,
+          "rescue": 0,
+          "loss": 2,
+          "delta_pp": -10.526315789473683,
+          "ci_pp": [
+            -26.32,
+            0.0
+          ]
+        },
+        "C-A": {
+          "n": 19,
+          "rescue": 1,
+          "loss": 2,
+          "delta_pp": -5.263157894736842,
+          "ci_pp": [
+            -21.05,
+            10.53
+          ]
+        },
+        "C-original": {
+          "n": 19,
+          "rescue": 1,
+          "loss": 2,
+          "delta_pp": -5.263157894736842,
+          "ci_pp": [
+            -21.05,
+            10.53
+          ]
+        }
+      }
+    },
+    "outside": {
+      "n": 64,
+      "success": {
+        "original": 6,
+        "A": 6,
+        "B": 4,
+        "C": 7,
+        "CAP-RR-009": 0,
+        "CAP-RR-003": 0,
+        "CAP-RR-001": 0,
+        "CAP-RR-010": 0,
+        "CAP-RR-006": 0,
+        "CAP-RR-007": 0,
+        "CAP-RR-002": 0
+      },
+      "comparisons": {
+        "A-original": {
+          "n": 64,
+          "rescue": 3,
+          "loss": 3,
+          "delta_pp": 0.0,
+          "ci_pp": [
+            -7.81,
+            7.81
+          ]
+        },
+        "B-A": {
+          "n": 64,
+          "rescue": 1,
+          "loss": 3,
+          "delta_pp": -3.125,
+          "ci_pp": [
+            -9.38,
+            3.12
+          ]
+        },
+        "C-B": {
+          "n": 64,
+          "rescue": 4,
+          "loss": 1,
+          "delta_pp": 4.6875,
+          "ci_pp": [
+            -1.56,
+            10.94
+          ]
+        },
+        "C-A": {
+          "n": 64,
+          "rescue": 4,
+          "loss": 3,
+          "delta_pp": 1.5625,
+          "ci_pp": [
+            -6.25,
+            9.38
+          ]
+        },
+        "C-original": {
+          "n": 64,
+          "rescue": 3,
+          "loss": 2,
+          "delta_pp": 1.5625,
+          "ci_pp": [
+            -4.69,
+            7.81
+          ]
+        }
+      }
+    }
+  },
+  "held": {
+    "A": {
+      "pairs": 196,
+      "informative": 40,
+      "correct": 26,
+      "wins": 94,
+      "ties": 0,
+      "q_mse": 0.010514562018215656
+    },
+    "B": {
+      "pairs": 196,
+      "informative": 40,
+      "correct": 26,
+      "wins": 94,
+      "ties": 0,
+      "q_mse": 0.010299766436219215,
+      "mae": [
+        0.060248520225286484,
+        0.07410790771245956,
+        0.12046149373054504,
+        0.13949966430664062,
+        6.499903678894043
+      ],
+      "mean_baseline_mae": [
+        0.06055346131324768,
+        0.07134611904621124,
+        0.1082296073436737,
+        0.12386011332273483,
+        6.496028423309326
+      ]
+    },
+    "C": {
+      "pairs": 196,
+      "informative": 40,
+      "correct": 27,
+      "wins": 95,
+      "ties": 0,
+      "q_mse": 0.010337015613913536,
+      "mae": [
+        0.05990822613239288,
+        0.07443036884069443,
+        0.12128549814224243,
+        0.14029231667518616,
+        6.523493766784668
+      ],
+      "mean_baseline_mae": [
+        0.06055346131324768,
+        0.07134611904621124,
+        0.1082296073436737,
+        0.12386011332273483,
+        6.496028423309326
+      ],
+      "swap_changes": 2,
+      "swap_correct": 26
+    },
+    "original": {
+      "correct": 27,
+      "informative": 40,
+      "pairs": 196,
+      "wins": 95,
+      "q_mse": 0.010354001075029373
+    }
+  },
+  "held_paired": {
+    "A-original": {
+      "n": 40,
+      "rescue": 0,
+      "loss": 1,
+      "delta_pp": -2.5,
+      "ci_pp": [
+        -7.5,
+        0.0
+      ]
+    },
+    "B-A": {
+      "n": 40,
+      "rescue": 0,
+      "loss": 0,
+      "delta_pp": 0.0,
+      "ci_pp": [
+        0.0,
+        0.0
+      ]
+    },
+    "C-B": {
+      "n": 40,
+      "rescue": 1,
+      "loss": 0,
+      "delta_pp": 2.5,
+      "ci_pp": [
+        0.0,
+        7.5
+      ]
+    }
+  }
+}

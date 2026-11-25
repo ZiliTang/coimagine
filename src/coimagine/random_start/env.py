@@ -65,6 +65,7 @@ from .spec import (
     DISTANCE_COST,
     ROBOT_ACTIONS,
     ROBOT_RADIUS,
+    planar_base_config,
     SUCCESS_ANGULAR,
     SUCCESS_BONUS,
     SUCCESS_DISTANCE,
@@ -111,11 +112,13 @@ class EnvConfig:
     max_omega: float = 1.5            # rad/s heading-rate limit
     align_gain: float = 3.0           # heading-rate proportional gain
     align_tolerance_deg: float = 20.0  # full force inside this heading error
-    base: Continuous2DConfig = field(default_factory=Continuous2DConfig)
+    base: Continuous2DConfig = field(default_factory=planar_base_config)
     peer_clearance_recovery: str = "off"
     lidar_backend: str = "scalar"
 
     def __post_init__(self):
+        if self.base.physics.robot_radius != ROBOT_RADIUS:
+            raise ValueError("physics robot radius differs from the selected planar geometry")
         if not math.isclose(self.base.physics.control_dt,CONTROL_DT,rel_tol=0.,abs_tol=1e-12):
             raise ValueError('random-start clocks currently require 20 Hz control; changing physics_dt alone is supported')
         if self.lidar_backend not in ('scalar','numpy_batch'):

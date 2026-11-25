@@ -124,8 +124,13 @@ def ended(w):
     return w.env.termination is not None or remaining(w)<=0 or w.decision_count>=MAX_DECISIONS
 
 
-def tick_action(w,action,controller,update,counts):
+def tick_action(w,action,controller,update,counts,*,review=None,takeover=None):
     if controller=='coupled' or len(translating(action))!=1:
+        if takeover is not None and translating(action):
+            probe=takeover(w,action)
+            event=w.step(action,remaining_ticks=remaining(w),review=probe)
+            update(w.history)
+            return event.get('replacement')
         w.step(action,remaining_ticks=remaining(w));update(w.history)
         return
     contact=push_phases.contact(w,action,min(remaining(w),action['ticks']))
@@ -138,12 +143,22 @@ def tick_action(w,action,controller,update,counts):
     default=dict(action,ticks=left)
     push=PRECISION.choose_push(observe(w),action,left)
     counts['retimed']+=push!=default
-    drive=push_phases.push_from_contact(w,push,min(remaining(w),push['ticks']))
+    probe=review(w,push) if review is not None else None
+    if takeover is not None:
+        extra=takeover(w,push)
+        original=probe
+        def probe(feedback,left):
+            replacement=extra(feedback,left)
+            if replacement is not None or original is None:
+                return replacement
+            return original(feedback,left)
+    drive=push_phases.push_from_contact(w,push,min(remaining(w),push['ticks']),review=probe)
     if drive.ticks:update(w.history)
     elif not contact.ticks:
         w.step(dict(target_id=None,a0=44,a1=44,ticks=1),remaining_ticks=remaining(w))
         update(w.history)
     counts['drive_'+drive.status]+=1
+    return drive.event.get('replacement') if drive.event else None
 
 
 def output(w,counts):

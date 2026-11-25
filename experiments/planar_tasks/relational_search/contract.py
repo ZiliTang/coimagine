@@ -6,7 +6,7 @@ import math
 import marshal
 import pickle
 from itertools import zip_longest
-from .motion import MOVE_IDS, is_global_pair
+from .motion import ACTIONS, MOVE_IDS, VERSION, is_global_pair
 from .action_scale import MIN_TICKS, MAX_TICKS
 from experiments.planar_tasks.semantic_planning.runtime import public_copy
 
@@ -127,6 +127,14 @@ def _project_observation(raw, copy_value):
     return base
 
 
+class NoLegalPushFace(ValueError):
+    """The named pusher has no offered translating action in this direction."""
+
+    def __init__(self, robot):
+        super().__init__('push_no_legal_face')
+        self.robot = robot
+
+
 def validate_action(action, observation):
     if not isinstance(action, dict) or set(action) != {'target_id', 'a0', 'a1', 'ticks'}:
         raise ValueError('exact target_id/a0/a1/ticks command required')
@@ -144,6 +152,13 @@ def validate_action(action, observation):
         raise ValueError('MOVE is target-free; use target_id=null')
     if not global_action and action['target_id'] not in ids:
         raise ValueError('target requires current observed support')
+    menu = observation.get('entity_legal_pairs', {}).get(action['target_id'], ())
+    if not global_action and observation.get('action_version') == VERSION and pair not in menu:
+        # Each individually available translation is offered with a waiting peer.
+        for robot, code in enumerate(pair):
+            if (0 <= code < len(ACTIONS) and getattr(ACTIONS[code], 'effect_kind', None) == 'translate'
+                    and not any(offered[robot] == code for offered in menu)):
+                raise NoLegalPushFace(robot)
     if [action['a0'], action['a1']] not in observation['legal_pairs']:
         raise ValueError('joint pair outside public menu')
     if not global_action and 'entity_legal_pairs' in observation and [action['a0'],action['a1']] not in observation['entity_legal_pairs'][action['target_id']]:

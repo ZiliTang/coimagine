@@ -1,0 +1,837 @@
+{
+  "protocol": "frozen-change-face-development-audit-v1",
+  "collector_sha256": "42694eeea1dff10e797b3682311ea137bd4e318c5fa07b0aa231d83acbe9afab",
+  "selection": "first two dev IDs in lexical order; short PUSH from earliest ready; first room also later ready",
+  "angle_definition": "counter-clockwise polar angle of pusher about the true box center, audit only",
+  "totals": {
+    "candidates": 60,
+    "followup_completed": 0,
+    "entirely_orbit": 34,
+    "issued_approach": 26,
+    "consumed_whole_budget": 60,
+    "final_reason": {
+      "unavailable": 28,
+      "budget": 32
+    }
+  },
+  "examples": [
+    {
+      "room": "diag_dev_nat_001",
+      "anchor_id": "early",
+      "progress_m": 0.1,
+      "original_action": {
+        "a0": 44,
+        "a1": 7,
+        "target_id": "entity-a",
+        "ticks": 40
+      },
+      "outcome": {
+        "prefix_ticks": 167,
+        "forward_m": 0.08155015634944014,
+        "lateral_m": 0.0026676052349743767,
+        "yaw_rad": -0.17182260809312078,
+        "peer_motion_m": 0.00909191110791863,
+        "object_static": false,
+        "push_reason": "review_switch",
+        "push_ticks": 9,
+        "endpoint_terminal": null,
+        "progress_reached": true,
+        "endpoint_followup_available": true,
+        "followup_completed": false,
+        "followup_reason": "unavailable",
+        "followup_ticks": 120,
+        "orbit_ticks": 120,
+        "approach_ticks": 0
+      },
+      "timeline": [
+        {
+          "tick": 176,
+          "robot_xy": [
+            1.2822516811733868,
+            1.3018923212398397
+          ],
+          "box_xy": [
+            1.624178040199226,
+            1.429772220992574
+          ],
+          "box_yaw_deg": 54.15631305883395,
+          "robot_polar_deg": -159.49428530962382,
+          "target_range_m": 0.36505739789440855,
+          "on_source_face": "ready",
+          "on_requested_face": "support_unobservable",
+          "observed_contact": true,
+          "stage": "push",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 176,
+                "end_tick": 188,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 0.0,
+          "elapsed_suffix_ticks": 0
+        },
+        {
+          "tick": 188,
+          "robot_xy": [
+            1.3627206640501093,
+            1.3705305170389772
+          ],
+          "box_xy": [
+            1.6840440494549271,
+            1.4789787113329858
+          ],
+          "box_yaw_deg": 44.55622698205288,
+          "robot_polar_deg": -161.35021285009208,
+          "target_range_m": 0.33913084326502085,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "switching",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 188,
+                "end_tick": 200,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": -1.855927540468258,
+          "elapsed_suffix_ticks": 12
+        },
+        {
+          "tick": 200,
+          "robot_xy": [
+            1.3633920618003736,
+            1.362422256011096
+          ],
+          "box_xy": [
+            1.6986320293829245,
+            1.4902918510508816
+          ],
+          "box_yaw_deg": 41.808559539437205,
+          "robot_polar_deg": -159.12179539588826,
+          "target_range_m": 0.3587986471551816,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 200,
+                "end_tick": 212,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 0.3724899137355635,
+          "elapsed_suffix_ticks": 24
+        },
+        {
+          "tick": 212,
+          "robot_xy": [
+            1.301791142761489,
+            1.2790581562337544
+          ],
+          "box_xy": [
+            1.7015246193283062,
+            1.4925350865338058
+          ],
+          "box_yaw_deg": 41.10910875389758,
+          "robot_polar_deg": -151.89563564534495,
+          "target_range_m": 0.45316581077849116,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 212,
+                "end_tick": 224,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 7.598649664278867,
+          "elapsed_suffix_ticks": 36
+        },
+        {
+          "tick": 224,
+          "robot_xy": [
+            1.1903060831153776,
+            1.1845039993530357
+          ],
+          "box_xy": [
+            1.7020981789735359,
+            1.4929798883799172
+          ],
+          "box_yaw_deg": 40.93105540078645,
+          "robot_polar_deg": -148.92108671319622,
+          "target_range_m": 0.5975688441458534,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 224,
+                "end_tick": 236,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 10.573198596427602,
+          "elapsed_suffix_ticks": 48
+        },
+        {
+          "tick": 236,
+          "robot_xy": [
+            1.1412357806386855,
+            1.0439912956496429
+          ],
+          "box_xy": [
+            1.7022119077331763,
+            1.4930680862903964
+          ],
+          "box_yaw_deg": 40.885729843635666,
+          "robot_polar_deg": -141.3217691243303,
+          "target_range_m": 0.7185848447206034,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 236,
+                "end_tick": 248,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 18.172516185293517,
+          "elapsed_suffix_ticks": 60
+        },
+        {
+          "tick": 248,
+          "robot_xy": [
+            1.1418324473028667,
+            0.8946330471917256
+          ],
+          "box_xy": [
+            1.7022344585365283,
+            1.4930855746877145
+          ],
+          "box_yaw_deg": 40.87419169456335,
+          "robot_polar_deg": -133.11939208190017,
+          "target_range_m": 0.819875503879138,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 248,
+                "end_tick": 260,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 26.374893227723646,
+          "elapsed_suffix_ticks": 72
+        },
+        {
+          "tick": 260,
+          "robot_xy": [
+            1.186621281483707,
+            0.752129202387693
+          ],
+          "box_xy": [
+            1.7022389300416543,
+            1.4930890423893772
+          ],
+          "box_yaw_deg": 40.871254524181246,
+          "robot_polar_deg": -124.83320740133908,
+          "target_range_m": 0.9027087260017754,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 260,
+                "end_tick": 272,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 34.66107790828474,
+          "elapsed_suffix_ticks": 84
+        },
+        {
+          "tick": 272,
+          "robot_xy": [
+            1.2711999375066332,
+            0.6290120459798524
+          ],
+          "box_xy": [
+            1.7022398166778328,
+            1.4930897299855357
+          ],
+          "box_yaw_deg": 40.87050683321286,
+          "robot_polar_deg": -116.51203481565076,
+          "target_range_m": 0.9656218832610143,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 272,
+                "end_tick": 284,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 42.982250493973055,
+          "elapsed_suffix_ticks": 96
+        },
+        {
+          "tick": 284,
+          "robot_xy": [
+            1.3913762036724773,
+            0.5403560217694341
+          ],
+          "box_xy": [
+            1.702239992485238,
+            1.4930898663261207
+          ],
+          "box_yaw_deg": 40.87031649975872,
+          "robot_polar_deg": -108.07078357951298,
+          "target_range_m": 1.0021666896074672,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 284,
+                "end_tick": 296,
+                "pair": [
+                  44,
+                  40
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 51.42350173011084,
+          "elapsed_suffix_ticks": 108
+        },
+        {
+          "tick": 296,
+          "robot_xy": [
+            1.496023464502264,
+            0.49424599326492274
+          ],
+          "box_xy": [
+            1.7022400273453584,
+            1.493089893360529
+          ],
+          "box_yaw_deg": 40.87026804815867,
+          "robot_polar_deg": -101.66512000648376,
+          "target_range_m": 1.0199090192507474,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "joint pair outside public menu",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "unavailable",
+          "ccw_rotation_since_endpoint_deg": 57.82916530314006,
+          "elapsed_suffix_ticks": 120
+        }
+      ]
+    },
+    {
+      "room": "diag_dev_nat_001",
+      "anchor_id": "late",
+      "progress_m": 0.1,
+      "original_action": {
+        "a0": 7,
+        "a1": 44,
+        "target_id": "entity-a",
+        "ticks": 28
+      },
+      "outcome": {
+        "prefix_ticks": 545,
+        "forward_m": 0.004545836251049954,
+        "lateral_m": 0.00157521776724907,
+        "yaw_rad": 9.148025112382109e-05,
+        "peer_motion_m": 0.0,
+        "object_static": false,
+        "push_reason": "contact_lost",
+        "push_ticks": 1,
+        "endpoint_terminal": null,
+        "progress_reached": false,
+        "endpoint_followup_available": true,
+        "followup_completed": false,
+        "followup_reason": "budget",
+        "followup_ticks": 120,
+        "orbit_ticks": 72,
+        "approach_ticks": 48
+      },
+      "timeline": [
+        {
+          "tick": 546,
+          "robot_xy": [
+            2.3495183229139505,
+            2.6205949408700366
+          ],
+          "box_xy": [
+            2.4825928435875175,
+            2.895159030065768
+          ],
+          "box_yaw_deg": 63.90501128068081,
+          "robot_polar_deg": -115.85833706507711,
+          "target_range_m": 0.30511353153929643,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "switching",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 546,
+                "end_tick": 558,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 0.0,
+          "elapsed_suffix_ticks": 0
+        },
+        {
+          "tick": 558,
+          "robot_xy": [
+            2.368585428312506,
+            2.6145816553457273
+          ],
+          "box_xy": [
+            2.4942591520815705,
+            2.9191978303612807
+          ],
+          "box_yaw_deg": 63.93736287238925,
+          "robot_polar_deg": -112.41929014182068,
+          "target_range_m": 0.3295222282746483,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 558,
+                "end_tick": 570,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 3.439046923256427,
+          "elapsed_suffix_ticks": 12
+        },
+        {
+          "tick": 570,
+          "robot_xy": [
+            2.4721369306729355,
+            2.533424155950216
+          ],
+          "box_xy": [
+            2.4965724159341516,
+            2.923964384221172
+          ],
+          "box_yaw_deg": 63.94559834728076,
+          "robot_polar_deg": -93.58023931586804,
+          "target_range_m": 0.3913039264278874,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 570,
+                "end_tick": 582,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 22.27809774920908,
+          "elapsed_suffix_ticks": 24
+        },
+        {
+          "tick": 582,
+          "robot_xy": [
+            2.598048883940396,
+            2.4519661460526048
+          ],
+          "box_xy": [
+            2.497031103414803,
+            2.9249095243870675
+          ],
+          "box_yaw_deg": 63.94769478344071,
+          "robot_polar_deg": -77.94315077171717,
+          "target_range_m": 0.4836114464037546,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 582,
+                "end_tick": 594,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 37.91518629335994,
+          "elapsed_suffix_ticks": 36
+        },
+        {
+          "tick": 594,
+          "robot_xy": [
+            2.7280068769675925,
+            2.3770802842880316
+          ],
+          "box_xy": [
+            2.497122054650076,
+            2.925096932304706
+          ],
+          "box_yaw_deg": 63.94822845570986,
+          "robot_polar_deg": -67.15382780623905,
+          "target_range_m": 0.5946680146771158,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 594,
+                "end_tick": 606,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 48.704509258838044,
+          "elapsed_suffix_ticks": 48
+        },
+        {
+          "tick": 606,
+          "robot_xy": [
+            2.8619213290943097,
+            2.3101321130966816
+          ],
+          "box_xy": [
+            2.497140088992732,
+            2.9251340926422515
+          ],
+          "box_yaw_deg": 63.948364308208596,
+          "robot_polar_deg": -59.32619623618688,
+          "target_range_m": 0.7150474026069981,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "joint pair outside public menu",
+          "decision_if_budget_remains": "orbit",
+          "actual_command": {
+            "code": 40,
+            "ticks": 12,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 606,
+                "end_tick": 618,
+                "pair": [
+                  40,
+                  44
+                ]
+              }
+            ]
+          },
+          "ccw_rotation_since_endpoint_deg": 56.53214082889022,
+          "elapsed_suffix_ticks": 60
+        },
+        {
+          "tick": 618,
+          "robot_xy": [
+            3.009004473250117,
+            2.3112717571586563
+          ],
+          "box_xy": [
+            2.497143664947627,
+            2.92514146101123
+          ],
+          "box_yaw_deg": 63.94839889104622,
+          "robot_polar_deg": -50.177758070613855,
+          "target_range_m": 0.799273107507143,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "move",
+          "ccw_menu": "offered",
+          "requested_push_menu": "offered",
+          "decision_if_budget_remains": "approach",
+          "actual_command": {
+            "code": 13,
+            "ticks": 24,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 618,
+                "end_tick": 642,
+                "pair": [
+                  13,
+                  44
+                ]
+              }
+            ],
+            "contact_phase_status": "contact_timeout"
+          },
+          "ccw_rotation_since_endpoint_deg": 65.68057899446325,
+          "elapsed_suffix_ticks": 72
+        },
+        {
+          "tick": 642,
+          "robot_xy": [
+            3.127086716762111,
+            2.3935597598797065
+          ],
+          "box_xy": [
+            2.4971445146056768,
+            2.925143211758712
+          ],
+          "box_yaw_deg": 63.94840993553537,
+          "robot_polar_deg": -40.15970358452167,
+          "target_range_m": 0.8242621818143161,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "standoff",
+          "ccw_menu": "offered",
+          "requested_push_menu": "offered",
+          "decision_if_budget_remains": "approach",
+          "actual_command": {
+            "code": 13,
+            "ticks": 24,
+            "reason": "duration",
+            "executed_segments": [
+              {
+                "start_tick": 642,
+                "end_tick": 666,
+                "pair": [
+                  13,
+                  44
+                ]
+              }
+            ],
+            "contact_phase_status": "contact_timeout"
+          },
+          "ccw_rotation_since_endpoint_deg": 75.69863348055543,
+          "elapsed_suffix_ticks": 96
+        },
+        {
+          "tick": 666,
+          "robot_xy": [
+            3.2373507896915132,
+            2.6079823805901783
+          ],
+          "box_xy": [
+            2.4971445480119168,
+            2.9251432805933346
+          ],
+          "box_yaw_deg": 63.94841065123636,
+          "robot_polar_deg": -23.193990120080684,
+          "target_range_m": 0.8052926900899109,
+          "on_source_face": "no_contact",
+          "on_requested_face": "no_contact",
+          "observed_contact": false,
+          "stage": "standoff",
+          "ccw_menu": "offered",
+          "requested_push_menu": "offered",
+          "decision_if_budget_remains": "approach",
+          "ccw_rotation_since_endpoint_deg": 92.66434694499642,
+          "elapsed_suffix_ticks": 120
+        }
+      ]
+    }
+  ],
+  "same_face_positive_controls": [
+    {
+      "room": "diag_dev_nat_001",
+      "anchor_id": "early",
+      "progress_m": 0.1,
+      "endpoint_tick": 176,
+      "menu": "offered",
+      "before": "ready",
+      "phase_result": "ready",
+      "ticks": 0,
+      "after": "ready"
+    },
+    {
+      "room": "diag_dev_nat_002",
+      "anchor_id": "early",
+      "progress_m": 0.1,
+      "endpoint_tick": 176,
+      "menu": "offered",
+      "before": "ready",
+      "phase_result": "ready",
+      "ticks": 0,
+      "after": "ready"
+    }
+  ]
+}

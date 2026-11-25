@@ -1,0 +1,16 @@
+panel,seed,episodes,success,count
+diagnostic,17,200,112,200
+diagnostic,17,400,113,200
+diagnostic,17,800,112,200
+diagnostic,17,1200,102,200
+diagnostic,17,2000,108,200
+monitor,17,200,13,32
+monitor,17,400,16,32
+monitor,17,600,12,32
+monitor,17,800,16,32
+monitor,17,1000,16,32
+monitor,17,1200,12,32
+monitor,17,1400,16,32
+monitor,17,1600,13,32
+monitor,17,1800,14,32
+monitor,17,2000,14,32

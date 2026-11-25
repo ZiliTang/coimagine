@@ -1,0 +1,106 @@
+{
+  "status": "complete",
+  "scores": [
+    {
+      "arm": "fastest",
+      "seed": 17,
+      "boundaries": 20007,
+      "exact_actions": 19823,
+      "fit_rate": 0.9908032188733943,
+      "success": 89,
+      "episodes": 200,
+      "success_rate": 0.445,
+      "fit_seconds": 818.0344333648682,
+      "model_sha256": "7211c9fb2fce486160487c347fbea1a0b50f36e507579255af5ebd670c9de6dd"
+    },
+    {
+      "arm": "fastest",
+      "seed": 29,
+      "boundaries": 20007,
+      "exact_actions": 19988,
+      "fit_rate": 0.9990503323836657,
+      "success": 82,
+      "episodes": 200,
+      "success_rate": 0.41,
+      "fit_seconds": 820.0466711521149,
+      "model_sha256": "83aa32b0d150283696a80e20b84ce322ac0723c218beb65ab655689deb8e8c89"
+    },
+    {
+      "arm": "fastest",
+      "seed": 43,
+      "boundaries": 20007,
+      "exact_actions": 19999,
+      "fit_rate": 0.9996001399510172,
+      "success": 75,
+      "episodes": 200,
+      "success_rate": 0.375,
+      "fit_seconds": 816.5294597148895,
+      "model_sha256": "4427e5f229e3d7ad6e92cf970a59b999d5766e4b515a0c2ee5bf003cad926e9d"
+    },
+    {
+      "arm": "priority",
+      "seed": 17,
+      "boundaries": 24114,
+      "exact_actions": 24095,
+      "fit_rate": 0.9992120759724641,
+      "success": 87,
+      "episodes": 200,
+      "success_rate": 0.435,
+      "fit_seconds": 816.9433038234711,
+      "model_sha256": "b8866bdf036aac8a592f19988691b5c9ae07ce95107e49acfa760f0d40fbf324"
+    },
+    {
+      "arm": "priority",
+      "seed": 29,
+      "boundaries": 24114,
+      "exact_actions": 24111,
+      "fit_rate": 0.9998755909430207,
+      "success": 82,
+      "episodes": 200,
+      "success_rate": 0.41,
+      "fit_seconds": 828.2444415092468,
+      "model_sha256": "10eeb1ca862b8447878a7295b6d8bb8914c7f3e1a36f6f0a0c5861bf49d5b251"
+    },
+    {
+      "arm": "priority",
+      "seed": 43,
+      "boundaries": 24114,
+      "exact_actions": 24087,
+      "fit_rate": 0.9988803184871858,
+      "success": 83,
+      "episodes": 200,
+      "success_rate": 0.415,
+      "fit_seconds": 807.0859367847443,
+      "model_sha256": "74dbeb0cb11edc0c6d0c86c2f6d39a44a47c50dc3fecf1f94a7b4b6bb95fade1"
+    }
+  ],
+  "paired": [
+    {
+      "seed": 17,
+      "cases": 200,
+      "both_success": 54,
+      "fastest_only": 35,
+      "priority_only": 33,
+      "both_fail": 78
+    },
+    {
+      "seed": 29,
+      "cases": 200,
+      "both_success": 48,
+      "fastest_only": 34,
+      "priority_only": 34,
+      "both_fail": 84
+    },
+    {
+      "seed": 43,
+      "cases": 200,
+      "both_success": 43,
+      "fastest_only": 32,
+      "priority_only": 40,
+      "both_fail": 85
+    }
+  ],
+  "independent_initial_states": 200,
+  "executions": 1200,
+  "interpretation": "Previously inspected diagnostic panel; repeated training seeds share the same 200 initial states. Different trajectory lengths change boundary sample weights."
+}

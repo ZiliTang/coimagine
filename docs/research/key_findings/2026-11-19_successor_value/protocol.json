@@ -1,0 +1,29 @@
+{
+  "panel_sha256": "ecbbaea5692ade7726903d062e78ba107fbc4a2f2b7dab13fa37adca1934b500",
+  "seed": 2026111947,
+  "q": "2788fbc5afdc4476ba31e992ac5ea0580616b9ca02c73b460542efe47091a287",
+  "v": "b4be8183fafb55fdcbf57e302e46b2591ab49888daac7ef24a2fad642fd13b40",
+  "training_seed": 17,
+  "primary": "GA-Q continuation on both branches. Pair top two distinct legal Q proposals at first eligible boundary at/after assigned depth. Direct Q vs max legal frozen V at actual option end.",
+  "control": "Continue with CAP009 on both branches, evaluate V009. Report pure pairs only, requiring legal CAP009 in every subsequent decision of both branches.",
+  "terminal": "Immediate true terminal or exhausted budget uses observed binary reward (gamma=1), also report pairs with both successors nonterminal.",
+  "ties": "Stable pool order for Q. Equal successor scores retain the original Q choice; disclose tie counts.",
+  "exclusions": "Report all scenes ending without an eligible fork, plus incomplete runs separately. One fork per scene.",
+  "uncertainty": "20000 paired scene bootstrap draws; exact two-sided binomial on discordant policy selections; single checkpoint.",
+  "caps": [
+    "CAP-RR-009",
+    "CAP-RR-003",
+    "CAP-RR-001",
+    "CAP-RR-010",
+    "CAP-RR-006",
+    "CAP-RR-007",
+    "CAP-RR-002"
+  ],
+  "depths": [
+    0,
+    5,
+    12,
+    25
+  ],
+  "driver_sha256": "56969889f3d5dd0b2e3db8be8ed79dd2101886a6510ce9eaa9566fa4ed4e6c8b"
+}

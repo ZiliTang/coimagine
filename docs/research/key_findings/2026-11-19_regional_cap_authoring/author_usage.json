@@ -1,0 +1,26 @@
+{
+  "regular": {
+    "updated": "2026-11-19T14:09:55.642Z",
+    "input_tokens": 14301244,
+    "cached_input_tokens": 14050688,
+    "output_tokens": 48273,
+    "reasoning_output_tokens": 23902,
+    "total_tokens": 14349517
+  },
+  "regional": {
+    "updated": "2026-11-19T14:16:58.313Z",
+    "input_tokens": 22228546,
+    "cached_input_tokens": 22064512,
+    "output_tokens": 49130,
+    "reasoning_output_tokens": 24786,
+    "total_tokens": 22277676
+  },
+  "single": {
+    "updated": "2026-11-19T14:10:16.514Z",
+    "input_tokens": 11269206,
+    "cached_input_tokens": 11114880,
+    "output_tokens": 48563,
+    "reasoning_output_tokens": 26945,
+    "total_tokens": 11317769
+  }
+}

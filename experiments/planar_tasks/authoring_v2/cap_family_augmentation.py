@@ -1,4 +1,5 @@
 """Matched-budget neighborhood augmentation of frozen CAP development families."""
+from coimagine.random_start.spec import ROBOT_DIAMETER
 import copy
 import gzip
 import json
@@ -113,7 +114,7 @@ def variant(parent, seed):
             b['y'] += rng.uniform(-.065,.065)
             b['angle'] += rng.uniform(-.10,.10)
         shapes = [rooms.polygon(b['x'],b['y'],b.get('width',w),b.get('height',h),b['angle'])
-                  for b,(w,h) in zip(bodies,[(.25,1.)]+[(0,0)]*len(f['movable_objects'])+[(.36,.36)]*2,strict=True)]
+                  for b,(w,h) in zip(bodies,[(.25,1.)]+[(0,0)]*len(f['movable_objects'])+[(ROBOT_DIAMETER,ROBOT_DIAMETER)]*2,strict=True)]
         if any(not rooms.inside(p) or any(not rooms.separated(p,q) for q in obstacles+shapes[:i]) for i,p in enumerate(shapes)):
             continue
         t,g=f['object'],f['goal']

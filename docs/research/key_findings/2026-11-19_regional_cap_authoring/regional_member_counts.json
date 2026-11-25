@@ -1,0 +1,72 @@
+[
+  {
+    "round": 1,
+    "sid": "s004",
+    "success": 84,
+    "new": 84,
+    "retained": 0,
+    "lost": 0,
+    "new_focus": 16,
+    "new_outside": 68,
+    "focus_success": 16,
+    "focus_previous_member": null,
+    "old_unresolved_focus": 24,
+    "unique": 2
+  },
+  {
+    "round": 2,
+    "sid": "s008",
+    "success": 87,
+    "new": 6,
+    "retained": 81,
+    "lost": 3,
+    "new_focus": 1,
+    "new_outside": 5,
+    "focus_success": 8,
+    "focus_previous_member": 7,
+    "old_unresolved_focus": 17,
+    "unique": 1
+  },
+  {
+    "round": 3,
+    "sid": "s011",
+    "success": 88,
+    "new": 9,
+    "retained": 79,
+    "lost": 11,
+    "new_focus": 1,
+    "new_outside": 8,
+    "focus_success": 8,
+    "focus_previous_member": 8,
+    "old_unresolved_focus": 16,
+    "unique": 1
+  },
+  {
+    "round": 4,
+    "sid": "s013",
+    "success": 79,
+    "new": 7,
+    "retained": 72,
+    "lost": 27,
+    "new_focus": 2,
+    "new_outside": 5,
+    "focus_success": 8,
+    "focus_previous_member": 8,
+    "old_unresolved_focus": 15,
+    "unique": 2
+  },
+  {
+    "round": 5,
+    "sid": "s019",
+    "success": 92,
+    "new": 9,
+    "retained": 83,
+    "lost": 23,
+    "new_focus": 3,
+    "new_outside": 6,
+    "focus_success": 13,
+    "focus_previous_member": 6,
+    "old_unresolved_focus": 13,
+    "unique": 9
+  }
+]

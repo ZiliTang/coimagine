@@ -1,0 +1,14 @@
+{
+  "frozen": true,
+  "previous_unique_contents": 1180,
+  "new_test": 200,
+  "new_online": 200,
+  "cross_panel_overlap": 0,
+  "generator_sha256": "3d6848fd578973f94cdd5dc7fee03de13bdbf1bb4e8cb8627bf88cc3c95732ce",
+  "no_policy_executions": true,
+  "no_outcome_filtering": true,
+  "files": {
+    "final_test.json": "dd32a7350b9275a0cf3c63eaad5b1c532bed80bfa7c7b7fc4f5aa272710739a5",
+    "online_training.json": "6bbbd3fa0a23dd174e856793c8a046ed3be6cc31bfa405fcab9c7dbd33c2c06b"
+  }
+}

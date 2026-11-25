@@ -1,0 +1,5 @@
+stratum,screened,rooms,visits,branches,signals,signal_rooms
+A_only,68,68,102,304,73,40
+B_only,92,92,151,448,94,54
+both,358,80,82,163,9,7
+neither,282,32,33,99,12,6

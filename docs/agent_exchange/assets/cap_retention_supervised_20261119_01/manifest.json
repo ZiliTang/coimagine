@@ -1,0 +1,21 @@
+{
+  "first_switches.csv": "5eebaaa84a2d008e1fe4901240a8753ea27fe481ad55347a983821db7abbee3a",
+  "provenance.json": "bc696407829c2f2900104533e85882e8833c344c95da4eb84ece67f93ff5cabe",
+  "metrics.csv": "8b851e260019df02a228362a4ce0fdcddbcd87f974a3664ca53f27ef46728f88",
+  "protocol.json": "57030039f3d65aeaf7aeb75fa31e0e20200579d3182d1e531acda45082ab732f",
+  "sample_exposure.csv": "0e93387796bdb0894f67ff78887c9f6e7f4da2a3676f167676aad4082b7bc0e5",
+  "routing.csv": "5ddd0825ce6b5dc81e5f82f3416bbebee9ab67d4856cdb9fedf7fb1dacd3d03a",
+  "FROZEN.json": "54fcdc553b45d59996e96cb266b3753fbc36087d0a73d4801b58adcc21371ecc",
+  "training_inventory.json": "7d686ae870aa5fee89a0ebd478c4c830f47a0cb1125bfa8a9104a937e4e325e5",
+  "validation_metrics.json": "978766f522abf2e3e2fae14462ec2996c548e188a4d70d103c10c1c269939982",
+  "coverage_strata.csv": "5e5fc5665cd761be85f72a50c0bfa3ef49be8da00c612ab0ddc3d6f292e0edb2",
+  "FINISHED.json": "53d81ddb6fa433afb0e786c0b99c360ace325046177603560d8dbde3a449df2c",
+  "REPORT.md": "c3030b6677e87f1befa3b783bdaf541538d5e969ea3a5dbd0d7720c7bdacbc49",
+  "retention.png": "0237e8171f9cade04bdf7bfc23df47b66d6dc3ddda6e058f61483ee2ca97dd1a",
+  "per_scene.csv": "054844b62a29932df286a9bc6b71f310f5861c7e1c4840ac275273ec6bd7f087",
+  "examples.png": "ff88d46c6055aed6bd1759bb9bb5fa1dd8c82c6fc08dd83f6f6d722ef81452d2",
+  "margin_groups.csv": "98a8ef622b1bccb4f8655a73ab08863e260f3b11b5f0bc4b3a8ebf8baf3e0028",
+  "summary.json": "6ab7337b983cf99bca5e245e475549f7b398557c4d8235c15993f8366bc7535f",
+  "validation_inventory.json": "6c76fa0365f95c8b9b31147036b3e7ca713c67d93614f873ca7cbf00d750bdb3",
+  "examples.json": "eea1d2458f23431a999df8ae9b1be531d513b9acc9106d441e9e9b16a3b97358"
+}

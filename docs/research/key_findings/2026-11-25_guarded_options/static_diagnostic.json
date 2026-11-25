@@ -1,0 +1,986 @@
+{
+  "schema": "guarded-option-probe-v1",
+  "scope": "Synthetic independent host intervals. Conditional on these abstract models.",
+  "units": "mm; integer closed intervals",
+  "public_menu_scope": "Replays only public menu validation of the accepted token. Synthetic wall intervals are not measured at these boundaries. Ticks cap duration and do not promise box progress.",
+  "author_example": "experiments/planar_tasks/authoring_v2/guarded_push_example.json",
+  "author_example_sha256": "c0e7e51d7ec0d7d8d9f13d3e47a79b4cd2eaabcd252ff961176f41bd4563c703",
+  "host_push_profile": "experiments/planar_tasks/authoring_v2/guarded_push_profile.json",
+  "host_push_profile_sha256": "c2b0e3f7c637e324856d4efad0aae1ccd8435dd251c66cdab49c81c74b426519",
+  "checker_sha256": "8539445793b4513fec6dc01c05e9f269f53a511c0d4156cf6de2a2dccc7f1145",
+  "probe_sha256": "73a0fd1760126586335c0667d3cecf7e3cd18bb69de67a424d83872495119bb4",
+  "cases": [
+    {
+      "case": "short_push",
+      "expected": "proved",
+      "program_sha256": "384e90050ce8e1260a6ecd5755e39ab491405e9bc2a1c5b5e9b7680b28ca8241",
+      "profile_sha256": "1433e6d042d34db35a8201ae5eaa47ebfa7d571fc4db2bfb75f79fdd9df2bd3d",
+      "status": "proved",
+      "dispatch": "push_short",
+      "dispatch_allow_empirical": "push_short",
+      "next_public_dispatch": {
+        "scan": "change_side"
+      },
+      "issues": [],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              200,
+              280
+            ]
+          },
+          "next_option": "change_side",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "long_push",
+      "expected": "counterexample",
+      "program_sha256": "3a384000286a97be715db85efd2da9f7c7c930642ff598b834b1be208f1a5a3d",
+      "profile_sha256": "1433e6d042d34db35a8201ae5eaa47ebfa7d571fc4db2bfb75f79fdd9df2bd3d",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "continuation",
+          "metric": "wall_mm",
+          "status": "counterexample",
+          "actual": [
+            80,
+            170
+          ],
+          "required": [
+            150,
+            null
+          ],
+          "endpoint": 80,
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              150,
+              200
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              80,
+              170
+            ]
+          },
+          "next_option": "change_side",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "wall_mm",
+              "status": "counterexample",
+              "actual": [
+                80,
+                170
+              ],
+              "required": [
+                150,
+                null
+              ],
+              "endpoint": 80
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "short_push_empirical",
+      "expected": "conditional",
+      "program_sha256": "384e90050ce8e1260a6ecd5755e39ab491405e9bc2a1c5b5e9b7680b28ca8241",
+      "profile_sha256": "947e1e2cc43d5ec205677b178cefda0206e0cbc788fdaa33fbbb3c110727d4dc",
+      "status": "conditional",
+      "dispatch": null,
+      "dispatch_allow_empirical": "push_short",
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "model_quality",
+          "status": "conditional"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              200,
+              280
+            ]
+          },
+          "next_option": "change_side",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "short_push_unknown",
+      "expected": "unknown",
+      "program_sha256": "384e90050ce8e1260a6ecd5755e39ab491405e9bc2a1c5b5e9b7680b28ca8241",
+      "profile_sha256": "d0a374cb99577f62bbf6b6ac25f36ffc60556c32ca7c6c059e0a8716c8fde055",
+      "status": "unknown",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "model_quality",
+          "status": "unknown"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              200,
+              280
+            ]
+          },
+          "next_option": "change_side",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "outside_author_guard",
+      "expected": "no_action",
+      "program_sha256": "384e90050ce8e1260a6ecd5755e39ab491405e9bc2a1c5b5e9b7680b28ca8241",
+      "profile_sha256": "41a8964a23d46b4df1ff3c5307530187457b747151e0c42a3b1e7931347781f0",
+      "status": "no_action",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [],
+      "branches": []
+    },
+    {
+      "case": "unsafe_entry",
+      "expected": "counterexample",
+      "program_sha256": "49683e3f3736d839f1a7a80ca5fd6a271190c3ad3620941c27a6ba4ce2bd6319",
+      "profile_sha256": "c636f3c166fd13e0e1c0a8be9b7ed74483ada835d4e2f0b17d4917a48381dcc9",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "precondition",
+          "metric": "wall_mm",
+          "status": "counterexample",
+          "actual": [
+            180,
+            190
+          ],
+          "required": [
+            200,
+            null
+          ],
+          "endpoint": 180
+        },
+        {
+          "property": "continuation",
+          "metric": "wall_mm",
+          "status": "counterexample",
+          "actual": [
+            100,
+            150
+          ],
+          "required": [
+            150,
+            null
+          ],
+          "endpoint": 100,
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              100,
+              150
+            ]
+          },
+          "next_option": "change_side",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "wall_mm",
+              "status": "counterexample",
+              "actual": [
+                100,
+                150
+              ],
+              "required": [
+                150,
+                null
+              ],
+              "endpoint": 100
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "always_stop",
+      "expected": "no_action",
+      "program_sha256": "1ba00b09a349125a542fa6a978ba7471390d7cfff981b53b5b34fe876a5a0f9f",
+      "profile_sha256": "1433e6d042d34db35a8201ae5eaa47ebfa7d571fc4db2bfb75f79fdd9df2bd3d",
+      "status": "no_action",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {},
+      "issues": [],
+      "branches": []
+    },
+    {
+      "case": "push_then_only_stop",
+      "expected": "counterexample",
+      "program_sha256": "d00831946fc1c2b4278f2e103839964746ccffea981f03443fa9ad1c4365e9fa",
+      "profile_sha256": "1433e6d042d34db35a8201ae5eaa47ebfa7d571fc4db2bfb75f79fdd9df2bd3d",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "no_productive_continuation",
+          "status": "counterexample",
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ]
+          },
+          "post": {
+            "wall_mm": [
+              200,
+              280
+            ]
+          },
+          "next_option": "STOP",
+          "issues": [
+            {
+              "property": "no_productive_continuation",
+              "status": "counterexample"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "peer_omitted",
+      "expected": "counterexample",
+      "program_sha256": "6c613908efce9f331580509df9772db35d99466a923efdf6e2343df6cf5e82c8",
+      "profile_sha256": "2f1c85b635011be7b23a5310da7d6d7ff74d46e8945f9793da63469d390e0c11",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "missing_effect",
+          "metric": "peer_toward_mm",
+          "status": "unknown",
+          "branch": 0,
+          "observation": "scan"
+        },
+        {
+          "property": "continuation",
+          "metric": "peer_gap_mm",
+          "status": "counterexample",
+          "actual": [
+            280,
+            405
+          ],
+          "required": [
+            325,
+            null
+          ],
+          "endpoint": 280,
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ],
+            "peer_toward_mm": [
+              -60,
+              60
+            ]
+          },
+          "post": {
+            "peer_gap_mm": [
+              280,
+              405
+            ]
+          },
+          "next_option": "cross_behind",
+          "issues": [
+            {
+              "property": "missing_effect",
+              "metric": "peer_toward_mm",
+              "status": "unknown"
+            },
+            {
+              "property": "continuation",
+              "metric": "peer_gap_mm",
+              "status": "counterexample",
+              "actual": [
+                280,
+                405
+              ],
+              "required": [
+                325,
+                null
+              ],
+              "endpoint": 280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "peer_assumed_stationary",
+      "expected": "counterexample",
+      "program_sha256": "f0fbcc5ae6e7f0c78ef58b17ca634e73a789888e4b1cbe889f25fe7703d9eb29",
+      "profile_sha256": "2f1c85b635011be7b23a5310da7d6d7ff74d46e8945f9793da63469d390e0c11",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "effect",
+          "metric": "peer_toward_mm",
+          "status": "counterexample",
+          "actual": [
+            -60,
+            60
+          ],
+          "required": [
+            0,
+            0
+          ],
+          "endpoint": -60,
+          "branch": 0,
+          "observation": "scan"
+        },
+        {
+          "property": "continuation",
+          "metric": "peer_gap_mm",
+          "status": "counterexample",
+          "actual": [
+            280,
+            405
+          ],
+          "required": [
+            325,
+            null
+          ],
+          "endpoint": 280,
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ],
+            "peer_toward_mm": [
+              -60,
+              60
+            ]
+          },
+          "post": {
+            "peer_gap_mm": [
+              280,
+              405
+            ]
+          },
+          "next_option": "cross_behind",
+          "issues": [
+            {
+              "property": "effect",
+              "metric": "peer_toward_mm",
+              "status": "counterexample",
+              "actual": [
+                -60,
+                60
+              ],
+              "required": [
+                0,
+                0
+              ],
+              "endpoint": -60
+            },
+            {
+              "property": "continuation",
+              "metric": "peer_gap_mm",
+              "status": "counterexample",
+              "actual": [
+                280,
+                405
+              ],
+              "required": [
+                325,
+                null
+              ],
+              "endpoint": 280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "peer_motion_disclosed",
+      "expected": "counterexample",
+      "program_sha256": "9a5b04d2b6fee5b1aa80bdedd9349f8bb002b740485a7407bef675b236917301",
+      "profile_sha256": "2f1c85b635011be7b23a5310da7d6d7ff74d46e8945f9793da63469d390e0c11",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "continuation",
+          "metric": "peer_gap_mm",
+          "status": "counterexample",
+          "actual": [
+            280,
+            405
+          ],
+          "required": [
+            325,
+            null
+          ],
+          "endpoint": 280,
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ],
+            "peer_toward_mm": [
+              -60,
+              60
+            ]
+          },
+          "post": {
+            "peer_gap_mm": [
+              280,
+              405
+            ]
+          },
+          "next_option": "cross_behind",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "peer_gap_mm",
+              "status": "counterexample",
+              "actual": [
+                280,
+                405
+              ],
+              "required": [
+                325,
+                null
+              ],
+              "endpoint": 280
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "roomy_peer_omitted",
+      "expected": "unknown",
+      "program_sha256": "ff6eb42d443d1b28b92dab2b00be3daec70da99ce4ed34662c51e7640961d0d1",
+      "profile_sha256": "ddbb2713454c994990fca37d0fcf95a5ba4a371004287372fbfd4606157c347c",
+      "status": "unknown",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "scan": null
+      },
+      "issues": [
+        {
+          "property": "missing_effect",
+          "metric": "peer_toward_mm",
+          "status": "unknown",
+          "branch": 0,
+          "observation": "scan"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "scan",
+          "change": {
+            "advance_mm": [
+              40,
+              80
+            ],
+            "peer_toward_mm": [
+              -60,
+              60
+            ]
+          },
+          "post": {
+            "peer_gap_mm": [
+              440,
+              565
+            ]
+          },
+          "next_option": "cross_behind",
+          "issues": [
+            {
+              "property": "missing_effect",
+              "metric": "peer_toward_mm",
+              "status": "unknown"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "visible_successor",
+      "expected": "proved",
+      "program_sha256": "f3763d266551a60ea759b133d01cbd5a42172b52a82703b654b3b82c09c67bc8",
+      "profile_sha256": "50de77dce8d8e10794c47a953b5ada88c85a24d5fdee1174b4a8cf83c46e5b7e",
+      "status": "proved",
+      "dispatch": "scan_both_sides",
+      "dispatch_allow_empirical": "scan_both_sides",
+      "next_public_dispatch": {
+        "left_open": "pass_left",
+        "right_open": "pass_right"
+      },
+      "issues": [],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "left_open",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              200,
+              200
+            ],
+            "right_gap_mm": [
+              0,
+              0
+            ]
+          },
+          "next_option": "pass_left",
+          "issues": []
+        },
+        {
+          "index": 1,
+          "observation": "right_open",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              0,
+              0
+            ],
+            "right_gap_mm": [
+              200,
+              200
+            ]
+          },
+          "next_option": "pass_right",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "occluded_commit_left",
+      "expected": "counterexample",
+      "program_sha256": "ad06ef9dfa6e1d8e529e8029bd66d75303f30d5798afbfb141185c672e144265",
+      "profile_sha256": "c3c0040cf8d44695bc889bbee09237a0c4d01060031f1e23cccdc43980e0cae5",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "occluded": null
+      },
+      "issues": [
+        {
+          "property": "continuation",
+          "metric": "left_gap_mm",
+          "status": "counterexample",
+          "actual": [
+            0,
+            0
+          ],
+          "required": [
+            150,
+            null
+          ],
+          "endpoint": 0,
+          "branch": 1,
+          "observation": "occluded"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "occluded",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              200,
+              200
+            ],
+            "right_gap_mm": [
+              0,
+              0
+            ]
+          },
+          "next_option": "pass_left",
+          "issues": []
+        },
+        {
+          "index": 1,
+          "observation": "occluded",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              0,
+              0
+            ],
+            "right_gap_mm": [
+              200,
+              200
+            ]
+          },
+          "next_option": "pass_left",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "left_gap_mm",
+              "status": "counterexample",
+              "actual": [
+                0,
+                0
+              ],
+              "required": [
+                150,
+                null
+              ],
+              "endpoint": 0
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "case": "occluded_commit_right",
+      "expected": "counterexample",
+      "program_sha256": "e362a39ec1716aa9fb7a35f16201588b5624349557d85dbcb2d0a7d087baa043",
+      "profile_sha256": "c3c0040cf8d44695bc889bbee09237a0c4d01060031f1e23cccdc43980e0cae5",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "occluded": null
+      },
+      "issues": [
+        {
+          "property": "continuation",
+          "metric": "right_gap_mm",
+          "status": "counterexample",
+          "actual": [
+            0,
+            0
+          ],
+          "required": [
+            150,
+            null
+          ],
+          "endpoint": 0,
+          "branch": 0,
+          "observation": "occluded"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "occluded",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              200,
+              200
+            ],
+            "right_gap_mm": [
+              0,
+              0
+            ]
+          },
+          "next_option": "pass_right",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "right_gap_mm",
+              "status": "counterexample",
+              "actual": [
+                0,
+                0
+              ],
+              "required": [
+                150,
+                null
+              ],
+              "endpoint": 0
+            }
+          ]
+        },
+        {
+          "index": 1,
+          "observation": "occluded",
+          "change": {},
+          "post": {
+            "left_gap_mm": [
+              0,
+              0
+            ],
+            "right_gap_mm": [
+              200,
+              200
+            ]
+          },
+          "next_option": "pass_right",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "cabinet_grip_slim",
+      "expected": "proved",
+      "program_sha256": "32feb26a9e20ffd69559b145b27e9a14d737dedd0bed88509dcfe1a33cabd3d4",
+      "profile_sha256": "0b1152ebcee2cea9672df5151b2e5ff1d9fd49b82410374b8e2623c8a6cf696a",
+      "status": "proved",
+      "dispatch": "grip_slim",
+      "dispatch_allow_empirical": "grip_slim",
+      "next_public_dispatch": {
+        "grasped": "withdraw"
+      },
+      "issues": [],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "grasped",
+          "change": {
+            "loaded_width_mm": [
+              80,
+              85
+            ]
+          },
+          "post": {
+            "margin_mm": [
+              25,
+              30
+            ]
+          },
+          "next_option": "withdraw",
+          "issues": []
+        }
+      ]
+    },
+    {
+      "case": "cabinet_grip_crosswise",
+      "expected": "counterexample",
+      "program_sha256": "5c305ca980349306c5ed2f108d181d7b1a95b42448bd4158cdb9911ea4f0012c",
+      "profile_sha256": "0b1152ebcee2cea9672df5151b2e5ff1d9fd49b82410374b8e2623c8a6cf696a",
+      "status": "counterexample",
+      "dispatch": null,
+      "dispatch_allow_empirical": null,
+      "next_public_dispatch": {
+        "grasped": null
+      },
+      "issues": [
+        {
+          "property": "continuation",
+          "metric": "margin_mm",
+          "status": "counterexample",
+          "actual": [
+            -15,
+            5
+          ],
+          "required": [
+            5,
+            null
+          ],
+          "endpoint": -15,
+          "branch": 0,
+          "observation": "grasped"
+        }
+      ],
+      "branches": [
+        {
+          "index": 0,
+          "observation": "grasped",
+          "change": {
+            "loaded_width_mm": [
+              105,
+              125
+            ]
+          },
+          "post": {
+            "margin_mm": [
+              -15,
+              5
+            ]
+          },
+          "next_option": "withdraw",
+          "issues": [
+            {
+              "property": "continuation",
+              "metric": "margin_mm",
+              "status": "counterexample",
+              "actual": [
+                -15,
+                5
+              ],
+              "required": [
+                5,
+                null
+              ],
+              "endpoint": -15
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "archived_public_menus": [
+    {
+      "boundary": "diag_dev_nat_001_first_noninitial_push.json",
+      "input_sha256": "65ac937661c0d985832c9d87cc3d823531aeb0754c7b94509d687d226cf8e6cf",
+      "tick": 40,
+      "action_version": "relational-options-move-v2",
+      "accepted_command": {
+        "target_id": "entity-a",
+        "a0": 7,
+        "a1": 7,
+        "ticks": 12
+      }
+    },
+    {
+      "boundary": "diag_dev_nat_002_initial.json",
+      "input_sha256": "cf37dded7de3677400da768d935c98b5caa4a3c74d7f6e0f7b38ad51d6fbeb55",
+      "tick": 0,
+      "action_version": "relational-options-move-v2",
+      "accepted_command": {
+        "target_id": "entity-a",
+        "a0": 7,
+        "a1": 7,
+        "ticks": 12
+      }
+    },
+    {
+      "boundary": "diag_dev_nat_003_first_noninitial_push.json",
+      "input_sha256": "127323330ac50baa8e6748858b73cf5de8e13ddad900453169729156313158e0",
+      "tick": 40,
+      "action_version": "relational-options-move-v2",
+      "accepted_command": {
+        "target_id": "entity-a",
+        "a0": 7,
+        "a1": 7,
+        "ticks": 12
+      }
+    }
+  ]
+}

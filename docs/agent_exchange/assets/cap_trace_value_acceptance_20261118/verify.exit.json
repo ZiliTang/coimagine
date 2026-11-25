@@ -1,0 +1,16 @@
+{
+  "command": [
+    "outputs/transfers/venv_py311/bin/python",
+    "-u",
+    "-m",
+    "tools.cap_trace_value_transfer",
+    "verify",
+    "--bundle",
+    "outputs/transfers/cap_trace_value_dev_v1",
+    "--workers",
+    "8"
+  ],
+  "exit_code": 0,
+  "seconds": 514.602578163147,
+  "finished_at": "2026-11-18T01:36:37.352535+08:00"
+}

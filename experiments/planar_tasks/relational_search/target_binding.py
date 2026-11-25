@@ -7,10 +7,12 @@ Target-free MOVE/BRAKE cancels pending handoffs without changing ownership.
 from copy import deepcopy
 import math
 from .contract import validate_action
+from .joint_orbit import resolve_pair
 
 
 class TargetBinding:
-    def __init__(self):
+    def __init__(self, *, joint_orbits=True):
+        self.joint_orbits = joint_orbits
         self.current = None
         self.pending = None
         self.slow_samples = 0
@@ -32,7 +34,7 @@ class TargetBinding:
         if target == self.current:
             self.pending = None
             self.slow_samples = 0
-            return dict(command=deepcopy(requested), commit=False, target=target, phase='continue')
+            return self._bound(requested, observation, target, 'continue')
         if self.pending != target:
             self.pending = target
             self.slow_samples = 0
@@ -52,6 +54,13 @@ class TargetBinding:
             self.current = target
             self.pending = None
             self.slow_samples = 0
-            return dict(command=deepcopy(requested), commit=True, target=target, phase='commit')
+            return self._bound(requested, observation, target, 'commit')
         return dict(command=dict(target_id=None, a0=44, a1=44, ticks=requested['ticks']),
                     commit=False, target=self.current, phase='switch_brake')
+
+    def _bound(self, requested, observation, target, phase):
+        command, decision = resolve_pair(requested, observation) if self.joint_orbits else (requested, None)
+        result = dict(command=deepcopy(command), commit=phase=='commit', target=target, phase=phase)
+        if decision is not None:
+            result['orbit_resolution'] = decision
+        return result

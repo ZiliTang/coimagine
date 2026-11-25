@@ -1,0 +1,16 @@
+panel,episodes,success,count
+monitor,200,13,32
+monitor,400,15,32
+monitor,600,11,32
+monitor,800,13,32
+monitor,1000,14,32
+monitor,1200,12,32
+monitor,1400,14,32
+monitor,1600,14,32
+monitor,1800,16,32
+monitor,2000,18,32
+diagnostic,200,112,200
+diagnostic,400,107,200
+diagnostic,800,103,200
+diagnostic,1200,113,200
+diagnostic,2000,117,200

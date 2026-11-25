@@ -1,0 +1,276 @@
+[
+  {
+    "kind": "recovered",
+    "case_id": "final_test_2_004",
+    "common_action_prefix": 1,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 70,
+        "initial_q": null,
+        "initial_distance": 2.990284412229014,
+        "final_distance": 2.13138942112771,
+        "minimum_distance": 2.13138942112771,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 46,
+          "a1": 19,
+          "ticks": 40
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": true,
+        "ticks": 481,
+        "decisions": 23,
+        "initial_q": 0.8395799994468689,
+        "initial_distance": 2.990284412229014,
+        "final_distance": 0.0617912928742514,
+        "minimum_distance": 0.0617912928742514,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 25,
+          "a1": 19,
+          "ticks": 20
+        },
+        "supporting_caps": [
+          "CAP-RR-010"
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "recovered",
+    "case_id": "final_test_2_005",
+    "common_action_prefix": 9,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 87,
+        "initial_q": null,
+        "initial_distance": 3.4015119147501807,
+        "final_distance": 0.330006777966658,
+        "minimum_distance": 0.33000677796665534,
+        "first_divergent_action": {
+          "target_id": null,
+          "a0": 67,
+          "a1": 44,
+          "ticks": 25
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": true,
+        "ticks": 1339,
+        "decisions": 63,
+        "initial_q": 0.37314990162849426,
+        "initial_distance": 3.4015119147501807,
+        "final_distance": 0.11560330603671728,
+        "minimum_distance": 0.11560330603671728,
+        "first_divergent_action": {
+          "target_id": null,
+          "a0": 67,
+          "a1": 55,
+          "ticks": 25
+        },
+        "supporting_caps": [
+          "CAP-RR-003",
+          "CAP-RR-001",
+          "CAP-RR-002"
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "lost",
+    "case_id": "final_test_2_003",
+    "common_action_prefix": 1,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": true,
+        "ticks": 378,
+        "decisions": 12,
+        "initial_q": null,
+        "initial_distance": 2.7629390401502225,
+        "final_distance": 0.09364802516498284,
+        "minimum_distance": 0.06610341655185763,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 46,
+          "a1": 27,
+          "ticks": 40
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 68,
+        "initial_q": 0.0817505344748497,
+        "initial_distance": 2.7629390401502225,
+        "final_distance": 0.22967990129523969,
+        "minimum_distance": 0.22967990129523969,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 34,
+          "a1": 34,
+          "ticks": 40
+        },
+        "supporting_caps": [
+          "CAP-RR-006"
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "lost",
+    "case_id": "final_test_2_011",
+    "common_action_prefix": 3,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": true,
+        "ticks": 1711,
+        "decisions": 72,
+        "initial_q": null,
+        "initial_distance": 3.351926034445904,
+        "final_distance": 0.1937723476893192,
+        "minimum_distance": 0.13777116541346526,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 34,
+          "a1": 34,
+          "ticks": 25
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 70,
+        "initial_q": 0.5467525124549866,
+        "initial_distance": 3.351926034445904,
+        "final_distance": 1.5895335386599163,
+        "minimum_distance": 1.5895335386599163,
+        "first_divergent_action": {
+          "target_id": null,
+          "a0": 59,
+          "a1": 63,
+          "ticks": 25
+        },
+        "supporting_caps": [
+          "CAP-RR-003",
+          "CAP-RR-001",
+          "CAP-RR-002"
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "high_value_failure",
+    "case_id": "final_test_5_024",
+    "common_action_prefix": 0,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 63,
+        "initial_q": null,
+        "initial_distance": 2.0545999261580397,
+        "final_distance": 1.4171510286637112,
+        "minimum_distance": 1.2124662704834634,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 46,
+          "a1": 11,
+          "ticks": 40
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 73,
+        "initial_q": 0.8811697363853455,
+        "initial_distance": 2.0545999261580397,
+        "final_distance": 0.33542345752415503,
+        "minimum_distance": 0.25772043915791754,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 46,
+          "a1": 11,
+          "ticks": 20
+        },
+        "supporting_caps": [
+          "CAP-RR-010"
+        ]
+      }
+    ]
+  },
+  {
+    "kind": "high_value_failure",
+    "case_id": "final_test_2_015",
+    "common_action_prefix": 5,
+    "pair": [
+      {
+        "condition": "CAP-RR-009",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 76,
+        "initial_q": null,
+        "initial_distance": 2.449553804957636,
+        "final_distance": 1.5893762304861203,
+        "minimum_distance": 1.5893762304861203,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 19,
+          "a1": 46,
+          "ticks": 40
+        },
+        "supporting_caps": [
+          "CAP-RR-009"
+        ]
+      },
+      {
+        "condition": "GLOBAL_s17_online",
+        "success": false,
+        "ticks": 1800,
+        "decisions": 77,
+        "initial_q": 0.8684419393539429,
+        "initial_distance": 2.449553804957636,
+        "final_distance": 0.6843955373376736,
+        "minimum_distance": 0.6843955373376736,
+        "first_divergent_action": {
+          "target_id": "entity-a",
+          "a0": 19,
+          "a1": 46,
+          "ticks": 20
+        },
+        "supporting_caps": [
+          "CAP-RR-010"
+        ]
+      }
+    ]
+  }
+]

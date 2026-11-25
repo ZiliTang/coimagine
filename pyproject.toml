@@ -18,6 +18,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+symbolic = ["z3-solver==5.4.1.0"]
 # The control-round animation scripts encode H.264. There is no system ffmpeg on the lab
 # machines, so the bundled binary from imageio-ffmpeg is used instead (see
 # experiments/local_position_push/make_animations.py).

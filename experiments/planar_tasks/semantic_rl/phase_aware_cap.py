@@ -4,8 +4,8 @@ from dataclasses import dataclass, field
 import numpy as np
 
 from coimagine.random_start.spec import ROBOT_RADIUS
-from experiments.option_rl_v19.unknown_shape import direction_matches
-from experiments.planar_tasks.relational_search.motion import ACTIONS
+from experiments.option_rl_v19.unknown_shape import LOCAL_PUSH_COS, direction_matches
+from experiments.planar_tasks.relational_search.motion import ACTIONS, VERSION
 from .candidate_semantics import endpoints, fitted
 from .push_contact_recovery import clearance
 
@@ -51,9 +51,13 @@ def recovery_options(obs, command, blocked):
             alignment=float(np.dot(axis,intent))
             if key in blocked or alignment<.65 or option.speed!=.20:
                 continue
-            for face in faces:
+            local=obs.get('action_version')==VERSION
+            candidates=faces
+            if local and faces:
+                candidates=[max(faces,key=lambda f:np.dot(f['normal_world'],axis))]
+            for face in candidates:
                 n=np.asarray(face['normal_world'])
-                if not direction_matches(n,axis):
+                if not (np.dot(n,axis)>=LOCAL_PUSH_COS-1e-12 if local else direction_matches(n,axis)):
                     continue
                 q=np.mean(face['points_world'],axis=0)
                 station=q-n*(ROBOT_RADIUS+.15)

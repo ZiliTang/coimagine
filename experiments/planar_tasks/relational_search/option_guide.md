@@ -61,6 +61,57 @@ requested intent. No body is teleported and no velocity is reset. All braking
 ticks count toward the requested command window and task time. Handoff may take
 multiple commands; the reply distinguishes `requested` from `executed`.
 
+### Translating PUSH and REPOSITION
+
+The default relational action version is `relational-options-local-push45-compact20-v4`.
+Both robots are 0.20 m in diameter. REPOSITION tracks a nominal 0.05 m
+edge-to-target gap, giving a centre offset of 0.15 m on a straight visible
+face. The 0.04 m swept-path obstacle margin and 0.02 m emergency edge
+clearance still apply. For historical 0.36 m robots and a 0.10 m orbit gap,
+set `COIMAGINE_PLANAR_GEOMETRY=legacy36` before starting Python.
+Each pusher selects the currently visible target face whose inward normal has
+the smallest angle to its requested world direction. The permitted angle is
+at most 45 degrees, including equality (one interval on the eight-heading menu). The pusher approaches its selected
+contact point and pushes along the face normal. Two pushers also need a joint
+contact allocation. The normal test describes action availability; displacement
+depends on the subsequent contact and motion.
+
+A missing compatible visible face removes the direction from that robot's
+target menu. Requesting it raises `NoLegalPushFace` (`push_no_legal_face`)
+before physics advances. Losing all compatible faces during execution ends an
+active translating PUSH at the observed tick. The policy can request 40/43 to
+orbit for a command window and check the new public menu afterwards. Finishing
+that window makes no claim about contact or distance to a desired face.
+
+### Joint orbiting in the relational command executor
+
+A target-bound REPOSITION (40 CCW, 43 CW) can be paired with another
+REPOSITION, YIELD (46), or WAIT/BRAKE (44), in either robot order. Select an
+offered pair for the observed target. The executor checks for a close pass at
+the command boundary using target-labelled returns and odometry. Opposite
+directions alone do not imply a conflict.
+
+* With two orbiters on converging paths, robot 0 keeps its requested direction
+  and robot 1 runs YIELD for this command window. A later request is evaluated
+  again. With ordinary orbit + YIELD, the yielding robot uses its usual
+  clearance controller. If its latest feedback is `yield_blocked` and the
+  paths still converge too closely, the orbiter brakes while the peer yields.
+* For a raw orbit + WAIT command, the named robot orbits and its partner
+  keeps the brake. The orbit controller can take its existing outer detour.
+  Raw direction commands specify a robot and direction, without a target face.
+* The historical, explicitly composed **change-face** benchmark uses a separate completion condition:
+  either robot may acquire the same specified new face on the same object.
+  With a waiting partner, the executor can assign it the orbit before the
+  first move if the original path conflicts and the swapped path clears the
+  check. An actively yielding partner ordinarily keeps yielding. The chosen
+  owner remains fixed through contact or timeout. The operation returns
+  `requested_pusher`, `contact_robot` and `followup_completed`. Use the
+  returned owner for any subsequent robot-specific operation.
+
+Raw command events retain `requested` and `executed`; an internal change is
+explained in `handoff.orbit_resolution`. Collision checks and elapsed time
+still apply. Yielding can be blocked, and the face operation can time out.
+
 Repeated queries do not advance physics. Only command execution does. Mission
 success/time/failure accounting remains attached to the original transport
 target. Hidden state is used only for sensor generation, physics, termination

@@ -1,0 +1,420 @@
+{
+  "protocol": "guarded_option_contact_progress_pair_v1",
+  "policy_sha256": "adf79ad691026c2eefb3a516fd717ba129f9b782cdf905f7e343d8569c8cb432",
+  "selection": "First six sorted development rooms. First publicly ready single target PUSH on archived outer boundaries. Public history digest, issued controls and physical object pose checked.",
+  "treatment": "Same target, robot codes and 40-tick cap. The existing in-contact public progress callback stops at 0.10 or 0.20 m of directed robot travel. Contact loss and normal early ends retained. At a progress event BRAKE is proposed only to stop; it is not executed.",
+  "continuation": "Freeze the contact-preserving nominal proposal from the prefix, using its exact target, robot codes and one tick. Check endpoint public menu and tactile face readiness separately. No subsequent command or full episode is executed.",
+  "selected": 6,
+  "matched": 6,
+  "no_anchor": 0,
+  "thresholds_reached": {
+    "short": 5,
+    "long": 5
+  },
+  "menu_available": {
+    "short": 5,
+    "long": 5
+  },
+  "contact_ready": {
+    "short": 5,
+    "long": 5
+  },
+  "rooms": {
+    "diag_dev_nat_001": {
+      "status": "paired",
+      "content_sha256": "9a6b35453ca066407df96ffd87b1617463c6203c73b01e8cf6a849820792c109",
+      "trace_sha256": "c2ef881a04f6bf13d36c9949725505a050ab2ad1e69d9eddb30686e685cd20a4",
+      "prefix": {
+        "tick": 167,
+        "public_history": "1f8edb69806c238d1feaae7ece37c0c35bf12d1de9fbab1a531dbfb54e37be63",
+        "object": [
+          1.5683996533888929,
+          1.3702212706798826,
+          1.1170285817105747
+        ],
+        "original_action": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 40
+        },
+        "continuation": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 176,
+        "elapsed_ticks": 9,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.624178040199226,
+          1.429772220992574,
+          0.945205973617454
+        ],
+        "object_forward_m": 0.08155015634944014,
+        "object_displacement_m": 0.08159377499728637,
+        "pusher_forward_from_boundary_m": 0.1164115385147921,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 184,
+        "elapsed_ticks": 17,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.681908106694864,
+          1.4751527144256291,
+          0.7979682483714035
+        ],
+        "object_forward_m": 0.15446033248696084,
+        "object_displacement_m": 0.15457935456742142,
+        "pusher_forward_from_boundary_m": 0.21618474890416856,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      }
+    },
+    "diag_dev_nat_002": {
+      "status": "paired",
+      "content_sha256": "e4b648ad4acca1100575d567fee67005113c9992be09f1ae52ec6fd1bbed54ad",
+      "trace_sha256": "12625b17b7101cc2db6bf3c1272b2bde88fdfe9c623614405bc88a1130cb310a",
+      "prefix": {
+        "tick": 167,
+        "public_history": "0de84fc3e4247a4542930725b183135028913d4179038caab52a8a8af46070b7",
+        "object": [
+          1.5683996533888929,
+          1.3702212706798826,
+          1.1170285817105747
+        ],
+        "original_action": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 40
+        },
+        "continuation": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 176,
+        "elapsed_ticks": 9,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.624178040199226,
+          1.429772220992574,
+          0.945205973617454
+        ],
+        "object_forward_m": 0.08155015634944014,
+        "object_displacement_m": 0.08159377499728637,
+        "pusher_forward_from_boundary_m": 0.1164115385147921,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 184,
+        "elapsed_ticks": 17,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.681908106694864,
+          1.4751527144256291,
+          0.7979682483714035
+        ],
+        "object_forward_m": 0.15446033248696084,
+        "object_displacement_m": 0.15457935456742142,
+        "pusher_forward_from_boundary_m": 0.21618474890416856,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      }
+    },
+    "diag_dev_nat_003": {
+      "status": "paired",
+      "content_sha256": "6927fd5b33656ed427304c02afbbf855f7a854f90e04a158ec12b420a55963b8",
+      "trace_sha256": "2327999e84db228125b942afc35a2893511f44a46190155dbde6eefa5e05b309",
+      "prefix": {
+        "tick": 167,
+        "public_history": "0849a0545409a3c68154c9942c6118c00b251e3064d3ca31010b1614e85ed4a9",
+        "object": [
+          1.5683996533888929,
+          1.3702212706798826,
+          1.1170285817105747
+        ],
+        "original_action": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 40
+        },
+        "continuation": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 176,
+        "elapsed_ticks": 9,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.624178040199226,
+          1.429772220992574,
+          0.945205973617454
+        ],
+        "object_forward_m": 0.08155015634944014,
+        "object_displacement_m": 0.08159377499728637,
+        "pusher_forward_from_boundary_m": 0.1164115385147921,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 184,
+        "elapsed_ticks": 17,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.681908106694864,
+          1.4751527144256291,
+          0.7979682483714035
+        ],
+        "object_forward_m": 0.15446033248696084,
+        "object_displacement_m": 0.15457935456742142,
+        "pusher_forward_from_boundary_m": 0.21618474890416856,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      }
+    },
+    "diag_dev_nat_004": {
+      "status": "paired",
+      "content_sha256": "4190819525c2a357460ba85e478916722add39f762186af046539df90fcd75b5",
+      "trace_sha256": "ad34a25ed6b368cec785fe7995877f176ab1b742bae57e6ec75defcc9058d15e",
+      "prefix": {
+        "tick": 167,
+        "public_history": "c207f313a2aa62ef347b39be88e27d053bf14c15c47cac99467dd5b89879ac2d",
+        "object": [
+          1.5623638125857955,
+          1.357927096165389,
+          1.1973218404848027
+        ],
+        "original_action": {
+          "a0": 46,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 28
+        },
+        "continuation": {
+          "a0": 46,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 186,
+        "elapsed_ticks": 19,
+        "runtime_stop": "blocked",
+        "progress_event": false,
+        "terminal": null,
+        "object": [
+          1.6260292172428874,
+          1.4568782269790763,
+          1.531796598720713
+        ],
+        "object_forward_m": 0.11498725496445067,
+        "object_displacement_m": 0.11766312098299408,
+        "pusher_forward_from_boundary_m": 0.06989545065355579,
+        "object_touching_static": true,
+        "same_command_in_next_public_menu": false,
+        "next_contact_state": "support_unobservable",
+        "next_command_available": false
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 186,
+        "elapsed_ticks": 19,
+        "runtime_stop": "blocked",
+        "progress_event": false,
+        "terminal": null,
+        "object": [
+          1.6260292172428874,
+          1.4568782269790763,
+          1.531796598720713
+        ],
+        "object_forward_m": 0.11498725496445067,
+        "object_displacement_m": 0.11766312098299408,
+        "pusher_forward_from_boundary_m": 0.06989545065355579,
+        "object_touching_static": true,
+        "same_command_in_next_public_menu": false,
+        "next_contact_state": "support_unobservable",
+        "next_command_available": false
+      }
+    },
+    "diag_dev_nat_005": {
+      "status": "paired",
+      "content_sha256": "e4a9d5b1127915192c561508a88776dfa5ce1254db2d5642a345eed25cfef872",
+      "trace_sha256": "85584d308199191e35d5614bee73d58bb18d0bf3f6a3899b89e14e64d66aa308",
+      "prefix": {
+        "tick": 167,
+        "public_history": "680eb0ecc2fd8a1009544910fb2ee270421d536efa79d6fcb79826ae4bb65e45",
+        "object": [
+          1.5683996533888929,
+          1.3702212706798826,
+          1.1170285817105747
+        ],
+        "original_action": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 40
+        },
+        "continuation": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 176,
+        "elapsed_ticks": 9,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.624178040199226,
+          1.429772220992574,
+          0.945205973617454
+        ],
+        "object_forward_m": 0.08155015634944014,
+        "object_displacement_m": 0.08159377499728637,
+        "pusher_forward_from_boundary_m": 0.1164115385147921,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 184,
+        "elapsed_ticks": 17,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.681908106694864,
+          1.4751527144256291,
+          0.7979682483714035
+        ],
+        "object_forward_m": 0.15446033248696084,
+        "object_displacement_m": 0.15457935456742142,
+        "pusher_forward_from_boundary_m": 0.21618474890416856,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      }
+    },
+    "diag_dev_nat_006": {
+      "status": "paired",
+      "content_sha256": "2010df4bf2b84022907831a5ee15f4029b3de940073bba615bfb81a18b52058d",
+      "trace_sha256": "ac6aea22ff9eb07718516206abed6246b7941e4e68f27c5e071b719571fd8f38",
+      "prefix": {
+        "tick": 167,
+        "public_history": "0de84fc3e4247a4542930725b183135028913d4179038caab52a8a8af46070b7",
+        "object": [
+          1.5683996533888929,
+          1.3702212706798826,
+          1.1170285817105747
+        ],
+        "original_action": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 40
+        },
+        "continuation": {
+          "a0": 44,
+          "a1": 7,
+          "target_id": "entity-a",
+          "ticks": 1
+        }
+      },
+      "short": {
+        "requested_contact_progress_m": 0.1,
+        "end_tick": 176,
+        "elapsed_ticks": 9,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.624178040199226,
+          1.429772220992574,
+          0.945205973617454
+        ],
+        "object_forward_m": 0.08155015634944014,
+        "object_displacement_m": 0.08159377499728637,
+        "pusher_forward_from_boundary_m": 0.1164115385147921,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      },
+      "long": {
+        "requested_contact_progress_m": 0.2,
+        "end_tick": 184,
+        "elapsed_ticks": 17,
+        "runtime_stop": "review_switch",
+        "progress_event": true,
+        "terminal": null,
+        "object": [
+          1.681908106694864,
+          1.4751527144256291,
+          0.7979682483714035
+        ],
+        "object_forward_m": 0.15446033248696084,
+        "object_displacement_m": 0.15457935456742142,
+        "pusher_forward_from_boundary_m": 0.21618474890416856,
+        "object_touching_static": false,
+        "same_command_in_next_public_menu": true,
+        "next_contact_state": "ready",
+        "next_command_available": true
+      }
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "paired": [
+    {
+      "group": "全部",
+      "n": 600,
+      "max_success": 323,
+      "own_success": 319,
+      "max_only": 46,
+      "own_only": 42,
+      "pp": 0.6666666666666667,
+      "ci_pp": [
+        -2.3333333333333335,
+        3.6666666666666665
+      ]
+    },
+    {
+      "group": "仅一个 CAP 成功",
+      "n": 92,
+      "max_success": 43,
+      "own_success": 44,
+      "max_only": 12,
+      "own_only": 13,
+      "pp": -1.0869565217391304,
+      "ci_pp": [
+        -11.904761904761903,
+        9.63855421686747
+      ]
+    },
+    {
+      "group": "至少一个 CAP 成功",
+      "n": 449,
+      "max_success": 307,
+      "own_success": 304,
+      "max_only": 42,
+      "own_only": 39,
+      "pp": 0.6681514476614699,
+      "ci_pp": [
+        -3.325942350332594,
+        4.6084721729883
+      ]
+    },
+    {
+      "group": "七个 CAP 均失败",
+      "n": 151,
+      "max_success": 16,
+      "own_success": 15,
+      "max_only": 4,
+      "own_only": 3,
+      "pp": 0.6622516556291391,
+      "ci_pp": [
+        -2.7210884353741496,
+        4.0
+      ]
+    }
+  ],
+  "primary": "all scenes, max minus own",
+  "targets": {
+    "boundaries": 573536,
+    "terminal": 8078,
+    "nonterminal": 565458,
+    "max_targets_exact": true,
+    "positively_changed": 493885,
+    "change_above_01": 11732,
+    "mean_gap": 0.015423395670950413,
+    "median_gap": 0.001798105426132679,
+    "p90_gap": 0.0514138825237751,
+    "max_gap": 0.29289963841438293,
+    "own_sha256": "3e75295dc39c0efc60475f7b6e1afef35b982f7d485d4b6e0c7d33a2cced9eff"
+  },
+  "action_paths": {
+    "first_action_changed": 17,
+    "later_changed": 435,
+    "identical": 148
+  }
+}

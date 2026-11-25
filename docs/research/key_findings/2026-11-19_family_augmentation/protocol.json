@@ -1,0 +1,38 @@
+{
+  "seed": 2026111927,
+  "training_seed": 17,
+  "arms": [
+    "uniform",
+    "targeted"
+  ],
+  "all_caps": [
+    "CAP-RR-009",
+    "CAP-RR-003",
+    "CAP-RR-001",
+    "CAP-RR-010",
+    "CAP-RR-006",
+    "CAP-RR-007",
+    "CAP-RR-002"
+  ],
+  "training_roots": 608,
+  "anchors": 200,
+  "singleton_anchors": 99,
+  "prim": "targeted minus uniform closed-loop success on fresh exactly-one-of-seven CAP subset",
+  "secondary": "whole panel, seven-CAP union, outside union; both vs frozen unaugmented GA-Q",
+  "batches": {
+    "variants_per_arm": 32,
+    "minimum": 4,
+    "maximum": 8,
+    "max_per_family_per_arm": 4,
+    "stop": "after a matched round, both arms >=201 successes"
+  },
+  "sampling": "same pool; control random least visited; targeted lowest original + newly observed successful trajectories; random ties",
+  "perturbation": "independent uniform +/-0.065m for x,y and +/-0.10 rad for angle of target, clutter and both robots; fixed obstacles and goal; room generation geometry rejection",
+  "learning": "full original training data plus all successes and failures from assigned neighbors, boundary uniform, original normalizers and GA architecture, 16k V then 8k Q from scratch",
+  "test": "200 freshly generated families, all seven CAPs once plus three greedy GA-Q policies; fixed checkpoints",
+  "baseline_sha256": "f74c0e4104fcca046a9fb7241090be7949268a321c603560b0c3e2cfa9665b6d",
+  "files": {
+    "anchors.json": "7c67f49ca923f4f010349115612c7879700a32f20ea0261456e67398bde82757",
+    "evaluation_panel.json": "edbaacd6719bf45181e448d885edca50f41adf7ab21bd959d7c73a373566ad2e"
+  }
+}

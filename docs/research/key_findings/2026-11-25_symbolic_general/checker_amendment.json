@@ -1,0 +1,11 @@
+{
+  "scope": "proof construction optimization and dependency reporting; formal evaluation uses one shared checker source for all versions",
+  "changes": [
+    "certify every enabled rule implies its own executable condition before reducing actual-selector legality to coverage",
+    "fall back to exact score and priority selection whenever that certificate is unavailable",
+    "avoid generating discarded SAT witnesses for feasibility-only queries",
+    "propagate edits of derived definitions and conservatively include selection competitors"
+  ],
+  "development_note": "Earlier development trajectories retain their recorded exact-selector checks and timeouts; stored physical labels remain unchanged.",
+  "physical_predicates_unchanged": true
+}

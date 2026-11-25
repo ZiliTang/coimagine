@@ -1,0 +1,1926 @@
+{
+  "core_sha256": "ba2c29d972470d27caa9cf7b59f81783aff1f45f36a71e92f01444d34e998396",
+  "adapter_sha256": "49ea35855277760db4b29d9bef8e70839582fd249d6a93bed94e1ab479c820c5",
+  "cabinet": {
+    "kind": "synthetic aligned bottleneck fixtures, no simulated arm or control trials",
+    "claim": {
+      "precondition": {
+        "empty_gripper_entry_margin_m": [
+          0,
+          null
+        ]
+      },
+      "outcome": {
+        "grasp_held": [
+          1,
+          1
+        ]
+      },
+      "continuation": {
+        "straight_withdrawal": {
+          "loaded_exit_margin_m": [
+            0,
+            null
+          ]
+        }
+      }
+    },
+    "rows": [
+      {
+        "view": "visible",
+        "pose": "narrow",
+        "opening_interval_m": [
+          0.11,
+          0.11
+        ],
+        "empty_span_m": 0.05,
+        "loaded_span_m": 0.08,
+        "audit": {
+          "precondition": {
+            "verdict": "supported",
+            "metrics": {
+              "empty_gripper_entry_margin_m": {
+                "claim": [
+                  0,
+                  null
+                ],
+                "evidence": [
+                  0.06,
+                  0.06
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "outcome": {
+            "verdict": "supported",
+            "metrics": {
+              "grasp_held": {
+                "claim": [
+                  1,
+                  1
+                ],
+                "evidence": [
+                  1,
+                  1
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "continuation": {
+            "verdict": "supported",
+            "witnesses": {
+              "straight_withdrawal": {
+                "verdict": "supported",
+                "metrics": {
+                  "loaded_exit_margin_m": {
+                    "claim": [
+                      0,
+                      null
+                    ],
+                    "evidence": [
+                      0.03,
+                      0.03
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "verdict": "supported"
+        }
+      },
+      {
+        "view": "visible",
+        "pose": "wide",
+        "opening_interval_m": [
+          0.11,
+          0.11
+        ],
+        "empty_span_m": 0.05,
+        "loaded_span_m": 0.125,
+        "audit": {
+          "precondition": {
+            "verdict": "supported",
+            "metrics": {
+              "empty_gripper_entry_margin_m": {
+                "claim": [
+                  0,
+                  null
+                ],
+                "evidence": [
+                  0.06,
+                  0.06
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "outcome": {
+            "verdict": "supported",
+            "metrics": {
+              "grasp_held": {
+                "claim": [
+                  1,
+                  1
+                ],
+                "evidence": [
+                  1,
+                  1
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "continuation": {
+            "verdict": "contradicted",
+            "witnesses": {
+              "straight_withdrawal": {
+                "verdict": "contradicted",
+                "metrics": {
+                  "loaded_exit_margin_m": {
+                    "claim": [
+                      0,
+                      null
+                    ],
+                    "evidence": [
+                      -0.015,
+                      -0.015
+                    ],
+                    "verdict": "contradicted"
+                  }
+                }
+              }
+            }
+          },
+          "verdict": "contradicted"
+        }
+      },
+      {
+        "view": "partly_occluded",
+        "pose": "narrow",
+        "opening_interval_m": [
+          0.09,
+          null
+        ],
+        "empty_span_m": 0.05,
+        "loaded_span_m": 0.08,
+        "audit": {
+          "precondition": {
+            "verdict": "supported",
+            "metrics": {
+              "empty_gripper_entry_margin_m": {
+                "claim": [
+                  0,
+                  null
+                ],
+                "evidence": [
+                  0.039999999999999994,
+                  null
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "outcome": {
+            "verdict": "supported",
+            "metrics": {
+              "grasp_held": {
+                "claim": [
+                  1,
+                  1
+                ],
+                "evidence": [
+                  1,
+                  1
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "continuation": {
+            "verdict": "supported",
+            "witnesses": {
+              "straight_withdrawal": {
+                "verdict": "supported",
+                "metrics": {
+                  "loaded_exit_margin_m": {
+                    "claim": [
+                      0,
+                      null
+                    ],
+                    "evidence": [
+                      0.009999999999999995,
+                      null
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              }
+            }
+          },
+          "verdict": "supported"
+        }
+      },
+      {
+        "view": "partly_occluded",
+        "pose": "wide",
+        "opening_interval_m": [
+          0.09,
+          null
+        ],
+        "empty_span_m": 0.05,
+        "loaded_span_m": 0.125,
+        "audit": {
+          "precondition": {
+            "verdict": "supported",
+            "metrics": {
+              "empty_gripper_entry_margin_m": {
+                "claim": [
+                  0,
+                  null
+                ],
+                "evidence": [
+                  0.039999999999999994,
+                  null
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "outcome": {
+            "verdict": "supported",
+            "metrics": {
+              "grasp_held": {
+                "claim": [
+                  1,
+                  1
+                ],
+                "evidence": [
+                  1,
+                  1
+                ],
+                "verdict": "supported"
+              }
+            }
+          },
+          "continuation": {
+            "verdict": "unknown",
+            "witnesses": {
+              "straight_withdrawal": {
+                "verdict": "unknown",
+                "metrics": {
+                  "loaded_exit_margin_m": {
+                    "claim": [
+                      0,
+                      null
+                    ],
+                    "evidence": [
+                      -0.035,
+                      null
+                    ],
+                    "verdict": "unknown"
+                  }
+                }
+              }
+            }
+          },
+          "verdict": "unknown"
+        }
+      }
+    ]
+  },
+  "planar": {
+    "kind": "retrospective host-defined checks on actual ordinary target PUSH commands",
+    "claim": {
+      "precondition": {
+        "target_visible_at_issue": [
+          1,
+          1
+        ]
+      },
+      "outcome": {
+        "goal_gain_m": [
+          0.02,
+          null
+        ]
+      },
+      "continuation": {
+        "next_actual_command": {
+          "next_goal_gain_m": [
+            0.02,
+            null
+          ]
+        },
+        "finished": {
+          "goal_reached_at_end": [
+            1,
+            1
+          ]
+        }
+      }
+    },
+    "rooms": [
+      {
+        "path": "outputs/semantic_rl/cap_safe_nominal_v1/runs/dev/P/full/diag_dev_nat_003.json",
+        "sha256": "f0a80f0dad656968de2971ec679e5c9c663b2b000f1bd8307ae99501c88b694c",
+        "commands": 27,
+        "audited_target_pushes": 18,
+        "rows": [
+          {
+            "tick": 0,
+            "end_tick": 40,
+            "action": {
+              "a0": 7,
+              "a1": 7,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.04847064448921268,
+                      0.04847064448921268
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.11868725994961382,
+                          0.11868725994961382
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 40,
+            "end_tick": 50,
+            "action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.11868725994961382,
+                      0.11868725994961382
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.05502159926730288,
+                          0.05502159926730288
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 50,
+            "end_tick": 60,
+            "action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.05502159926730288,
+                      0.05502159926730288
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.25843533511336636,
+                          0.25843533511336636
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 60,
+            "end_tick": 100,
+            "action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.25843533511336636,
+                      0.25843533511336636
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.18692532949851026,
+                          0.18692532949851026
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 100,
+            "end_tick": 117,
+            "action": {
+              "a0": 7,
+              "a1": 46,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 11,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.18692532949851026,
+                      0.18692532949851026
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.06596640323242431,
+                          0.06596640323242431
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 117,
+            "end_tick": 135,
+            "action": {
+              "a0": 11,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 11,
+              "a1": 44,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.06596640323242431,
+                      0.06596640323242431
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.122595005321116,
+                          0.122595005321116
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 135,
+            "end_tick": 163,
+            "action": {
+              "a0": 11,
+              "a1": 44,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 74,
+              "a1": 49,
+              "target_id": null,
+              "ticks": 30
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.122595005321116,
+                      0.122595005321116
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.1041765568986941,
+                          0.1041765568986941
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 223,
+            "end_tick": 263,
+            "action": {
+              "a0": 11,
+              "a1": 11,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 11,
+              "a1": 11,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "contradicted",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      3.8488600750508084e-05,
+                      3.8488600750508084e-05
+                    ],
+                    "verdict": "contradicted"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.06649670605101665,
+                          0.06649670605101665
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "contradicted"
+            }
+          },
+          {
+            "tick": 263,
+            "end_tick": 303,
+            "action": {
+              "a0": 11,
+              "a1": 11,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 11,
+              "a1": 44,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.06649670605101665,
+                      0.06649670605101665
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.11495963921443542,
+                          0.11495963921443542
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 303,
+            "end_tick": 322,
+            "action": {
+              "a0": 11,
+              "a1": 44,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 78,
+              "a1": 74,
+              "target_id": null,
+              "ticks": 30
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.11495963921443542,
+                      0.11495963921443542
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.058148137641341524,
+                          0.058148137641341524
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 412,
+            "end_tick": 433,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 66,
+              "a1": 58,
+              "target_id": null,
+              "ticks": 30
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "contradicted",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      3.33347256020744e-07,
+                      3.33347256020744e-07
+                    ],
+                    "verdict": "contradicted"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "contradicted",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          2.0505001696591307e-08,
+                          2.0505001696591307e-08
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "contradicted"
+            }
+          },
+          {
+            "tick": 463,
+            "end_tick": 503,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "contradicted",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      3.6373171141690364e-10,
+                      3.6373171141690364e-10
+                    ],
+                    "verdict": "contradicted"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.2864697547671198,
+                          0.2864697547671198
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "contradicted"
+            }
+          },
+          {
+            "tick": 503,
+            "end_tick": 543,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.2864697547671198,
+                      0.2864697547671198
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.5649339612786637,
+                          0.5649339612786637
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 543,
+            "end_tick": 583,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.5649339612786637,
+                      0.5649339612786637
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.5625406236267878,
+                          0.5625406236267878
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 583,
+            "end_tick": 623,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.5625406236267878,
+                      0.5625406236267878
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.558580820437336,
+                          0.558580820437336
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 623,
+            "end_tick": 663,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.558580820437336,
+                      0.558580820437336
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.47369309418028677,
+                          0.47369309418028677
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 663,
+            "end_tick": 698,
+            "action": {
+              "a0": 44,
+              "a1": 3,
+              "target_id": "entity-a",
+              "ticks": 40
+            },
+            "next_action": {
+              "a0": 44,
+              "a1": 2,
+              "target_id": "entity-a",
+              "ticks": 17
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.47369309418028677,
+                      0.47369309418028677
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.035556507134806126,
+                          0.035556507134806126
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          },
+          {
+            "tick": 709,
+            "end_tick": 717,
+            "action": {
+              "a0": 44,
+              "a1": 1,
+              "target_id": "entity-a",
+              "ticks": 8
+            },
+            "next_action": {
+              "a0": 54,
+              "a1": 70,
+              "target_id": null,
+              "ticks": 30
+            },
+            "audit": {
+              "precondition": {
+                "verdict": "supported",
+                "metrics": {
+                  "target_visible_at_issue": {
+                    "claim": [
+                      1,
+                      1
+                    ],
+                    "evidence": [
+                      1,
+                      1
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "outcome": {
+                "verdict": "supported",
+                "metrics": {
+                  "goal_gain_m": {
+                    "claim": [
+                      0.02,
+                      null
+                    ],
+                    "evidence": [
+                      0.0387444118935045,
+                      0.0387444118935045
+                    ],
+                    "verdict": "supported"
+                  }
+                }
+              },
+              "continuation": {
+                "verdict": "supported",
+                "witnesses": {
+                  "next_actual_command": {
+                    "verdict": "supported",
+                    "metrics": {
+                      "next_goal_gain_m": {
+                        "claim": [
+                          0.02,
+                          null
+                        ],
+                        "evidence": [
+                          0.026960650033566708,
+                          0.026960650033566708
+                        ],
+                        "verdict": "supported"
+                      }
+                    }
+                  },
+                  "finished": {
+                    "verdict": "contradicted",
+                    "metrics": {
+                      "goal_reached_at_end": {
+                        "claim": [
+                          1,
+                          1
+                        ],
+                        "evidence": [
+                          0,
+                          0
+                        ],
+                        "verdict": "contradicted"
+                      }
+                    }
+                  }
+                }
+              },
+              "verdict": "supported"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "limits": [
+    "A contradicted continuation refers to the stated witnesses only. Untested paths may exist.",
+    "The planar continuation measures actual next-command progress, not reachability or all choices.",
+    "Goal gain uses offline object centres. No outcomes or private states are policy inputs.",
+    "The two-centimetre thresholds are illustrative host tests, not declarations of the historical policy."
+  ]
+}

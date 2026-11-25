@@ -1,0 +1,14 @@
+{
+  "source_run": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_01",
+  "imported_complete_shards": 4966,
+  "imported_boundaries": 343944,
+  "feature_implementation_identical": true,
+  "changed_source_files": [
+    "experiments/planar_tasks/authoring_v2/cap_trace_value_full.py"
+  ],
+  "change": "Only deterministic ordering of completed online episode shards before replay assembly.",
+  "first_extract_epoch": 1794938861.837489,
+  "previous_extract_seconds": 2848.549669582004,
+  "original_inputs_sha256": "ea077b968a2503d701698a6b863ca28cab620660bedb51fabfa4eb0e061c73d9",
+  "immutable_npz_reuse": "hard links; previous processes terminated; new metadata paths, old metadata preserved"
+}

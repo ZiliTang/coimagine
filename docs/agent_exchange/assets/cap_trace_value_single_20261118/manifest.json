@@ -1,0 +1,58 @@
+{
+  "inputs.json": {
+    "sha256": "2a29a95895bec439507f985be2d2057c05cb9ef9162a990f700bb42dd4483542",
+    "bytes": 5496
+  },
+  "pause_resume.json": {
+    "sha256": "17c3a5e85b03f4223765c2bfb29c09d6899e843fc084be06ced4e84da0b90e33",
+    "bytes": 296
+  },
+  "dashboard.html": {
+    "sha256": "cf7e6c0c4cc0059de8eef2b8b9715b1a21b0c7b4d88ebdb19aa9d81c698bbba0",
+    "bytes": 847629
+  },
+  "SUMMARY.json": {
+    "sha256": "0224ead7afff0811135169d59a5c5e701a7309c1dd0848469ebb64aa00a5d9c8",
+    "bytes": 10122
+  },
+  "per_case_results.csv": {
+    "sha256": "ca1d55482859a6abfd20ea5cdac7fef791bf9355a5caf943ada3b1fd6f2bac30",
+    "bytes": 196198
+  },
+  "ALL_MODELS_FROZEN.json": {
+    "sha256": "8d8e6a17712e352cf456e69eb8c3f0456eb22a713a3930bd3736b0d803cca512",
+    "bytes": 3507
+  },
+  "study.exit.json": {
+    "sha256": "fa2d442042df8c8ff67675a70d6bdbff5f80005466a3412cc536ccd22abe18b3",
+    "bytes": 139
+  },
+  "loss_metrics.csv": {
+    "sha256": "96323d191f58c19df50f010abecfd6b6fec317c0c6bb7377985d635b013e2468",
+    "bytes": 139333
+  },
+  "FINISHED.json": {
+    "sha256": "14bb9e70f2fbea5868676da36436bc969cf8f02b1f4a4d285836adb0c6cdfe33",
+    "bytes": 292
+  },
+  "validation.json": {
+    "sha256": "370dd94f10beb3737f2b966619668938c6dff79c7c4a2ffa0aa63a4aa0009e38",
+    "bytes": 237
+  },
+  "evaluation_curve.csv": {
+    "sha256": "249209c858c345af4423b773de2b83117bf925d74f183d6e39aff53233b00a41",
+    "bytes": 398
+  },
+  "training_returns.csv": {
+    "sha256": "4a0e78d3dd9b248d9c8a141c4ae0f41b20bdfe9c2f0dcf37905cdad512b24344",
+    "bytes": 6789
+  },
+  "learning_curves.png": {
+    "sha256": "3fbef937fd6be54e973d30b0e743c1650a7f862a29bb39ed2eabeed8852e59a1",
+    "bytes": 633355
+  },
+  "curves.json": {
+    "sha256": "53528427ff9dc5802f296bb6bd890b8bec8ece576aeb322e818b68ee64ba5711",
+    "bytes": 395281
+  }
+}

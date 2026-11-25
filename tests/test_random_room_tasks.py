@@ -1,6 +1,7 @@
 from copy import deepcopy
 import math
 import pytest
+from coimagine.random_start.spec import ROBOT_DIAMETER
 from experiments.planar_tasks.authoring_v2.random_room_tasks import generate,polygon,separated,inside
 from experiments.planar_tasks.relational_search import pipeline_execution as X
 
@@ -15,7 +16,7 @@ def test_fixed_panel_geometry_and_split():
         shapes += [polygon(b['cx'],b['cy'],2*b['half_w'],2*b['half_h'],b['angle']) for b in f['room']['obstacles']]
         goal=polygon(g['x'],g['y'],.25,1.,p['angle'])
         assert inside(goal) and all(separated(goal,s,.1) for s in shapes)
-        shapes += [polygon(p['x'],p['y'],.36,.36,p['angle']) for p in f['robots']]
+        shapes += [polygon(p['x'],p['y'],ROBOT_DIAMETER,ROBOT_DIAMETER,p['angle']) for p in f['robots']]
         assert all(inside(p) for p in shapes)
         assert all(separated(p,q) for i,p in enumerate(shapes) for q in shapes[i+1:])
         scene,boxes=X.fixture(f);assert len(boxes)+1==row['movable_count']

@@ -1,0 +1,401 @@
+split,room,kind,arm,offset,status,reason,ticks,stable,effect,along,lateral,contacts,peer,other,recovery_status,recovery
+validation,dev_4_27,push_progress,base,zero,executed,duration,40,19,True,0.2774019928770959,0.11601745749690373,24,0,0,,[]
+validation,dev_4_27,push_progress,base,t+,executed,duration,40,19,True,0.27832946710541107,0.11648653511801443,24,0,0,,[]
+validation,dev_4_27,push_progress,base,t-,executed,duration,40,20,True,0.2650339084287574,0.11047666740328754,23,0,0,,[]
+validation,dev_4_27,push_progress,base,n+,executed,duration,40,19,True,0.28250375295370267,0.11779905331112905,24,0,0,,[]
+validation,dev_4_27,push_progress,base,n-,executed,duration,40,20,True,0.26648667786790536,0.11149664246666147,23,0,0,,[]
+validation,dev_2_09,push_progress,base,zero,executed,duration,40,3,True,0.4875357281050059,-0.29355040122712994,40,0,0,,[]
+validation,dev_2_09,push_progress,base,t+,executed,duration,40,5,True,0.4790151567671135,-0.29650417939086493,38,0,0,,[]
+validation,dev_2_09,push_progress,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_09,push_progress,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_09,push_progress,base,n-,executed,duration,40,5,True,0.4774056718079809,-0.2847826842015193,38,0,0,,[]
+validation,dev_2_09,dual,base,zero,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,,[]
+validation,dev_2_09,dual,base,t+,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,,[]
+validation,dev_2_09,dual,base,t-,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,,[]
+validation,dev_2_09,dual,base,n+,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,,[]
+validation,dev_2_09,dual,base,n-,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,,[]
+validation,dev_5_03,push_progress,base,zero,executed,duration,40,36,True,0.06998404095976696,-0.009125765958200693,7,0,5,,[]
+validation,dev_5_03,push_progress,base,t+,executed,duration,40,38,True,0.044388023734911464,-0.005009804226315806,5,0,5,,[]
+validation,dev_5_03,push_progress,base,t-,executed,duration,40,34,True,0.09464278026998851,-0.013708970365182482,9,0,5,,[]
+validation,dev_5_03,push_progress,base,n+,executed,duration,40,36,True,0.06887002511947671,-0.0091808345336033,7,0,5,,[]
+validation,dev_5_03,push_progress,base,n-,executed,duration,40,37,True,0.056599573428908645,-0.006861513528239271,6,0,7,,[]
+validation,dev_5_03,dual,base,zero,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,,[]
+validation,dev_5_03,dual,base,t+,executed,duration,40,,False,1.950505151903324e-08,-3.1551400323355884e-08,0,0,0,,[]
+validation,dev_5_03,dual,base,t-,executed,blocked,23,,False,1.8712533219680477e-08,-3.0269423913080974e-08,0,0,0,,[]
+validation,dev_5_03,dual,base,n+,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,,[]
+validation,dev_5_03,dual,base,n-,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,,[]
+validation,dev_4_08,standoff,base,zero,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_4_08,standoff,base,t+,executed,duration,40,,False,0.0,0.0,0,0,35,,[]
+validation,dev_4_08,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_08,standoff,base,n+,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_4_08,standoff,base,n-,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_2_27,push_progress,base,zero,executed,duration,40,3,True,0.29401761686683603,0.09174819990488432,40,0,0,,[]
+validation,dev_2_27,push_progress,base,t+,executed,duration,40,3,True,0.298793229671699,0.09054382399090685,40,0,0,,[]
+validation,dev_2_27,push_progress,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_27,push_progress,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_27,push_progress,base,n-,executed,duration,40,10,True,0.25025752380046595,0.0825444301805025,33,0,0,,[]
+validation,dev_4_11,push_progress,base,zero,executed,duration,40,12,True,0.2919551500675821,-0.05229398770885796,31,0,0,,[]
+validation,dev_4_11,push_progress,base,t+,executed,duration,40,12,True,0.2933713029815217,-0.05657181437516323,31,0,0,,[]
+validation,dev_4_11,push_progress,base,t-,executed,duration,40,12,True,0.29941456153516,-0.052763661810464324,31,0,0,,[]
+validation,dev_4_11,push_progress,base,n+,executed,duration,40,12,True,0.29193908149021874,-0.05288406780589616,31,0,0,,[]
+validation,dev_4_11,push_progress,base,n-,executed,duration,40,13,True,0.2828668604276978,-0.04818944720286211,30,0,0,,[]
+validation,dev_4_11,dual,base,zero,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,,[]
+validation,dev_4_11,dual,base,t+,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,,[]
+validation,dev_4_11,dual,base,t-,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,,[]
+validation,dev_4_11,dual,base,n+,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,,[]
+validation,dev_4_11,dual,base,n-,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,,[]
+validation,dev_4_11,standoff,base,zero,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,11,,[]
+validation,dev_4_11,standoff,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_11,standoff,base,t-,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,3,,[]
+validation,dev_4_11,standoff,base,n+,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,10,,[]
+validation,dev_4_11,standoff,base,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,dual,base,zero,executed,duration,40,,False,0.0,0.0,0,2,0,,[]
+validation,dev_3_35,dual,base,t+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_3_35,dual,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,dual,base,n+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_3_35,dual,base,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_progress,base,zero,executed,duration,40,5,True,0.4493700870263359,0.222788432761425,38,0,0,,[]
+validation,dev_3_35,push_progress,base,t+,executed,duration,40,4,True,0.4732257189837185,0.21176975818679286,39,0,0,,[]
+validation,dev_3_35,push_progress,base,t-,executed,duration,40,5,True,0.43628484534497497,0.2370754380485872,38,0,0,,[]
+validation,dev_3_35,push_progress,base,n+,executed,duration,40,4,True,0.4615361338163239,0.24468503705578434,39,0,0,,[]
+validation,dev_3_35,push_progress,base,n-,executed,duration,40,6,True,0.43119533955022943,0.20184815469702952,37,0,0,,[]
+validation,dev_3_35,push_low,base,zero,executed,duration,40,3,False,0.0008556965899604305,0.001281541506273243,40,0,0,,[]
+validation,dev_3_35,push_low,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_low,base,t-,executed,duration,40,3,False,0.0008750755277260323,0.00131072040299296,40,0,0,,[]
+validation,dev_3_35,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_low,base,n-,executed,duration,40,4,False,0.0008485743399262444,0.001271237466939912,39,0,0,,[]
+validation,dev_3_30,push_progress,base,zero,executed,duration,40,12,True,0.3772167545909464,-0.05441236396300285,31,0,0,,[]
+validation,dev_3_30,push_progress,base,t+,executed,duration,40,12,True,0.3709245295518014,-0.058634708616102905,31,0,0,,[]
+validation,dev_3_30,push_progress,base,t-,executed,duration,40,12,True,0.3805128276498412,-0.05153763277937405,31,0,0,,[]
+validation,dev_3_30,push_progress,base,n+,executed,duration,40,11,True,0.38980538344799665,-0.060542551873493236,32,0,0,,[]
+validation,dev_3_30,push_progress,base,n-,executed,duration,40,13,True,0.3639822914066387,-0.047163468614038764,30,0,0,,[]
+validation,dev_3_30,push_low,base,zero,executed,duration,40,3,False,-0.0019710358180748955,-0.0007931844504875943,40,0,0,,[]
+validation,dev_3_30,push_low,base,t+,executed,duration,40,3,False,-0.0031027949174800003,-0.0012569570146072635,40,0,0,,[]
+validation,dev_3_30,push_low,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,push_low,base,n-,executed,duration,40,4,False,-0.0015388582229847179,-0.0006159062509323302,39,0,0,,[]
+validation,dev_3_30,standoff,base,zero,executed,duration,40,,False,-1.0593413818739456e-12,1.0172158012074572e-11,0,0,40,,[]
+validation,dev_3_30,standoff,base,t+,executed,duration,40,,False,-1.0593413818739456e-12,1.0172158012074572e-11,0,0,35,,[]
+validation,dev_3_30,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,standoff,base,n+,executed,duration,40,,False,-1.0593413818739456e-12,1.0172158012074572e-11,0,0,38,,[]
+validation,dev_3_30,standoff,base,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,dual,base,zero,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,,[]
+validation,dev_3_30,dual,base,t+,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,,[]
+validation,dev_3_30,dual,base,t-,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,,[]
+validation,dev_3_30,dual,base,n+,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,,[]
+validation,dev_3_30,dual,base,n-,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,,[]
+validation,dev_5_33,dual,base,zero,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_33,dual,base,t+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_33,dual,base,t-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_33,dual,base,n+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_33,dual,base,n-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_33,push_progress,base,zero,executed,duration,40,3,True,0.2850577485332694,0.06527495968838891,39,0,15,,[]
+validation,dev_5_33,push_progress,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_33,push_progress,base,t-,executed,duration,40,6,True,0.2847142111920449,0.06696448586368868,36,0,16,,[]
+validation,dev_5_33,push_progress,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_33,push_progress,base,n-,executed,duration,40,6,True,0.28524027500807947,0.06620539511679524,37,0,14,,[]
+validation,dev_4_04,push_progress,base,zero,executed,duration,40,11,True,0.40640897595656567,0.06448000507524308,32,0,0,,[]
+validation,dev_4_04,push_progress,base,t+,executed,duration,40,11,True,0.40770562139259253,0.061101784462056025,32,0,0,,[]
+validation,dev_4_04,push_progress,base,t-,executed,duration,40,11,True,0.4089558263492203,0.06603896224260428,32,0,0,,[]
+validation,dev_4_04,push_progress,base,n+,executed,duration,40,10,True,0.4176887531797625,0.06641270121643272,33,0,0,,[]
+validation,dev_4_04,push_progress,base,n-,executed,duration,40,12,True,0.3938063427621203,0.06266083310736167,31,0,0,,[]
+validation,dev_4_04,push_low,base,zero,executed,duration,40,39,True,0.025102794980973054,0.010870109414906126,4,0,0,,[]
+validation,dev_4_04,push_low,base,t+,executed,duration,40,40,False,0.014656361242131885,0.007052714478161621,3,0,0,,[]
+validation,dev_4_04,push_low,base,t-,executed,duration,40,34,True,0.08749176625228583,0.03100356966830057,9,0,0,,[]
+validation,dev_4_04,push_low,base,n+,executed,duration,40,40,False,0.01384632479091229,0.005953266145293874,3,0,0,,[]
+validation,dev_4_04,push_low,base,n-,executed,duration,40,38,True,0.034565604616324325,0.014873039045505358,5,0,0,,[]
+validation,dev_5_37,push_progress,base,zero,executed,duration,40,3,True,0.520211078300211,0.23092958176213516,40,0,0,,[]
+validation,dev_5_37,push_progress,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_37,push_progress,base,t-,executed,duration,40,5,True,0.5067297279675744,0.23192826471411535,38,0,0,,[]
+validation,dev_5_37,push_progress,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_37,push_progress,base,n-,executed,duration,40,5,True,0.5102920646494296,0.22375729711295836,38,0,0,,[]
+validation,dev_3_21,push_progress,base,zero,executed,duration,40,9,True,0.4213067054258678,-0.0732824864049424,34,0,0,,[]
+validation,dev_3_21,push_progress,base,t+,executed,duration,40,9,True,0.4244823141944911,-0.08082579801547539,34,0,0,,[]
+validation,dev_3_21,push_progress,base,t-,executed,duration,40,9,True,0.42084921767194405,-0.0654440821939202,34,0,0,,[]
+validation,dev_3_21,push_progress,base,n+,executed,duration,40,8,True,0.4333335931342363,-0.0751726230456624,35,0,0,,[]
+validation,dev_3_21,push_progress,base,n-,executed,duration,40,10,True,0.4168548297075721,-0.07311124913424845,33,0,0,,[]
+validation,dev_2_17,dual,base,zero,executed,duration,36,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_17,dual,base,t+,executed,duration,36,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_17,dual,base,t-,executed,duration,36,,False,0.022178501534793723,0.0217538847503338,0,0,0,,[]
+validation,dev_2_17,dual,base,n+,executed,duration,36,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_17,dual,base,n-,executed,duration,36,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_17,standoff,base,zero,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,,[]
+validation,dev_2_17,standoff,base,t+,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,35,,[]
+validation,dev_2_17,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_17,standoff,base,n+,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,,[]
+validation,dev_2_17,standoff,base,n-,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,,[]
+validation,dev_5_08,dual,base,zero,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_08,dual,base,t+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_08,dual,base,t-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_08,dual,base,n+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_08,dual,base,n-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_5_08,standoff,base,zero,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_5_08,standoff,base,t+,executed,duration,40,,False,0.0,0.0,0,0,35,,[]
+validation,dev_5_08,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_08,standoff,base,n+,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_5_08,standoff,base,n-,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_4_15,dual,base,zero,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,,[]
+validation,dev_4_15,dual,base,t+,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,,[]
+validation,dev_4_15,dual,base,t-,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,,[]
+validation,dev_4_15,dual,base,n+,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,,[]
+validation,dev_4_15,dual,base,n-,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,,[]
+validation,dev_2_03,dual,base,zero,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_03,dual,base,t+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_03,dual,base,t-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_03,dual,base,n+,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_03,dual,base,n-,executed,duration,40,,False,0.0,0.0,0,0,0,,[]
+validation,dev_2_03,push_low,base,zero,executed,duration,40,3,False,8.368861159624431e-13,-9.43245481721533e-13,40,0,0,,[]
+validation,dev_2_03,push_low,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_03,push_low,base,t-,executed,duration,40,3,False,-5.051081775064858e-10,5.419806825557316e-10,40,0,0,,[]
+validation,dev_2_03,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_03,push_low,base,n-,executed,duration,40,4,False,-1.9291725994463604e-09,2.149522337901999e-09,39,0,0,,[]
+validation,dev_2_02,standoff,base,zero,executed,duration,40,,False,2.5531328162742284e-09,-4.166653244652707e-09,0,0,40,,[]
+validation,dev_2_02,standoff,base,t+,executed,duration,40,,False,2.5531328162742284e-09,-4.166653244652707e-09,0,0,35,,[]
+validation,dev_2_02,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_02,standoff,base,n+,executed,duration,40,,False,2.5531328162742284e-09,-4.166653244652707e-09,0,0,40,,[]
+validation,dev_2_02,standoff,base,n-,executed,duration,40,,False,2.5531328162742284e-09,-4.166653244652707e-09,0,0,40,,[]
+validation,dev_3_27,push_low,base,zero,executed,contact_lost,11,3,False,0.0045734487691458,0.006324835056656388,6,0,0,,[]
+validation,dev_3_27,push_low,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_27,push_low,base,t-,executed,contact_lost,14,8,False,0.004835731223768127,0.006274042366207825,4,0,0,,[]
+validation,dev_3_27,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_27,push_low,base,n-,executed,duration,40,22,True,0.10270322334483109,0.06542482962401974,22,0,0,,[]
+validation,dev_3_24,standoff,base,zero,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,,[]
+validation,dev_3_24,standoff,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_24,standoff,base,t-,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,35,,[]
+validation,dev_3_24,standoff,base,n+,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,,[]
+validation,dev_3_24,standoff,base,n-,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,,[]
+validation,dev_3_14,push_low,base,zero,executed,duration,40,3,False,-0.0007455547049741718,-0.0020419575325369976,40,0,0,,[]
+validation,dev_3_14,push_low,base,t+,executed,duration,40,3,False,-9.129021229625778e-06,-1.8469297904388782e-05,40,0,0,,[]
+validation,dev_3_14,push_low,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_14,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_14,push_low,base,n-,executed,duration,40,4,False,-0.000849384431756306,-0.0023349567612873656,39,0,0,,[]
+validation,dev_4_06,push_low,base,zero,executed,duration,40,,False,0.011267047219946326,-0.0020791392324915068,2,0,0,,[]
+validation,dev_4_06,push_low,base,t+,executed,duration,40,34,True,0.08236685154468013,-0.008714346457951471,9,0,0,,[]
+validation,dev_4_06,push_low,base,t-,executed,duration,40,,False,0.001956213160756796,-0.0004476825334428874,1,0,0,,[]
+validation,dev_4_06,push_low,base,n+,executed,duration,40,,False,0.002980222372776203,-0.0005279641563977888,1,0,0,,[]
+validation,dev_4_06,push_low,base,n-,executed,duration,40,40,False,0.017482057588869945,-0.003149495401990523,3,0,0,,[]
+validation,dev_4_06,standoff,base,zero,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,,[]
+validation,dev_4_06,standoff,base,t+,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,35,,[]
+validation,dev_4_06,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_06,standoff,base,n+,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,,[]
+validation,dev_4_06,standoff,base,n-,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,,[]
+validation,dev_2_06,push_low,base,zero,executed,duration,40,,False,0.0002829601068823351,0.0017100154059361827,2,0,0,,[]
+validation,dev_2_06,push_low,base,t+,executed,duration,40,,False,-2.353672812205332e-14,0.0,0,0,0,,[]
+validation,dev_2_06,push_low,base,t-,executed,duration,40,20,False,0.005832306722849179,0.024380095430345694,23,0,0,,[]
+validation,dev_2_06,push_low,base,n+,executed,duration,40,36,False,0.001184829759353967,0.006561285929969296,7,0,0,,[]
+validation,dev_2_06,push_low,base,n-,executed,duration,40,,False,-2.353672812205332e-14,0.0,0,0,0,,[]
+validation,dev_3_34,push_low,base,zero,executed,duration,40,3,False,0.004811400143078994,-0.006023599103024667,40,0,0,,[]
+validation,dev_3_34,push_low,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,push_low,base,t-,executed,duration,40,3,False,0.0042197047206354345,-0.005317543058272142,40,0,0,,[]
+validation,dev_3_34,push_low,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,push_low,base,n-,executed,duration,40,4,False,0.004841720590801696,-0.006060408007511861,39,0,0,,[]
+validation,dev_3_34,standoff,base,zero,executed,duration,40,,False,0.0,0.0,0,0,40,,[]
+validation,dev_3_34,standoff,base,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,standoff,base,t-,executed,duration,40,,False,0.0,0.0,0,0,35,,[]
+validation,dev_3_34,standoff,base,n+,executed,duration,40,,False,0.0,0.0,0,0,38,,[]
+validation,dev_3_34,standoff,base,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,base,zero,executed,duration,40,,False,0.0,0.0,0,0,8,,[]
+validation,dev_3_26,standoff,base,t+,executed,duration,40,,False,0.0,0.0,0,0,7,,[]
+validation,dev_3_26,standoff,base,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,base,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,base,n-,executed,duration,40,,False,0.0,0.0,0,0,6,,[]
+validation,dev_4_27,push_progress,near5,zero,executed,duration,40,19,True,0.2774019928770959,0.11601745749690373,24,0,0,watching,[]
+validation,dev_4_27,push_progress,near5,t+,executed,duration,40,19,True,0.27832946710541107,0.11648653511801443,24,0,0,watching,[]
+validation,dev_4_27,push_progress,near5,t-,executed,duration,40,20,True,0.2650339084287574,0.11047666740328754,23,0,0,watching,[]
+validation,dev_4_27,push_progress,near5,n+,executed,duration,40,19,True,0.28250375295370267,0.11779905331112905,24,0,0,watching,[]
+validation,dev_4_27,push_progress,near5,n-,executed,duration,40,20,True,0.26648667786790536,0.11149664246666147,23,0,0,watching,[]
+validation,dev_2_09,push_progress,near5,zero,executed,duration,40,3,True,0.4875357281050059,-0.29355040122712994,40,0,0,watching,[]
+validation,dev_2_09,push_progress,near5,t+,executed,duration,40,5,True,0.4790151567671135,-0.29650417939086493,38,0,0,watching,[]
+validation,dev_2_09,push_progress,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_09,push_progress,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_09,push_progress,near5,n-,executed,duration,40,5,True,0.4774056718079809,-0.2847826842015193,38,0,0,watching,[]
+validation,dev_2_09,dual,near5,zero,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,watching,[]
+validation,dev_2_09,dual,near5,t+,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,watching,[]
+validation,dev_2_09,dual,near5,t-,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,watching,[]
+validation,dev_2_09,dual,near5,n+,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,watching,[]
+validation,dev_2_09,dual,near5,n-,executed,duration,40,,False,2.7395952173492333e-10,-1.634483659529451e-10,0,0,0,watching,[]
+validation,dev_5_03,push_progress,near5,zero,executed,duration,40,33,True,0.07810171616474104,0.004647730570626507,10,0,1,anchor_shifted,"[{'new': [3.2230938802521654, 1.6400506585992867], 'old': [3.2324042997399, 1.5656307950616368], 'robot': 1, 'tick': 93}]"
+validation,dev_5_03,push_progress,near5,t+,executed,duration,40,35,True,0.05860900867663066,0.006187064087470384,8,0,1,anchor_shifted,"[{'new': [3.2230938802521654, 1.6400506585992867], 'old': [3.232404299739899, 1.5656307950616366], 'robot': 1, 'tick': 95}]"
+validation,dev_5_03,push_progress,near5,t-,executed,duration,40,31,True,0.09598300647222757,0.0003543205135028149,12,0,1,anchor_shifted,"[{'new': [3.223093880252166, 1.6400506585992864], 'old': [3.2324042997398985, 1.5656307950616362], 'robot': 1, 'tick': 91}]"
+validation,dev_5_03,push_progress,near5,n+,executed,duration,40,33,True,0.07876841286826419,0.003122921007866264,10,0,1,anchor_shifted,"[{'new': [3.223093880252166, 1.6400506585992862], 'old': [3.2324042997398994, 1.5656307950616364], 'robot': 1, 'tick': 93}]"
+validation,dev_5_03,push_progress,near5,n-,executed,duration,40,34,True,0.06853647356688297,0.005606524975733329,9,0,3,anchor_shifted,"[{'new': [3.2230938802521663, 1.640050658599287], 'old': [3.2324042997399, 1.565630795061637], 'robot': 1, 'tick': 94}]"
+validation,dev_5_03,dual,near5,zero,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,watching,[]
+validation,dev_5_03,dual,near5,t+,executed,duration,40,,False,1.950505151903324e-08,-3.1551400323355884e-08,0,0,0,watching,[]
+validation,dev_5_03,dual,near5,t-,executed,blocked,23,,False,1.8712533219680477e-08,-3.0269423913080974e-08,0,0,0,watching,[]
+validation,dev_5_03,dual,near5,n+,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,watching,[]
+validation,dev_5_03,dual,near5,n-,executed,blocked,21,,False,1.8439646597093107e-08,-2.982800199588603e-08,0,0,0,watching,[]
+validation,dev_4_08,standoff,near5,zero,executed,duration,40,,False,0.0,0.0,0,0,40,anchor_shifted,"[{'new': [1.5197509874519333, 0.22378752704278349], 'old': [1.4977411243690226, 0.279233859332246], 'robot': 0, 'tick': 115}]"
+validation,dev_4_08,standoff,near5,t+,executed,duration,40,,False,0.0,0.0,0,0,35,anchor_shifted,"[{'new': [1.5188347569604677, 0.22609565681588512], 'old': [1.4977411243690226, 0.27923385933224615], 'robot': 0, 'tick': 115}]"
+validation,dev_4_08,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_08,standoff,near5,n+,executed,duration,40,27,True,0.1838232274308087,0.028041241036974585,16,0,9,anchor_shifted,"[{'new': [1.473351794145238, 0.3406744463459534], 'old': [1.4977411243690228, 0.27923385933224604], 'robot': 0, 'tick': 115}]"
+validation,dev_4_08,standoff,near5,n-,executed,duration,40,25,True,0.21699432548628605,0.037843070100076925,18,0,9,anchor_shifted,"[{'new': [1.481029896542336, 0.32133208990973644], 'old': [1.4977411243690226, 0.27923385933224604], 'robot': 0, 'tick': 115}]"
+validation,dev_2_27,push_progress,near5,zero,executed,duration,40,3,True,0.29401761686683603,0.09174819990488432,40,0,0,watching,[]
+validation,dev_2_27,push_progress,near5,t+,executed,duration,40,3,True,0.298793229671699,0.09054382399090685,40,0,0,watching,[]
+validation,dev_2_27,push_progress,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_27,push_progress,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_27,push_progress,near5,n-,executed,duration,40,10,True,0.25025752380046595,0.0825444301805025,33,0,0,watching,[]
+validation,dev_4_11,push_progress,near5,zero,executed,duration,40,12,True,0.2919551500675821,-0.05229398770885796,31,0,0,watching,[]
+validation,dev_4_11,push_progress,near5,t+,executed,duration,40,12,True,0.2933713029815217,-0.05657181437516323,31,0,0,watching,[]
+validation,dev_4_11,push_progress,near5,t-,executed,duration,40,12,True,0.29941456153516,-0.052763661810464324,31,0,0,watching,[]
+validation,dev_4_11,push_progress,near5,n+,executed,duration,40,12,True,0.29193908149021874,-0.05288406780589616,31,0,0,watching,[]
+validation,dev_4_11,push_progress,near5,n-,executed,duration,40,13,True,0.2828668604276978,-0.04818944720286211,30,0,0,watching,[]
+validation,dev_4_11,dual,near5,zero,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,watching,[]
+validation,dev_4_11,dual,near5,t+,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,watching,[]
+validation,dev_4_11,dual,near5,t-,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,watching,[]
+validation,dev_4_11,dual,near5,n+,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,watching,[]
+validation,dev_4_11,dual,near5,n-,executed,duration,40,,False,4.554838222641554e-13,2.9732055843865305e-11,0,0,0,watching,[]
+validation,dev_4_11,standoff,near5,zero,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,11,anchor_shifted,"[{'new': [4.742096160278774, 3.293070838467876], 'old': [4.75646950544868, 3.1429802741422757], 'robot': 1, 'tick': 1794}]"
+validation,dev_4_11,standoff,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_11,standoff,near5,t-,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,3,anchor_shifted,"[{'new': [4.757617465888981, 3.2361292207055263], 'old': [4.75646950544868, 3.1429802741422757], 'robot': 1, 'tick': 1794}]"
+validation,dev_4_11,standoff,near5,n+,executed,terminal,11,,False,-2.284180203390777e-30,1.865174681370263e-14,0,0,10,anchor_shifted,"[{'new': [4.757542968884639, 3.2300843107652573], 'old': [4.75646950544868, 3.142980274142275], 'robot': 1, 'tick': 1794}]"
+validation,dev_4_11,standoff,near5,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,dual,near5,zero,executed,duration,40,,False,0.0,0.0,0,2,0,watching,[]
+validation,dev_3_35,dual,near5,t+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_3_35,dual,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,dual,near5,n+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_3_35,dual,near5,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_progress,near5,zero,executed,duration,40,5,True,0.4493700870263359,0.222788432761425,38,0,0,watching,[]
+validation,dev_3_35,push_progress,near5,t+,executed,duration,40,4,True,0.4732257189837185,0.21176975818679286,39,0,0,watching,[]
+validation,dev_3_35,push_progress,near5,t-,executed,duration,40,5,True,0.43628484534497497,0.2370754380485872,38,0,0,watching,[]
+validation,dev_3_35,push_progress,near5,n+,executed,duration,40,4,True,0.4615361338163239,0.24468503705578434,39,0,0,watching,[]
+validation,dev_3_35,push_progress,near5,n-,executed,duration,40,6,True,0.43119533955022943,0.20184815469702952,37,0,0,watching,[]
+validation,dev_3_35,push_low,near5,zero,executed,duration,40,3,False,0.0008556965899604305,0.001281541506273243,40,0,0,watching,[]
+validation,dev_3_35,push_low,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_low,near5,t-,executed,duration,40,3,False,0.0008750755277260323,0.00131072040299296,40,0,0,watching,[]
+validation,dev_3_35,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_35,push_low,near5,n-,executed,duration,40,4,False,0.0008485743399262444,0.001271237466939912,39,0,0,watching,[]
+validation,dev_3_30,push_progress,near5,zero,executed,duration,40,12,True,0.3772167545909464,-0.05441236396300285,31,0,0,watching,[]
+validation,dev_3_30,push_progress,near5,t+,executed,duration,40,12,True,0.3709245295518014,-0.058634708616102905,31,0,0,watching,[]
+validation,dev_3_30,push_progress,near5,t-,executed,duration,40,12,True,0.3805128276498412,-0.05153763277937405,31,0,0,watching,[]
+validation,dev_3_30,push_progress,near5,n+,executed,duration,40,11,True,0.38980538344799665,-0.060542551873493236,32,0,0,watching,[]
+validation,dev_3_30,push_progress,near5,n-,executed,duration,40,13,True,0.3639822914066387,-0.047163468614038764,30,0,0,watching,[]
+validation,dev_3_30,push_low,near5,zero,executed,duration,40,3,False,-0.0019710358180748955,-0.0007931844504875943,40,0,0,watching,[]
+validation,dev_3_30,push_low,near5,t+,executed,duration,40,3,False,-0.0031027949174800003,-0.0012569570146072635,40,0,0,watching,[]
+validation,dev_3_30,push_low,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,push_low,near5,n-,executed,duration,40,4,False,-0.0015388582229847179,-0.0006159062509323302,39,0,0,watching,[]
+validation,dev_3_30,standoff,near5,zero,executed,duration,40,21,True,0.25337254653449837,-0.05843725612602817,22,0,10,anchor_shifted,"[{'new': [2.329881407522557, 1.6741284067053965], 'old': [2.252336047799708, 1.5942993805680614], 'robot': 1, 'tick': 1377}]"
+validation,dev_3_30,standoff,near5,t+,executed,duration,40,21,True,0.2528874304008471,-0.05862706826517629,22,0,6,anchor_shifted,"[{'new': [2.3314461881736324, 1.6757392692501258], 'old': [2.252333499245406, 1.594296756960295], 'robot': 1, 'tick': 1377}]"
+validation,dev_3_30,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,standoff,near5,n+,executed,duration,40,21,True,0.2552820656220334,-0.05679649051838554,21,0,8,anchor_shifted,"[{'new': [2.327614545447175, 1.6717947868406628], 'old': [2.2523360477997088, 1.5942993805680619], 'robot': 1, 'tick': 1377}]"
+validation,dev_3_30,standoff,near5,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_30,dual,near5,zero,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,watching,[]
+validation,dev_3_30,dual,near5,t+,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,watching,[]
+validation,dev_3_30,dual,near5,t-,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,watching,[]
+validation,dev_3_30,dual,near5,n+,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,watching,[]
+validation,dev_3_30,dual,near5,n-,executed,duration,40,,False,-2.826166425630795e-15,-2.826166425630796e-15,0,0,0,watching,[]
+validation,dev_5_33,dual,near5,zero,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_33,dual,near5,t+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_33,dual,near5,t-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_33,dual,near5,n+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_33,dual,near5,n-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_33,push_progress,near5,zero,executed,duration,40,3,True,0.2850577485332694,0.06527495968838891,39,0,15,watching,[]
+validation,dev_5_33,push_progress,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_33,push_progress,near5,t-,executed,duration,40,6,True,0.2847142111920449,0.06696448586368868,36,0,16,watching,[]
+validation,dev_5_33,push_progress,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_33,push_progress,near5,n-,executed,duration,40,6,True,0.28524027500807947,0.06620539511679524,37,0,14,watching,[]
+validation,dev_4_04,push_progress,near5,zero,executed,duration,40,11,True,0.40640897595656567,0.06448000507524308,32,0,0,watching,[]
+validation,dev_4_04,push_progress,near5,t+,executed,duration,40,11,True,0.40770562139259253,0.061101784462056025,32,0,0,watching,[]
+validation,dev_4_04,push_progress,near5,t-,executed,duration,40,11,True,0.4089558263492203,0.06603896224260428,32,0,0,watching,[]
+validation,dev_4_04,push_progress,near5,n+,executed,duration,40,10,True,0.4176887531797625,0.06641270121643272,33,0,0,watching,[]
+validation,dev_4_04,push_progress,near5,n-,executed,duration,40,12,True,0.3938063427621203,0.06266083310736167,31,0,0,watching,[]
+validation,dev_4_04,push_low,near5,zero,executed,duration,40,29,True,0.1536342615262179,0.03837297785976584,14,0,0,anchor_shifted,"[{'new': [2.930730837819196, 1.3893239029464355], 'old': [2.9981105821355243, 1.3559237838575535], 'robot': 0, 'tick': 984}]"
+validation,dev_4_04,push_low,near5,t+,executed,duration,40,27,True,0.1792654783201175,0.04611431062486935,16,0,0,anchor_shifted,"[{'new': [2.940521071001611, 1.3844708872884142], 'old': [2.9981105821355243, 1.3559237838575537], 'robot': 0, 'tick': 981}]"
+validation,dev_4_04,push_low,near5,t-,executed,duration,40,31,True,0.11789420790695297,0.03272938864620972,12,0,0,anchor_shifted,"[{'new': [2.9443693395285564, 1.3825633017315073], 'old': [2.998110582135525, 1.3559237838575533], 'robot': 0, 'tick': 987}]"
+validation,dev_4_04,push_low,near5,n+,executed,duration,40,29,True,0.1496226032399582,0.03782630780321608,14,0,0,anchor_shifted,"[{'new': [2.9339789497244944, 1.387713814847234], 'old': [2.9981105821355256, 1.3559237838575535], 'robot': 0, 'tick': 985}]"
+validation,dev_4_04,push_low,near5,n-,executed,duration,40,29,True,0.1478106999794101,0.04080652078973181,14,0,0,anchor_shifted,"[{'new': [2.947573178319084, 1.3809751598020448], 'old': [2.9981105821355243, 1.3559237838575537], 'robot': 0, 'tick': 984}]"
+validation,dev_5_37,push_progress,near5,zero,executed,duration,40,3,True,0.520211078300211,0.23092958176213516,40,0,0,watching,[]
+validation,dev_5_37,push_progress,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_37,push_progress,near5,t-,executed,duration,40,5,True,0.5067297279675744,0.23192826471411535,38,0,0,watching,[]
+validation,dev_5_37,push_progress,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_37,push_progress,near5,n-,executed,duration,40,5,True,0.5102920646494296,0.22375729711295836,38,0,0,watching,[]
+validation,dev_3_21,push_progress,near5,zero,executed,duration,40,9,True,0.4213067054258678,-0.0732824864049424,34,0,0,watching,[]
+validation,dev_3_21,push_progress,near5,t+,executed,duration,40,9,True,0.4244823141944911,-0.08082579801547539,34,0,0,watching,[]
+validation,dev_3_21,push_progress,near5,t-,executed,duration,40,9,True,0.42084921767194405,-0.0654440821939202,34,0,0,watching,[]
+validation,dev_3_21,push_progress,near5,n+,executed,duration,40,8,True,0.4333335931342363,-0.0751726230456624,35,0,0,watching,[]
+validation,dev_3_21,push_progress,near5,n-,executed,duration,40,10,True,0.4168548297075721,-0.07311124913424845,33,0,0,watching,[]
+validation,dev_2_17,dual,near5,zero,executed,duration,36,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_17,dual,near5,t+,executed,duration,36,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_17,dual,near5,t-,executed,duration,36,,False,0.022178501534793723,0.0217538847503338,0,0,0,watching,[]
+validation,dev_2_17,dual,near5,n+,executed,duration,36,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_17,dual,near5,n-,executed,duration,36,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_17,standoff,near5,zero,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,anchor_shifted,"[{'new': [1.0403041183547546, 0.258683259369906], 'old': [1.0652940636588857, 0.19428694534072077], 'robot': 1, 'tick': 483}]"
+validation,dev_2_17,standoff,near5,t+,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,35,anchor_shifted,"[{'new': [1.0395370436473281, 0.2606599257107808], 'old': [1.0653034270805135, 0.19426281684295238], 'robot': 1, 'tick': 483}]"
+validation,dev_2_17,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_17,standoff,near5,n+,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,anchor_shifted,"[{'new': [1.040888667285294, 0.2571769416874127], 'old': [1.0652940636588857, 0.19428694534072058], 'robot': 1, 'tick': 483}]"
+validation,dev_2_17,standoff,near5,n-,executed,duration,40,,False,6.075140390748857e-13,-6.790124018607457e-13,0,0,40,anchor_shifted,"[{'new': [1.0396986634960992, 0.2602434493076476], 'old': [1.0652940636588857, 0.19428694534072066], 'robot': 1, 'tick': 483}]"
+validation,dev_5_08,dual,near5,zero,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_08,dual,near5,t+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_08,dual,near5,t-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_08,dual,near5,n+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_08,dual,near5,n-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_5_08,standoff,near5,zero,executed,duration,40,24,True,0.21851273474387112,0.08361898242245226,19,0,8,anchor_shifted,"[{'new': [5.627799545965397, 1.7722054376599883], 'old': [5.718110248134337, 1.829088346662828], 'robot': 0, 'tick': 215}]"
+validation,dev_5_08,standoff,near5,t+,executed,duration,40,24,True,0.21506973247916106,0.08154317332041218,19,0,4,anchor_shifted,"[{'new': [5.626564879412146, 1.771427773180466], 'old': [5.7181102481343355, 1.829088346662827], 'robot': 0, 'tick': 215}]"
+validation,dev_5_08,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_5_08,standoff,near5,n+,executed,duration,40,24,True,0.21668689321610213,0.0838498581427647,19,0,8,anchor_shifted,"[{'new': [5.632063231455994, 1.7748909536393087], 'old': [5.718110248134337, 1.8290883466628283], 'robot': 0, 'tick': 215}]"
+validation,dev_5_08,standoff,near5,n-,executed,duration,40,24,True,0.2163789284879889,0.08167838985081312,19,0,8,anchor_shifted,"[{'new': [5.623591105148374, 1.7695547179746205], 'old': [5.718110248134336, 1.8290883466628274], 'robot': 0, 'tick': 215}]"
+validation,dev_4_15,dual,near5,zero,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,watching,[]
+validation,dev_4_15,dual,near5,t+,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,watching,[]
+validation,dev_4_15,dual,near5,t-,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,watching,[]
+validation,dev_4_15,dual,near5,n+,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,watching,[]
+validation,dev_4_15,dual,near5,n-,executed,duration,40,,False,6.340033348165075e-13,3.109725123669085e-12,0,0,0,watching,[]
+validation,dev_2_03,dual,near5,zero,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_03,dual,near5,t+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_03,dual,near5,t-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_03,dual,near5,n+,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_03,dual,near5,n-,executed,duration,40,,False,0.0,0.0,0,0,0,watching,[]
+validation,dev_2_03,push_low,near5,zero,executed,duration,40,3,False,8.368861159624431e-13,-9.43245481721533e-13,40,0,0,watching,[]
+validation,dev_2_03,push_low,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_03,push_low,near5,t-,executed,duration,40,3,False,-5.051081775064858e-10,5.419806825557316e-10,40,0,0,watching,[]
+validation,dev_2_03,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_03,push_low,near5,n-,executed,duration,40,4,False,-1.9291725994463604e-09,2.149522337901999e-09,39,0,0,watching,[]
+validation,dev_2_02,standoff,near5,zero,executed,duration,40,28,True,0.16403519629990804,-0.004281062645758338,15,0,9,anchor_shifted,"[{'new': [1.629693290644217, 0.26291139813437314], 'old': [1.6439219666142695, 0.19014425772193647], 'robot': 1, 'tick': 806}]"
+validation,dev_2_02,standoff,near5,t+,executed,duration,40,28,True,0.17268497817300021,-0.0036200559222695494,15,0,5,anchor_shifted,"[{'new': [1.6291753352285092, 0.26556028366481416], 'old': [1.6439219666142697, 0.1901442577219363], 'robot': 1, 'tick': 806}]"
+validation,dev_2_02,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_2_02,standoff,near5,n+,executed,duration,40,28,True,0.1528212980296204,-0.005134389102366077,15,0,9,anchor_shifted,"[{'new': [1.6299366518677951, 0.2616668199250174], 'old': [1.6439219666142695, 0.1901442577219363], 'robot': 1, 'tick': 806}]"
+validation,dev_2_02,standoff,near5,n-,executed,duration,40,27,True,0.18376544791125893,-0.004027823086788007,16,0,9,anchor_shifted,"[{'new': [1.629404250068517, 0.26438958597730755], 'old': [1.6439219666142697, 0.19014425772193647], 'robot': 1, 'tick': 806}]"
+validation,dev_3_27,push_low,near5,zero,executed,contact_lost,11,3,False,0.0045734487691458,0.006324835056656388,6,0,0,watching,[]
+validation,dev_3_27,push_low,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_27,push_low,near5,t-,executed,contact_lost,14,8,False,0.004835731223768127,0.006274042366207825,4,0,0,watching,[]
+validation,dev_3_27,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_27,push_low,near5,n-,executed,duration,40,22,True,0.10270322334483109,0.06542482962401974,22,0,0,watching,[]
+validation,dev_3_24,standoff,near5,zero,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,anchor_shifted,"[{'new': [2.281790322019393, 4.578055316104848], 'old': [2.3226689489076024, 4.644328756479024], 'robot': 1, 'tick': 512}]"
+validation,dev_3_24,standoff,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_24,standoff,near5,t-,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,35,anchor_shifted,"[{'new': [2.28012150486247, 4.575362908185625], 'old': [2.328661160947026, 4.65396320932726], 'robot': 1, 'tick': 512}]"
+validation,dev_3_24,standoff,near5,n+,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,anchor_shifted,"[{'new': [2.2820287613618775, 4.57844000532697], 'old': [2.3210022772074494, 4.641649033231087], 'robot': 1, 'tick': 512}]"
+validation,dev_3_24,standoff,near5,n-,executed,duration,40,,False,0.006033615760662414,0.005241724704987405,0,0,40,anchor_shifted,"[{'new': [2.29674648705119, 4.602185039966911], 'old': [2.324335620607756, 4.647008479726962], 'robot': 1, 'tick': 512}]"
+validation,dev_3_14,push_low,near5,zero,executed,duration,40,3,False,-0.0007455547049741718,-0.0020419575325369976,40,0,0,watching,[]
+validation,dev_3_14,push_low,near5,t+,executed,duration,40,3,False,-9.129021229625778e-06,-1.8469297904388782e-05,40,0,0,watching,[]
+validation,dev_3_14,push_low,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_14,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_14,push_low,near5,n-,executed,duration,40,4,False,-0.000849384431756306,-0.0023349567612873656,39,0,0,watching,[]
+validation,dev_4_06,push_low,near5,zero,executed,duration,40,26,True,0.2032835395810904,0.0022055244074916857,17,0,0,anchor_shifted,"[{'new': [1.4674182205132975, 2.410255836857617], 'old': [1.5238899286350875, 2.4572137388737505], 'robot': 1, 'tick': 859}]"
+validation,dev_4_06,push_low,near5,t+,executed,duration,40,27,True,0.18140107167838146,-0.002656475787288611,16,0,0,anchor_shifted,"[{'new': [1.478725784814808, 2.41965841229408], 'old': [1.523917338111862, 2.457236530652961], 'robot': 1, 'tick': 863}]"
+validation,dev_4_06,push_low,near5,t-,executed,duration,40,26,True,0.20438005079255958,0.005366413188846054,17,0,0,anchor_shifted,"[{'new': [1.4593050513998085, 2.403509495861915], 'old': [1.5238762238950485, 2.4572023429863146], 'robot': 1, 'tick': 857}]"
+validation,dev_4_06,push_low,near5,n+,executed,duration,40,26,True,0.20501416922383073,0.0020083268644810258,17,0,0,anchor_shifted,"[{'new': [1.4680157422288258, 2.4107526939006574], 'old': [1.523896781004638, 2.4572194368180824], 'robot': 1, 'tick': 860}]"
+validation,dev_4_06,push_low,near5,n-,executed,duration,40,27,True,0.18794900480874738,0.0022496439819900574,16,0,0,anchor_shifted,"[{'new': [1.4663814456601578, 2.409393727784221], 'old': [1.523889928635087, 2.4572137388737496], 'robot': 1, 'tick': 859}]"
+validation,dev_4_06,standoff,near5,zero,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,anchor_shifted,"[{'new': [0.1478385981664223, 2.6569334855787465], 'old': [0.19192764022146713, 2.685352388705683], 'robot': 1, 'tick': 1259}]"
+validation,dev_4_06,standoff,near5,t+,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,35,anchor_shifted,"[{'new': [0.1512913326383989, 2.6591590482535974], 'old': [0.1919276402214669, 2.685352388705683], 'robot': 1, 'tick': 1259}]"
+validation,dev_4_06,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_4_06,standoff,near5,n+,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,anchor_shifted,"[{'new': [0.15074719305734785, 2.658808306906028], 'old': [0.1919276402214669, 2.685352388705683], 'robot': 1, 'tick': 1259}]"
+validation,dev_4_06,standoff,near5,n-,executed,duration,40,,False,1.7051959844138767e-10,-1.258186332897537e-10,0,0,40,anchor_shifted,"[{'new': [0.1450096073507554, 2.6551099754252894], 'old': [0.1919276402214667, 2.6853523887056823], 'robot': 1, 'tick': 1259}]"
+validation,dev_2_06,push_low,near5,zero,executed,duration,40,25,False,0.01932340397955734,0.054992671871922694,18,0,0,anchor_shifted,"[{'new': [2.6386976704512706, 1.4045315246558496], 'old': [2.6790102539912195, 1.3412867967464448], 'robot': 0, 'tick': 343}]"
+validation,dev_2_06,push_low,near5,t+,executed,duration,40,25,False,0.018320407793423588,0.052219778501605196,18,0,0,anchor_shifted,"[{'new': [2.6386976704458913, 1.4045315246642764], 'old': [2.679010253985852, 1.3412867967548792], 'robot': 0, 'tick': 341}]"
+validation,dev_2_06,push_low,near5,t-,executed,duration,40,20,False,0.005832306722849179,0.024380095430345694,23,0,0,watching,[]
+validation,dev_2_06,push_low,near5,n+,executed,duration,40,25,False,0.02055722927036685,0.05752062301274652,18,0,0,anchor_shifted,"[{'new': [2.638697670456651, 1.4045315246474193], 'old': [2.6790102539965908, 1.3412867967380084], 'robot': 0, 'tick': 345}]"
+validation,dev_2_06,push_low,near5,n-,executed,duration,40,26,False,0.018225342884145235,0.052733155439143475,17,0,0,anchor_shifted,"[{'new': [2.6386976704485807, 1.404531524660064], 'old': [2.679010253988535, 1.3412867967506625], 'robot': 0, 'tick': 342}]"
+validation,dev_3_34,push_low,near5,zero,executed,duration,40,3,False,0.004811400143078994,-0.006023599103024667,40,0,0,watching,[]
+validation,dev_3_34,push_low,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,push_low,near5,t-,executed,duration,40,3,False,0.0042197047206354345,-0.005317543058272142,40,0,0,watching,[]
+validation,dev_3_34,push_low,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,push_low,near5,n-,executed,duration,40,4,False,0.004841720590801696,-0.006060408007511861,39,0,0,watching,[]
+validation,dev_3_34,standoff,near5,zero,executed,duration,40,22,True,0.2552731918655571,0.031007497877328958,21,0,8,anchor_shifted,"[{'new': [3.4311090023017616, 2.0924641234804535], 'old': [3.4222296128590703, 1.9833805045255595], 'robot': 1, 'tick': 1597}]"
+validation,dev_3_34,standoff,near5,t+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_34,standoff,near5,t-,executed,duration,40,22,True,0.25153787490940127,0.03197672915692931,21,0,1,anchor_shifted,"[{'new': [3.4314293669702507, 2.0963998149657295], 'old': [3.422229612859071, 1.9833805045255581], 'robot': 1, 'tick': 1597}]"
+validation,dev_3_34,standoff,near5,n+,executed,duration,40,22,True,0.2559834051594576,0.02957510656456289,21,0,6,anchor_shifted,"[{'new': [3.4307491648398623, 2.0880435073071464], 'old': [3.422229612859071, 1.9833805045255586], 'robot': 1, 'tick': 1597}]"
+validation,dev_3_34,standoff,near5,n-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,near5,zero,executed,duration,40,28,True,0.15784968203368377,0.07377638332332209,15,0,6,anchor_shifted,"[{'new': [0.9985654083096904, 1.1925389126486914], 'old': [1.0444103054306957, 1.1834312527904145], 'robot': 0, 'tick': 978}]"
+validation,dev_3_26,standoff,near5,t+,executed,duration,40,29,True,0.1458267611672456,0.06552645213032934,14,0,0,anchor_shifted,"[{'new': [0.9907266387819245, 1.1940961818552922], 'old': [1.0444103054306955, 1.1834312527904147], 'robot': 0, 'tick': 978}]"
+validation,dev_3_26,standoff,near5,t-,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,near5,n+,perturbation_overlap,,,,,,,,,,,
+validation,dev_3_26,standoff,near5,n-,executed,duration,40,28,True,0.1570024459933371,0.07168531629487539,15,0,2,anchor_shifted,"[{'new': [0.9946799129242581, 1.193310814704836], 'old': [1.0444103054306957, 1.1834312527904147], 'robot': 0, 'tick': 978}]"

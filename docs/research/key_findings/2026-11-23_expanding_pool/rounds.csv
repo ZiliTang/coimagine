@@ -1,0 +1,5 @@
+round,new,revisits,checked_successes,detected_loss,candidates,forks,informative,rescue,protect,ties,signal_rooms,screen_ticks,parent_ticks,branch_ticks,total_ticks,signals_per_10k_ticks,retested,diagnostic_success
+1,66,0,0,0,1105,175,25,9,16,150,18,523245,84525,248737,856507,0.292,0,31
+2,72,32,32,0,1887,285,57,21,36,228,41,517405,155186,415807,1088398,0.524,1,29
+3,69,32,32,2,2191,279,55,25,30,224,38,528226,176769,435538,1140533,0.482,0,30
+4,65,32,32,6,1892,275,51,20,31,224,39,509952,164067,419541,1093560,0.466,0,31

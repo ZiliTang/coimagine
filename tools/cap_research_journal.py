@@ -1,16 +1,47 @@
 """Read-only experiment journal views for the existing localhost dashboard."""
 import json
 import mimetypes
+from functools import lru_cache
 from pathlib import Path
 import time
 
 ROOT=Path(__file__).resolve().parents[1]
 FINDINGS=ROOT/'docs/research/key_findings'
 REGISTRY=ROOT/'docs/research/experiment_journal/entries.json'
+EVENT_COMPARISON='abc-ppo-event-comparison'
+EVENT_ARMS=('original','time','progress')
 
 
 def load(path):
     return json.loads(path.read_text())
+
+
+@lru_cache(maxsize=4096)
+def event_metric(path, modified_ns, batch_size):
+    row=load(path)
+    episodes=int(path.stem[1:])*batch_size
+    if path.parent.parent.name=='diagnostic':
+        return dict(x=episodes,success=row['success'],n=row['n'])
+    return dict(x=episodes,success=row['success'],n=row['episodes'],
+                reward=row['mean_dense_reward'],entropy=row['entropy'],
+                actor_loss=row['actor_loss'],critic_loss=row['critic_loss'],
+                switches=row['reviews'].get('switched',0))
+
+
+def event_curves(entry):
+    root=ROOT/'outputs/semantic_rl'/entry['run']
+    protocol=root/'protocol.json'
+    plan=load(protocol) if protocol.is_file() else {}
+    batch=plan.get('batch_size',50)
+
+    def series(kind,arm):
+        return [event_metric(path,path.stat().st_mtime_ns,batch)
+                for path in sorted((root/kind/arm).glob('r*.json'))]
+
+    return dict(updated=time.time(),budget=len(plan.get('room_seeds',[]))*batch,
+                finished=(root/'finished.json').is_file(),error=(root/'ERROR.json').is_file(),
+                arms={arm:dict(training=series('metrics',arm),diagnostic=series('diagnostic',arm))
+                      for arm in EVENT_ARMS})
 
 
 def progress(entry):
@@ -60,6 +91,8 @@ def respond(path):
     parts=path.split('/')
     if len(parts)==4 and parts[1]=='journal-file':
         e=next((e for e in load(REGISTRY) if e['id']==parts[2]),None)
+        if e and e['id']==EVENT_COMPARISON and parts[3]=='live-data.json':
+            return json.dumps(event_curves(e),separators=(',',':')).encode(),'application/json'
         if e and parts[3] in {f for f,_ in allowed(e)}:
             p=FINDINGS/e['folder']/parts[3]
             if p.is_file():

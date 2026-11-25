@@ -1537,5 +1537,1844 @@
     ],
     "result": "200 间上，四轮后蒸馏 PPO 为 111、111、109，冷启动 PPO 为 102、99、98。配对平均差 +5.33 个百分点，95% 区间 [+0.50,+10.17]。",
     "analysis": "零轮差已达 +5.50 个百分点。两组四轮均未救回原先失败房间。79 个纯专家双败房间里蒸馏起点成功 10 间，冷启动三个种子均为 0。"
+  },
+  {
+    "id": "authored-third",
+    "date": "2026-11-23",
+    "title": "从 A/B 共同故障开发第三位专家 C",
+    "folder": "2026-11-23_authored_third",
+    "run": "cap_authored_third_20261123_01",
+    "motivation": "冻结现有专家，并检验定向开发能否增加自然房间成功覆盖与接手能力。",
+    "goal": "24 个固定公开开发前缀，gpt-6.2-sol 最多三版。冻结后在同一批新 200 间比较三份单专家和两种接手。",
+    "progress": [
+      {
+        "label": "A、B 开发房间扫描（每房间两条路线）",
+        "glob": "screen/*.json",
+        "total": 200
+      },
+      {
+        "label": "冻结试跑包与新面板",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "C 冻结",
+        "file": "member.json",
+        "total": 1
+      },
+      {
+        "label": "同房间闭环比较",
+        "glob": "held/*.json",
+        "total": 200
+      },
+      {
+        "label": "报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "实验协议"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "results.json",
+        "配对指标"
+      ]
+    ],
+    "result": "新 200 间 A/B/C 各为 93 / 121 / 98，纯策略并集 134→142。",
+    "analysis": "C 从初态解出 8 间 A/B 双败房间，A→C 和 B→C 分别解出 9 和 7 间。"
+  },
+  {
+    "id": "abc-semantic-ppo",
+    "date": "2026-11-23",
+    "title": "A/B/C 语义输入对照，成功轨迹 warm start 与短程 PPO",
+    "folder": "2026-11-23_abc_semantic_ppo",
+    "run": "cap_abc_semantic_ppo_20261123_01",
+    "motivation": "作者提供少量候选动作语义量，检验对监督起点和短程 PPO 的影响。",
+    "goal": "同专家、同成功示范，三种子各 200 新训练局。预先冻结的新 200 房间测更新前后。",
+    "progress": [
+      {
+        "label": "冻结协议和特征",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "单专家示范及成败",
+        "glob": "demonstration/*/*.json",
+        "total": 600
+      },
+      {
+        "label": "监督模型",
+        "glob": "supervision/*.json",
+        "total": 6
+      },
+      {
+        "label": "完成 PPO 更新轮",
+        "glob": "metrics/*.json",
+        "total": 24
+      },
+      {
+        "label": "冻结模型同房间贪心评估",
+        "glob": "evaluation/*/*.json",
+        "total": 3000
+      },
+      {
+        "label": "最终报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "冻结对照协议"
+      ],
+      [
+        "features.py",
+        "作者语义函数"
+      ],
+      [
+        "author_notes.md",
+        "作者设计笔记"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "training.csv",
+        "逐轮训练"
+      ],
+      [
+        "results.json",
+        "配对区间与分层结果"
+      ]
+    ],
+    "result": "语义组相对基础组在 warm start 时为 +1.50 [-2.17, +5.33]，PPO 后为 +1.67 [-2.33, +5.67] 个百分点。",
+    "analysis": "200 个新房间，三种子配对。PPO 增幅之差为 +0.17 [-2.00, +2.33] 个百分点。"
+  },
+  {
+    "id": "abc-ppo-long",
+    "date": "2026-11-23",
+    "title": "A/B/C 基础输入 PPO 长程续训",
+    "folder": "2026-11-23_abc_ppo_long",
+    "run": "cap_abc_ppo_long_20261123_01",
+    "motivation": "短程更新产生小幅净变化。检验同一起点继续见到更多房间，是否能持续改善闭环。",
+    "goal": "固定 seed 17，从 200 局继续到 2,000 局。64 间诊断闭环，另用冻结新 200 间作末轮配对。",
+    "progress": [
+      {
+        "label": "协议、父模型及新房间冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "新增 PPO 轮次（每轮 50 局）",
+        "glob": "metrics/r*.json",
+        "total": 36
+      },
+      {
+        "label": "固定房间曲线检查点",
+        "glob": "diagnostic/r*.json",
+        "total": 11
+      },
+      {
+        "label": "独立面板闭环",
+        "counter": "progress/confirm.json",
+        "key": "done",
+        "total": 1200
+      },
+      {
+        "label": "结果报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "实验协议"
+      ],
+      [
+        "learning_curves.png",
+        "实时训练与贪心闭环曲线"
+      ],
+      [
+        "training.csv",
+        "逐轮训练指标"
+      ],
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "results.json",
+        "末轮配对与能力保留"
+      ]
+    ],
+    "result": "新 200 间：监督起点 101，200 局 105，2,000 局 100。末轮减父模型 -2.50 [-6.50, +1.50] 个百分点。",
+    "analysis": "固定诊断 64 间从 36 到 38。独立确认报告分开列出能力救回与丢失。"
+  },
+  {
+    "id": "abc-ppo-distance",
+    "date": "2026-11-23",
+    "title": "A/B/C PPO 终端距离奖励对照",
+    "folder": "2026-11-23_abc_ppo_distance",
+    "run": "cap_abc_ppo_distance_20261123_01",
+    "motivation": "相同场景和在线预算下，检验失败终点的接近程度能否提供更有效的训练信号。",
+    "goal": "同一 200 局父模型继续到 2,000 局。配对比较二元成功和终距。",
+    "progress": [
+      {
+        "label": "条件、源模型与二元基线冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "首批二元更新与旧基线逐值复核",
+        "file": "control_replay.json",
+        "total": 1
+      },
+      {
+        "label": "追加训练轮数（每轮 50 局）",
+        "glob": "metrics/r*.json",
+        "total": 36
+      },
+      {
+        "label": "64 间贪心曲线后续检查点",
+        "glob": "diagnostic/r*.json",
+        "total": 9
+      },
+      {
+        "label": "末轮同房间配对",
+        "counter": "progress/same_panel.json",
+        "key": "done",
+        "total": 400
+      },
+      {
+        "label": "实验报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "实验协议"
+      ],
+      [
+        "learning_curves.png",
+        "实时训练与贪心闭环曲线"
+      ],
+      [
+        "rooms.csv",
+        "逐房间成功与终距"
+      ],
+      [
+        "results.json",
+        "配对统计"
+      ]
+    ],
+    "result": "同 200 间末轮二元 100，距离奖励 99，配对差 -0.50 [-4.50, +3.50] 个百分点。",
+    "analysis": "同一父模型和训练预算。固定 64 间的最终贪心成功分别为 38、38。"
+  },
+  {
+    "id": "abc-ppo-dense",
+    "date": "2026-11-24",
+    "title": "A/B/C PPO 的逐 option 进展奖励",
+    "folder": "2026-11-24_abc_ppo_dense",
+    "run": "cap_abc_ppo_dense_20261124_01",
+    "motivation": "终端距离奖励没有稳定提升，检验逐次执行就提供进展信号能否改善信用分配。",
+    "goal": "同一 200 局父模型，同一批 1,800 个房间。原成功标准对比二元、终距与逐步进展三组。",
+    "progress": [
+      {
+        "label": "训练奖励与父模型冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "关闭进展奖励后复现二元更新",
+        "file": "control_replay.json",
+        "total": 1
+      },
+      {
+        "label": "追加训练轮数（每轮 50 局）",
+        "glob": "metrics/r*.json",
+        "total": 36
+      },
+      {
+        "label": "固定 64 间的后续曲线检查点",
+        "glob": "diagnostic/r*.json",
+        "total": 9
+      },
+      {
+        "label": "同房间末轮比较",
+        "counter": "progress/same_panel.json",
+        "key": "done",
+        "total": 200
+      },
+      {
+        "label": "完整报告",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "实验协议与奖励公式"
+      ],
+      [
+        "learning_curves.png",
+        "三组实时训练与闭环曲线"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "results.json",
+        "配对统计"
+      ]
+    ],
+    "result": "同 200 间末轮二元、终端距离、逐步进展为 100、99、98。逐步相对二元 -1.00 [-5.50, +3.00] 个百分点。",
+    "analysis": "固定 64 间末轮三组分别为 38、38、41。"
+  },
+  {
+    "id": "abc-ppo-extended",
+    "date": "2026-11-24",
+    "title": "A/B/C PPO 长程新房间续训，逐步进展与退步惩罚",
+    "folder": "2026-11-24_abc_ppo_extended",
+    "run": "cap_abc_ppo_extended_20261124_01",
+    "motivation": "将现有 2,000 局正向进展策略继续训练，扩大在线训练的房间数，防止往返累计进展奖励。",
+    "goal": "固定 seed17，追加 18,000 个新房间。每轮独立生成 50 间，累计 20,000 局，独立 200 间配对。",
+    "progress": [
+      {
+        "label": "父模型、奖励和新测试面板冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "新增 PPO 轮次（每轮 50 局新房间）",
+        "glob": "metrics/r*.json",
+        "total": 360
+      },
+      {
+        "label": "固定 64 间贪心检查点",
+        "glob": "diagnostic/r*.json",
+        "total": 18
+      },
+      {
+        "label": "新面板贪心评估",
+        "glob": "evaluation/[ABCr]*/*.json",
+        "total": 1400
+      },
+      {
+        "label": "完整结果",
+        "finding": "README.md",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "plan.md",
+        "长程协议"
+      ],
+      [
+        "learning_curves.png",
+        "实时训练与闭环曲线"
+      ],
+      [
+        "training.csv",
+        "完整逐轮训练"
+      ],
+      [
+        "rooms.csv",
+        "独立面板逐房间结果"
+      ],
+      [
+        "results.json",
+        "配对差与能力保留"
+      ]
+    ],
+    "result": "独立新 200 间，2,000→20,000 局为 105→107。配对差 +1.00 [-4.00, +6.00] 个百分点。",
+    "analysis": "同一固定 64 间的起点→末轮为 41→41，新增 18,000 间均未重复。"
+  },
+  {
+    "id": "abc-ppo-event-preflight",
+    "date": "2026-11-24",
+    "title": "A/B/C PUSH 执行期间的时间与事件决策点",
+    "folder": "2026-11-24_abc_ppo_event_preflight",
+    "run": "cap_abc_ppo_event_preflight_20261124_03",
+    "motivation": "在稳定接触与推进过程中提供继续或改选机会，检验能否减少失败后才重选的情况。",
+    "goal": "12 个开发房间，核对始终继续的逐轨迹一致性、中途真实改选和 PPO 单批更新。",
+    "progress": [
+      {
+        "label": "冻结 actor 的逐房间一致性检查",
+        "glob": "rooms/*.json",
+        "total": 12
+      },
+      {
+        "label": "三种边界类型的 PPO 单批检查",
+        "file": "summary.json",
+        "total": 1
+      }
+    ],
+    "result": "12 间固定继续逐局同原版。0.6 秒时间与事件检查 209/212 次，有合法替代动作 85/79 次。三组均完成 PPO 单批更新。",
+    "analysis": "强制中途改选成功执行 42/62 次；正式训练以现有 20,000 局端点为共同父模型。"
+  },
+  {
+    "id": "abc-ppo-event-comparison",
+    "date": "2026-11-24",
+    "title": "A/B/C 进度触发 PPO · 三组各 40,000 局",
+    "folder": "2026-11-24_abc_ppo_event_comparison",
+    "run": "cap_abc_ppo_events_20261124_01",
+    "motivation": "检验在保留 CAP 命令契约时，稳定接触与推进触发能否提高混合策略的样本效率。",
+    "goal": "每轮用同一批 50 个新房间并行采样三组。各追加 25,000 局做独立阶段评估，预先冻结另一批 200 间用于各 40,000 局的终点。",
+    "result": "原边界、定时、进度在 25,000 局为 110、126、126/200，在 40,000 局为 124、124、130/200；终点共同父模型 128/200。进度相对原边界终点配对差 +3.0 个百分点，95% 区间 [−4.0, +10.0]。",
+    "analysis": "阶段面板两种中途检查均领先。终点三专家都失败的 49 间，进度组解出 16 间、原边界 6 间。进度组也丢掉了部分专家并集内成功，终点总体优势仍有不确定性。",
+    "assets": [
+      [
+        "live.html",
+        "实时训练曲线"
+      ],
+      [
+        "parent_routes.png",
+        "共同父模型的 200 局决策矩阵"
+      ],
+      [
+        "progress_routes.png",
+        "进度组终点 200 局决策矩阵"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "运行配置和两张独立面板冻结",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "原命令边界（每轮 50 局）",
+        "glob": "metrics/original/r*.json",
+        "total": 800
+      },
+      {
+        "label": "定时 0.6 秒（每轮 50 局）",
+        "glob": "metrics/time/r*.json",
+        "total": 800
+      },
+      {
+        "label": "接触、0.20 米推进（每轮 50 局）",
+        "glob": "metrics/progress/r*.json",
+        "total": 800
+      },
+      {
+        "label": "各 25,000 局阶段评估（7 个冻结策略）",
+        "glob": "interim_evaluation/*.json",
+        "total": 7
+      },
+      {
+        "label": "各 40,000 局终点评估（7 个冻结策略）",
+        "glob": "evaluation/*.json",
+        "total": 7
+      },
+      {
+        "label": "终点记录",
+        "file": "finished.json",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "single-cap-progress",
+    "date": "2026-11-24",
+    "title": "单 CAP 在 PUSH 中途重新决策",
+    "folder": "2026-11-24_single_cap_progress",
+    "run": "cap_single_progress_eval_20261124_01",
+    "motivation": "991 次中途改选中有 685 次三专家提出同一条替代命令。单 CAP 重新观察能解释多少原先归于混合的成功？",
+    "goal": "同一终点 200 间，A、B、C 各自闭环。比较直接采用新提案与冻结 PPO 在继续和单一新提案之间打分。",
+    "result": "200 间上，A、B、C 原边界成功 104、117、116，自动改选 122、122、128，冻结评分器 115、121、130。三专家混合 PPO 成功 130 间。",
+    "analysis": "原三个纯专家全败而混合 PPO 成功的 16 间中，单专家在两种事件规则下也能覆盖 14 间。",
+    "progress": [
+      {
+        "label": "始终继续与历史轨迹逐局校验",
+        "rows": "parity.json",
+        "total": 12
+      },
+      {
+        "label": "两种规则与三个 CAP 的配对评估",
+        "file": "evaluation.json",
+        "total": 1
+      },
+      {
+        "label": "按房间核对并集与救回",
+        "file": "summary.json",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "event-supervision",
+    "date": "2026-11-24",
+    "title": "进度事件下的双来源专家示范",
+    "folder": "2026-11-24_event_supervision",
+    "run": "cap_event_supervision_20261124_01",
+    "motivation": "让初始监督同时覆盖事件中应改选和应继续的成功路线。",
+    "goal": "200 个开发房间逐 CAP 配对。用自动改选成功和原保持独胜示范拟合三份 actor，在开发和终点面板做冻结闭环。",
+    "result": "新监督在留出 200 间上成功 117、134、122 间，同条件旧监督成功 126、123、116 间。平均差 +1.33 个百分点，配对区间 [−2.50, +5.00]。",
+    "analysis": "三个种子均解决全部 12 个保持示范新增覆盖的开发房间；留出 44 个单专家独胜房间中，新旧监督平均都解出 16.7 间。",
+    "progress": [
+      {
+        "label": "开发配对记录",
+        "rows": "development.json",
+        "total": 600
+      },
+      {
+        "label": "三种子监督拟合",
+        "glob": "fit_*.json",
+        "total": 3
+      },
+      {
+        "label": "三种子终点闭环",
+        "glob": "panel_*.json",
+        "total": 3
+      },
+      {
+        "label": "原监督起点同条件闭环",
+        "glob": "old_panel_*.json",
+        "total": 3
+      }
+    ]
+  },
+  {
+    "id": "event-supervised-ppo",
+    "date": "2026-11-24",
+    "title": "新监督 actor 的进度 PPO · 40,000 局",
+    "folder": "2026-11-24_event_supervised_ppo",
+    "run": "cap_event_supervised_ppo_20261124_01",
+    "motivation": "检验事件示范起点能否在 PPO 更新中提高混合成功率，并保留专家独胜能力。",
+    "goal": "seed 17，800 轮各 50 个配对训练房间；末轮在已查看的 200 间做冻结闭环。",
+    "status": "按请求停止",
+    "result": "25,100 局后按请求停止，保存第 502 轮 actor 和优化器检查点；25,000 局固定诊断为 43/64。",
+    "analysis": "",
+    "assets": [
+      [
+        "live.html",
+        "实时训练曲线"
+      ],
+      [
+        "live-data.json",
+        "曲线数据"
+      ]
+    ],
+    "frozen_progress": [
+      {
+        "label": "训练轮次",
+        "glob": "metrics/progress/r*.json",
+        "total": 800
+      },
+      {
+        "label": "终点配对评估",
+        "file": "finished.json",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "fault-curriculum",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "故障图与随机前缀 · 有限预算 CAP 开发",
+    "folder": "2026-11-24_fault_curriculum",
+    "run": "cap_fault_curriculum_20261124_01",
+    "motivation": "检测跨房间反复出现的故障，能否让同预算模块开发产生更大的闭环净救回。",
+    "goal": "160 间开发、200 间留出，两组共用母程序，每组三轮。",
+    "result": "共同母程序 126/200，第 3 轮图选前缀 127/200，随机前缀 125/200。图组相对随机组净差 +1.0 [-1.5, +3.5] 个百分点。",
+    "analysis": "终点仅图组成功 4 间，仅随机组成功 2 间。房间配对区间跨过或触及零，当前面板未分辨出稳定的组间净提升。每组只有一次独立作者开发，区间只描述房间抽样的不确定性。",
+    "progress": [
+      {
+        "label": "场景冻结",
+        "file": "rooms.json",
+        "total": 1
+      },
+      {
+        "label": "母程序开发扫描",
+        "file": "mother/dev.json",
+        "total": 1
+      },
+      {
+        "label": "随机组作者已发起调用",
+        "glob": "random/r*/call_*/request.json",
+        "total": 6
+      },
+      {
+        "label": "随机组作者已返回",
+        "glob": "random/r*/call_*/accounting.json",
+        "total": 6
+      },
+      {
+        "label": "图组作者已发起调用",
+        "glob": "graph/r*/call_*/request.json",
+        "total": 6
+      },
+      {
+        "label": "图组作者已返回",
+        "glob": "graph/r*/call_*/accounting.json",
+        "total": 6
+      },
+      {
+        "label": "随机前缀开发轮次",
+        "glob": "random/r*/selected.json",
+        "total": 3
+      },
+      {
+        "label": "图选前缀开发轮次",
+        "glob": "graph/r*/selected.json",
+        "total": 3
+      },
+      {
+        "label": "冻结留出配对评估",
+        "file": "finished.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "留出逐房间结果"
+      ]
+    ]
+  },
+  {
+    "id": "single-cluster-cap",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "能否修好一类反复卡住的房间，同时保住原程序的成功？",
+    "folder": "2026-11-24_single_cluster_cap",
+    "run": "cap_cluster_module_20261124_01",
+    "motivation": "用一次开发验证恢复模块能否跨房间解决同类故障，并尽量避免打断原程序本会成功的路线。",
+    "goal": "固定母程序及 staged/fixed 低进展故障，在 22 个开发案例上自由试作，作者可提前交卷，最长 30 分钟。冻结后用 200 间新房间按母程序故障分层配对检验，并从同前缀比较原程序、强制接手和作者规则。",
+    "progress": [
+      {
+        "label": "开发案例公开快照",
+        "glob": "snapshots/*.json",
+        "total": 22
+      },
+      {
+        "label": "新房间母程序基准",
+        "glob": "baseline/*.json",
+        "total": 200
+      },
+      {
+        "label": "作者定稿",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "定稿整局配对",
+        "glob": "trials/*/confirmation/full/*.json",
+        "total": 200
+      },
+      {
+        "label": "三分支核对及报告",
+        "file": "finished.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "replays.html",
+        "恢复成功与失败 · 同步物理回放"
+      ],
+      [
+        "worklog.html",
+        "作者工作记录与逐版 token"
+      ],
+      [
+        "worklog.json",
+        "作者记录数据"
+      ],
+      [
+        "rooms.csv",
+        "新房间逐间结果"
+      ],
+      [
+        "branches.csv",
+        "同一起点三分支"
+      ],
+      [
+        "module.py",
+        "冻结模块源码"
+      ]
+    ],
+    "result": "新房间簇内原失败救回 2/21，簇内原成功丢失 0/5；簇外原成功丢失 2/128。整局 133 → 134/200。",
+    "analysis": "未达到预先登记的系统性解决标准。"
+  },
+  {
+    "id": "push-takeover-preflight",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "物体被推向静态障碍前，模块能否在 PUSH 中途接管？",
+    "folder": "2026-11-24_push_takeover",
+    "motivation": "回放中母程序可能先把物体推到静态障碍边，故障形成后再恢复的空间变小。",
+    "goal": "为单推手与双推手 PUSH 提供可选的中途模块回调，在六个已查看的开发房间检查能否提前感知并合法换动作。",
+    "result": "仅监听时 6/6 完整复现母程序。11 次物体开始接触静态障碍中，简单预警有 3 次在同一命令内提前出现，提前 4、20、22 tick。3 间首次预警均成功执行中途制动。",
+    "analysis": "提前接管通路可用。单次制动救回 0 间、丢失 1 间，仍需验证哪些前缀值得改选以及换成什么动作。"
+  },
+  {
+    "id": "open-recovery-cap",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "让作者决定在哪一步干预、改母策略还是加补丁",
+    "folder": "2026-11-24_open_recovery",
+    "run": "cap_open_recovery_20261124_01",
+    "motivation": "同一类停滞可能可以提前避免，也可能需要发生后恢复。",
+    "goal": "上一轮 trial09 作为母程序。22 个开发案例，30 分钟自主开发。冻结选定程序后在另采的 200 间中对照。",
+    "progress": [
+      {
+        "label": "开发母程序复现",
+        "glob": "runs/dev/P/full/*.json",
+        "total": 22
+      },
+      {
+        "label": "新面板母程序",
+        "glob": "runs/confirm/P/full/*.json",
+        "total": 200
+      },
+      {
+        "label": "冻结作者定稿",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "新面板定稿配对",
+        "glob": "runs/confirm/trial06/full/*.json",
+        "total": 200
+      },
+      {
+        "label": "同前缀局部效果与报告",
+        "file": "finished.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "worklog.html",
+        "作者开发记录与 token"
+      ],
+      [
+        "rooms.csv",
+        "整局配对结果"
+      ],
+      [
+        "local_claim.csv",
+        "作者承诺的局部效果"
+      ],
+      [
+        "forks.csv",
+        "同前缀核对"
+      ],
+      [
+        "local.csv",
+        "固定停滞时刻续跑"
+      ],
+      [
+        "timing.csv",
+        "首次改选时机"
+      ],
+      [
+        "policy.py",
+        "冻结完整策略"
+      ]
+    ],
+    "result": "开发 14 → 16/22；新房间 129 → 127/200，救回 2 间、丢失 4 间。",
+    "analysis": "新房间实际改变命令 10/200，其中 10 间在相同可见边界满足作者定义的入口。在这 10 间，母程序持续缩短 30 cm 的有 6 间，候选有 3 间（新增 2、丢失 5）。"
+  },
+  {
+    "id": "entry-residual",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "能否学会把一次恢复接手推迟到下个边界？",
+    "folder": "2026-11-24_entry_residual",
+    "run": "cap_entry_residual_20261124_01",
+    "motivation": "在先前的新房间中，恢复程序救回 2 间，也打断了母策略能完成的 4 条路线。",
+    "goal": "固定母策略、恢复动作和交还时机，只校准是否接受本次接手。新房间分别统计保住的原救回、避免的原丢失和新的成败变化。",
+    "progress": [
+      {
+        "label": "冻结面板与协议",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "零残差与同前缀复现",
+        "file": "parity.json",
+        "total": 1
+      },
+      {
+        "label": "训练房间原程序扫描",
+        "glob": "runs/train/zero/*.json",
+        "total": 2400
+      },
+      {
+        "label": "选阈值房间原程序扫描",
+        "glob": "runs/validation/zero/*.json",
+        "total": 800
+      },
+      {
+        "label": "成对分叉标签与拟合",
+        "file": "fit.json",
+        "total": 1
+      },
+      {
+        "label": "新房间 · 母策略",
+        "glob": "runs/held/parent/*.json",
+        "total": 1000
+      },
+      {
+        "label": "新房间 · 原程序（零残差）",
+        "glob": "runs/held/zero/*.json",
+        "total": 1000
+      },
+      {
+        "label": "新房间 · 拟合的暂缓规则",
+        "glob": "runs/held/learned/*.json",
+        "total": 1000
+      },
+      {
+        "label": "新房间 · 每逢接手都暂缓",
+        "glob": "runs/held/always_defer/*.json",
+        "total": 1000
+      },
+      {
+        "label": "冻结后新房间分叉诊断",
+        "file": "held_diagnostic.json",
+        "total": 1
+      },
+      {
+        "label": "逐房间配对与报告",
+        "file": "finished.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "rooms.csv",
+        "同房间完整运行"
+      ],
+      [
+        "results.json",
+        "配对统计与条件区间"
+      ]
+    ],
+    "result": "1000 个新房间中，母策略成功 646 间，原恢复程序 662 间，拟合暂缓规则 664 间。相对原恢复程序救回 2 间、丢失 0 间。",
+    "analysis": "原补丁独自救回的 31 间中保住 31 间；原补丁丢失的 15 间中避免 2 间。拟合规则在新房间暂缓了 11/137 次合格提议。"
+  },
+  {
+    "id": "handoff-opportunities",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "提前接管和改变交还时机，各能救回多少房间？",
+    "folder": "2026-11-24_handoff_opportunities",
+    "run": "cap_handoff_opportunities_20261124_01",
+    "motivation": "仅暂缓已有接管请求，在上一批 1000 间中净增 2 间。许多失败房间从未出现可暂缓的提议。",
+    "goal": "保持母策略与恢复动作冻结，在同一前缀分别测试提前接管、提前交还和稍晚交还。用自然新房间估计机会，用定向采样寻找可学习的差异。",
+    "result": "640 间、411 个同前缀分叉。自然验证提前接管 103 → 104/160，定向验证 42 → 43/80，均与首次合格即接管相同。",
+    "analysis": "80 个已知双败房间中，提前接管能救回 4 间。自然验证 57 个失败房间中，50 间在原路线上没有合格替代决定；另有 1 间需同时改变接管与交还才能救回。",
+    "progress": [
+      {
+        "label": "冻结场景与协议",
+        "file": "protocol.json",
+        "total": 1
+      },
+      {
+        "label": "复现历史完整轨迹",
+        "file": "parity.json",
+        "total": 1
+      },
+      {
+        "label": "完成整局与同前缀分叉的房间",
+        "glob": "runs/*.json",
+        "total": 640
+      },
+      {
+        "label": "逐房间统计与留出诊断",
+        "file": "finished.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "interpretation.md",
+        "结果解读与配对案例"
+      ],
+      [
+        "pairs.csv",
+        "逐分叉动作与成败"
+      ],
+      [
+        "results.json",
+        "分组统计与公开特征拟合"
+      ]
+    ]
+  },
+  {
+    "id": "pr-graph-round",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "从 P＋R 仍然失败的局面开发下一版",
+    "folder": "2026-11-24_pr_graph",
+    "run": "cap_pr_graph_20261124_01",
+    "motivation": "提前接管在部分双败房间有效，多数失败房间仍缺少可用的替代动作。",
+    "goal": "用冻结组合在 160 个开发房间中的失败与自然恢复前缀选一个簇；作者自由改 P、R 或交接条件，冻结后独立配对 200 个新房间。",
+    "result": "独立新房间 121 → 123/200，救回 5 间、丢失 3 间。",
+    "analysis": "20 间实际接受侧推提议，同前缀局部目标 4 → 11/20。目标停滞簇 4 → 5/25，救回 4 间、丢失 3 间。簇外原来的 117 个成功均保住。",
+    "assets": [
+      [
+        "worklog.html",
+        "作者工作记录与 token"
+      ],
+      [
+        "worklog.json",
+        "作者计量明细"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "local.csv",
+        "同前缀局部结果"
+      ],
+      [
+        "claim.csv",
+        "作者局部承诺"
+      ],
+      [
+        "policy.py",
+        "冻结的完整程序"
+      ],
+      [
+        "graph.md",
+        "选簇依据与无边复核"
+      ],
+      [
+        "native_probe.csv",
+        "首次 PUSH 事件三分支"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发轨迹及故障图",
+        "glob": "graph/*.json",
+        "total": 160
+      },
+      {
+        "label": "冻结目标簇",
+        "file": "selection.json",
+        "total": 1
+      },
+      {
+        "label": "作者材料和开发对照",
+        "glob": "runs/dev/P/full/*.json",
+        "total": 22
+      },
+      {
+        "label": "冻结作者提交",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "新房间原组合",
+        "glob": "runs/confirm/P/full/*.json",
+        "total": 200
+      },
+      {
+        "label": "新房间定稿",
+        "glob": "runs/confirm/trial11/full/*.json",
+        "total": 200
+      },
+      {
+        "label": "局部与整局配对报告",
+        "file": "finished.json",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "cap-free-repair",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "从剩余失败中自主选择修复方式",
+    "folder": "2026-11-24_free_repair",
+    "run": "cap_free_repair_20261124_01",
+    "motivation": "已有恢复分支救回部分房间，同时也在原程序可以自行完成时误接管。",
+    "goal": "用同一份作者预算修订通用规划或新增恢复分支，检验局部改善和整局保留。",
+    "result": "P绕行.v1+R换位.v1+R侧推.v1（131/200），加入 R复接.v1 后 132/200。两组均采用 G程序.v1，救回 2 间、丢失 1 间。",
+    "analysis": "目标族 7 → 9/23，族外 124 → 123/177。23 对同前缀中，150 ticks 内同时恢复接触并推进至少 12 cm 的从 1 增至 5；新增局部达标与整局救回出现在不同房间。",
+    "assets": [
+      [
+        "rooms_by_composition.csv",
+        "按组合列出的逐房间成绩"
+      ],
+      [
+        "compositions.json",
+        "组合、原始文件与哈希"
+      ],
+      [
+        "worklog.html",
+        "作者工作记录"
+      ],
+      [
+        "worklog.json",
+        "作者用量"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "declared_local.csv",
+        "作者局部目标逐例验收"
+      ],
+      [
+        "declared_local.json",
+        "同前缀验收统计"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发底座复扫",
+        "glob": "runs/dev/P/full/*.json",
+        "total": 160
+      },
+      {
+        "label": "作者选题材料",
+        "file": "READY.json",
+        "total": 1
+      },
+      {
+        "label": "作者定稿",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "新房间 · P绕行.v1+R换位.v1+R侧推.v1+R复接.v1@G程序.v1",
+        "glob": "evaluation/selected/*.json",
+        "total": 200
+      },
+      {
+        "label": "新房间 · P绕行.v1+R复接.v1@G程序.v1",
+        "glob": "evaluation/without_old_recovery/*.json",
+        "total": 200
+      },
+      {
+        "label": "新房间 · P绕行.v1@G程序.v1",
+        "glob": "evaluation/parent_without_old_recovery/*.json",
+        "total": 200
+      },
+      {
+        "label": "新房间 · P绕行.v1+R换位.v1+R侧推.v1@G程序.v1",
+        "glob": "evaluation/parent/*.json",
+        "total": 200
+      },
+      {
+        "label": "结果",
+        "file": "finished.json",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "safe-nominal-cap",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "让通用母策略约束自己的推进距离",
+    "folder": "2026-11-24_safe_nominal",
+    "run": "cap_safe_nominal_v1",
+    "motivation": "同一条推动既可能推进任务，也可能让下一次接触失去空间。",
+    "goal": "在16个开发房间编写保守母策略，与原母策略在64个新房间配对，并核验同前缀动作后果。",
+    "result": "64 个新房间，原 P 成功 43 间，保守 P 成功 10 间。新 P 救回 4 间、丢失 37 间。1,953 次获准推动中，60.6% 的真实箱体终点落入预期范围。",
+    "analysis": "6 个同前缀拒推例子中，继续原推法后 120 ticks 净靠近目标的中位数为 74.2 cm，按保守 P 改选为 7.5 cm。当前规则要求所有预测终点共享同一推法，挡住了一部分本可继续的路线。",
+    "assets": [
+      [
+        "protocol.md",
+        "实验定义"
+      ],
+      [
+        "policy.py",
+        "冻结的母策略"
+      ],
+      [
+        "rooms.csv",
+        "逐房间配对"
+      ],
+      [
+        "forks.csv",
+        "同前缀诊断"
+      ],
+      [
+        "rejected_push_pairs.json",
+        "6 组拒推前缀与两条后缀"
+      ],
+      [
+        "paired_routes.svg",
+        "一间丢失与一间救回"
+      ],
+      [
+        "permits.json",
+        "推动许可与真实结果"
+      ],
+      [
+        "compositions.json",
+        "策略组合与来源"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "16 间开发底座",
+        "glob": "runs/dev/P/full/*.json",
+        "total": 16
+      },
+      {
+        "label": "带续接条件的首份候选试跑",
+        "glob": "runs/dev/trial02/full/*.json",
+        "total": 16
+      },
+      {
+        "label": "作者定稿",
+        "file": "author/FINAL.json",
+        "total": 1
+      },
+      {
+        "label": "冻结程序与评估协议",
+        "file": "locked.json",
+        "total": 1
+      },
+      {
+        "label": "64 个新房间 · 原母策略",
+        "glob": "runs/confirm/P/full/*.json",
+        "total": 64
+      },
+      {
+        "label": "64 个新房间 · 保守母策略",
+        "glob": "runs/confirm/trial*/full/*.json",
+        "total": 64
+      },
+      {
+        "label": "完成盲评和机制诊断",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "cap-policy-checker",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "交卷前检查母策略的几何证据与候选动作",
+    "folder": "2026-11-24_policy_checker",
+    "run": "cap_policy_checker_v1",
+    "motivation": "程序可以因证据不足而换位，也可能漏掉按自己的规则可以继续的推动。",
+    "goal": "作者给 Python 策略提供审查接口。先用冻结程序重放 003，再检查 8 个房间中按原推动序号选出的 16 个前缀。",
+    "result": "003 复现三项提示。其他 16 个前缀中有 15 个出现可见宽度剪枝提示，未再次出现放弃推动时遗漏获许可候选的情形。",
+    "analysis": "同一前缀的旧程序实测提示一处被拒的推动仍使箱子净靠近目标 11.17 cm。未执行动作的物理效果仍未知。",
+    "assets": [
+      [
+        "boundaries.csv",
+        "17 个前缀及物理证据"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "选定对照前缀",
+        "file": "selection.json",
+        "total": 1
+      },
+      {
+        "label": "记录决策与完整菜单",
+        "glob": "packets/*.json",
+        "total": 17
+      },
+      {
+        "label": "对照旧程序实际推动",
+        "file": "physical_checks.json",
+        "total": 1
+      },
+      {
+        "label": "提交验收与结论",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "checker-author-pair",
+    "direction": "cap-recovery",
+    "date": "2026-11-24",
+    "title": "看见逐动作检查反馈，CAP 作者能否少丢成功路线？",
+    "folder": "2026-11-24_checker_author_pair",
+    "run": "cap_checked_pair_v1",
+    "motivation": "保守母策略在局部决策上有可查的错误。开发时指出这些错误，能否帮助作者改善整局输运？",
+    "goal": "两位作者各有20分钟、3版、同16间开发房。在64个新房间同时复测两种开发方式、共同起点和较强前身。",
+    "result": "64 个新房间，两组亲选定稿均为 3/64，成功名单相同。统一按开发成功数选版，普通组 13/64、检查组 3/64。较强前身 38/64。",
+    "analysis": "检查组在 41 间改变动作，其中 40 间首次改为推箱，仅 5 条新命令使箱体靠近目标至少 2 cm。两位作者的实际开发试跑次数为 16 和 32；深柜合成案例验证了接口表达能力。",
+    "assets": [
+      [
+        "protocol.md",
+        "实验定义"
+      ],
+      [
+        "development.md",
+        "作者提交及试跑"
+      ],
+      [
+        "rooms.csv",
+        "逐房间成败"
+      ],
+      [
+        "cabinet.md",
+        "深柜接口迁移"
+      ],
+      [
+        "first_changes.csv",
+        "同一历史的首次分歧"
+      ],
+      [
+        "selection_sensitivity.md",
+        "补测选版标准"
+      ],
+      [
+        "issued_permits.json",
+        "声明的终点与物理结果"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "冻结64个新房间",
+        "file": "evaluation/panel.json",
+        "total": 1
+      },
+      {
+        "label": "普通开发组交卷",
+        "file": "authoring_verified/frozen/control.json",
+        "total": 1
+      },
+      {
+        "label": "检查反馈组交卷",
+        "file": "authoring_verified/frozen/checker.json",
+        "total": 1
+      },
+      {
+        "label": "较强前身 · 64房间",
+        "glob": "evaluation/runs/detour/*.json",
+        "total": 64
+      },
+      {
+        "label": "共同保守母策略 · 64房间",
+        "glob": "evaluation/runs/parent/*.json",
+        "total": 64
+      },
+      {
+        "label": "普通开发组 · 64房间",
+        "glob": "evaluation/runs/control/*.json",
+        "total": 64
+      },
+      {
+        "label": "检查反馈组 · 64房间",
+        "glob": "evaluation/runs/checked/*.json",
+        "total": 64
+      },
+      {
+        "label": "按同一开发标准选版 · 补测",
+        "glob": "evaluation/dev_selected/runs/*.json",
+        "total": 64
+      },
+      {
+        "label": "实测分析",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "guarded-options",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "动作执行前能否查出下一步接不上的情况？",
+    "folder": "2026-11-25_guarded_options",
+    "run": "cap_guarded_option_v1",
+    "motivation": "作者声明了动作效果，但推动后还剩多少空间、同伴会去哪儿，需要独立依据。",
+    "goal": "用同一份规则选动作和做静态检查，以真实命令、冻结轨迹和同前缀推进分叉检验其适用范围。",
+    "result": "17 个规则用例符合预期。真实发令 16/16。64 间历史房间中，1183/1953 次 PUSH 的箱体端点落在原作者承诺范围内。六个同前缀实测中，仅短推或仅长推保住续推的各 0 间。",
+    "analysis": "宿主模型给出位移范围时能检出后继条件矛盾；真实推进距离会随接触而变。下一轮以换面后能否建立接触衡量错放、错拒和有效覆盖。",
+    "assets": [
+      [
+        "protocol.md",
+        "问题与实验设计"
+      ],
+      [
+        "static_diagnostic.json",
+        "17项规则检查"
+      ],
+      [
+        "live_commands.json",
+        "16间真实发令"
+      ],
+      [
+        "physical_replay.json",
+        "开发与历史确认房的物理端点"
+      ],
+      [
+        "paired.json",
+        "6间同起点短推与长推"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "模型内规则对照",
+        "finding": "static_diagnostic.json",
+        "total": 1
+      },
+      {
+        "label": "检查结果接入执行器",
+        "finding": "live_commands.json",
+        "total": 1
+      },
+      {
+        "label": "物理后果独立核对",
+        "finding": "physical_replay.json",
+        "total": 1
+      },
+      {
+        "label": "同前缀配对推进",
+        "finding": "paired.json",
+        "total": 1
+      },
+      {
+        "label": "实验分析",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "guarded-calibration-loop",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "用开发分叉校准 PUSH 效果，再判断能否换面",
+    "folder": "2026-11-25_guarded_calibration_loop",
+    "run": "cap_guarded_calibration_v1",
+    "motivation": "推手推进一个或两个单位后，箱体位移、接触与后续可用性会共同变化。用真实联合结果检查作者承诺，测试在哪些前缀值得再试算。",
+    "goal": "从第 0 版开始，在相同候选、局部接续标准和在线试算规则下更新经验预测器。在已查看的历史房间做首轮工程诊断。",
+    "result": "16 间历史诊断房、27 个边界、54 个候选。第 0 至 2 版的箱体轴向位移误差从 3.15 cm 降至 1.72 cm，临场试算从 16 次降至 0 次。三版都放行相同的 32 个候选，实测换面成功 0/32。",
+    "analysis": "54 个端点都可启动换面，40 个耗完整个窗口也没发出新面的接触指令。公开菜单许可与实际可达性之间有缺口。14 个候选始终因仿真起点不足而暂缓。",
+    "assets": [
+      [
+        "protocol.md",
+        "试验口径"
+      ],
+      [
+        "metrics.json",
+        "逐版指标"
+      ],
+      [
+        "paired_diagnostic.csv",
+        "54 个候选逐例对照"
+      ],
+      [
+        "face_change_dev_audit.json",
+        "开发换面时间线与正控"
+      ],
+      [
+        "clearance.md",
+        "换面失败的净空与接近距离对照"
+      ]
+    ],
+    "progress": [
+      {
+        "label": "开发房间同前缀分叉",
+        "glob": "forks/dev/*.json",
+        "total": 16
+      },
+      {
+        "label": "诊断房间同前缀分叉",
+        "glob": "forks/diagnostic/*.json",
+        "total": 16
+      },
+      {
+        "label": "冻结三版预测器",
+        "glob": "models/v*.json",
+        "total": 3
+      },
+      {
+        "label": "配对复测及分析",
+        "finding": "README.md",
+        "total": 1
+      }
+    ]
+  },
+  {
+    "id": "guarded-face-role-swap",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "同一推面，换另一台机器人去接触会怎样？",
+    "folder": "2026-11-25_guarded_role_swap",
+    "motivation": "推手绕同伴时可能离箱越来越远，而目标只要求在指定面建立接触。",
+    "goal": "冻结 5 cm 默认换面控制，在同一推进终点比较保留和交换两台机器人的分工。",
+    "result": "16 间开发房的 60 个默认后继逐项复现。早期换人从 0/32 升至 26/32，晚期换人从 22/28 降至 0/28。",
+    "analysis": "26 个早期候选还满足推进至少 2 cm 和端点无静态接触。自动识别哪些前缀适合交接仍待验证。",
+    "assets": [
+      [
+        "paired.csv",
+        "逐候选配对"
+      ],
+      [
+        "summary.json",
+        "指标与版本"
+      ]
+    ]
+  },
+  {
+    "id": "guarded-joint-orbit",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "让联合执行层避开绕行冲突，并为同一推面选执行者",
+    "folder": "2026-11-25_guarded_joint_orbit",
+    "motivation": "强制换人在早期有益，却会丢掉原推手在晚期已经能够完成的接触。",
+    "goal": "用公开雷达和相对运动在换面入口自动分工，同一推进终点对照固定推手。",
+    "result": "开发候选完成指定面接触从 22/60 升至 48/60，历史诊断从 10/54 升至 42/54。两组晚期原有成功逐例保留。",
+    "analysis": "增益集中在早期前缀。历史诊断早期仅有两种九维起点特征；此处衡量局部接触，整局收益仍待验证。",
+    "assets": [
+      [
+        "cases.csv",
+        "逐候选配对"
+      ],
+      [
+        "summary.json",
+        "指标和版本指纹"
+      ],
+      [
+        "calibration.md",
+        "重跑三版校准闭环"
+      ]
+    ]
+  },
+  {
+    "id": "guarded-wall-pair",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "同一推手已经接触，短推和长推分别给换面留下多少空间？",
+    "folder": "2026-11-25_guarded_wall_pair",
+    "motivation": "历史面板两档推进同时成败，检验动作选择需要能翻转的同起点分叉。",
+    "goal": "固定机器人和箱体，改变前方墙距，配对记录 PUSH 和换面两个阶段的墙接触。",
+    "result": "27、30、33 cm 净距下，短推全窗口未碰墙且换面成功，长推在 PUSH 时碰墙且换面超时。",
+    "analysis": "一个开发布局已出现明确的成败翻转。旧模型支持的 10/20 cm 档在较近的七种布局中全部暂缓；40 cm 档还没有预测模型。",
+    "assets": [
+      [
+        "paired.csv",
+        "24 条分支记录"
+      ]
+    ]
+  },
+  {
+    "id": "guarded-wall-validation",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "新布局中能否从推前雷达选对推进量？",
+    "folder": "2026-11-25_guarded_wall_validation",
+    "motivation": "开发测台已产生同前缀的成败翻转，需要检验放行规则能否事前辨认。",
+    "goal": "72 个布局校准，96 个新布局评估，每个可起推边界均实际执行短、长两档，并监测到换面结束。",
+    "result": "61 个合格边界中 19 个只有短推有效。基于当前帧墙估计的规则在其中 16 个等待、3 个选错。事后提供真实墙距和方向后，13/19 选对。",
+    "analysis": "23 个边界当前扫描相同，成败却分三类。22 个在更早的边界上曾可提取墙线段，历史几何值得优先验证。",
+    "assets": [
+      [
+        "metrics.json",
+        "配对指标"
+      ],
+      [
+        "decisions.csv",
+        "逐布局选择"
+      ]
+    ]
+  },
+  {
+    "id": "guarded-wall-history",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "历史看见的静态墙段能否帮助选对短推？",
+    "folder": "2026-11-25_guarded_wall_history",
+    "motivation": "当前扫描相同的局面可能要求不同推进量，准备阶段曾看到的静态墙段可以保留。",
+    "goal": "冻结相同开发标签与放行规则，在 120 个新布局比较当前帧与累积墙段，每个合格起点实际执行两档。",
+    "result": "73 个合格起点中，安全有效选择从 4 升至 32，无效选择从 7 增至 11。30 个只有短推可行的起点中，历史组选择正确 21 个。",
+    "analysis": "跨时刻保存墙面明显减少暂缓。可见箱面到墙的距离仍会高估完整箱体净距，局部放行还需校准。",
+    "assets": [
+      [
+        "metrics.json",
+        "分组指标"
+      ],
+      [
+        "decisions.csv",
+        "逐布局选择"
+      ]
+    ]
+  },
+  {
+    "id": "guarded-footprint",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "估计箱体外廓后，能否保住短推并减少长推误选？",
+    "folder": "2026-11-25_guarded_footprint",
+    "motivation": "当前能看见的箱面离墙常比完整箱体更远，可能让长推被误放。",
+    "goal": "固定历史墙图、开发样本与放行规则，从公开目标回波估计外廓，复查旧面板并在新布局上配对。",
+    "result": "旧面板保留 20/21 个正确短推，纠正 1/7 个错误长推。新面板 80 个合格起点中，选中安全有效动作从 43 降到 41。",
+    "analysis": "净距中位绝对误差从 22.9 cm 降到 6.0 cm，但未校准下端仍在 77/78 个起点上偏高。绝对净距是否能用于动作放行需单独检验。",
+    "assets": [
+      [
+        "paired.csv",
+        "逐例选择"
+      ],
+      [
+        "metrics.json",
+        "指标与配对"
+      ],
+      [
+        "margin_audit.json",
+        "净距裕度"
+      ]
+    ]
+  },
+  {
+    "id": "symbolic-transport",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "PUSH 怎样给真实绕行留下足够空间？",
+    "folder": "2026-11-25_symbolic_transport",
+    "motivation": "将净距作为会被动作改变的物理量，直接检查预定后继的前提。",
+    "goal": "校准扫掠界，比较顺逆时针、推进量和合法推向；在新房间检查符号放行、在线复核和真实换面。",
+    "result": "固定候选时符号规则选中 25 个有效、0 个无效、52 个暂缓；原投票为 38、12、27。扩大候选后，76 个获准分支中箱体静态接触为 0，完成换面并有效的为 29。",
+    "analysis": "净距义务在实测上减少静态碰撞，也牺牲有效覆盖。完整路由实际只有 9/77 完成，另一推向满足净距却很难接上新面。",
+    "assets": [
+      [
+        "contracts.csv",
+        "556 个候选的区间检查"
+      ],
+      [
+        "paired.csv",
+        "逐房间路由"
+      ],
+      [
+        "restricted_live.json",
+        "同候选部署复核"
+      ],
+      [
+        "obligations.json",
+        "逐项义务消融"
+      ],
+      [
+        "metrics.json",
+        "指标"
+      ]
+    ]
+  },
+  {
+    "id": "symbolic-orbit-audit",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "留出了绕行空间，为什么还会绕满 120 tick？",
+    "folder": "2026-11-25_symbolic_transport",
+    "motivation": "从实际执行代码区分机器人过不去与下一面无法接触。",
+    "goal": "重放全部 21 个已执行换面的起点，核对净距拦截、目标面角度和接近命令，并配对改变起推方向。",
+    "result": "12 个超时起点的 124 次绕行返回均未取得合法接近；实际外边最小角差 40.43°，超过执行器的 35° 上限。保持档位和绕行侧，换用另一推向后 12 个均换面成功。",
+    "analysis": "8 个逆时针超时全程未触发静态拦截。绕行扫掠净距与新面的方向可行性需要分别进入后继条件。证据限于同一准备前缀的布局变体。",
+    "assets": [
+      [
+        "orbit_audit.csv",
+        "38 条同前缀换面分支"
+      ]
+    ]
+  },
+  {
+    "id": "independent-orbit-push22-5",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "分开执行绕行和 PUSH，能否看出哪一步不可行？",
+    "folder": "2026-11-25_symbolic_transport",
+    "motivation": "组合换面超时掩盖了后继推向缺少合法接触面的原因。",
+    "goal": "给原 12 个超时布局分别发出 PUSH、独立绕行和下一推向，逐条核对耗时及拒绝原因。",
+    "result": "按 22.5° 阈值，原推向在 12 个起点均被零 tick 拒绝。独立绕行 12 tick 后，原方案的后继推向仍均被拒，改选菜单内的 PUSH 则 12 次均执行了 12 tick。",
+    "analysis": "策略可在绕行后读取公开菜单，自行决定是否推以及朝哪里推。这里测量逐命令语义，整局搬运效果仍待评估。",
+    "assets": [
+      [
+        "independent_push22_5.csv",
+        "逐房间反馈"
+      ]
+    ]
+  },
+  {
+    "id": "compact20-orbit",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "缩小机器人后，箱体与墙之间还能留出多少绕行空间？",
+    "folder": "2026-11-25_compact_robot_geometry",
+    "motivation": "减小机器人尺寸对换面的限制，便于研究仅凭观测能否判定后继动作可行。",
+    "goal": "机器人直径从 36 cm 调至 20 cm，绕行目标净距从 10 cm 调至 5 cm。在三档平行墙间距上执行两段各 12 tick 的同向绕行。",
+    "result": "箱面到墙相距 32、39、60 cm 时，小机器人均沿箱面移动约 19 cm，末端真实箱面净距分别为 1.73、4.90、4.90 cm。旧机器人在 60 cm 通道末端净距为 9.90 cm。",
+    "analysis": "窄通道中可以沿面移动，但跟踪误差随空间改变。5 cm 可用于描述控制目标，用作安全硬下界还需独立证据。这里只测直线段。",
+    "assets": [
+      [
+        "corridor.csv",
+        "逐通道实测"
+      ]
+    ]
+  },
+  {
+    "id": "symbolic-general",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "可抽取的 CAP 规则能否随预测模型校准减少在线试算？",
+    "folder": "2026-11-25_symbolic_general",
+    "run": "cap_symbolic_general_v1",
+    "motivation": "直接预测下一边界元表达式，重算策略真实选择并检查其执行条件。",
+    "goal": "冻结 CAP 规则，完成第 0、1、2 版效果模型与相同前缀候选的配对评测，记录安全、覆盖、接续失败、在线仿真及整局成功。",
+    "result": "64 间确认房，v0→v2 的有效覆盖 48.44%→60.45%、接续失败 9.12%→8.18%、每百边界在线分支 155.078→91.797。v2 整局成功 1/64。",
+    "analysis": "局部主假设的配对区间支持：True。整局 v2 1/64，同 CAP 无预测门 33/64；v2 箱体静态接触 14/64 间。局部改善未转化为较高整局完成率，安全保证未成立。",
+    "progress": [
+      {
+        "label": "CAP 作者冻结提交",
+        "file": "policy_frozen.json",
+        "total": 1
+      },
+      {
+        "label": "模型迭代中的运行期开发房",
+        "glob": "active/v*/fitting/episodes/*.json.gz",
+        "total": 40
+      },
+      {
+        "label": "模型迭代中的独立校准房",
+        "glob": "active/v*/calibration/episodes/*.json.gz",
+        "total": 32
+      },
+      {
+        "label": "三版预测器",
+        "glob": "models/v*.json",
+        "total": 3
+      },
+      {
+        "label": "确认房同前缀配对",
+        "glob": "confirmation/paired/*.json.gz",
+        "total": 64
+      },
+      {
+        "label": "四组整局确认",
+        "glob": "confirmation/tasks/*/*.json.gz",
+        "total": 256
+      },
+      {
+        "label": "配对与整局评估报告",
+        "file": "FINISHED.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "metrics.json",
+        "配对指标"
+      ],
+      [
+        "rooms.csv",
+        "逐房间结果"
+      ],
+      [
+        "paired.csv",
+        "逐候选对照"
+      ],
+      [
+        "replay.html",
+        "真实执行回放"
+      ],
+      [
+        "policy.py",
+        "冻结 CAP 规则"
+      ],
+      [
+        "models.json",
+        "三版预测器指纹"
+      ],
+      [
+        "model_recheck_summary.json",
+        "修改影响复查"
+      ],
+      [
+        "runtime_selection_proof.json",
+        "运行期选择证明"
+      ],
+      [
+        "host_checked_boundaries.json",
+        "编译 CAP 发令核对"
+      ],
+      [
+        "protocol.json",
+        "冻结协议"
+      ],
+      [
+        "policy_frozen.json",
+        "作者提交与冻结"
+      ],
+      [
+        "raw_replay_audit.json",
+        "原始位姿复算"
+      ],
+      [
+        "cost_accounting.json",
+        "仿真账目"
+      ],
+      [
+        "host_amendments.json",
+        "宿主修订"
+      ],
+      [
+        "runtime_protocol.json",
+        "在线放行规则"
+      ],
+      [
+        "program_rechecks.json",
+        "程序修订依赖"
+      ],
+      [
+        "semantic_registry.json",
+        "基础量约定"
+      ],
+      [
+        "checker_amendment.json",
+        "检查器等价优化"
+      ],
+      [
+        "metrics.png",
+        "指标图"
+      ],
+      [
+        "metrics.svg",
+        "可编辑指标图"
+      ],
+      [
+        "worked_cases.md",
+        "从预测到实际后继"
+      ],
+      [
+        "worked_cases.json",
+        "案例原始数据"
+      ],
+      [
+        "validation.json",
+        "工程与证据复核"
+      ],
+      [
+        "tests_framework.xml",
+        "框架测试记录"
+      ],
+      [
+        "tests_related.xml",
+        "相关测试记录"
+      ],
+      [
+        "action_strata.json",
+        "动作类型与新法向诊断"
+      ],
+      [
+        "author_summary.json",
+        "作者开发与探针"
+      ],
+      [
+        "reproduce_one.py",
+        "单房间重放脚本"
+      ],
+      [
+        "analysis_environment.json",
+        "统计分析环境"
+      ],
+      [
+        "online_error_audit.json",
+        "在线假设异常复查"
+      ]
+    ]
+  },
+  {
+    "id": "unknown-safety",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "未知空间能否先安全观察，再短推并完整停住？",
+    "folder": "2026-11-25_unknown_safety",
+    "run": "cap_unknown_safety_v1",
+    "motivation": "14个旧首次接触中，8个障碍在策略边界扫描中未见，6个已见且仍在记忆中。未知区域与已知几何都需要完整扫掠检查。",
+    "goal": "实现三值空间证据，审计观察、推进和完整停止；冻结后在12组新布局上比较遮挡空/障碍及不观察对照。",
+    "result": "12组冻结对照：空场景有效推进并完整停止 12/12；遮挡障碍观察后拒绝 12/12；不观察有效推进 0/12。",
+    "analysis": "36局实测接触 0，范围越界 0。条件依赖静态空间、最小障碍面积、初始分离和运动范围；不宣称旧64房间或整局安全已解决。",
+    "progress": [
+      {
+        "label": "旧首次接触前缀复现",
+        "glob": "historical/*.json.gz",
+        "total": 14
+      },
+      {
+        "label": "12组冻结三臂复测",
+        "glob": "acceptance/*/*.json.gz",
+        "total": 36
+      },
+      {
+        "label": "完整报告与范围核验",
+        "file": "FINISHED.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "protocol.md",
+        "冻结验收口径"
+      ],
+      [
+        "metrics.json",
+        "分组指标"
+      ],
+      [
+        "paired.csv",
+        "逐局配对"
+      ],
+      [
+        "historical.csv",
+        "14个旧接触审计"
+      ],
+      [
+        "replay.html",
+        "真实轨迹回放"
+      ],
+      [
+        "evidence.png",
+        "已知自由与unknown"
+      ],
+      [
+        "development.json",
+        "开发失败与修订"
+      ],
+      [
+        "acceptance_frozen.json",
+        "冻结源与布局"
+      ],
+      [
+        "literal_program.json",
+        "可抽取规则"
+      ],
+      [
+        "runtime_audit.json",
+        "运行期检查"
+      ],
+      [
+        "historical_semantic_gate.json",
+        "旧碰撞前的净距摘要"
+      ]
+    ]
   }
 ]

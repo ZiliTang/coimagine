@@ -1,0 +1,92 @@
+{
+  "dim": 28,
+  "variance": [
+    0.09941221008631229,
+    0.0865528224158245
+  ],
+  "dev_union": 560,
+  "dev_unique": 126,
+  "test_union": 449,
+  "test_unique": 92,
+  "commit": 259,
+  "fixed_development_best": "009",
+  "fixed_success": 259,
+  "knn_singleton": 26,
+  "rows": [
+    {
+      "cap": "009",
+      "dev_success": 311,
+      "dev_sole": 27,
+      "test_success": 259,
+      "auc": 0.6819823594017143,
+      "vs009_test": "",
+      "vs009_cap_wins": "",
+      "vs009_auc": ""
+    },
+    {
+      "cap": "003",
+      "dev_success": 309,
+      "dev_sole": 24,
+      "test_success": 267,
+      "auc": 0.6065559941964437,
+      "vs009_test": 184,
+      "vs009_cap_wins": 96,
+      "vs009_auc": 0.43607954545454547
+    },
+    {
+      "cap": "001",
+      "dev_success": 280,
+      "dev_sole": 18,
+      "test_success": 230,
+      "auc": 0.5935898942420682,
+      "vs009_test": 195,
+      "vs009_cap_wins": 83,
+      "vs009_auc": 0.4719771944922547
+    },
+    {
+      "cap": "010",
+      "dev_success": 269,
+      "dev_sole": 19,
+      "test_success": 227,
+      "auc": 0.6586080239987717,
+      "vs009_test": 190,
+      "vs009_cap_wins": 79,
+      "vs009_auc": 0.5813091572585244
+    },
+    {
+      "cap": "006",
+      "dev_success": 126,
+      "dev_sole": 17,
+      "test_success": 104,
+      "auc": 0.6090551333746899,
+      "vs009_test": 215,
+      "vs009_cap_wins": 30,
+      "vs009_auc": 0.5581081081081081
+    },
+    {
+      "cap": "007",
+      "dev_success": 203,
+      "dev_sole": 11,
+      "test_success": 156,
+      "auc": 0.6463242088242088,
+      "vs009_test": 207,
+      "vs009_cap_wins": 52,
+      "vs009_auc": 0.4411910669975186
+    },
+    {
+      "cap": "002",
+      "dev_success": 261,
+      "dev_sole": 10,
+      "test_success": 202,
+      "auc": 0.6567864072839444,
+      "vs009_test": 207,
+      "vs009_cap_wins": 75,
+      "vs009_auc": 0.5004545454545455
+    }
+  ],
+  "neighbors": 411,
+  "parents": 97,
+  "retained": 141,
+  "sole": 40,
+  "near_union": 291
+}

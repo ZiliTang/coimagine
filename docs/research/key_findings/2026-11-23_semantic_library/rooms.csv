@@ -1,0 +1,201 @@
+room,objects,conditions,usual_member0,usual_member1,usual_member2,usual_member3,usual_basic,usual_semantic,usual_initial_tag,specialized_member0,specialized_member1,specialized_member2,specialized_member3,specialized_basic,specialized_semantic,specialized_initial_tag
+sem23_dev_2_00,2,,1,0,1,0,1,1,0,1,1,1,1,0,0,1
+sem23_dev_2_01,2,,1,1,0,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_02,2,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_03,2,static corridor obstruction;movable corridor obstruction,0,1,0,0,0,0,1,0,0,0,0,0,1,0
+sem23_dev_2_04,2,static corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_05,2,static corridor obstruction;near-wall destination,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_dev_2_06,2,near-wall destination,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_07,2,static corridor obstruction,0,1,0,1,1,1,1,0,0,0,0,1,1,0
+sem23_dev_2_08,2,,0,0,1,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_09,2,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_10,2,,1,1,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_2_11,2,static corridor obstruction,1,1,1,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_12,2,,0,1,1,1,1,1,1,0,0,0,0,0,0,0
+sem23_dev_2_13,2,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_14,2,,0,1,1,0,1,0,1,0,0,0,0,0,0,0
+sem23_dev_2_15,2,static corridor obstruction;near-wall destination,1,0,1,1,1,1,0,1,0,1,1,0,1,1
+sem23_dev_2_16,2,movable corridor obstruction,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_17,2,,0,1,0,1,1,1,1,0,0,0,0,0,0,0
+sem23_dev_2_18,2,static corridor obstruction,0,0,1,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_2_19,2,movable corridor obstruction,1,0,1,1,1,0,0,1,1,0,1,0,0,1
+sem23_dev_2_20,2,,1,0,1,1,1,0,0,1,1,1,1,1,1,1
+sem23_dev_2_21,2,static corridor obstruction,0,0,1,0,0,0,0,0,0,0,0,1,0,0
+sem23_dev_2_22,2,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_23,2,movable corridor obstruction,0,1,1,1,1,0,1,0,0,0,0,0,0,0
+sem23_dev_2_24,2,,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_dev_2_25,2,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_26,2,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_27,2,static corridor obstruction,1,0,0,0,1,0,0,1,0,1,1,0,1,1
+sem23_dev_2_28,2,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,1,0,0
+sem23_dev_2_29,2,,1,0,0,1,1,1,0,1,1,1,1,1,1,1
+sem23_dev_2_30,2,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_31,2,,1,1,0,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_2_32,2,movable corridor obstruction,0,1,0,0,1,0,1,0,0,0,0,0,0,0
+sem23_dev_2_33,2,,1,0,1,1,0,1,0,1,1,1,1,1,1,1
+sem23_dev_2_34,2,static corridor obstruction;movable corridor obstruction,0,0,0,0,0,0,0,0,1,0,0,1,1,0
+sem23_dev_2_35,2,static corridor obstruction;near-wall destination,0,1,0,0,0,0,1,0,0,0,1,1,1,1
+sem23_dev_2_36,2,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_2_37,2,,1,1,1,1,1,0,1,1,1,1,1,1,1,1
+sem23_dev_2_38,2,movable corridor obstruction,0,0,0,1,1,0,0,0,0,1,0,0,0,0
+sem23_dev_2_39,2,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_00,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_01,3,,0,1,0,0,0,0,1,0,0,0,0,0,0,0
+sem23_dev_3_02,3,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_03,3,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_3_04,3,,0,1,1,0,1,1,1,0,1,0,0,0,0,0
+sem23_dev_3_05,3,movable corridor obstruction,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_dev_3_06,3,near-wall destination,1,0,0,0,0,0,1,1,0,1,1,0,1,1
+sem23_dev_3_07,3,static corridor obstruction;near-wall destination,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_3_08,3,,1,1,1,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_3_09,3,near-wall destination,1,1,0,0,0,1,1,1,1,1,1,1,1,1
+sem23_dev_3_10,3,near-wall destination,0,0,0,0,0,0,0,0,0,0,1,0,0,1
+sem23_dev_3_11,3,movable corridor obstruction,1,0,1,0,0,1,0,1,1,0,1,1,1,1
+sem23_dev_3_12,3,,1,1,0,0,1,0,1,1,1,1,1,1,1,1
+sem23_dev_3_13,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_14,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_15,3,static corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_16,3,,0,0,0,0,1,1,0,0,0,0,0,0,1,0
+sem23_dev_3_17,3,,1,0,0,0,0,1,0,1,1,1,1,1,1,1
+sem23_dev_3_18,3,,0,1,0,0,1,1,1,0,0,0,0,0,0,0
+sem23_dev_3_19,3,near-wall destination,1,1,1,1,1,0,1,1,1,1,1,1,1,1
+sem23_dev_3_20,3,movable corridor obstruction,0,1,0,0,1,1,1,0,0,0,0,0,0,0
+sem23_dev_3_21,3,static corridor obstruction;near-wall destination,1,0,0,0,0,0,0,1,0,1,1,0,0,1
+sem23_dev_3_22,3,,1,1,0,0,1,0,1,1,1,0,1,1,1,0
+sem23_dev_3_23,3,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_24,3,near-wall destination,0,0,0,0,0,0,0,0,0,1,1,1,1,1
+sem23_dev_3_25,3,near-wall destination,1,1,1,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_3_26,3,,1,1,1,0,1,0,1,1,1,1,1,1,1,1
+sem23_dev_3_27,3,static corridor obstruction,0,1,0,1,1,1,1,0,1,0,0,0,1,0
+sem23_dev_3_28,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_29,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_30,3,static corridor obstruction,0,0,1,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_31,3,,1,1,1,0,0,1,1,1,1,1,1,1,1,1
+sem23_dev_3_32,3,,0,1,1,0,1,1,1,0,0,0,0,0,0,0
+sem23_dev_3_33,3,movable corridor obstruction,1,1,0,0,0,1,1,1,1,0,1,1,1,1
+sem23_dev_3_34,3,,0,1,0,0,0,0,1,0,0,0,0,1,0,0
+sem23_dev_3_35,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_36,3,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_3_37,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_3_38,3,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_3_39,3,static corridor obstruction,1,1,1,0,0,0,1,1,0,1,1,1,1,1
+sem23_dev_4_00,4,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_01,4,,1,0,0,0,0,0,0,1,1,1,1,1,1,1
+sem23_dev_4_02,4,static corridor obstruction,1,1,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_4_03,4,movable corridor obstruction;near-wall destination,0,1,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_04,4,,1,1,1,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_05,4,movable corridor obstruction,0,1,0,1,1,0,1,0,0,0,0,0,0,0
+sem23_dev_4_06,4,movable corridor obstruction,1,1,1,1,1,0,1,1,1,0,1,1,1,1
+sem23_dev_4_07,4,movable corridor obstruction,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_08,4,,1,1,1,0,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_09,4,,0,1,1,0,1,0,1,0,0,0,0,0,0,0
+sem23_dev_4_10,4,static corridor obstruction,0,1,0,1,0,0,1,0,0,0,0,0,1,0
+sem23_dev_4_11,4,static corridor obstruction;near-wall destination,1,1,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_4_12,4,,1,0,1,0,1,0,0,1,1,1,1,1,1,1
+sem23_dev_4_13,4,static corridor obstruction,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_4_14,4,movable corridor obstruction;near-wall destination,0,1,0,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_4_15,4,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_16,4,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_17,4,,0,1,0,1,1,0,1,0,0,0,0,0,0,0
+sem23_dev_4_18,4,,1,1,0,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_4_19,4,movable corridor obstruction,1,0,1,0,0,0,0,1,1,1,1,1,1,1
+sem23_dev_4_20,4,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_21,4,,0,1,1,1,0,1,1,0,0,0,0,0,0,0
+sem23_dev_4_22,4,movable corridor obstruction,0,0,1,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_4_23,4,movable corridor obstruction,1,1,0,0,0,0,1,1,1,1,1,1,1,1
+sem23_dev_4_24,4,static corridor obstruction;movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_25,4,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_26,4,,0,0,1,1,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_27,4,movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_28,4,static corridor obstruction;near-wall destination,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_4_29,4,near-wall destination,0,0,0,0,0,0,0,0,1,0,0,1,1,0
+sem23_dev_4_30,4,movable corridor obstruction;near-wall destination,0,0,0,1,0,0,1,0,0,0,0,0,0,0
+sem23_dev_4_31,4,static corridor obstruction,1,0,1,1,1,1,0,1,0,1,1,0,0,1
+sem23_dev_4_32,4,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_4_33,4,,1,1,0,0,0,0,1,1,1,1,1,1,1,1
+sem23_dev_4_34,4,static corridor obstruction;near-wall destination,1,0,0,0,0,0,0,1,1,1,0,1,0,0
+sem23_dev_4_35,4,movable corridor obstruction,0,1,1,0,1,0,1,0,0,0,0,1,0,0
+sem23_dev_4_36,4,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_37,4,static corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,1,0,0,1
+sem23_dev_4_38,4,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_4_39,4,,1,1,0,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_00,5,static corridor obstruction,0,1,0,0,0,0,1,0,0,0,0,0,0,0
+sem23_dev_5_01,5,movable corridor obstruction,0,0,1,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_5_02,5,,1,1,1,0,1,0,1,1,1,1,1,1,1,1
+sem23_dev_5_03,5,static corridor obstruction;movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_04,5,static corridor obstruction;movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_05,5,,0,1,0,1,0,0,1,0,0,0,0,0,0,0
+sem23_dev_5_06,5,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_07,5,movable corridor obstruction,1,0,1,1,1,1,0,1,1,1,1,1,1,1
+sem23_dev_5_08,5,movable corridor obstruction;near-wall destination,1,0,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_5_09,5,movable corridor obstruction,1,0,0,1,1,0,0,1,1,0,1,0,0,1
+sem23_dev_5_10,5,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_11,5,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_12,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_13,5,movable corridor obstruction,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_14,5,movable corridor obstruction,0,1,0,0,0,0,1,0,0,0,0,0,0,0
+sem23_dev_5_15,5,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_16,5,static corridor obstruction;movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+sem23_dev_5_17,5,movable corridor obstruction;near-wall destination,1,0,0,0,0,0,0,1,1,1,1,1,1,1
+sem23_dev_5_18,5,static corridor obstruction,0,0,0,0,0,0,0,0,1,0,0,1,1,0
+sem23_dev_5_19,5,movable corridor obstruction,0,0,1,0,1,1,0,0,0,0,0,0,0,0
+sem23_dev_5_20,5,static corridor obstruction,0,0,1,1,0,0,0,0,0,0,0,1,0,0
+sem23_dev_5_21,5,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_22,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_dev_5_23,5,static corridor obstruction;movable corridor obstruction,0,1,1,0,0,0,1,0,0,0,0,0,0,0
+sem23_dev_5_24,5,movable corridor obstruction,0,0,0,0,0,0,0,0,0,0,0,1,0,0
+sem23_dev_5_25,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,1,0,0,0,0,0,1,0,0
+sem23_dev_5_26,5,,1,1,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_dev_5_27,5,static corridor obstruction,0,0,0,0,0,0,0,0,1,0,0,0,1,0
+sem23_dev_5_28,5,near-wall destination,1,0,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_29,5,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_dev_5_30,5,,0,1,0,0,1,1,1,0,0,0,0,0,0,0
+sem23_dev_5_31,5,movable corridor obstruction,0,0,0,0,1,0,0,0,0,0,0,0,0,0
+sem23_dev_5_32,5,static corridor obstruction,1,0,0,1,0,1,0,1,0,1,1,0,0,1
+sem23_dev_5_33,5,,0,1,1,1,1,1,1,0,0,0,0,1,1,0
+sem23_dev_5_34,5,,0,1,0,0,0,0,1,0,0,0,0,0,0,0
+sem23_dev_5_35,5,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_36,5,movable corridor obstruction,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_37,5,,1,1,0,0,1,0,1,1,1,1,1,1,1,1
+sem23_dev_5_38,5,,1,1,0,1,1,1,1,1,1,1,1,1,1,1
+sem23_dev_5_39,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_test_2_45,2,static corridor obstruction;near-wall destination,0,0,1,0,0,0,0,0,0,0,1,1,1,1
+sem23_test_2_46,2,static corridor obstruction;near-wall destination,1,1,1,1,0,1,1,1,0,1,1,0,1,1
+sem23_test_2_47,2,movable corridor obstruction,0,1,0,0,1,0,1,0,0,0,0,0,0,0
+sem23_test_2_48,2,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_test_2_49,2,,1,1,0,1,1,1,1,1,1,1,1,1,1,1
+sem23_test_3_45,3,movable corridor obstruction,0,1,0,0,0,1,1,0,0,0,0,0,0,0
+sem23_test_3_46,3,static corridor obstruction,1,1,1,1,1,0,1,1,1,1,1,0,0,1
+sem23_test_3_47,3,,0,1,1,0,0,0,1,0,0,0,0,0,0,0
+sem23_test_3_48,3,,0,1,0,0,1,1,1,0,0,0,0,0,0,0
+sem23_test_3_49,3,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_test_4_45,4,,1,1,1,1,0,1,1,1,1,1,1,1,1,1
+sem23_test_4_46,4,movable corridor obstruction,0,0,1,0,0,1,0,0,0,0,0,0,0,0
+sem23_test_4_47,4,,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+sem23_test_4_48,4,static corridor obstruction;near-wall destination,0,1,0,0,0,0,1,0,1,0,0,1,0,0
+sem23_test_4_49,4,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_test_5_45,5,,0,1,1,0,1,1,1,0,0,0,0,0,0,0
+sem23_test_5_46,5,movable corridor obstruction;near-wall destination,0,0,0,1,0,1,1,0,0,0,0,0,0,0
+sem23_test_5_47,5,movable corridor obstruction,1,0,1,0,0,0,0,1,1,1,1,1,1,1
+sem23_test_5_48,5,movable corridor obstruction,0,1,0,1,0,1,1,0,0,1,0,0,0,0
+sem23_test_5_49,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,1,0,0,1
+sem23_validation_2_40,2,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_validation_2_41,2,near-wall destination,0,1,1,1,1,0,0,0,0,0,1,1,1,1
+sem23_validation_2_42,2,,1,1,0,1,1,1,1,1,1,1,1,1,1,1
+sem23_validation_2_43,2,,0,1,0,1,1,1,1,0,0,0,0,0,0,0
+sem23_validation_2_44,2,static corridor obstruction,1,0,1,1,1,0,0,1,1,1,1,1,0,1
+sem23_validation_3_40,3,near-wall destination,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_validation_3_41,3,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_validation_3_42,3,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_validation_3_43,3,,0,1,0,0,1,1,1,0,0,0,0,0,0,0
+sem23_validation_3_44,3,movable corridor obstruction;near-wall destination,1,0,1,1,0,0,1,1,1,1,1,1,1,1
+sem23_validation_4_40,4,,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_validation_4_41,4,near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_validation_4_42,4,,1,0,0,0,0,0,0,1,1,1,1,1,1,1
+sem23_validation_4_43,4,near-wall destination,0,1,0,0,1,1,0,0,0,0,1,1,1,1
+sem23_validation_4_44,4,,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+sem23_validation_5_40,5,,1,1,1,0,1,0,1,1,1,1,1,1,1,1
+sem23_validation_5_41,5,movable corridor obstruction,1,1,1,0,0,0,1,1,1,0,1,1,1,1
+sem23_validation_5_42,5,movable corridor obstruction,0,0,0,0,0,1,0,0,0,0,0,0,0,0
+sem23_validation_5_43,5,movable corridor obstruction,0,1,0,1,1,0,1,0,0,1,0,0,0,0
+sem23_validation_5_44,5,movable corridor obstruction;near-wall destination,0,0,0,0,0,0,0,0,0,0,0,0,0,0

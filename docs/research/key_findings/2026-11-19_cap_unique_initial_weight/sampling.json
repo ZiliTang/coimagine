@@ -1,0 +1,15 @@
+{
+  "roots": 1154,
+  "unique": 230,
+  "counts": [
+    52,
+    40,
+    20,
+    46,
+    27,
+    20,
+    25
+  ],
+  "boundaries": 573536,
+  "root_group_draws": 32000
+}

@@ -1,0 +1,353 @@
+{
+  "discovery": {
+    "all": {
+      "n": 400,
+      "ga": 216,
+      "attention": 209,
+      "union": 261,
+      "gate": 215,
+      "always_push": 219,
+      "decisive": 97,
+      "correct": 51,
+      "rescue": 8,
+      "loss": 9,
+      "picked_attention": 56
+    },
+    "eligible": {
+      "n": 87,
+      "ga": 43,
+      "attention": 41,
+      "union": 55,
+      "gate": 42,
+      "always_push": 46,
+      "decisive": 26,
+      "correct": 13,
+      "rescue": 8,
+      "loss": 9,
+      "picked_attention": 56
+    },
+    "branches": {
+      "abstain": {
+        "n": 294,
+        "ga": 173,
+        "attention": 168,
+        "union": 206,
+        "gate": 173,
+        "always_push": 173,
+        "decisive": 71,
+        "correct": 38,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "identical": {
+        "n": 19,
+        "ga": 0,
+        "attention": 0,
+        "union": 0,
+        "gate": 0,
+        "always_push": 0,
+        "decisive": 0,
+        "correct": 0,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "ready": {
+        "n": 61,
+        "ga": 33,
+        "attention": 33,
+        "union": 43,
+        "gate": 35,
+        "always_push": 35,
+        "decisive": 20,
+        "correct": 12,
+        "rescue": 8,
+        "loss": 6,
+        "picked_attention": 41
+      },
+      "reposition": {
+        "n": 26,
+        "ga": 10,
+        "attention": 8,
+        "union": 12,
+        "gate": 7,
+        "always_push": 11,
+        "decisive": 6,
+        "correct": 1,
+        "rescue": 0,
+        "loss": 3,
+        "picked_attention": 15
+      }
+    }
+  },
+  "oldcheck": {
+    "all": {
+      "n": 200,
+      "ga": 107,
+      "attention": 105,
+      "union": 131,
+      "gate": 110,
+      "always_push": 110,
+      "decisive": 50,
+      "correct": 29,
+      "rescue": 6,
+      "loss": 3,
+      "picked_attention": 29
+    },
+    "eligible": {
+      "n": 51,
+      "ga": 25,
+      "attention": 26,
+      "union": 34,
+      "gate": 28,
+      "always_push": 28,
+      "decisive": 17,
+      "correct": 11,
+      "rescue": 6,
+      "loss": 3,
+      "picked_attention": 29
+    },
+    "branches": {
+      "abstain": {
+        "n": 137,
+        "ga": 80,
+        "attention": 77,
+        "union": 95,
+        "gate": 80,
+        "always_push": 80,
+        "decisive": 33,
+        "correct": 18,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "identical": {
+        "n": 12,
+        "ga": 2,
+        "attention": 2,
+        "union": 2,
+        "gate": 2,
+        "always_push": 2,
+        "decisive": 0,
+        "correct": 0,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "ready": {
+        "n": 38,
+        "ga": 23,
+        "attention": 22,
+        "union": 29,
+        "gate": 25,
+        "always_push": 25,
+        "decisive": 13,
+        "correct": 9,
+        "rescue": 5,
+        "loss": 3,
+        "picked_attention": 24
+      },
+      "reposition": {
+        "n": 13,
+        "ga": 2,
+        "attention": 4,
+        "union": 5,
+        "gate": 3,
+        "always_push": 3,
+        "decisive": 4,
+        "correct": 2,
+        "rescue": 1,
+        "loss": 0,
+        "picked_attention": 5
+      }
+    }
+  },
+  "fresh": {
+    "all": {
+      "n": 200,
+      "ga": 93,
+      "attention": 103,
+      "union": 126,
+      "gate": 94,
+      "always_push": 91,
+      "decisive": 56,
+      "correct": 24,
+      "rescue": 3,
+      "loss": 2,
+      "picked_attention": 33
+    },
+    "eligible": {
+      "n": 61,
+      "ga": 26,
+      "attention": 24,
+      "union": 32,
+      "gate": 27,
+      "always_push": 24,
+      "decisive": 14,
+      "correct": 9,
+      "rescue": 3,
+      "loss": 2,
+      "picked_attention": 33
+    },
+    "branches": {
+      "abstain": {
+        "n": 131,
+        "ga": 67,
+        "attention": 79,
+        "union": 94,
+        "gate": 67,
+        "always_push": 67,
+        "decisive": 42,
+        "correct": 15,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "identical": {
+        "n": 8,
+        "ga": 0,
+        "attention": 0,
+        "union": 0,
+        "gate": 0,
+        "always_push": 0,
+        "decisive": 0,
+        "correct": 0,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "ready": {
+        "n": 45,
+        "ga": 20,
+        "attention": 19,
+        "union": 25,
+        "gate": 20,
+        "always_push": 20,
+        "decisive": 11,
+        "correct": 6,
+        "rescue": 2,
+        "loss": 2,
+        "picked_attention": 24
+      },
+      "reposition": {
+        "n": 16,
+        "ga": 6,
+        "attention": 5,
+        "union": 7,
+        "gate": 7,
+        "always_push": 4,
+        "decisive": 3,
+        "correct": 3,
+        "rescue": 1,
+        "loss": 0,
+        "picked_attention": 9
+      }
+    },
+    "delta_vs_ga_ci_pp": [
+      -1.5,
+      2.5
+    ]
+  },
+  "neighbors": {
+    "all": {
+      "n": 96,
+      "ga": 41,
+      "attention": 41,
+      "union": 63,
+      "gate": 43,
+      "always_push": 45,
+      "decisive": 44,
+      "correct": 24,
+      "rescue": 5,
+      "loss": 3,
+      "picked_attention": 18
+    },
+    "eligible": {
+      "n": 28,
+      "ga": 10,
+      "attention": 14,
+      "union": 19,
+      "gate": 12,
+      "always_push": 14,
+      "decisive": 14,
+      "correct": 7,
+      "rescue": 5,
+      "loss": 3,
+      "picked_attention": 18
+    },
+    "branches": {
+      "abstain": {
+        "n": 65,
+        "ga": 31,
+        "attention": 27,
+        "union": 44,
+        "gate": 31,
+        "always_push": 31,
+        "decisive": 30,
+        "correct": 17,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "identical": {
+        "n": 3,
+        "ga": 0,
+        "attention": 0,
+        "union": 0,
+        "gate": 0,
+        "always_push": 0,
+        "decisive": 0,
+        "correct": 0,
+        "rescue": 0,
+        "loss": 0,
+        "picked_attention": 0
+      },
+      "ready": {
+        "n": 18,
+        "ga": 7,
+        "attention": 11,
+        "union": 14,
+        "gate": 10,
+        "always_push": 10,
+        "decisive": 10,
+        "correct": 6,
+        "rescue": 4,
+        "loss": 1,
+        "picked_attention": 12
+      },
+      "reposition": {
+        "n": 10,
+        "ga": 3,
+        "attention": 3,
+        "union": 5,
+        "gate": 2,
+        "always_push": 4,
+        "decisive": 4,
+        "correct": 1,
+        "rescue": 1,
+        "loss": 2,
+        "picked_attention": 6
+      }
+    }
+  },
+  "cross": {
+    "first": 5,
+    "both_winner_components": 10,
+    "either_winner_component": 7,
+    "suffix": 2
+  },
+  "near_counts": {
+    "same": 30,
+    "reversed": 14,
+    "both": 19,
+    "neither": 33
+  },
+  "near_roots": {
+    "same": 17,
+    "reversed": 10,
+    "both": 12,
+    "neither": 16
+  },
+  "near_roots_stable_four": 0
+}

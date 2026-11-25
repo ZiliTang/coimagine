@@ -1,0 +1,96 @@
+{
+  "complete": true,
+  "seed": 17,
+  "diagnostic": {
+    "groups": {
+      "initial200": {
+        "success": 112,
+        "count": 200,
+        "within_union7_success": 105,
+        "within_union7_count": 151,
+        "outside_union7_success": 7,
+        "outside_union7_count": 49,
+        "missed_union7": 46,
+        "outside_union10_success": 6,
+        "outside_union10_count": 48
+      },
+      "fixed1500_final2000": {
+        "success": 108,
+        "count": 200,
+        "within_union7_success": 99,
+        "within_union7_count": 151,
+        "outside_union7_success": 9,
+        "outside_union7_count": 49,
+        "missed_union7": 52,
+        "outside_union10_success": 9,
+        "outside_union10_count": 48
+      },
+      "shuffle500_final2000": {
+        "success": 93,
+        "count": 200,
+        "within_union7_success": 89,
+        "within_union7_count": 151,
+        "outside_union7_success": 4,
+        "outside_union7_count": 49,
+        "missed_union7": 62,
+        "outside_union10_success": 4,
+        "outside_union10_count": 48
+      }
+    },
+    "comparisons": {
+      "initial200": {
+        "difference_pp": -9.5,
+        "ci95_pp": [
+          -17.0,
+          -1.5
+        ],
+        "gains": 23,
+        "losses": 42
+      },
+      "fixed1500_final2000": {
+        "difference_pp": -7.5,
+        "ci95_pp": [
+          -15.0,
+          0.0
+        ],
+        "gains": 24,
+        "losses": 39
+      }
+    },
+    "cap_successes": {
+      "CAP_001": 75,
+      "CAP_002": 60,
+      "CAP_003": 86,
+      "CAP_004": 49,
+      "CAP_005": 48,
+      "CAP_006": 42,
+      "CAP_007": 58,
+      "CAP_008": 57,
+      "CAP_009": 82,
+      "CAP_010": 78
+    },
+    "uncertainty": "10000 stratified paired root bootstrap draws; one training seed; viewed diagnostic panel"
+  },
+  "budget": {
+    "complete": true,
+    "seed": 17,
+    "episodes": 2000,
+    "online_updates": 24000,
+    "new_training_executions": 1800,
+    "new_monitor_executions": 288,
+    "new_diagnostic_executions": 800,
+    "new_physical_executions": 2888,
+    "new_confirmation_executions": 0,
+    "seconds": 2606.9122927188873
+  },
+  "new_physical_executions": 2888,
+  "errors": 0,
+  "confirmation_executions": 0,
+  "new_decisions": 182014,
+  "new_ticks": 3968760,
+  "final_resident_memory": {
+    "resident_replay_bytes": 5636118483,
+    "offline_boundaries": 294285,
+    "online_boundaries": 122717
+  }
+}

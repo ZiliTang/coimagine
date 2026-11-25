@@ -66,6 +66,7 @@ from .spec import (
     SHORT_FACE_CORNER_FRACTION,
     REPOSITION_ALIGN_TOLERANCE,
     REPOSITION_GAP,
+    REPOSITION_SWEEP_MARGIN,
     REPOSITION_GAP_GAIN,
     REPOSITION_SPEED,
     REPOSITION_SPEED_MAX,
@@ -1025,9 +1026,9 @@ class RepositionSkill(_VisionSkill):
                 offset = (distance*math.cos(angle), distance*math.sin(angle))
                 along = max(0., min(length, offset[0]*unit[0]+offset[1]*unit[1]))
                 clearance = math.hypot(offset[0]-along*unit[0], offset[1]-along*unit[1])-ROBOT_RADIUS
-                if clearance <= .04:
+                if clearance <= REPOSITION_SWEEP_MARGIN:
                     self.static_route_guard = {"status":"blocked", "lookahead_seconds":.6,
-                        "clearance_margin":.04, "swept_return_gap":clearance,
+                        "clearance_margin":REPOSITION_SWEEP_MARGIN, "swept_return_gap":clearance,
                         "point":(start[0]+offset[0],start[1]+offset[1])}
                     reason = "blocked_static_route"
                     raw = (0., 0.)

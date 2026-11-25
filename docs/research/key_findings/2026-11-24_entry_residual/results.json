@@ -1,0 +1,624 @@
+{
+  "n": 1000,
+  "sizes": {
+    "held": 1000,
+    "train": 2400,
+    "validation": 800
+  },
+  "entry_cap": 3,
+  "parity": [
+    {
+      "opportunities": 1,
+      "parent_history": "e4b3ba519f0d82ce5585fc577c6c037cf9b9ab4a864af65213d20a9738ad9c17",
+      "room": "diag_dev_027",
+      "zero_history": "08d0a860d1cbebb383601d586957000f78c3794fcb5a1be8d3fc16de6377e48e"
+    },
+    {
+      "opportunities": 3,
+      "parent_history": "78db7caef67eff814ce05f3d3ffb3cc4ec9bcbcd9d1bababc95057ff92a36ae7",
+      "room": "diag_dev_126",
+      "zero_history": "fdc67ba878aa8f0d044c3b2b5dc72cded468643db63c1366ed3e7fdb5fb8274b"
+    },
+    {
+      "opportunities": 1,
+      "parent_history": "2a99054b3b5dcb3c144dc7014fd59035a915ac6879d3bfef8eb64be17a4f4bdc",
+      "room": "diag_dev_084",
+      "zero_history": "3c32d154d9b1eb6df880676c76dc8617008f73015d3d3dfe597f555d1af62e6b"
+    },
+    {
+      "opportunities": 0,
+      "parent_history": "6731a147924a403edec7df1111c81f201d8dd6cc90ec29b46a68ff9acf57b9e4",
+      "room": "diag_dev_030",
+      "zero_history": "6731a147924a403edec7df1111c81f201d8dd6cc90ec29b46a68ff9acf57b9e4"
+    }
+  ],
+  "scans_and_fork_labels": {
+    "train": {
+      "room_count": 2400,
+      "eligible_rooms": 232,
+      "by_event": {
+        "boundary": {
+          "fail_fail": 134,
+          "both_win": 53,
+          "defer_wins": 38,
+          "take_wins": 55
+        },
+        "contact": {
+          "fail_fail": 15,
+          "both_win": 3,
+          "defer_wins": 5,
+          "take_wins": 8
+        },
+        "progress": {
+          "fail_fail": 6,
+          "both_win": 1,
+          "defer_wins": 1,
+          "take_wins": 1
+        }
+      },
+      "fail_fail": 155,
+      "both_win": 57,
+      "defer_wins": 44,
+      "take_wins": 64
+    },
+    "validation": {
+      "room_count": 800,
+      "eligible_rooms": 84,
+      "by_event": {
+        "boundary": {
+          "fail_fail": 49,
+          "both_win": 18,
+          "defer_wins": 17,
+          "take_wins": 15
+        },
+        "progress": {
+          "fail_fail": 1,
+          "both_win": 0,
+          "defer_wins": 1,
+          "take_wins": 1
+        },
+        "contact": {
+          "fail_fail": 8,
+          "both_win": 1,
+          "defer_wins": 1,
+          "take_wins": 5
+        }
+      },
+      "fail_fail": 58,
+      "both_win": 19,
+      "defer_wins": 19,
+      "take_wins": 21
+    },
+    "held": {
+      "room_count": 1000,
+      "eligible_rooms": 102,
+      "by_event": {
+        "boundary": {
+          "fail_fail": 44,
+          "both_win": 30,
+          "defer_wins": 17,
+          "take_wins": 22
+        },
+        "contact": {
+          "fail_fail": 13,
+          "both_win": 4,
+          "defer_wins": 2,
+          "take_wins": 2
+        },
+        "progress": {
+          "fail_fail": 1,
+          "both_win": 0,
+          "defer_wins": 1,
+          "take_wins": 1
+        }
+      },
+      "fail_fail": 58,
+      "both_win": 34,
+      "defer_wins": 20,
+      "take_wins": 25
+    }
+  },
+  "held_diagnostic": {
+    "always_defer": {
+      "better_takes_retained": 0,
+      "both_fail": 58,
+      "both_success": 34,
+      "defer_only": 20,
+      "deferred": 137,
+      "gained_against_take": 20,
+      "lost_against_take": 25,
+      "opportunities": 137,
+      "room_mean_best_observed_single_fork": 0.6290849673202613,
+      "room_mean_chosen_success": 0.4133986928104576,
+      "room_mean_defer_fraction": 0.9999999999999983,
+      "room_mean_delta_vs_take": -0.07679738562091526,
+      "rooms": 102,
+      "take_only": 25
+    },
+    "auc_room_bootstrap_95": [
+      0.7525321675842509,
+      0.960482747274175
+    ],
+    "auc_valid_bootstraps": 10000,
+    "discordant_room_weighted_auc": 0.8716577540106952,
+    "learned": {
+      "better_takes_retained": 25,
+      "both_fail": 58,
+      "both_success": 34,
+      "defer_only": 20,
+      "deferred": 11,
+      "gained_against_take": 2,
+      "lost_against_take": 0,
+      "opportunities": 137,
+      "room_mean_best_observed_single_fork": 0.6290849673202613,
+      "room_mean_chosen_success": 0.5098039215686276,
+      "room_mean_defer_fraction": 0.09150326797385622,
+      "room_mean_delta_vs_take": 0.019607843137254777,
+      "rooms": 102,
+      "take_only": 25
+    },
+    "zero": {
+      "better_takes_retained": 25,
+      "both_fail": 58,
+      "both_success": 34,
+      "defer_only": 20,
+      "deferred": 0,
+      "gained_against_take": 0,
+      "lost_against_take": 0,
+      "opportunities": 137,
+      "room_mean_best_observed_single_fork": 0.6290849673202613,
+      "room_mean_chosen_success": 0.49019607843137286,
+      "room_mean_defer_fraction": 0.0,
+      "room_mean_delta_vs_take": 0.0,
+      "rooms": 102,
+      "take_only": 25
+    }
+  },
+  "fit": {
+    "adopted_gate": {
+      "center": [
+        0.5014072754031851,
+        0.6846264367816098,
+        0.12715517241379315,
+        2.5769055942535743,
+        1.5043103448275865,
+        0.5262715517241381,
+        0.12068965517241376,
+        0.14099927878728638,
+        0.04036209215258953,
+        57.58117816091954,
+        35.05172413793104,
+        0.017241379310344827,
+        0.36296879799862725,
+        0.5581896551724133
+      ],
+      "features": [
+        "axis_goal_alignment",
+        "candidate_pushers",
+        "followup",
+        "goal_gap_m",
+        "parent_pushers",
+        "proposed_travel_m",
+        "push_review",
+        "pusher_speed_m_s",
+        "recent_goal_advance_m",
+        "remaining_seconds",
+        "stalled_ticks_145",
+        "static_contacts",
+        "station_distance_m",
+        "target_contacts"
+      ],
+      "intercept": -0.079616279916434,
+      "kind": "linear",
+      "scale": [
+        0.2826955269375611,
+        0.46466447985759196,
+        0.33314671624107545,
+        0.6212205299098098,
+        0.6308485766605118,
+        0.21043084796888142,
+        0.3257662694429516,
+        0.11542136795818894,
+        0.043861393249780355,
+        15.712412315335582,
+        53.562109960905474,
+        0.13016955922880608,
+        0.3520439127243843,
+        0.5731583688258016
+      ],
+      "threshold": 0.05,
+      "weights": [
+        -0.02999398711819805,
+        0.009073998558781415,
+        -0.005854971961065804,
+        0.012597888493250846,
+        -0.06967012479515589,
+        0.01539813556678069,
+        -0.001734500887137233,
+        0.0037577491479891295,
+        0.027452498489685083,
+        0.022849901044108435,
+        -0.036344664856159815,
+        -0.0163885109455003,
+        -0.005387458021768745,
+        -0.012948198453997455
+      ],
+      "z_limit": 3.0
+    },
+    "fit_protocol": {
+      "label": "defer_success_minus_take_success",
+      "ridge": 1.0,
+      "room_weight": "uniform_room_then_uniform_opportunity",
+      "thresholds": [
+        0.0,
+        0.05,
+        0.15
+      ],
+      "z_clip": 3.0
+    },
+    "gate": {
+      "center": [
+        0.5014072754031851,
+        0.6846264367816098,
+        0.12715517241379315,
+        2.5769055942535743,
+        1.5043103448275865,
+        0.5262715517241381,
+        0.12068965517241376,
+        0.14099927878728638,
+        0.04036209215258953,
+        57.58117816091954,
+        35.05172413793104,
+        0.017241379310344827,
+        0.36296879799862725,
+        0.5581896551724133
+      ],
+      "features": [
+        "axis_goal_alignment",
+        "candidate_pushers",
+        "followup",
+        "goal_gap_m",
+        "parent_pushers",
+        "proposed_travel_m",
+        "push_review",
+        "pusher_speed_m_s",
+        "recent_goal_advance_m",
+        "remaining_seconds",
+        "stalled_ticks_145",
+        "static_contacts",
+        "station_distance_m",
+        "target_contacts"
+      ],
+      "intercept": -0.079616279916434,
+      "kind": "linear",
+      "scale": [
+        0.2826955269375611,
+        0.46466447985759196,
+        0.33314671624107545,
+        0.6212205299098098,
+        0.6308485766605118,
+        0.21043084796888142,
+        0.3257662694429516,
+        0.11542136795818894,
+        0.043861393249780355,
+        15.712412315335582,
+        53.562109960905474,
+        0.13016955922880608,
+        0.3520439127243843,
+        0.5731583688258016
+      ],
+      "threshold": 0.05,
+      "weights": [
+        -0.02999398711819805,
+        0.009073998558781415,
+        -0.005854971961065804,
+        0.012597888493250846,
+        -0.06967012479515589,
+        0.01539813556678069,
+        -0.001734500887137233,
+        0.0037577491479891295,
+        0.027452498489685083,
+        0.022849901044108435,
+        -0.036344664856159815,
+        -0.0163885109455003,
+        -0.005387458021768745,
+        -0.012948198453997455
+      ],
+      "z_limit": 3.0
+    },
+    "offline": {
+      "train": {
+        "always_defer": {
+          "better_takes_retained": 0,
+          "both_fail": 155,
+          "both_success": 57,
+          "defer_only": 44,
+          "deferred": 320,
+          "gained_against_take": 44,
+          "lost_against_take": 64,
+          "opportunities": 320,
+          "room_mean_best_observed_single_fork": 0.5632183908045968,
+          "room_mean_chosen_success": 0.34410919540229856,
+          "room_mean_defer_fraction": 1.0,
+          "room_mean_delta_vs_take": -0.07830459770114917,
+          "rooms": 232,
+          "take_only": 64
+        },
+        "discordant_room_weighted_auc": 0.7668785547005685,
+        "learned": {
+          "better_takes_retained": 63,
+          "both_fail": 155,
+          "both_success": 57,
+          "defer_only": 44,
+          "deferred": 16,
+          "gained_against_take": 6,
+          "lost_against_take": 1,
+          "opportunities": 320,
+          "room_mean_best_observed_single_fork": 0.5632183908045968,
+          "room_mean_chosen_success": 0.4418103448275856,
+          "room_mean_defer_fraction": 0.05028735632183908,
+          "room_mean_delta_vs_take": 0.019396551724137845,
+          "rooms": 232,
+          "take_only": 64
+        },
+        "zero": {
+          "better_takes_retained": 64,
+          "both_fail": 155,
+          "both_success": 57,
+          "defer_only": 44,
+          "deferred": 0,
+          "gained_against_take": 0,
+          "lost_against_take": 0,
+          "opportunities": 320,
+          "room_mean_best_observed_single_fork": 0.5632183908045968,
+          "room_mean_chosen_success": 0.42241379310344773,
+          "room_mean_defer_fraction": 0.0,
+          "room_mean_delta_vs_take": 0.0,
+          "rooms": 232,
+          "take_only": 64
+        }
+      },
+      "validation": {
+        "always_defer": {
+          "better_takes_retained": 0,
+          "both_fail": 58,
+          "both_success": 19,
+          "defer_only": 19,
+          "deferred": 117,
+          "gained_against_take": 19,
+          "lost_against_take": 21,
+          "opportunities": 117,
+          "room_mean_best_observed_single_fork": 0.5396825396825397,
+          "room_mean_chosen_success": 0.3511904761904762,
+          "room_mean_defer_fraction": 0.9999999999999984,
+          "room_mean_delta_vs_take": -0.029761904761904823,
+          "rooms": 84,
+          "take_only": 21
+        },
+        "discordant_room_weighted_auc": 0.4819736842105264,
+        "learned": {
+          "better_takes_retained": 21,
+          "both_fail": 58,
+          "both_success": 19,
+          "defer_only": 19,
+          "deferred": 4,
+          "gained_against_take": 2,
+          "lost_against_take": 0,
+          "opportunities": 117,
+          "room_mean_best_observed_single_fork": 0.5396825396825397,
+          "room_mean_chosen_success": 0.4047619047619049,
+          "room_mean_defer_fraction": 0.031746031746031744,
+          "room_mean_delta_vs_take": 0.023809523809523836,
+          "rooms": 84,
+          "take_only": 21
+        },
+        "zero": {
+          "better_takes_retained": 21,
+          "both_fail": 58,
+          "both_success": 19,
+          "defer_only": 19,
+          "deferred": 0,
+          "gained_against_take": 0,
+          "lost_against_take": 0,
+          "opportunities": 117,
+          "room_mean_best_observed_single_fork": 0.5396825396825397,
+          "room_mean_chosen_success": 0.38095238095238104,
+          "room_mean_defer_fraction": 0.0,
+          "room_mean_delta_vs_take": 0.0,
+          "rooms": 84,
+          "take_only": 21
+        }
+      }
+    },
+    "validation_supports_selective_gate": true,
+    "validation_thresholds": [
+      {
+        "better_takes_retained": 19,
+        "both_fail": 58,
+        "both_success": 19,
+        "defer_only": 19,
+        "deferred": 12,
+        "gained_against_take": 2,
+        "lost_against_take": 2,
+        "opportunities": 117,
+        "room_mean_best_observed_single_fork": 0.5396825396825397,
+        "room_mean_chosen_success": 0.39484126984126994,
+        "room_mean_defer_fraction": 0.08928571428571429,
+        "room_mean_delta_vs_take": 0.013888888888888895,
+        "rooms": 84,
+        "take_only": 21,
+        "threshold": 0.0
+      },
+      {
+        "better_takes_retained": 21,
+        "both_fail": 58,
+        "both_success": 19,
+        "defer_only": 19,
+        "deferred": 4,
+        "gained_against_take": 2,
+        "lost_against_take": 0,
+        "opportunities": 117,
+        "room_mean_best_observed_single_fork": 0.5396825396825397,
+        "room_mean_chosen_success": 0.4047619047619049,
+        "room_mean_defer_fraction": 0.031746031746031744,
+        "room_mean_delta_vs_take": 0.023809523809523836,
+        "rooms": 84,
+        "take_only": 21,
+        "threshold": 0.05
+      },
+      {
+        "better_takes_retained": 21,
+        "both_fail": 58,
+        "both_success": 19,
+        "defer_only": 19,
+        "deferred": 0,
+        "gained_against_take": 0,
+        "lost_against_take": 0,
+        "opportunities": 117,
+        "room_mean_best_observed_single_fork": 0.5396825396825397,
+        "room_mean_chosen_success": 0.38095238095238104,
+        "room_mean_defer_fraction": 0.0,
+        "room_mean_delta_vs_take": 0.0,
+        "rooms": 84,
+        "take_only": 21,
+        "threshold": 0.15
+      }
+    ]
+  },
+  "held": {
+    "parent": {
+      "success": 646,
+      "offers": 0,
+      "deferrals": 0,
+      "rooms_with_offers": 0,
+      "rooms_with_deferrals": 0
+    },
+    "zero": {
+      "success": 662,
+      "offers": 138,
+      "deferrals": 0,
+      "rooms_with_offers": 102,
+      "rooms_with_deferrals": 0
+    },
+    "learned": {
+      "success": 664,
+      "offers": 137,
+      "deferrals": 11,
+      "rooms_with_offers": 102,
+      "rooms_with_deferrals": 11
+    },
+    "always_defer": {
+      "success": 645,
+      "offers": 256,
+      "deferrals": 256,
+      "rooms_with_offers": 102,
+      "rooms_with_deferrals": 102
+    }
+  },
+  "paired": {
+    "zero_vs_parent": {
+      "candidate": "zero",
+      "reference": "parent",
+      "n": 1000,
+      "gains": 31,
+      "losses": 15,
+      "delta_pp": 1.6,
+      "ci95_pp": [
+        0.3,
+        2.9000000000000004
+      ]
+    },
+    "learned_vs_zero": {
+      "candidate": "learned",
+      "reference": "zero",
+      "n": 1000,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 0.2,
+      "ci95_pp": [
+        0.0,
+        0.5
+      ]
+    },
+    "learned_vs_parent": {
+      "candidate": "learned",
+      "reference": "parent",
+      "n": 1000,
+      "gains": 31,
+      "losses": 13,
+      "delta_pp": 1.8,
+      "ci95_pp": [
+        0.5,
+        3.1
+      ]
+    },
+    "learned_vs_always_defer": {
+      "candidate": "learned",
+      "reference": "always_defer",
+      "n": 1000,
+      "gains": 31,
+      "losses": 12,
+      "delta_pp": 1.9,
+      "ci95_pp": [
+        0.6,
+        3.2
+      ]
+    },
+    "always_defer_vs_parent": {
+      "candidate": "always_defer",
+      "reference": "parent",
+      "n": 1000,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -0.1,
+      "ci95_pp": [
+        -0.3,
+        0.0
+      ]
+    }
+  },
+  "decomposition": {
+    "original_rescues": {
+      "rooms": 31,
+      "learned_successes": 31,
+      "learned_failures": 0
+    },
+    "original_losses": {
+      "rooms": 15,
+      "learned_successes": 2,
+      "learned_failures": 13
+    },
+    "common_successes": {
+      "rooms": 631,
+      "learned_successes": 631,
+      "learned_failures": 0
+    },
+    "common_failures": {
+      "rooms": 323,
+      "learned_successes": 0,
+      "learned_failures": 323
+    }
+  },
+  "always_defer_parent_hash_matches": 992,
+  "learned_zero_hash_matches": 989,
+  "changed_with_no_learned_deferral": 0,
+  "ci_method": "empirical paired room percentile bootstrap, 20000 draws, seed 17; single fitted gate",
+  "room_selection_yield": {
+    "training": {
+      "all": 2400,
+      "discordant": 97,
+      "selected": 480,
+      "selected_discordant": 68,
+      "selected_triggered": 165,
+      "triggered": 232
+    },
+    "held": {
+      "all": 1000,
+      "triggered": 102,
+      "discordant": 40,
+      "selected": 200,
+      "selected_triggered": 75,
+      "selected_discordant": 30
+    }
+  }
+}

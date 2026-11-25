@@ -162,8 +162,8 @@ def render_frame(rows: Sequence[Dict[str, object]], index: int, meta: Dict[str, 
         color = COLORS["r0"] if robot_id == 0 else COLORS["r1"]
         axis.add_patch(Circle((pose[0], pose[1]), ROBOT_RADIUS, facecolor=color,
                               edgecolor="#1b2b4c", linewidth=0.9, zorder=5, alpha=0.85))
-        axis.plot([pose[0], pose[0] + 0.18 * math.cos(pose[2])],
-                  [pose[1], pose[1] + 0.18 * math.sin(pose[2])], color="#1b2b4c",
+        axis.plot([pose[0], pose[0] + ROBOT_RADIUS * math.cos(pose[2])],
+                  [pose[1], pose[1] + ROBOT_RADIUS * math.sin(pose[2])], color="#1b2b4c",
                   linewidth=1.0, zorder=6)
         axis.text(pose[0] - 0.10, pose[1] + 0.22, f"r{robot_id}", fontsize=7, color=color,
                   zorder=6)

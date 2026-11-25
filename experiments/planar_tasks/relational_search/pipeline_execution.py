@@ -5,6 +5,7 @@ import time
 import math
 
 from coimagine.continuous2d.scenes import Pose
+from coimagine.random_start import spec as R
 from . import testbed as T
 from .contract import History, public_observation, validate_action
 from .environment import MultiObjectOptionEnv
@@ -82,10 +83,9 @@ def validate_commands(rows, allow_empty=False):
 def scene_metadata(s, boxes):
     polygon = s.object_polygon
     if polygon is None:
-        from coimagine.random_start import spec as R
         w, h = R.OBJECT_WIDTH/2, R.OBJECT_HEIGHT/2
         polygon = ((-w,-h),(w,-h),(w,h),(-w,h))
-    return dict(arena=s.arena, object_polygon=polygon, robot_radius=.18,
+    return dict(arena=s.arena, object_polygon=polygon, robot_radius=R.ROBOT_RADIUS,
                 goal=dict(x=s.goal_centre[0], y=s.goal_centre[1], radius=s.goal_radius),
                 primary_id=T.PRIMARY_ID, obstacles=[asdict(b) for b in s.obstacles],
                 movable_objects=[asdict(b) for b in boxes])

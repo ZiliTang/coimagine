@@ -1,0 +1,10 @@
+{
+  "version": "preserve-predicted-modes-v2",
+  "stage": "before v0 and all confirmation",
+  "reason": "engineering calibration room004 showed optimistic nominal rollout overriding empirical unsafe modes",
+  "rule": "retain all predicted outcome modes; only request rollout when its evidence could fill missing support without contradicting a retained counterexample; check union of previous modes and public-compatible rollout outcomes",
+  "risk": 0.1,
+  "max_queries": 2,
+  "comparison": "fixed across all three model versions",
+  "scope": "empirical evidence; history incompleteness and simulator mismatch remain measurable limitations"
+}

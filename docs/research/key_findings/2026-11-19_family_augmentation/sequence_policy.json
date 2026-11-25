@@ -1,0 +1,8 @@
+{
+  "time": 1795064813.9401824,
+  "max_rounds": 8,
+  "min_rounds": 4,
+  "target_per_arm": 201,
+  "unit": "unique full ordered sequence of requested joint actions, across newly collected successes, ignoring CAP identity and fixture ID",
+  "stop": "extend equally in 32-variant batches until both arms meet target or reach original eight-round limit"
+}

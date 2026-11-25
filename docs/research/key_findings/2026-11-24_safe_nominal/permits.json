@@ -1,0 +1,45 @@
+{
+  "totals": {
+    "commands": 5364,
+    "matching_permit": 5364,
+    "pushes": 1953,
+    "witnesses": 1953,
+    "inside_endpoint": 1183,
+    "inside_with_2cm_and_2deg_tolerance": 1229,
+    "forward_over": 690,
+    "backward_2cm": 0,
+    "lateral_over": 110,
+    "yaw_over": 262,
+    "meaningful_forward_2cm": 1053
+  },
+  "reasons": {
+    "('permit_push', 'observed_face_sweep_and_continuation')": 1953,
+    "('reposition', 'observed_sweep_too_short')": 1285,
+    "('reposition', 'no_shared_continuation_in_sampled_envelope')": 761,
+    "('reposition', 'seek_supported_push_face')": 566,
+    "('brake', 'estimated_object_limit')": 547,
+    "('reposition', 'no_supported_push')": 76,
+    "('brake', 'robot_progress_limit')": 61,
+    "('brake', 'continuation_lost')": 27,
+    "('brake', 'object_no_progress_timeout')": 25,
+    "('reposition', 'previous_push_stalled')": 20,
+    "('reposition', 'pusher_blocked')": 18,
+    "('brake', 'no_supported_push_face')": 10,
+    "('brake', 'observed_sweep_too_short')": 10,
+    "('brake', 'no_shared_continuation_in_sampled_envelope')": 5
+  },
+  "rooms_with_push_witness": 64,
+  "rooms_without_push_witness": 0,
+  "median_within_room_endpoint_coverage": 0.5972972972972973,
+  "witness_kinds": {
+    "stage_for_supported_push": 1387,
+    "continue_contact": 566
+  },
+  "followup_120": {
+    "matching_push_and_2cm_advance": 1362,
+    "matching_push_without_2cm": 256,
+    "did_not_execute_matching_push": 292,
+    "goal_reached_in_window": 23,
+    "window_truncated": 20
+  }
+}

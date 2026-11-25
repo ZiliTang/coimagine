@@ -1,0 +1,86 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "center": "dev_5_36",
+      "center_unresolved": true,
+      "max_open": 24,
+      "tie_count": 80,
+      "first_time_in_focus": 24
+    },
+    {
+      "round": 2,
+      "center": "dev_5_15",
+      "center_unresolved": false,
+      "max_open": 17,
+      "tie_count": 1,
+      "first_time_in_focus": 23
+    },
+    {
+      "round": 3,
+      "center": "dev_2_16",
+      "center_unresolved": true,
+      "max_open": 16,
+      "tie_count": 4,
+      "first_time_in_focus": 23
+    },
+    {
+      "round": 4,
+      "center": "dev_2_16",
+      "center_unresolved": true,
+      "max_open": 15,
+      "tie_count": 1,
+      "first_time_in_focus": 0
+    },
+    {
+      "round": 5,
+      "center": "dev_3_09",
+      "center_unresolved": false,
+      "max_open": 13,
+      "tie_count": 2,
+      "first_time_in_focus": 13
+    }
+  ],
+  "overlap": [
+    [
+      24,
+      1,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      24,
+      1,
+      1,
+      5
+    ],
+    [
+      0,
+      1,
+      24,
+      24,
+      7
+    ],
+    [
+      0,
+      1,
+      24,
+      24,
+      7
+    ],
+    [
+      1,
+      5,
+      7,
+      7,
+      24
+    ]
+  ],
+  "unique_focus": 83,
+  "selection_pca_variance": [
+    21.287618416067772,
+    17.439603883072127
+  ]
+}

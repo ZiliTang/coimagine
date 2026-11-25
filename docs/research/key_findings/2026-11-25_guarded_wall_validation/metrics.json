@@ -1,0 +1,419 @@
+{
+  "inventory": {
+    "development": {
+      "status": {
+        "measured": 48,
+        "no_ready_contact": 24
+      },
+      "strata": {
+        "both": 19,
+        "short_only": 15,
+        "neither": 14
+      },
+      "visible": {
+        "False": 37,
+        "True": 11
+      }
+    },
+    "validation": {
+      "status": {
+        "measured": 61,
+        "no_ready_contact": 35
+      },
+      "strata": {
+        "neither": 18,
+        "short_only": 19,
+        "both": 24
+      },
+      "visible": {
+        "False": 46,
+        "True": 15
+      }
+    }
+  },
+  "public_alias": {
+    "distinct": 39,
+    "largest": 23,
+    "strata": {
+      "neither": 7,
+      "short_only": 12,
+      "both": 4
+    },
+    "ids": [
+      "validation-002",
+      "validation-004",
+      "validation-008",
+      "validation-010",
+      "validation-012",
+      "validation-020",
+      "validation-024",
+      "validation-036",
+      "validation-046",
+      "validation-048",
+      "validation-050",
+      "validation-052",
+      "validation-054",
+      "validation-056",
+      "validation-058",
+      "validation-066",
+      "validation-072",
+      "validation-074",
+      "validation-076",
+      "validation-078",
+      "validation-086",
+      "validation-088",
+      "validation-092"
+    ],
+    "unavoidable_binary_errors": 11
+  },
+  "methods": {
+    "old_frozen": {
+      "totals": {
+        "admit": 49,
+        "invalid_admits": 14,
+        "unsafe_with_static": 14,
+        "unsafe_with_incomplete_followup": 2,
+        "defer": 73,
+        "choice_unsafe": 14,
+        "valid_admits": 35,
+        "choice_safe": 35,
+        "choice_wait": 12
+      },
+      "strata": {
+        "neither": {
+          "unsafe": 14,
+          "count": 18,
+          "wait": 4
+        },
+        "long_only": {},
+        "short_only": {
+          "safe": 17,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 17,
+          "count": 19,
+          "wait": 2
+        },
+        "both": {
+          "wait": 6,
+          "count": 24,
+          "safe": 18
+        }
+      }
+    },
+    "dose_only-24": {
+      "totals": {
+        "defer": 122,
+        "choice_wait": 61
+      },
+      "strata": {
+        "neither": {
+          "wait": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 19,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19
+        },
+        "both": {
+          "wait": 24,
+          "count": 24
+        }
+      }
+    },
+    "nine_inputs-24": {
+      "totals": {
+        "admit": 12,
+        "invalid_admits": 1,
+        "unsafe_with_static": 1,
+        "unsafe_with_incomplete_followup": 0,
+        "defer": 106,
+        "choice_unsafe": 1,
+        "choice_wait": 49,
+        "valid_admits": 11,
+        "choice_safe": 11,
+        "reject": 4
+      },
+      "strata": {
+        "neither": {
+          "unsafe": 1,
+          "count": 18,
+          "wait": 17
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 14,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 5,
+          "count": 19,
+          "safe": 5
+        },
+        "both": {
+          "wait": 18,
+          "count": 24,
+          "safe": 6
+        }
+      }
+    },
+    "wall_scan-24": {
+      "totals": {
+        "defer": 122,
+        "choice_wait": 61
+      },
+      "strata": {
+        "neither": {
+          "wait": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 19,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19
+        },
+        "both": {
+          "wait": 24,
+          "count": 24
+        }
+      }
+    },
+    "dose_only-72": {
+      "totals": {
+        "defer": 122,
+        "choice_wait": 61
+      },
+      "strata": {
+        "neither": {
+          "wait": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 19,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19
+        },
+        "both": {
+          "wait": 24,
+          "count": 24
+        }
+      }
+    },
+    "nine_inputs-72": {
+      "totals": {
+        "admit": 47,
+        "invalid_admits": 12,
+        "unsafe_with_static": 11,
+        "unsafe_with_incomplete_followup": 6,
+        "choice_unsafe": 9,
+        "defer": 40,
+        "reject": 35,
+        "choice_wait": 36,
+        "valid_admits": 35,
+        "choice_safe": 16,
+        "valid_rejected": 7
+      },
+      "strata": {
+        "neither": {
+          "unsafe": 3,
+          "count": 18,
+          "wait": 15
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 13,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19,
+          "unsafe": 6
+        },
+        "both": {
+          "safe": 16,
+          "count": 24,
+          "wait": 8
+        }
+      }
+    },
+    "wall_scan-72": {
+      "totals": {
+        "defer": 100,
+        "choice_wait": 50,
+        "admit": 22,
+        "valid_admits": 19,
+        "choice_safe": 8,
+        "invalid_admits": 3,
+        "unsafe_with_static": 2,
+        "unsafe_with_incomplete_followup": 1,
+        "choice_unsafe": 3
+      },
+      "strata": {
+        "neither": {
+          "wait": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "wait": 16,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19,
+          "unsafe": 3
+        },
+        "both": {
+          "safe": 8,
+          "count": 24,
+          "wait": 16
+        }
+      }
+    },
+    "always_short": {
+      "totals": {
+        "admit": 61,
+        "invalid_admits": 18,
+        "unsafe_with_static": 18,
+        "unsafe_with_incomplete_followup": 4,
+        "reject": 61,
+        "choice_unsafe": 18,
+        "valid_admits": 43,
+        "choice_safe": 43,
+        "valid_rejected": 24
+      },
+      "strata": {
+        "neither": {
+          "unsafe": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "safe": 19,
+          "strict_correct": 19,
+          "safe_admit_other_defer": 0,
+          "count": 19
+        },
+        "both": {
+          "safe": 24,
+          "count": 24
+        }
+      }
+    },
+    "always_long": {
+      "totals": {
+        "reject": 61,
+        "admit": 61,
+        "invalid_admits": 37,
+        "unsafe_with_static": 36,
+        "unsafe_with_incomplete_followup": 30,
+        "choice_unsafe": 37,
+        "valid_rejected": 43,
+        "valid_admits": 24,
+        "choice_safe": 24
+      },
+      "strata": {
+        "neither": {
+          "unsafe": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "unsafe": 19,
+          "strict_correct": 0,
+          "safe_admit_other_defer": 0,
+          "count": 19
+        },
+        "both": {
+          "safe": 24,
+          "count": 24
+        }
+      }
+    },
+    "true_geometry_diagnostic": {
+      "totals": {
+        "defer": 15,
+        "reject": 38,
+        "choice_wait": 18,
+        "admit": 69,
+        "valid_admits": 63,
+        "choice_safe": 37,
+        "invalid_admits": 6,
+        "unsafe_with_static": 5,
+        "unsafe_with_incomplete_followup": 3,
+        "choice_unsafe": 6
+      },
+      "strata": {
+        "neither": {
+          "wait": 18,
+          "count": 18
+        },
+        "long_only": {},
+        "short_only": {
+          "safe": 13,
+          "strict_correct": 9,
+          "safe_admit_other_defer": 4,
+          "count": 19,
+          "unsafe": 6
+        },
+        "both": {
+          "safe": 24,
+          "count": 24
+        }
+      }
+    }
+  },
+  "paired_bootstrap": {
+    "wall_scan-72 minus nine_inputs-72": {
+      "safe_choice_per_ready_layout": [
+        -0.1311,
+        -0.2295,
+        -0.0492
+      ],
+      "unsafe_choice_per_ready_layout": [
+        -0.0984,
+        -0.1803,
+        -0.0328
+      ],
+      "safe_admits_per_ready_layout": [
+        -0.2623,
+        -0.4754,
+        -0.0656
+      ]
+    },
+    "wall_scan-72 minus wall_scan-24": {
+      "safe_choice_per_ready_layout": [
+        0.1311,
+        0.0492,
+        0.2131
+      ],
+      "unsafe_choice_per_ready_layout": [
+        0.0492,
+        0.0,
+        0.1148
+      ],
+      "safe_admits_per_ready_layout": [
+        0.3115,
+        0.1475,
+        0.4918
+      ]
+    },
+    "wall_scan-72 minus always_short": {
+      "safe_choice_per_ready_layout": [
+        -0.5738,
+        -0.7049,
+        -0.4426
+      ],
+      "unsafe_choice_per_ready_layout": [
+        -0.2459,
+        -0.377,
+        -0.1148
+      ],
+      "safe_admits_per_ready_layout": [
+        -0.3934,
+        -0.5738,
+        -0.2131
+      ]
+    }
+  }
+}

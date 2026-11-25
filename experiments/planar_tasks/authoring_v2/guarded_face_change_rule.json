@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "name": "push_with_room_to_change_contact",
+      "when": {"ready": [1, 1]},
+      "option": "push_from_contact",
+      "expect": {"forward_mm": [20, null], "static_contact": [0, 0], "entry": [0, 1]},
+      "then": {"boundary": "change_face_ccw"}
+    }
+  ]
+}

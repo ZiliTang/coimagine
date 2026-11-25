@@ -1,0 +1,55 @@
+{
+  "counts": {
+    "GA_2000": 94,
+    "GA_4000": 105,
+    "GLOBAL_2000": 103,
+    "GLOBAL_4000": 97
+  },
+  "comparisons": {
+    "change_in_gap": {
+      "pp": -8.5,
+      "ci95": [
+        -17.0,
+        0.0
+      ]
+    },
+    "start_gap": {
+      "pp": 4.5,
+      "ci95": [
+        -2.5,
+        11.0
+      ],
+      "gains": 29,
+      "losses": 20
+    },
+    "end_gap": {
+      "pp": -4.0,
+      "ci95": [
+        -11.0,
+        3.0
+      ],
+      "gains": 24,
+      "losses": 32
+    },
+    "GLOBAL_gain": {
+      "pp": -3.0,
+      "ci95": [
+        -9.5,
+        3.5000000000000004
+      ],
+      "gains": 20,
+      "losses": 26
+    },
+    "GA_gain": {
+      "pp": 5.5,
+      "ci95": [
+        -1.0,
+        12.0
+      ],
+      "gains": 27,
+      "losses": 16
+    }
+  },
+  "independent_scenes": 200,
+  "seed": 17
+}

@@ -1,0 +1,127 @@
+{
+  "root_action_groups": [
+    {
+      "version": 0,
+      "root_action_family": "push",
+      "candidates": 410,
+      "admitted": 323,
+      "effective": 277,
+      "successor_failed": 18,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "push_both_1_6",
+        "push_both_2_6",
+        "push_r0_1_6"
+      ]
+    },
+    {
+      "version": 0,
+      "root_action_family": "orbit",
+      "candidates": 614,
+      "admitted": 280,
+      "effective": 219,
+      "successor_failed": 37,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "orbit_0_cw",
+        "orbit_1_ccw",
+        "orbit_1_cw",
+        "push_both_1_6",
+        "push_r0_1_6",
+        "push_r1_1_6"
+      ]
+    },
+    {
+      "version": 1,
+      "root_action_family": "push",
+      "candidates": 410,
+      "admitted": 316,
+      "effective": 284,
+      "successor_failed": 15,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "orbit_1_cw",
+        "push_both_1_6",
+        "push_both_2_6",
+        "push_r0_1_6",
+        "push_r1_1_6"
+      ]
+    },
+    {
+      "version": 1,
+      "root_action_family": "orbit",
+      "candidates": 614,
+      "admitted": 339,
+      "effective": 267,
+      "successor_failed": 52,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "orbit_0_cw",
+        "orbit_1_ccw",
+        "orbit_1_cw",
+        "push_both_1_6",
+        "push_r0_1_6",
+        "push_r1_1_6"
+      ]
+    },
+    {
+      "version": 2,
+      "root_action_family": "push",
+      "candidates": 410,
+      "admitted": 321,
+      "effective": 292,
+      "successor_failed": 12,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "push_both_1_6",
+        "push_both_2_6",
+        "push_r0_1_6",
+        "push_r1_1_6"
+      ]
+    },
+    {
+      "version": 2,
+      "root_action_family": "orbit",
+      "candidates": 614,
+      "admitted": 400,
+      "effective": 327,
+      "successor_failed": 47,
+      "successor_options": [
+        "brake",
+        "orbit_0_ccw",
+        "orbit_0_cw",
+        "orbit_1_ccw",
+        "orbit_1_cw",
+        "push_both_1_6",
+        "push_r0_1_6",
+        "push_r1_1_6"
+      ]
+    }
+  ],
+  "orbit_to_newly_legal_push": [
+    {
+      "version": 0,
+      "executed_orbit_candidates": 614,
+      "newly_legal_actual_selected_push": 0,
+      "completed": 0
+    },
+    {
+      "version": 1,
+      "executed_orbit_candidates": 614,
+      "newly_legal_actual_selected_push": 0,
+      "completed": 0
+    },
+    {
+      "version": 2,
+      "executed_orbit_candidates": 614,
+      "newly_legal_actual_selected_push": 0,
+      "completed": 0
+    }
+  ],
+  "scope": "all forced diagnostic candidates, including rejected roots; newly legal means false before orbit and true after for the actually selected successor"
+}

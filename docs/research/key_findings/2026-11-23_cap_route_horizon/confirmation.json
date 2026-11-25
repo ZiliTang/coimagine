@@ -1,0 +1,1 @@
+{"A":104,"B":90,"horizon":0,"mixed":101,"n":200,"switches":22,"threshold":0.25,"union":127,"vs_A":{"ci95_pp":[-4.5,1.5],"difference_pp":-1.5,"lost":6,"rescued":3},"vs_B":{"ci95_pp":[-1.5,12.5],"difference_pp":5.5,"lost":20,"rescued":31}}

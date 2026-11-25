@@ -1,0 +1,29 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>作者工作记录 · 单故障簇 CAP</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7f7;color:#19383b;font-family:Inter,system-ui,sans-serif;line-height:1.6}main,header>div{max-width:920px;padding:1rem clamp(1rem,4vw,2rem);margin:auto}header{background:#17363d;border-bottom:4px solid #da9252;color:white}header a{color:#d9eeee}h1{margin:.6rem 0;font-size:1.8rem}h2{font-size:1.25rem;margin:1.5rem 0 .5rem}h3{font-size:1.05rem;margin:0}p{margin:.4rem 0}.meta,.time{color:#516c6e;font-size:.9rem}#totals{display:flex;flex-wrap:wrap;gap:1rem 2.5rem;margin:.8rem 0}#totals div{display:flex;flex-direction:column}strong{font-variant-numeric:tabular-nums;font-size:1.3rem}ol{list-style:none;margin:0;padding:0}li{padding:.7rem 1rem;margin:.45rem 0;background:white;border-left:3px solid #7aa7a3;border-radius:.2rem}.usage{font-variant-numeric:tabular-nums}details{font-size:.94rem}summary{cursor:pointer;color:#176965}#error{color:#8c3e14}a{color:#13645f}footer{margin:1.2rem 0}.time{font-variant-numeric:tabular-nums}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #ca873e}
+</style></head><body><header><div><a href="/research-journal#open-recovery-cap">返回研究日志</a><h1>CAP 作者工作记录</h1></div></header><main>
+<p id="state">正在读取开发记录…</p><div id="totals"></div>
+<details><summary>怎样计算每版 token？</summary><p>每版以不可变候选文件写入为提交时刻，匹配写入该文件的模型调用，从作者会话累计用量中减去上一版提交时的用量。第一版从作者会话开始计。总量等于输入加输出，缓存输入已包含在输入里；所有数字只计本次 Sol 作者。提交后的分析与交卷也计入作者总量。无法匹配写入调用时该版显示“暂缺”。</p></details>
+<h2>开发时间线</h2><p class="meta">上海时间 · 开发试跑共 22 间，其中母程序失败 8 间、成功 14 间。</p><p id="error" role="status"></p><ol id="events"></ol>
+<footer><a href="worklog.json">下载带时间戳与用量明细的 JSON</a> · <span class="meta">每 5 秒刷新</span></footer></main>
+<script>
+const get=id=>document.getElementById(id), node=(tag,text,cls)=>{const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n};
+const num=x=>x==null?'暂缺':Number(x).toLocaleString('zh-CN');
+const time=x=>new Date(x*1000).toLocaleTimeString('zh-CN',{timeZone:'Asia/Shanghai',hour12:false});
+let last='';
+function render(d){
+ const sig=JSON.stringify([d.usage,d.candidates,d.locked,d.milestones]);if(sig===last)return;last=sig;
+ get('state').textContent=d.locked?'已交卷 · '+d.locked:'开发中 · 最晚交卷 '+time(d.deadline);
+ const u=d.usage||{};
+ get('totals').replaceChildren(...[['作者累计 token',u.total_tokens],['其中缓存输入',u.cached_input_tokens],['已提交候选',d.candidates.length]].map(([label,val])=>{const n=node('div','');n.append(node('span',label,'meta'),node('strong',num(val)));return n}));
+ const items=d.milestones.map(m=>({at:m.at,title:m.title,note:m.detail}));
+ for(const c of d.candidates)items.push({at:c.submitted_at,title:'提交 '+c.name,note:c.note||'作者正在补充本版修改说明。',candidate:c});
+ const rows=items.sort((a,b)=>a.at-b.at).map(e=>{const li=node('li','');li.append(node('span',time(e.at),'time'),node('h3',e.title),node('p',e.note));
+ if(e.candidate){const c=e.candidate,u=c.delta,dev=c.development;
+ li.append(node('div','本版 '+num(u?.total_tokens)+' token · 累计 '+num(c.usage?.total_tokens),'usage'));
+ if(u)li.append(node('div','输入 '+num(u.input_tokens)+'（含缓存 '+num(u.cached_input_tokens)+'） · 输出 '+num(u.output_tokens),'meta'));
+ li.append(node('div','开发试跑 '+dev.tested+'/22 · 救回 '+dev.rescued+' 间 · 丢失 '+dev.lost+' 间','meta'))}
+ return li});get('events').replaceChildren(...rows);
+}
+async function refresh(){try{const r=await fetch('worklog.json',{cache:'no-store'});if(!r.ok)throw Error(r.status);render(await r.json());get('error').textContent=''}catch{get('error').textContent='工作记录暂时未能刷新。'}finally{setTimeout(refresh,5000)}}refresh();
+</script></body></html>

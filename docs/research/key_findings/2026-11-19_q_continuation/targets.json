@@ -1,0 +1,13 @@
+{
+  "boundaries": 573536,
+  "terminal": 8078,
+  "nonterminal": 565458,
+  "max_targets_exact": true,
+  "positively_changed": 493885,
+  "change_above_01": 11732,
+  "mean_gap": 0.015423395670950413,
+  "median_gap": 0.001798105426132679,
+  "p90_gap": 0.0514138825237751,
+  "max_gap": 0.29289963841438293,
+  "own_sha256": "3e75295dc39c0efc60475f7b6e1afef35b982f7d485d4b6e0c7d33a2cced9eff"
+}

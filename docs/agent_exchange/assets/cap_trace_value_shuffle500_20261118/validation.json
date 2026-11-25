@@ -1,0 +1,9 @@
+{
+  "passed": 4,
+  "tests": [
+    "tests/test_cap_trace_value_shuffle.py",
+    "tests/test_cap_trace_value_rl.py"
+  ],
+  "report_smoke": "render and identical-vector paired/coverage checks passed; no physical execution or gradient update",
+  "full_suite": false
+}

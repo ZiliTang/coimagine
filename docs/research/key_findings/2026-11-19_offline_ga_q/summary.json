@@ -1,0 +1,149 @@
+{
+  "comparisons": {
+    "all": {
+      "n": 200,
+      "seeds": {
+        "17": {
+          "actor_or_reference": 90,
+          "q": 100,
+          "gained": 42,
+          "lost": 32
+        },
+        "29": {
+          "actor_or_reference": 85,
+          "q": 112,
+          "gained": 37,
+          "lost": 10
+        }
+      },
+      "delta_pp": 9.25,
+      "ci_pp": [
+        3.5000000000000004,
+        14.75
+      ]
+    },
+    "union": {
+      "n": 146,
+      "seeds": {
+        "17": {
+          "actor_or_reference": 85,
+          "q": 94,
+          "gained": 37,
+          "lost": 28
+        },
+        "29": {
+          "actor_or_reference": 83,
+          "q": 104,
+          "gained": 31,
+          "lost": 10
+        }
+      },
+      "delta_pp": 10.273972602739725,
+      "ci_pp": [
+        3.061224489795918,
+        17.347293083900222
+      ]
+    },
+    "unique": {
+      "n": 28,
+      "seeds": {
+        "17": {
+          "actor_or_reference": 10,
+          "q": 12,
+          "gained": 9,
+          "lost": 7
+        },
+        "29": {
+          "actor_or_reference": 7,
+          "q": 12,
+          "gained": 8,
+          "lost": 3
+        }
+      },
+      "delta_pp": 12.5,
+      "ci_pp": [
+        -8.0,
+        32.69230769230769
+      ]
+    },
+    "multiple": {
+      "n": 118,
+      "seeds": {
+        "17": {
+          "actor_or_reference": 75,
+          "q": 82,
+          "gained": 28,
+          "lost": 21
+        },
+        "29": {
+          "actor_or_reference": 76,
+          "q": 92,
+          "gained": 23,
+          "lost": 7
+        }
+      },
+      "delta_pp": 9.745762711864407,
+      "ci_pp": [
+        2.1739130434782608,
+        17.4314593556646
+      ]
+    },
+    "outside": {
+      "n": 54,
+      "seeds": {
+        "17": {
+          "actor_or_reference": 5,
+          "q": 6,
+          "gained": 5,
+          "lost": 4
+        },
+        "29": {
+          "actor_or_reference": 2,
+          "q": 8,
+          "gained": 6,
+          "lost": 0
+        }
+      },
+      "delta_pp": 6.481481481481481,
+      "ci_pp": [
+        -1.1634828349944624,
+        14.773779461279446
+      ]
+    }
+  },
+  "panel_best": "CAP-RR-003",
+  "q_vs_best": {
+    "n": 200,
+    "seeds": {
+      "17": {
+        "actor_or_reference": 81,
+        "q": 100,
+        "gained": 44,
+        "lost": 25
+      },
+      "29": {
+        "actor_or_reference": 81,
+        "q": 112,
+        "gained": 46,
+        "lost": 15
+      }
+    },
+    "delta_pp": 12.5,
+    "ci_pp": [
+      5.743750000000006,
+      19.25
+    ]
+  },
+  "diagnostics": {
+    "17": {
+      "shared_first": 124,
+      "invalid": 0,
+      "fallback": 0
+    },
+    "29": {
+      "shared_first": 121,
+      "invalid": 0,
+      "fallback": 0
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "seed": 17,
+  "dose": 1001,
+  "panel_sha256": "3f6b64adcd200d342dad49668f9811f729745c1b1c7d9ffab3f8dc0284b6a594",
+  "epochs": "16000 expert V, 8000 candidate Q, fixed last checkpoint",
+  "batch": 64,
+  "learning": "3e-4 Adam with gradient norm clip 1, uniform decision boundaries and original normalizers",
+  "norm_sha256": "1d00bb6950e74aa5be6734cad547881e5a61a3a73a7e3c27cdc43beddc0d463d",
+  "dose_train": "same original and four increment partitions as highest GA-Q, all outcomes",
+  "model": "initial geometry and latest 8 frames, 8 tokens per valid time, 32 dimensions, 4 attention heads, shared 64x64 scoring head",
+  "inputs": "public geometry, budget, seven proposals and traces, executed previous action in geometry, its source support and elapsed time",
+  "historical_Q_input": false,
+  "ppo": false,
+  "targets": "V regresses terminal success of executing CAP; Q regresses reward plus max legal frozen V at actual successor for nonterminal only",
+  "comparison": "600 paired scenes with highest dose GA-Q. Overall and exactly one successful CAP, union and outside union; stratified paired 95% intervals, one seed.",
+  "scope": "combined model and input change; no trace-only attribution",
+  "source": {
+    "cap_temporal_attention.py": "dbbd5932ce94a861078ac5ce5e0933f1b64beed7b7d2965ee85c858ff02d8435",
+    "temporal_data.py": "82a1c59b8736ef43074cdd88e30f6f639c9cab48150bc9747f17667284a3ddcb",
+    "temporal_q.py": "efc7445e4afddc50ef1696da939a90f22426d2e5b49ce7e280a4acf4bb2568be"
+  }
+}

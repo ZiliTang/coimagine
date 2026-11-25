@@ -1,0 +1,17 @@
+{
+  "files": {
+    "experiments/planar_tasks/semantic_rl/push_phases.py": "48f695fb2d9a0611149b558bb121fe6611468a2776727f790a20e84001fc9098",
+    "experiments/planar_tasks/semantic_rl/push_contact_recovery.py": "a5953f188d7836e5794d7d787a8d9ca2cb4b60e7c1f93988e3e8f13323d5cc0e",
+    "experiments/planar_tasks/semantic_rl/duration_execution.py": "0ad7b62ea204cb313ac24cdaf4a513b7283801b71f04200b0f20eed4aeed5909",
+    "tools/push_contract_report.py": "c77382ca0cf8b4eb289a89002b33ee2873a08a2f3a18d3efcb1e95195a4f1feb",
+    "tools/push_phase_report.py": "62153c224b75c6ecc484beabf39286cb6b701d1c9589758b33d977f8aff4ed3c",
+    "tools/push_feedback_report.py": "bbd08cbcd94060d3923c2d7a8ae05715b7ef1da41d10c964a63880827a804188",
+    "tools/push_contract_bench.py": "685336f93c734113c70a4a1ac3f7f1ace8047db4001cb7458e84fd82d3dd6472",
+    "tools/push_contract_closedloop.py": "37e364ff39bb3bff2a6889fce989be8d78746894c0c6ca9b4fd71bde1f494382"
+  },
+  "studies": {
+    "protocol.json": "605b50d4d8dff5fb21be4c1bc906d2fd941848c3c500c27f72dc80115b975b46",
+    "protocol_stress.json": "719db265a858f5748d4f83477474406a386f060679eefea1c2c530666ee0499f",
+    "fresh.json": "f222cd332e3eab7a26e63f74cfc046912c5bd95964c0331ec3452ee383c1360b"
+  }
+}

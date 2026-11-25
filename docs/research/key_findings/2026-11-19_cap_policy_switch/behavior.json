@@ -1,0 +1,10 @@
+{
+  "initial_choices": {
+    "CAP-RR-009": 600
+  },
+  "differing_episodes": 3,
+  "differing_actions": 3,
+  "decisions": 37129,
+  "opening_top_margin_median": 0.036008790135383606,
+  "opening_top_margin_zero": 0
+}

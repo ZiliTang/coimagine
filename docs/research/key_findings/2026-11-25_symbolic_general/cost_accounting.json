@@ -1,0 +1,86 @@
+{
+  "scope": "saved experiment artifacts; includes repeated physical prefixes and conservative unresolved reservations; model fitting and SMT CPU cost are not simulation ticks",
+  "groups": {
+    "author": {
+      "ticks": 200707,
+      "resets": 182,
+      "calls": 18
+    },
+    "bootstrap_development": {
+      "ticks": 79288,
+      "episodes": 64,
+      "reservation_errors": 0
+    },
+    "on_policy_development": {
+      "ticks": 78345,
+      "episodes": 64,
+      "reservation_errors": 0
+    },
+    "confirmation_prefixes": {
+      "ticks": 82676,
+      "episodes": 64,
+      "reservation_errors": 0
+    },
+    "development_forks": {
+      "branches": 1024,
+      "prefix_ticks": 261664,
+      "action_ticks": 10889,
+      "successor_ticks": 38596,
+      "errors": 0,
+      "unsettled_reserved_ticks": 0
+    },
+    "confirmation_forks": {
+      "branches": 3072,
+      "prefix_ticks": 785184,
+      "action_ticks": 32685,
+      "successor_ticks": 92541,
+      "errors": 0,
+      "unsettled_reserved_ticks": 0
+    },
+    "active_model_round_1": {
+      "episodes": 32,
+      "episode_ticks": 55263,
+      "branches": 496,
+      "prefix_ticks": 146676,
+      "root_ticks": 5273,
+      "successor_ticks": 6566,
+      "errors": 0,
+      "online_branches": 4326,
+      "online_ticks": 26760
+    },
+    "active_model_round_2": {
+      "episodes": 40,
+      "episode_ticks": 69676,
+      "branches": 640,
+      "prefix_ticks": 177164,
+      "root_ticks": 6849,
+      "successor_ticks": 8390,
+      "errors": 0,
+      "online_branches": 4068,
+      "online_ticks": 25071
+    },
+    "online_paired": {
+      "branches": 4761,
+      "ticks": 36321,
+      "models": 9552,
+      "incompatible": 4791,
+      "errors": 24,
+      "seconds": 719.111998550954,
+      "budget_exhausted": 0
+    },
+    "online_tasks": {
+      "branches": 9992,
+      "ticks": 61587,
+      "models": 215687,
+      "incompatible": 205695,
+      "errors": 0,
+      "seconds": 11492.09962883841,
+      "budget_exhausted": 76310
+    },
+    "recorded_engineering_episodes": {
+      "episodes": 25,
+      "ticks": 42793,
+      "online_branches": 2506
+    }
+  }
+}

@@ -1,0 +1,1509 @@
+{
+  "coverage": {
+    "union7": 146,
+    "union10": 150,
+    "unique": 28,
+    "multi": 118,
+    "single": {
+      "CAP-RR-010": 73,
+      "CAP-RR-006": 34,
+      "CAP-RR-007": 63,
+      "CAP-RR-002": 54,
+      "CAP-RR-009": 77,
+      "CAP-RR-003": 81,
+      "CAP-RR-005": 48,
+      "CAP-RR-004": 34,
+      "CAP-RR-008": 50,
+      "CAP-RR-001": 67
+    },
+    "panel_best": "CAP-RR-003"
+  },
+  "metrics": [
+    {
+      "arm": "boundary",
+      "mode": "once",
+      "seed": 17,
+      "total": 65,
+      "retained7": 65,
+      "missed7": 81,
+      "outside7": 0,
+      "retain009": 45,
+      "retain_panel_best": 47,
+      "retain_unique": 3,
+      "retain_multi": 62,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "boundary",
+      "mode": "once",
+      "seed": 29,
+      "total": 66,
+      "retained7": 66,
+      "missed7": 80,
+      "outside7": 0,
+      "retain009": 47,
+      "retain_panel_best": 48,
+      "retain_unique": 5,
+      "retain_multi": 61,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "boundary",
+      "mode": "free",
+      "seed": 17,
+      "total": 106,
+      "retained7": 98,
+      "missed7": 48,
+      "outside7": 8,
+      "retain009": 59,
+      "retain_panel_best": 64,
+      "retain_unique": 11,
+      "retain_multi": 87,
+      "rescued_vs_once": 51,
+      "lost_vs_once": 10,
+      "any_switch": 179,
+      "switches": 1435,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "boundary",
+      "mode": "free",
+      "seed": 29,
+      "total": 81,
+      "retained7": 76,
+      "missed7": 70,
+      "outside7": 5,
+      "retain009": 53,
+      "retain_panel_best": 50,
+      "retain_unique": 7,
+      "retain_multi": 69,
+      "rescued_vs_once": 35,
+      "lost_vs_once": 20,
+      "any_switch": 179,
+      "switches": 1574,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "boundary",
+      "mode": "guard",
+      "seed": 17,
+      "total": 78,
+      "retained7": 74,
+      "missed7": 72,
+      "outside7": 4,
+      "retain009": 48,
+      "retain_panel_best": 54,
+      "retain_unique": 10,
+      "retain_multi": 64,
+      "rescued_vs_once": 28,
+      "lost_vs_once": 15,
+      "any_switch": 112,
+      "switches": 229,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "boundary",
+      "mode": "guard",
+      "seed": 29,
+      "total": 81,
+      "retained7": 79,
+      "missed7": 67,
+      "outside7": 2,
+      "retain009": 55,
+      "retain_panel_best": 52,
+      "retain_unique": 6,
+      "retain_multi": 73,
+      "rescued_vs_once": 21,
+      "lost_vs_once": 6,
+      "any_switch": 105,
+      "switches": 248,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "once",
+      "seed": 17,
+      "total": 65,
+      "retained7": 65,
+      "missed7": 81,
+      "outside7": 0,
+      "retain009": 47,
+      "retain_panel_best": 51,
+      "retain_unique": 4,
+      "retain_multi": 61,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "once",
+      "seed": 29,
+      "total": 70,
+      "retained7": 70,
+      "missed7": 76,
+      "outside7": 0,
+      "retain009": 44,
+      "retain_panel_best": 60,
+      "retain_unique": 6,
+      "retain_multi": 64,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "free",
+      "seed": 17,
+      "total": 82,
+      "retained7": 73,
+      "missed7": 73,
+      "outside7": 9,
+      "retain009": 53,
+      "retain_panel_best": 48,
+      "retain_unique": 7,
+      "retain_multi": 66,
+      "rescued_vs_once": 35,
+      "lost_vs_once": 18,
+      "any_switch": 180,
+      "switches": 1652,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "free",
+      "seed": 29,
+      "total": 81,
+      "retained7": 76,
+      "missed7": 70,
+      "outside7": 5,
+      "retain009": 51,
+      "retain_panel_best": 54,
+      "retain_unique": 3,
+      "retain_multi": 73,
+      "rescued_vs_once": 29,
+      "lost_vs_once": 18,
+      "any_switch": 181,
+      "switches": 1483,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "guard",
+      "seed": 17,
+      "total": 80,
+      "retained7": 74,
+      "missed7": 72,
+      "outside7": 6,
+      "retain009": 50,
+      "retain_panel_best": 46,
+      "retain_unique": 8,
+      "retain_multi": 66,
+      "rescued_vs_once": 32,
+      "lost_vs_once": 17,
+      "any_switch": 113,
+      "switches": 241,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "root",
+      "mode": "guard",
+      "seed": 29,
+      "total": 86,
+      "retained7": 83,
+      "missed7": 63,
+      "outside7": 3,
+      "retain009": 55,
+      "retain_panel_best": 59,
+      "retain_unique": 5,
+      "retain_multi": 78,
+      "rescued_vs_once": 23,
+      "lost_vs_once": 7,
+      "any_switch": 103,
+      "switches": 198,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "once",
+      "seed": 17,
+      "total": 61,
+      "retained7": 61,
+      "missed7": 85,
+      "outside7": 0,
+      "retain009": 46,
+      "retain_panel_best": 48,
+      "retain_unique": 3,
+      "retain_multi": 58,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "once",
+      "seed": 29,
+      "total": 67,
+      "retained7": 67,
+      "missed7": 79,
+      "outside7": 0,
+      "retain009": 43,
+      "retain_panel_best": 51,
+      "retain_unique": 4,
+      "retain_multi": 63,
+      "rescued_vs_once": 0,
+      "lost_vs_once": 0,
+      "any_switch": 0,
+      "switches": 0,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "free",
+      "seed": 17,
+      "total": 87,
+      "retained7": 81,
+      "missed7": 65,
+      "outside7": 6,
+      "retain009": 51,
+      "retain_panel_best": 57,
+      "retain_unique": 5,
+      "retain_multi": 76,
+      "rescued_vs_once": 41,
+      "lost_vs_once": 15,
+      "any_switch": 196,
+      "switches": 2163,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "free",
+      "seed": 29,
+      "total": 88,
+      "retained7": 82,
+      "missed7": 64,
+      "outside7": 6,
+      "retain009": 57,
+      "retain_panel_best": 52,
+      "retain_unique": 8,
+      "retain_multi": 74,
+      "rescued_vs_once": 35,
+      "lost_vs_once": 14,
+      "any_switch": 194,
+      "switches": 2374,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "guard",
+      "seed": 17,
+      "total": 76,
+      "retained7": 72,
+      "missed7": 74,
+      "outside7": 4,
+      "retain009": 47,
+      "retain_panel_best": 50,
+      "retain_unique": 6,
+      "retain_multi": 66,
+      "rescued_vs_once": 29,
+      "lost_vs_once": 14,
+      "any_switch": 120,
+      "switches": 255,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "paired",
+      "mode": "guard",
+      "seed": 29,
+      "total": 77,
+      "retained7": 75,
+      "missed7": 71,
+      "outside7": 2,
+      "retain009": 47,
+      "retain_panel_best": 53,
+      "retain_unique": 7,
+      "retain_multi": 68,
+      "rescued_vs_once": 21,
+      "lost_vs_once": 11,
+      "any_switch": 117,
+      "switches": 263,
+      "forced": 0,
+      "once_disagreement_with_solo": 0
+    },
+    {
+      "arm": "PPO",
+      "mode": "greedy",
+      "seed": 17,
+      "total": 101,
+      "retained7": 95,
+      "missed7": 51,
+      "outside7": 6,
+      "retain009": 65,
+      "retain_panel_best": 63,
+      "retain_unique": 12,
+      "retain_multi": 83
+    },
+    {
+      "arm": "PPO",
+      "mode": "greedy",
+      "seed": 29,
+      "total": 100,
+      "retained7": 90,
+      "missed7": 56,
+      "outside7": 10,
+      "retain009": 57,
+      "retain_panel_best": 63,
+      "retain_unique": 6,
+      "retain_multi": 84
+    }
+  ],
+  "comparisons": {
+    "paired/once minus boundary/once": {
+      "union7": {
+        "pp": -1.0273972602739725,
+        "ci95_pp": [
+          -6.944444444444445,
+          4.577464788732395
+        ],
+        "gains": [
+          12,
+          19
+        ],
+        "losses": [
+          16,
+          18
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -2.73972602739726,
+          0.684931506849315
+        ]
+      },
+      "all": {
+        "pp": -0.75,
+        "ci95_pp": [
+          -5.0,
+          3.25
+        ],
+        "gains": [
+          12,
+          19
+        ],
+        "losses": [
+          16,
+          18
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -2.0,
+          0.5
+        ]
+      },
+      "cap009": {
+        "pp": -1.948051948051948,
+        "ci95_pp": [
+          -9.44481981981982,
+          5.263157894736842
+        ],
+        "gains": [
+          7,
+          7
+        ],
+        "losses": [
+          6,
+          11
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          1.2987012987012987,
+          -5.194805194805195
+        ]
+      }
+    },
+    "root/once minus boundary/once": {
+      "union7": {
+        "pp": 1.36986301369863,
+        "ci95_pp": [
+          -4.137931034482759,
+          6.667197452229291
+        ],
+        "gains": [
+          15,
+          16
+        ],
+        "losses": [
+          15,
+          12
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          0.0,
+          2.73972602739726
+        ]
+      },
+      "all": {
+        "pp": 1.0,
+        "ci95_pp": [
+          -3.0,
+          4.75
+        ],
+        "gains": [
+          15,
+          16
+        ],
+        "losses": [
+          15,
+          12
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          0.0,
+          2.0
+        ]
+      },
+      "cap009": {
+        "pp": -0.6493506493506493,
+        "ci95_pp": [
+          -7.060924369747896,
+          5.405405405405405
+        ],
+        "gains": [
+          9,
+          4
+        ],
+        "losses": [
+          7,
+          7
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          2.5974025974025974,
+          -3.896103896103896
+        ]
+      }
+    },
+    "paired/once minus root/once": {
+      "union7": {
+        "pp": -2.3972602739726026,
+        "ci95_pp": [
+          -7.718120805369128,
+          2.7777777777777777
+        ],
+        "gains": [
+          11,
+          17
+        ],
+        "losses": [
+          15,
+          20
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -2.73972602739726,
+          -2.054794520547945
+        ]
+      },
+      "all": {
+        "pp": -1.7500000000000002,
+        "ci95_pp": [
+          -5.75,
+          2.0
+        ],
+        "gains": [
+          11,
+          17
+        ],
+        "losses": [
+          15,
+          20
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -2.0,
+          -1.5
+        ]
+      },
+      "cap009": {
+        "pp": -1.2987012987012987,
+        "ci95_pp": [
+          -8.522727272727272,
+          5.844155844155844
+        ],
+        "gains": [
+          7,
+          7
+        ],
+        "losses": [
+          8,
+          8
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -1.2987012987012987,
+          -1.2987012987012987
+        ]
+      }
+    },
+    "paired/free minus boundary/free": {
+      "union7": {
+        "pp": -3.767123287671233,
+        "ci95_pp": [
+          -10.738255033557047,
+          3.146853146853147
+        ],
+        "gains": [
+          17,
+          26
+        ],
+        "losses": [
+          34,
+          20
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -11.643835616438356,
+          4.10958904109589
+        ]
+      },
+      "all": {
+        "pp": -3.0,
+        "ci95_pp": [
+          -8.5,
+          2.5
+        ],
+        "gains": [
+          21,
+          30
+        ],
+        "losses": [
+          40,
+          23
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -9.5,
+          3.5000000000000004
+        ]
+      },
+      "cap009": {
+        "pp": -2.5974025974025974,
+        "ci95_pp": [
+          -11.290802611367127,
+          6.081081081081082
+        ],
+        "gains": [
+          8,
+          12
+        ],
+        "losses": [
+          16,
+          8
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -10.38961038961039,
+          5.194805194805195
+        ]
+      }
+    },
+    "root/free minus boundary/free": {
+      "union7": {
+        "pp": -8.561643835616438,
+        "ci95_pp": [
+          -15.100671140939598,
+          -2.1578879753340243
+        ],
+        "gains": [
+          13,
+          23
+        ],
+        "losses": [
+          38,
+          23
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -17.123287671232877,
+          0.0
+        ]
+      },
+      "all": {
+        "pp": -6.0,
+        "ci95_pp": [
+          -11.25,
+          -1.0
+        ],
+        "gains": [
+          18,
+          26
+        ],
+        "losses": [
+          42,
+          26
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -12.0,
+          0.0
+        ]
+      },
+      "cap009": {
+        "pp": -5.194805194805195,
+        "ci95_pp": [
+          -14.285714285714285,
+          3.3342696629213346
+        ],
+        "gains": [
+          8,
+          9
+        ],
+        "losses": [
+          14,
+          11
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -7.792207792207792,
+          -2.5974025974025974
+        ]
+      }
+    },
+    "paired/free minus root/free": {
+      "union7": {
+        "pp": 4.794520547945205,
+        "ci95_pp": [
+          -1.9740109794353429,
+          11.51379048582995
+        ],
+        "gains": [
+          33,
+          25
+        ],
+        "losses": [
+          25,
+          19
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          5.47945205479452,
+          4.10958904109589
+        ]
+      },
+      "all": {
+        "pp": 3.0,
+        "ci95_pp": [
+          -2.25,
+          8.5
+        ],
+        "gains": [
+          37,
+          29
+        ],
+        "losses": [
+          32,
+          22
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          2.5,
+          3.5000000000000004
+        ]
+      },
+      "cap009": {
+        "pp": 2.5974025974025974,
+        "ci95_pp": [
+          -6.8493150684931505,
+          11.864671610169488
+        ],
+        "gains": [
+          13,
+          13
+        ],
+        "losses": [
+          15,
+          7
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -2.5974025974025974,
+          7.792207792207792
+        ]
+      }
+    },
+    "paired/guard minus boundary/guard": {
+      "union7": {
+        "pp": -2.054794520547945,
+        "ci95_pp": [
+          -7.913669064748201,
+          3.6185402364607153
+        ],
+        "gains": [
+          20,
+          21
+        ],
+        "losses": [
+          22,
+          25
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -1.36986301369863,
+          -2.73972602739726
+        ]
+      },
+      "all": {
+        "pp": -1.5,
+        "ci95_pp": [
+          -6.0,
+          3.0
+        ],
+        "gains": [
+          23,
+          23
+        ],
+        "losses": [
+          25,
+          27
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -1.0,
+          -2.0
+        ]
+      },
+      "cap009": {
+        "pp": -5.844155844155844,
+        "ci95_pp": [
+          -14.045382724719103,
+          2.2058823529411766
+        ],
+        "gains": [
+          10,
+          7
+        ],
+        "losses": [
+          11,
+          15
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -1.2987012987012987,
+          -10.38961038961039
+        ]
+      }
+    },
+    "root/guard minus boundary/guard": {
+      "union7": {
+        "pp": 1.36986301369863,
+        "ci95_pp": [
+          -4.794520547945205,
+          7.4324324324324325
+        ],
+        "gains": [
+          27,
+          20
+        ],
+        "losses": [
+          27,
+          16
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          0.0,
+          2.73972602739726
+        ]
+      },
+      "all": {
+        "pp": 1.7500000000000002,
+        "ci95_pp": [
+          -3.0,
+          6.25
+        ],
+        "gains": [
+          29,
+          23
+        ],
+        "losses": [
+          27,
+          18
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          1.0,
+          2.5
+        ]
+      },
+      "cap009": {
+        "pp": 1.2987012987012987,
+        "ci95_pp": [
+          -6.181530898876403,
+          9.043762088974837
+        ],
+        "gains": [
+          13,
+          8
+        ],
+        "losses": [
+          11,
+          8
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          2.5974025974025974,
+          0.0
+        ]
+      }
+    },
+    "paired/guard minus root/guard": {
+      "union7": {
+        "pp": -3.4246575342465753,
+        "ci95_pp": [
+          -9.210526315789473,
+          2.5179856115107913
+        ],
+        "gains": [
+          18,
+          17
+        ],
+        "losses": [
+          20,
+          25
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -1.36986301369863,
+          -5.47945205479452
+        ]
+      },
+      "all": {
+        "pp": -3.25,
+        "ci95_pp": [
+          -7.75,
+          1.25
+        ],
+        "gains": [
+          21,
+          19
+        ],
+        "losses": [
+          25,
+          28
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -2.0,
+          -4.5
+        ]
+      },
+      "cap009": {
+        "pp": -7.142857142857142,
+        "ci95_pp": [
+          -14.457831325301203,
+          0.0
+        ],
+        "gains": [
+          7,
+          6
+        ],
+        "losses": [
+          10,
+          14
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -3.896103896103896,
+          -10.38961038961039
+        ]
+      }
+    },
+    "boundary/free minus boundary/once": {
+      "union7": {
+        "pp": 14.726027397260275,
+        "ci95_pp": [
+          7.092198581560284,
+          22.11607142857142
+        ],
+        "gains": [
+          43,
+          30
+        ],
+        "losses": [
+          10,
+          20
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          22.602739726027394,
+          6.8493150684931505
+        ]
+      },
+      "all": {
+        "pp": 14.000000000000002,
+        "ci95_pp": [
+          8.25,
+          19.75
+        ],
+        "gains": [
+          51,
+          35
+        ],
+        "losses": [
+          10,
+          20
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          20.5,
+          7.5
+        ]
+      },
+      "cap009": {
+        "pp": 12.987012987012985,
+        "ci95_pp": [
+          3.1645569620253164,
+          22.463768115942027
+        ],
+        "gains": [
+          18,
+          14
+        ],
+        "losses": [
+          4,
+          8
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          18.181818181818183,
+          7.792207792207792
+        ]
+      }
+    },
+    "boundary/guard minus boundary/once": {
+      "union7": {
+        "pp": 7.534246575342466,
+        "ci95_pp": [
+          2.2383913764510783,
+          12.847470238095232
+        ],
+        "gains": [
+          24,
+          19
+        ],
+        "losses": [
+          15,
+          6
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          6.164383561643835,
+          8.904109589041095
+        ]
+      },
+      "all": {
+        "pp": 7.000000000000001,
+        "ci95_pp": [
+          3.0,
+          11.0
+        ],
+        "gains": [
+          28,
+          21
+        ],
+        "losses": [
+          15,
+          6
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          6.5,
+          7.5
+        ]
+      },
+      "cap009": {
+        "pp": 7.142857142857142,
+        "ci95_pp": [
+          -0.7246376811594203,
+          14.705882352941178
+        ],
+        "gains": [
+          13,
+          11
+        ],
+        "losses": [
+          10,
+          3
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          3.896103896103896,
+          10.38961038961039
+        ]
+      }
+    },
+    "boundary/guard minus boundary/free": {
+      "union7": {
+        "pp": -7.191780821917808,
+        "ci95_pp": [
+          -13.245033112582782,
+          -1.0135135135135136
+        ],
+        "gains": [
+          11,
+          23
+        ],
+        "losses": [
+          35,
+          20
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -16.43835616438356,
+          2.054794520547945
+        ]
+      },
+      "all": {
+        "pp": -7.000000000000001,
+        "ci95_pp": [
+          -11.75,
+          -2.25
+        ],
+        "gains": [
+          14,
+          24
+        ],
+        "losses": [
+          42,
+          24
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -14.000000000000002,
+          0.0
+        ]
+      },
+      "cap009": {
+        "pp": -5.844155844155844,
+        "ci95_pp": [
+          -13.636363636363635,
+          1.8298328816621416
+        ],
+        "gains": [
+          5,
+          11
+        ],
+        "losses": [
+          16,
+          9
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -14.285714285714285,
+          2.5974025974025974
+        ]
+      }
+    },
+    "root/free minus root/once": {
+      "union7": {
+        "pp": 4.794520547945205,
+        "ci95_pp": [
+          -1.9611068111455103,
+          11.22467465246968
+        ],
+        "gains": [
+          26,
+          24
+        ],
+        "losses": [
+          18,
+          18
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          5.47945205479452,
+          4.10958904109589
+        ]
+      },
+      "all": {
+        "pp": 7.000000000000001,
+        "ci95_pp": [
+          1.7500000000000002,
+          12.0
+        ],
+        "gains": [
+          35,
+          29
+        ],
+        "losses": [
+          18,
+          18
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          8.5,
+          5.5
+        ]
+      },
+      "cap009": {
+        "pp": 8.441558441558442,
+        "ci95_pp": [
+          0.625,
+          16.43835616438356
+        ],
+        "gains": [
+          13,
+          12
+        ],
+        "losses": [
+          7,
+          5
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          7.792207792207792,
+          9.090909090909092
+        ]
+      }
+    },
+    "root/guard minus root/once": {
+      "union7": {
+        "pp": 7.534246575342466,
+        "ci95_pp": [
+          1.4388489208633095,
+          13.356164383561644
+        ],
+        "gains": [
+          26,
+          20
+        ],
+        "losses": [
+          17,
+          7
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          6.164383561643835,
+          8.904109589041095
+        ]
+      },
+      "all": {
+        "pp": 7.75,
+        "ci95_pp": [
+          3.25,
+          12.25
+        ],
+        "gains": [
+          32,
+          23
+        ],
+        "losses": [
+          17,
+          7
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          7.5,
+          8.0
+        ]
+      },
+      "cap009": {
+        "pp": 9.090909090909092,
+        "ci95_pp": [
+          2.5,
+          15.942028985507244
+        ],
+        "gains": [
+          11,
+          12
+        ],
+        "losses": [
+          8,
+          1
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          3.896103896103896,
+          14.285714285714285
+        ]
+      }
+    },
+    "root/guard minus root/free": {
+      "union7": {
+        "pp": 2.73972602739726,
+        "ci95_pp": [
+          -3.125,
+          8.51063829787234
+        ],
+        "gains": [
+          19,
+          22
+        ],
+        "losses": [
+          18,
+          15
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          0.684931506849315,
+          4.794520547945205
+        ]
+      },
+      "all": {
+        "pp": 0.75,
+        "ci95_pp": [
+          -4.0,
+          5.25
+        ],
+        "gains": [
+          22,
+          25
+        ],
+        "losses": [
+          24,
+          20
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -1.0,
+          2.5
+        ]
+      },
+      "cap009": {
+        "pp": 0.6493506493506493,
+        "ci95_pp": [
+          -6.557377049180328,
+          7.971014492753622
+        ],
+        "gains": [
+          5,
+          10
+        ],
+        "losses": [
+          8,
+          6
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -3.896103896103896,
+          5.194805194805195
+        ]
+      }
+    },
+    "paired/free minus paired/once": {
+      "union7": {
+        "pp": 11.986301369863012,
+        "ci95_pp": [
+          4.934094699777613,
+          19.014084507042252
+        ],
+        "gains": [
+          35,
+          29
+        ],
+        "losses": [
+          15,
+          14
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          13.698630136986301,
+          10.273972602739725
+        ]
+      },
+      "all": {
+        "pp": 11.75,
+        "ci95_pp": [
+          6.25,
+          17.5
+        ],
+        "gains": [
+          41,
+          35
+        ],
+        "losses": [
+          15,
+          14
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          13.0,
+          10.5
+        ]
+      },
+      "cap009": {
+        "pp": 12.337662337662337,
+        "ci95_pp": [
+          1.89873417721519,
+          22.561467348544447
+        ],
+        "gains": [
+          17,
+          19
+        ],
+        "losses": [
+          12,
+          5
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          6.493506493506493,
+          18.181818181818183
+        ]
+      }
+    },
+    "paired/guard minus paired/once": {
+      "union7": {
+        "pp": 6.506849315068493,
+        "ci95_pp": [
+          0.3424657534246575,
+          12.67123287671233
+        ],
+        "gains": [
+          25,
+          19
+        ],
+        "losses": [
+          14,
+          11
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          7.534246575342466,
+          5.47945205479452
+        ]
+      },
+      "all": {
+        "pp": 6.25,
+        "ci95_pp": [
+          1.7437500000000057,
+          11.0
+        ],
+        "gains": [
+          29,
+          21
+        ],
+        "losses": [
+          14,
+          11
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          7.5,
+          5.0
+        ]
+      },
+      "cap009": {
+        "pp": 3.2467532467532463,
+        "ci95_pp": [
+          -4.487179487179487,
+          11.11111111111111
+        ],
+        "gains": [
+          10,
+          7
+        ],
+        "losses": [
+          9,
+          3
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          1.2987012987012987,
+          5.194805194805195
+        ]
+      }
+    },
+    "paired/guard minus paired/free": {
+      "union7": {
+        "pp": -5.47945205479452,
+        "ci95_pp": [
+          -12.416107382550337,
+          1.4084507042253522
+        ],
+        "gains": [
+          19,
+          21
+        ],
+        "losses": [
+          28,
+          28
+        ],
+        "denominator": 146,
+        "per_seed_pp": [
+          -6.164383561643835,
+          -4.794520547945205
+        ]
+      },
+      "all": {
+        "pp": -5.5,
+        "ci95_pp": [
+          -11.0,
+          0.0
+        ],
+        "gains": [
+          22,
+          21
+        ],
+        "losses": [
+          33,
+          32
+        ],
+        "denominator": 200,
+        "per_seed_pp": [
+          -5.5,
+          -5.5
+        ]
+      },
+      "cap009": {
+        "pp": -9.090909090909092,
+        "ci95_pp": [
+          -19.078947368421055,
+          0.7042253521126761
+        ],
+        "gains": [
+          11,
+          8
+        ],
+        "losses": [
+          15,
+          18
+        ],
+        "denominator": 77,
+        "per_seed_pp": [
+          -5.194805194805195,
+          -12.987012987012985
+        ]
+      }
+    }
+  }
+}

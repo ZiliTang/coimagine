@@ -5,7 +5,7 @@ entity changes sensor interpretation and controller allocation, never body state
 Other movable bodies are non-target occupied surfaces in the legacy skill API;
 the public scan retains their distinct instance labels and movable category.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from contextlib import contextmanager
 import math
 from types import MethodType
@@ -155,6 +155,9 @@ class MultiBackend(PymunkBackend):
 
 class MultiObjectOptionEnv(OptionSystemEnv):
     def __init__(self, instance, boxes=(), *, primary_id='entity-a', overrides=None):
+        self.local_push = (overrides or {}).get('push_face_contract', M.VERSION) == M.VERSION
+        if not self.local_push and overrides['push_face_contract'] != M.LEGACY_VERSION:
+            raise ValueError('unknown push face contract')
         self._multi_ready=False
         self.active_target=primary_id
         self.primary_id=primary_id
@@ -169,7 +172,9 @@ class MultiObjectOptionEnv(OptionSystemEnv):
         self._multi_ready=True
         self.option_spec=M
         self.actions=M.ACTIONS
-        self.action_version=M.VERSION
+        self.action_version = M.VERSION if self.local_push else M.LEGACY_VERSION
+        if not self.local_push and R.GEOMETRY_PROFILE != 'legacy36':
+            self.action_version += '-compact20'
         self.action_codebook_hash=M.CODEBOOK_HASH
         self._commit_target(primary_id)
 
@@ -243,11 +248,15 @@ class MultiObjectOptionEnv(OptionSystemEnv):
         sn,tn=scan.nearest(2),scan.nearest(3)
         return SkillObservation(robot_id,tick,time,own,mate,scan,patches,patch,touch,cp,static,peer,
             self.instance.goal_centre,self.instance.goal_radius,self.instance.arena,R.MAX_FORCE,
-            max(0.,self.config.time_budget-time),time,None if sn is None else sn[:2],None if tn is None else tn[:2])
+            max(0.,self.config.time_budget-time),time,None if sn is None else sn[:2],None if tn is None else tn[:2],
+            skill_parameters={'local_push': True} if self.local_push else {})
 
     def observe(self,robot_id,tick,time,contacts=None):
         if not getattr(self,'_multi_ready',False) or not self.boxes:
-            return super().observe(robot_id,tick,time,contacts)
+            obs = super().observe(robot_id,tick,time,contacts)
+            if self.local_push:
+                return replace(obs, skill_parameters={**obs.skill_parameters, 'local_push': True})
+            return obs
         return self._sensor(robot_id,tick,time,self.active_target)
 
     def _pairs(self,observations):
@@ -311,15 +320,21 @@ class MultiObjectOptionEnv(OptionSystemEnv):
         handoff=self.binding.select(requested,observation)
         if handoff['commit']: self._commit_target(handoff['target'])
         command=handoff['command']; start=self.total_periods
+        fault = None
         for _ in range(command['ticks']):
             if self.termination is not None: break
             self.joint_step(command['a0'],command['a1'],record=record)
+            if any(getattr(M.ACTIONS[command[f'a{i}']], 'effect_kind', None) == 'translate'
+                   and slot.last_info.get('exit_reason') == 'push_no_legal_face' for i,slot in enumerate(self.slots)):
+                fault = 'push_no_legal_face'
+                break
         self.command_prefix.append(dict(requested))
         return dict(start_tick=start,end_tick=self.total_periods,requested=dict(requested),
-                    executed=command,handoff=handoff,termination=self.termination)
+                    executed=command,handoff=handoff,termination=self.termination, **({'reason':fault} if fault else {}))
 
     def replay_commands(self):
         fresh=MultiObjectOptionEnv(self.instance,self.boxes,primary_id=self.primary_id,overrides=self.overrides)
+        fresh.binding.joint_orbits = self.binding.joint_orbits
         for command in self.command_prefix: fresh.step_command(command)
         return fresh
 

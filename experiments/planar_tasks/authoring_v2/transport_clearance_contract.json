@@ -1,0 +1,16 @@
+{
+  "units": {
+    "contact_ready": "flag", "clearance": "mm", "forward": "mm",
+    "push_sweep": "mm", "endpoint_loss": "mm", "full_sweep": "mm",
+    "push_min_gap": "mm", "route_entry_gap": "mm", "full_min_gap": "mm"
+  },
+  "requires": {"contact_ready": [1, 1]},
+  "expect": {"forward": [20, null], "push_sweep": [0, null], "endpoint_loss": [0, null], "full_sweep": [0, null]},
+  "post": {
+    "push_min_gap": ["sub", "clearance", "push_sweep"],
+    "route_entry_gap": ["sub", "clearance", "endpoint_loss"],
+    "full_min_gap": ["sub", "clearance", "full_sweep"]
+  },
+  "continuation_requires": {"push_min_gap": [1, null], "full_min_gap": [1, null]},
+  "route_width_metric": "route_entry_gap"
+}

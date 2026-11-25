@@ -10,7 +10,9 @@ from coimagine.random_start.skills import Skill, HoldBrake
 from experiments.option_rl_v21 import spec as V2
 from experiments.option_rl_v21.system import YieldSlot
 
-VERSION = 'relational-options-move-v2'
+LEGACY_VERSION = 'relational-options-move-v2'
+VERSION = ('relational-options-local-push22.5-v3' if R.GEOMETRY_PROFILE == 'legacy36'
+           else 'relational-options-local-push45-compact20-v4')
 DIRECTIONS = ('E', 'NE', 'N', 'NW', 'W', 'SW', 'S', 'SE')
 SPEEDS = (.10, .20, .30, .40)
 MOVE_ACTIONS = tuple(
@@ -122,6 +124,15 @@ def mask(observation):
 
 
 class MotionSlot(YieldSlot):
+    def step(self, obs):
+        # Perception/peer pauses in the legacy slot can bypass the push controller.
+        if (self.pending is None and getattr(self.action, 'effect_kind', None) == 'translate'
+                and not self.skill.done and (obs.patch is None or self.pause_reason is not None)):
+            from experiments.option_rl_v19.unknown_shape import local_push, compatible_faces
+            if local_push(obs) and not compatible_faces(obs, self.action):
+                self.skill.stop('push_no_legal_face')
+        return super().step(obs)
+
     def select(self, action):
         if action.kind != 'move' and self.action.kind != 'move' and not (
                 self.pending is not None and self.pending.kind == 'move'):

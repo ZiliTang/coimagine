@@ -29,8 +29,8 @@ class PeerOuterDetour:
     routing reference, not a relaxation of the executor's collision checks.
     """
 
-    def __init__(self, radius=.50, blend=.04):
-        self.radius = radius  # 2 * 0.18 m bodies + 0.14 m routing clearance
+    def __init__(self, radius=2 * ROBOT_RADIUS + .14, blend=.04):
+        self.radius = radius  # Centre distance with 14 cm edge-to-edge routing clearance
         self.blend = blend
         self.info = {"version": "peer-outer-v2", "active": False}
 

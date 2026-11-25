@@ -1,0 +1,382 @@
+{
+  "complete": true,
+  "seed": 17,
+  "status": "single-seed diagnostic screening; confirmation remains sealed",
+  "diagnostic": {
+    "panel": "diagnostic",
+    "unique_roots": 200,
+    "short": {
+      "successes": [
+        112
+      ],
+      "denominator_per_seed": 200,
+      "mean_success_rate": 0.56,
+      "retained_union7": [
+        105
+      ],
+      "missed_union7": [
+        46
+      ],
+      "retained_union10": [
+        106
+      ],
+      "missed_union10": [
+        46
+      ],
+      "outside_union10": [
+        6
+      ],
+      "versus_fixed_cap009": {
+        "difference_pp": 15.0,
+        "ci95_pp": [
+          7.5,
+          22.5
+        ]
+      },
+      "versus_test_best_descriptive": {
+        "difference_pp": 13.0,
+        "ci95_pp": [
+          4.5,
+          21.0
+        ]
+      }
+    },
+    "long": {
+      "successes": [
+        108
+      ],
+      "denominator_per_seed": 200,
+      "mean_success_rate": 0.54,
+      "retained_union7": [
+        99
+      ],
+      "missed_union7": [
+        52
+      ],
+      "retained_union10": [
+        99
+      ],
+      "missed_union10": [
+        53
+      ],
+      "outside_union10": [
+        9
+      ],
+      "versus_fixed_cap009": {
+        "difference_pp": 13.0,
+        "ci95_pp": [
+          5.5,
+          21.0
+        ]
+      },
+      "versus_test_best_descriptive": {
+        "difference_pp": 11.0,
+        "ci95_pp": [
+          3.5000000000000004,
+          19.0
+        ]
+      }
+    },
+    "long_minus_short": {
+      "difference_pp": -2.0,
+      "ci95_pp": [
+        -10.0,
+        6.0
+      ]
+    },
+    "gains_per_seed": [
+      31
+    ],
+    "losses_per_seed": [
+      35
+    ],
+    "cap_successes": {
+      "CAP-RR-001": 75,
+      "CAP-RR-002": 60,
+      "CAP-RR-003": 86,
+      "CAP-RR-004": 49,
+      "CAP-RR-005": 48,
+      "CAP-RR-006": 42,
+      "CAP-RR-007": 58,
+      "CAP-RR-008": 57,
+      "CAP-RR-009": 82,
+      "CAP-RR-010": 78
+    },
+    "best_cap_descriptive": "CAP-RR-003",
+    "union7": 151,
+    "union10": 152,
+    "uncertainty": "10000 strata-balanced root bootstrap draws; conditional on these 3 training seeds; not 600 independent scenes"
+  },
+  "training_benchmark": {
+    "results": [
+      {
+        "mode": "mmap",
+        "threads": 1,
+        "wall_seconds": 12.598904634010978,
+        "loop_seconds": 11.618353690006188,
+        "model_exact": true,
+        "max_model_difference": 0.0
+      },
+      {
+        "mode": "resident",
+        "threads": 1,
+        "wall_seconds": 3.763089037995087,
+        "loop_seconds": 3.728632144004223,
+        "model_exact": true,
+        "max_model_difference": 0.0
+      },
+      {
+        "mode": "resident",
+        "threads": 2,
+        "wall_seconds": 2.519066358989221,
+        "loop_seconds": 2.499186455999734,
+        "model_exact": true,
+        "max_model_difference": 0.0
+      },
+      {
+        "mode": "resident",
+        "threads": 4,
+        "wall_seconds": 2.1880466590082506,
+        "loop_seconds": 2.1680519200017443,
+        "model_exact": true,
+        "max_model_difference": 0.0
+      }
+    ],
+    "resident_bytes": 4235656585,
+    "one_thread_all_training_states_bitwise_equal": true,
+    "benchmark_updates": 400,
+    "official_training_updated": false,
+    "all_state_differences_by_threads": {
+      "1": {
+        "model": [],
+        "optimizer": [],
+        "target_model": [],
+        "numpy_rng": [],
+        "torch_rng": [],
+        "online_updates": []
+      },
+      "2": {
+        "model": [],
+        "optimizer": [],
+        "target_model": [],
+        "numpy_rng": [],
+        "torch_rng": [],
+        "online_updates": []
+      },
+      "4": {
+        "model": [],
+        "optimizer": [],
+        "target_model": [],
+        "numpy_rng": [],
+        "torch_rng": [],
+        "online_updates": []
+      }
+    }
+  },
+  "physical_benchmark": {
+    "results": [
+      {
+        "mode": "original",
+        "case_id": "online_training_2_000",
+        "wall_seconds": 4.337307859008433,
+        "rollout_seconds": 4.14414107700577,
+        "trace_seconds": 1.8602359410288045,
+        "network_seconds": 0.3728934439859586,
+        "ticks": 735,
+        "decisions": 31,
+        "ray_acquisitions": 1534,
+        "contact_queries": 2974
+      },
+      {
+        "mode": "original",
+        "case_id": "online_training_3_000",
+        "wall_seconds": 8.856614900010754,
+        "rollout_seconds": 8.437549962996854,
+        "trace_seconds": 4.6043292109970935,
+        "network_seconds": 0.06437742400157731,
+        "ticks": 1800,
+        "decisions": 67,
+        "ray_acquisitions": 3736,
+        "contact_queries": 7270
+      },
+      {
+        "mode": "original",
+        "case_id": "online_training_4_000",
+        "wall_seconds": 6.136465207004221,
+        "rollout_seconds": 5.810220737999771,
+        "trace_seconds": 2.8463485190150095,
+        "network_seconds": 0.04471532902971376,
+        "ticks": 1154,
+        "decisions": 50,
+        "ray_acquisitions": 2410,
+        "contact_queries": 4669
+      },
+      {
+        "mode": "original",
+        "case_id": "online_training_5_000",
+        "wall_seconds": 6.667697402997874,
+        "rollout_seconds": 6.34555446000013,
+        "trace_seconds": 3.2964249490614748,
+        "network_seconds": 0.04829666698060464,
+        "ticks": 1223,
+        "decisions": 54,
+        "ray_acquisitions": 2556,
+        "contact_queries": 4949
+      },
+      {
+        "mode": "fast",
+        "case_id": "online_training_2_000",
+        "wall_seconds": 3.3842877190036234,
+        "rollout_seconds": 3.2362115620053373,
+        "trace_seconds": 1.6802051029953873,
+        "network_seconds": 0.027048757969168946,
+        "ticks": 735,
+        "decisions": 31,
+        "ray_acquisitions": 1474,
+        "contact_queries": 739
+      },
+      {
+        "mode": "fast",
+        "case_id": "online_training_3_000",
+        "wall_seconds": 7.564981021001586,
+        "rollout_seconds": 7.238720610999735,
+        "trace_seconds": 4.076368174995878,
+        "network_seconds": 0.05930767995596398,
+        "ticks": 1800,
+        "decisions": 67,
+        "ray_acquisitions": 3604,
+        "contact_queries": 1804
+      },
+      {
+        "mode": "fast",
+        "case_id": "online_training_4_000",
+        "wall_seconds": 5.555295524012763,
+        "rollout_seconds": 5.177803458005656,
+        "trace_seconds": 2.39929611995467,
+        "network_seconds": 0.04560899597709067,
+        "ticks": 1154,
+        "decisions": 50,
+        "ray_acquisitions": 2312,
+        "contact_queries": 1158
+      },
+      {
+        "mode": "fast",
+        "case_id": "online_training_5_000",
+        "wall_seconds": 6.26617336399795,
+        "rollout_seconds": 5.954551326998626,
+        "trace_seconds": 2.9876880060037365,
+        "network_seconds": 0.054669253979227506,
+        "ticks": 1223,
+        "decisions": 54,
+        "ray_acquisitions": 2450,
+        "contact_queries": 1227
+      }
+    ],
+    "parity": [
+      {
+        "case_id": "online_training_2_000",
+        "all_public_history_and_scores_equal": true,
+        "all_physical_frames_equal": true,
+        "all_transition_bytes_equal": true
+      },
+      {
+        "case_id": "online_training_3_000",
+        "all_public_history_and_scores_equal": true,
+        "all_physical_frames_equal": true,
+        "all_transition_bytes_equal": true
+      },
+      {
+        "case_id": "online_training_4_000",
+        "all_public_history_and_scores_equal": true,
+        "all_physical_frames_equal": true,
+        "all_transition_bytes_equal": true
+      },
+      {
+        "case_id": "online_training_5_000",
+        "all_public_history_and_scores_equal": true,
+        "all_physical_frames_equal": true,
+        "all_transition_bytes_equal": true
+      }
+    ],
+    "new_physical_executions": 8
+  },
+  "replay_benchmark": {
+    "load_and_pack_seconds": 30.6036107300024,
+    "resident_bytes": 3846972233,
+    "packing": {
+      "source": {
+        "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/arrays/train",
+        "bytes": 16484668688,
+        "mtime_ns": 1794941896418823384
+      },
+      "shape": [
+        294285,
+        14004
+      ],
+      "dtype": "float32",
+      "codec": "lz4-row",
+      "version": "1.9.3",
+      "raw_sha256": "36d0ba0dfd4e74d2ccbeedad192af3b47daac3354ac7f5ebdd5240e70e90347c",
+      "blob_sha256": "93c1af1a373b27857e82e08dd473583ad775b0a537417adb27117f688c8b6a5c",
+      "raw_bytes": 16484668560,
+      "packed_bytes": 3068882685,
+      "every_row_bitwise_verified": true,
+      "seconds": 27.509444201990846
+    },
+    "batch_200_current_and_next_seconds": {
+      "mmap": 13.458607153996127,
+      "resident_lz4": 0.14542026098934002
+    },
+    "bitwise_samples_verified": true,
+    "network_thread_probe": {
+      "1": {
+        "seconds": 0.30651100300019607,
+        "exact_values": true,
+        "max_difference": 0.0
+      },
+      "2": {
+        "seconds": 0.1675953490048414,
+        "exact_values": true,
+        "max_difference": 0.0
+      },
+      "4": {
+        "seconds": 0.1392491099977633,
+        "exact_values": true,
+        "max_difference": 0.0
+      }
+    }
+  },
+  "resume": {
+    "updates_preserved": 12023,
+    "episodes_preserved": 450,
+    "interrupted_round": 9,
+    "remaining_updates_in_round": 1477,
+    "unsaved_fine_grained_metric_updates": 23,
+    "discarded_training_updates": 0,
+    "original_stop": "user requested pause; STOP checkpoint saved, supervisor then exited"
+  },
+  "new_physical_executions": 2406,
+  "new_ticks": 3249966,
+  "new_decisions": 145371,
+  "invalid_proposals": 0,
+  "fallback_boundaries": 0,
+  "errors": 0,
+  "confirmation_executions": 0,
+  "budget": {
+    "complete": true,
+    "seed": 17,
+    "episodes": 2000,
+    "online_updates": 60000,
+    "new_training_executions": 1550,
+    "new_monitor_executions": 256,
+    "new_diagnostic_executions": 600,
+    "new_physical_executions": 2406,
+    "new_confirmation_executions": 0,
+    "seconds": 2749.0276730060577
+  },
+  "final_resident_memory": {
+    "resident_replay_bytes": 5581685985,
+    "offline_boundaries": 294285,
+    "online_boundaries": 119540
+  }
+}

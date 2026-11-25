@@ -1,0 +1,39 @@
+{
+  "tests": {
+    "tests_framework.xml": {
+      "tests": 25,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "tests_related.xml": {
+      "tests": 59,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "tests_overlap": true,
+  "full_repository_suite_run": false,
+  "evaluation_freeze_verified": true,
+  "frozen_host_source_count": 914,
+  "campaign_sha256": "20bf115b1705ccf7dcdedb7ee250c8b4acebacba62fad77cb2af920fbfb19367",
+  "raw_pose_audit": {
+    "scope": "independent pose-based SAT audit; exact polygon overlap differs from physics contact tolerance, so both are retained",
+    "rooms": 256,
+    "goal_gain_mismatches": 0,
+    "frame_tick_mismatches": 0,
+    "success_outside_goal": 0,
+    "overlap_without_backend_contact": 0
+  },
+  "paired_errors": [
+    0,
+    0,
+    0
+  ],
+  "paired_prefix_mismatches": [
+    0,
+    0,
+    0
+  ]
+}

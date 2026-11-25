@@ -1,0 +1,140 @@
+{
+  "scope": "post-evaluation inspection of caught successor online rollout errors",
+  "queries": 12,
+  "errors": 24,
+  "admitted_queries": 0,
+  "rows": [
+    {
+      "file": "confirmation/branches/v0/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v0/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v0/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v0/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v1/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v1/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v1/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v1/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v2/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v2/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v2/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_0_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    },
+    {
+      "file": "confirmation/branches/v2/diag_symbolic_confirmation_028_0096.json.gz",
+      "action": "push_r1_7_6",
+      "allowed": false,
+      "source": "online_insufficient",
+      "samples": 0,
+      "errors": [
+        "push_no_legal_face",
+        "push_no_legal_face"
+      ]
+    }
+  ]
+}

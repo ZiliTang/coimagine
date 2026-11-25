@@ -1,0 +1,46 @@
+{
+  "load_and_pack_seconds": 30.6036107300024,
+  "resident_bytes": 3846972233,
+  "packing": {
+    "source": {
+      "path": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_trace_value_full_20261118_02/arrays/train",
+      "bytes": 16484668688,
+      "mtime_ns": 1794941896418823384
+    },
+    "shape": [
+      294285,
+      14004
+    ],
+    "dtype": "float32",
+    "codec": "lz4-row",
+    "version": "1.9.3",
+    "raw_sha256": "36d0ba0dfd4e74d2ccbeedad192af3b47daac3354ac7f5ebdd5240e70e90347c",
+    "blob_sha256": "93c1af1a373b27857e82e08dd473583ad775b0a537417adb27117f688c8b6a5c",
+    "raw_bytes": 16484668560,
+    "packed_bytes": 3068882685,
+    "every_row_bitwise_verified": true,
+    "seconds": 27.509444201990846
+  },
+  "batch_200_current_and_next_seconds": {
+    "mmap": 13.458607153996127,
+    "resident_lz4": 0.14542026098934002
+  },
+  "bitwise_samples_verified": true,
+  "network_thread_probe": {
+    "1": {
+      "seconds": 0.30651100300019607,
+      "exact_values": true,
+      "max_difference": 0.0
+    },
+    "2": {
+      "seconds": 0.1675953490048414,
+      "exact_values": true,
+      "max_difference": 0.0
+    },
+    "4": {
+      "seconds": 0.1392491099977633,
+      "exact_values": true,
+      "max_difference": 0.0
+    }
+  }
+}

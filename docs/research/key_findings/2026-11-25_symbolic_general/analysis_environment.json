@@ -1,0 +1,7 @@
+{
+  "scipy": "1.15.3",
+  "numpy": "2.2.6",
+  "added_after_physical_evaluation": true,
+  "purpose": "Beta quantiles for one-sided binomial risk interval; existing NumPy unchanged",
+  "prior_failure": "/home/tzl/repo/coimagine/outputs/semantic_rl/cap_symbolic_general_v1/summary_dependency_error.json"
+}

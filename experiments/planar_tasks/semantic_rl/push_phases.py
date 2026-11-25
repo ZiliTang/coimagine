@@ -4,17 +4,19 @@ Input is a legal joint command with one translating pusher. Its target and discr
 direction encode the requested support normal. The original duration runtime
 continues to own physics, target binding, and legality.
 """
+from contextlib import ExitStack
 from dataclasses import dataclass
 from math import cos,sin
 
 import numpy as np
 
-from experiments.option_rl_v19.unknown_shape import direction_matches, visible_faces
+from experiments.option_rl_v19.unknown_shape import local_push, push_faces
 from experiments.planar_tasks.relational_search.contract import validate_action
 from experiments.planar_tasks.relational_search.motion import ACTIONS
 from coimagine.random_start.spec import CONTROL_DT
 
 from .memory_flow import current_event
+from .push_contact_recovery import ContactRecovery
 
 
 @dataclass(frozen=True)
@@ -43,9 +45,11 @@ def contact_state(world, request, robot, normal):
         return 'target_unbound'
     tick=env.total_periods
     obs=env._sensor(robot,tick,tick*CONTROL_DT,target)
+    faces = push_faces(obs, normal)
+    if not faces and local_push(obs):
+        return 'push_no_legal_face'
     if not obs.contacting_object:
         return 'no_contact'
-    faces=[face for face in visible_faces(obs) if direction_matches(face[1],normal)]
     if not faces:
         return 'support_unobservable'
     # A nearby parallel face is insufficient if the tactile point lies elsewhere.
@@ -86,7 +90,28 @@ def contact(world,request,budget):
     return PhaseResult(status,event)
 
 
-def push_from_contact(world,request,budget,measure_effect=False):
+def contact_on_new_face(world, request, budget):
+    """Acquire the requested face after repositioning, with 5 cm of pre-alignment space."""
+    robot, _ = pusher(request)
+    slot = world.env.slots[robot]
+    # Reposition -> PUSH may commit a new skill after several braking ticks.
+    # Configure both a continuing PUSH and any new PUSH created during this call.
+    factory = slot.factory
+    with ExitStack() as cleanup:
+        def configure(skill):
+            if hasattr(skill, "_allocated_navigate"):
+                alignment = ContactRecovery(wait=0, strategy="standoff", reach=.05)
+                alignment.reduce_standoff(skill)
+                cleanup.callback(alignment.close)
+            return skill
+
+        configure(slot.skill)
+        slot.factory = lambda action: configure(factory(action))
+        cleanup.callback(setattr, slot, "factory", factory)
+        return contact(world, request, budget)
+
+
+def push_from_contact(world,request,budget,measure_effect=False,*,review=None):
     robot,normal=pusher(request)
     status=contact_state(world,request,robot,normal)
     if status!='ready':
@@ -105,7 +130,10 @@ def push_from_contact(world,request,budget,measure_effect=False):
         return reason
     world.detector.update=observe
     try:
-        event=world.step(request,remaining_ticks=budget)
+        if review is None:
+            event=world.step(request,remaining_ticks=budget)
+        else:
+            event=world.step(request,remaining_ticks=budget,review=review)
     finally:
         world.detector.update=previous
     effect=None

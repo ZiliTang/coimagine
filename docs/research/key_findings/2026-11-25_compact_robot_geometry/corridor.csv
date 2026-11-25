@@ -1,0 +1,7 @@
+geometry,box_wall_width_m,robot_radius_m,orbit_target_gap_m,status,executed_ticks,travel_along_box_m,endpoint_true_box_gap_m
+compact20,0.32,0.1,0.05,completed,24,0.18870825751800657,0.017318191859122395
+compact20,0.39,0.1,0.05,completed,24,0.18984222648649718,0.048958333335504894
+compact20,0.6,0.1,0.05,completed,24,0.18984222648649718,0.048958333335504894
+legacy36,0.32,0.18,0.1,initial_pose_overlaps_wall,0,,
+legacy36,0.39,0.18,0.1,initial_pose_overlaps_wall,0,,
+legacy36,0.6,0.18,0.1,completed,24,0.18984222648649718,0.09895833333550524

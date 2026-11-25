@@ -1,0 +1,43 @@
+{
+  "status": "data_valid_strict_feature_parity_failed",
+  "archive": {
+    "archive": "/home/tzl/repo/coimagine/cap_program_trace_v1.tar.gz",
+    "archive_bytes": 1408892416,
+    "sha256": "1e01d6bcfc75da482fa03c1d3b76306d800349e47056649918a6d0f95bf97e8c",
+    "expected_source": "PROGRAM_TRACE_HANDOFF.md and committed transfer acceptance report",
+    "separate_sha256_file_present": false,
+    "archive_files": 3770,
+    "git_head": "6e7a038878da5c366e18277b22b70a526bf98d59",
+    "python": "outputs/transfers/venv_py311/bin/python",
+    "time": "2026-11-17T23:53:41.583954+08:00"
+  },
+  "data_check": {
+    "status": "verified",
+    "files": 3769,
+    "references": 1979,
+    "features_and_12_models_checked": false,
+    "historical_donor_checked": false,
+    "no_physics_or_training": true
+  },
+  "runtime_source_hashes": "passed before strict feature comparison",
+  "migration_unit_tests": {
+    "passed": 6,
+    "file": "tests/test_program_trace_transfer.py"
+  },
+  "feature_identity": {
+    "indices": true,
+    "history_hash": true,
+    "layout": true,
+    "source_sha": true
+  },
+  "feature_array_mismatches": 72,
+  "max_abs_feature_difference": 4.2664215885896434e-17,
+  "difference_location": "panel1, appended D/A evidence offset36: robot0 candidate/proposal direction dot product",
+  "cause": "Platform-dependent floating-point arithmetic suspected, not established",
+  "model_protocol_and_finite_parameters_checked": 12,
+  "historical_donor_identity_ok": true,
+  "reference_boundary_model_logit_max_diff": 0.0,
+  "strict_verifier_modified": false,
+  "new_training_or_physics": false,
+  "interpretation": "Package data are intact. Strict cross-machine feature equality is not passed; separate model protocol/one-boundary inference checks do not waive it."
+}

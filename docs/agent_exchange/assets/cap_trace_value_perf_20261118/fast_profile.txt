@@ -1,0 +1,58 @@
+         6753237 function calls (6565602 primitive calls) in 4.609 seconds
+
+   Ordered by: cumulative time
+   List reduced from 1465 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.009    0.009    4.674    4.674 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/program_trace_value_v1/fast_runtime.py:64(run)
+        1    0.003    0.003    4.580    4.580 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_worker.py:43(run)
+       31    0.002    0.000    2.818    0.091 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/environment.py:118(step)
+       31    0.004    0.000    2.816    0.091 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/duration_execution.py:9(step_duration)
+      735    0.001    0.000    1.962    0.003 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/pipeline_execution.py:109(joint_step)
+      735    0.007    0.000    1.938    0.003 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:176(joint_step)
+      735    0.023    0.000    1.922    0.003 /home/tzl/repo/coimagine/experiments/option_rl_v13/mode_env.py:181(joint_step)
+       31    1.301    0.042    1.604    0.052 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/program_trace_value_v1/runtime.py:45(advance)
+     1646    0.001    0.000    0.859    0.001 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:223(_sensor)
+4754/1710    0.007    0.000    0.858    0.001 /home/tzl/repo/coimagine/src/coimagine/random_start/lidar_service.py:52(memo)
+     1522    0.001    0.000    0.857    0.001 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:225(<lambda>)
+     1522    0.010    0.000    0.856    0.001 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:227(_sensor_uncached)
+     1534    0.001    0.000    0.855    0.001 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:248(observe)
+      735    0.001    0.000    0.819    0.001 /home/tzl/repo/coimagine/experiments/option_rl_v13/mode_env.py:190(<dictcomp>)
+     1522    0.002    0.000    0.638    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:201(_target_scan)
+     1586    0.003    0.000    0.606    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:184(ray_frame)
+     1586    0.002    0.000    0.580    0.000 /home/tzl/repo/coimagine/src/coimagine/random_start/lidar_service.py:74(physical)
+     1474    0.085    0.000    0.572    0.000 /home/tzl/repo/coimagine/src/coimagine/random_start/lidar_service.py:86(cast)
+       32    0.000    0.000    0.562    0.018 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/environment.py:100(_append_public)
+       32    0.003    0.000    0.562    0.018 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/program_trace_value_v1/fast_runtime.py:27(_append_projected)
+       32    0.002    0.000    0.547    0.017 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/stream_history.py:26(append)
+     1474    0.061    0.000    0.410    0.000 /home/tzl/repo/coimagine/src/coimagine/random_start/ray_query.py:24(nearest_hits)
+      735    0.001    0.000    0.351    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v19/system.py:176(_gated_step_control)
+      735    0.000    0.000    0.350    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v19/system.py:131(gate)
+      735    0.001    0.000    0.349    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v19/system.py:179(_apply)
+      735    0.002    0.000    0.348    0.000 /home/tzl/repo/coimagine/src/coimagine/continuous2d/environment.py:220(step_control)
+       64    0.002    0.000    0.348    0.005 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/contract.py:55(_project_observation)
+     1470    0.007    0.000    0.332    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v13/mode_env.py:51(step)
+      692    0.302    0.000    0.302    0.000 {built-in method marshal.loads}
+      735    0.014    0.000    0.281    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v19/unknown_shape.py:1706(coordinate)
+       66    0.000    0.000    0.278    0.004 /home/tzl/.local/share/uv/python/cpython-3.11.18-linux-x86_64-gnu/lib/python3.11/json/__init__.py:299(loads)
+       66    0.000    0.000    0.278    0.004 /home/tzl/.local/share/uv/python/cpython-3.11.18-linux-x86_64-gnu/lib/python3.11/json/decoder.py:332(decode)
+       66    0.277    0.004    0.277    0.004 /home/tzl/.local/share/uv/python/cpython-3.11.18-linux-x86_64-gnu/lib/python3.11/json/decoder.py:343(raw_decode)
+      651    0.001    0.000    0.269    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_rl/trusted_native.py:76(owned_copy)
+   106128    0.184    0.000    0.262    0.000 {built-in method pymunk._chipmunk.cpSpaceSegmentQuery}
+       32    0.001    0.000    0.244    0.008 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/contract.py:40(public_observation)
+       32    0.001    0.000    0.243    0.008 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:258(public)
+       32    0.002    0.000    0.242    0.008 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:263(_public_packet)
+      182    0.001    0.000    0.232    0.001 /home/tzl/repo/coimagine/experiments/option_rl_v21/yield_skill.py:173(step)
+      182    0.040    0.000    0.230    0.001 /home/tzl/repo/coimagine/experiments/option_rl_v21/yield_skill.py:81(choose_velocity)
+      735    0.022    0.000    0.197    0.000 /home/tzl/repo/coimagine/experiments/option_rl_v19/unknown_shape.py:820(update)
+      735    0.002    0.000    0.189    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:56(apply_and_step)
+      735    0.006    0.000    0.185    0.000 /home/tzl/repo/coimagine/src/coimagine/continuous2d/backend.py:402(apply_and_step)
+94096/15936    0.030    0.000    0.154    0.000 {built-in method builtins.any}
+     4410    0.009    0.000    0.153    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/relational_search/environment.py:84(_apply_forces)
+     1522    0.037    0.000    0.150    0.000 /home/tzl/repo/coimagine/src/coimagine/random_start/lidar.py:438(scan_patches)
+     4800    0.002    0.000    0.148    0.000 /home/tzl/repo/coimagine/experiments/planar_tasks/semantic_planning/runtime.py:36(public_copy)
+     1556    0.140    0.000    0.140    0.000 {built-in method _pickle.loads}
+    23136    0.037    0.000    0.134    0.000 /home/tzl/repo/coimagine/src/coimagine/continuous2d/backend.py:95(_body_state)
+      182    0.071    0.000    0.129    0.001 /home/tzl/repo/coimagine/experiments/option_rl_v21/yield_skill.py:47(_surfaces)
+
+

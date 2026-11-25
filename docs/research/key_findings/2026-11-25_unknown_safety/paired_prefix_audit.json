@@ -1,0 +1,98 @@
+[
+  {
+    "pair": "pair00",
+    "identical_prefix_boundaries": 36,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 144,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair01",
+    "identical_prefix_boundaries": 37,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 148,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair02",
+    "identical_prefix_boundaries": 36,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 144,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair03",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair04",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair05",
+    "identical_prefix_boundaries": 36,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 144,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair06",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair07",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair08",
+    "identical_prefix_boundaries": 38,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 152,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair09",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair10",
+    "identical_prefix_boundaries": 35,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 140,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  },
+  {
+    "pair": "pair11",
+    "identical_prefix_boundaries": 36,
+    "identical_prefix_decisions": true,
+    "first_public_difference_tick": 144,
+    "empty_termination": "safe_progress_and_stop",
+    "blocked_termination": "obstacle_rejected"
+  }
+]

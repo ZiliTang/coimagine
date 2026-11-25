@@ -1,0 +1,10 @@
+{
+  "tools/cap_regional_extension.py": "65337dbf2edf87f3841c3e08f89a4f7cff11025f24cb425b883bb7e92ade808b",
+  "tools/cap_regional_extension_run.py": "9d897b5113fd409d3bfbce52bd2623beee852b3b2fc26ff046489cedc1423f2f",
+  "tools/cap_regional_five.py": "b8a2bd877a92b5bf03312142efdebc9ef6e5ed9d92ce7cbb1bc9e33b71d45e70",
+  "tools/cap_regional_directq.py": "00eedad4dec4855262a8216893e702632cf16a5f5b504dc409c301d0d3bfd138",
+  "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_data.py": "b70344d01d5a18768237f015191a78cbe2912726422a40b0c6fb6e5f17231728",
+  "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_learner.py": "030d715b996d7ba845255fd5de356ec66eedd40b18b32b1411465fd5fd839256",
+  "experiments/planar_tasks/semantic_rl/program_trace_value_v1/model.py": "087ace008fb5a578de09f0d2a423ba8bb3c1dc8336444cb7adca1c05b1f4235b",
+  "experiments/planar_tasks/semantic_rl/program_trace_value_v1/q_model.py": "3c02df76cb0933bb368824857c3bf49200ba38cef9931536688d8dc18bf03f1c"
+}

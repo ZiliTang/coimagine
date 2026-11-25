@@ -1,0 +1,46 @@
+{
+  "version": "change-face-ccw-standoff05-v2",
+  "development_room_count": 16,
+  "exact_matches_to_prior_5cm_arm": 60,
+  "role_comparison": {
+    "early": {
+      "keep": {
+        "available": 32,
+        "attempted": 0,
+        "completed": 0,
+        "success_rooms": 0,
+        "successful_2cm_clear_push": 0
+      },
+      "swap": {
+        "available": 32,
+        "attempted": 28,
+        "completed": 26,
+        "success_rooms": 13,
+        "successful_2cm_clear_push": 26
+      }
+    },
+    "late": {
+      "keep": {
+        "available": 28,
+        "attempted": 26,
+        "completed": 22,
+        "success_rooms": 11,
+        "successful_2cm_clear_push": 0
+      },
+      "swap": {
+        "available": 6,
+        "attempted": 0,
+        "completed": 0,
+        "success_rooms": 0,
+        "successful_2cm_clear_push": 0
+      }
+    }
+  },
+  "sources": {
+    "tools/cap_guarded_calibration_forks.py": "edcce691534b847583391739debb67c693f9dfcb988ddeb657c536d3fe4e0a2d",
+    "tools/cap_guarded_role_swap_probe.py": "a8b5ebfa9fc236936f1c78cb126e35a9d83953de4b788b83e67d2dec2d41223e",
+    "experiments/planar_tasks/semantic_rl/push_phases.py": "c3168b3e5df8d88fdb657b91b009f26b790e57630e2f776d49d0a18898a725cf",
+    "experiments/planar_tasks/semantic_rl/push_contact_recovery.py": "a5953f188d7836e5794d7d787a8d9ca2cb4b60e7c1f93988e3e8f13323d5cc0e"
+  },
+  "paired_file_sha256": "1c94c9399dfcf0bc5cf8fbec9f893aa8ea74db4a4997d4f9e70b72452421f1c6"
+}

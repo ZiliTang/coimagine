@@ -1,0 +1,66 @@
+{
+  "inputs.json": {
+    "sha256": "aee82e56f9504256193f2dff9b16eea56b45da4616726c292a95eae3f2f25fe3",
+    "bytes": 7796
+  },
+  "dashboard.html": {
+    "sha256": "4fab28a6cf31f90ef436a1ce9107320746e8e90a92ae662fd431d01eb43759bf",
+    "bytes": 783475
+  },
+  "SUMMARY.json": {
+    "sha256": "33d61c4fea8b769ca8079b6e1c55460eacd76db1396ab6b68e3ebba2c5c613f2",
+    "bytes": 2400
+  },
+  "per_case_results.csv": {
+    "sha256": "6ad0b067287ddea8b519e56a13b90a94e4f85639d1168985af9dddae53ce245f",
+    "bytes": 10170
+  },
+  "ALL_MODELS_FROZEN.json": {
+    "sha256": "4ea7074ab9fbc4580bcb07ebd1728334ce120c3440bbdb7264f1226f6f836bd9",
+    "bytes": 3931
+  },
+  "study.exit.json": {
+    "sha256": "f65651346be5cc9338fa5ff52aff2152438ba5d176c09e1aacde853f3b88841e",
+    "bytes": 138
+  },
+  "loss_metrics.csv": {
+    "sha256": "fbc3230017ecfc31ad2587aaa547a2fd47f12a10acfa31a165e5b1bb2cf27a7f",
+    "bytes": 47236
+  },
+  "FINISHED.json": {
+    "sha256": "313a2f2ab9f0411729bb771c24d933341c5e1007347cfb6aab10f413f15d65f9",
+    "bytes": 292
+  },
+  "validation.json": {
+    "sha256": "51661f33b6bb900b84795112a97cb29fcf63e70219dd80bb076065e7b2d69b14",
+    "bytes": 264
+  },
+  "REPORT.md": {
+    "sha256": "b0303bde844578dac55e31986f1582fe18eca416e1615f7d969e7c1f4d7142f9",
+    "bytes": 3367
+  },
+  "schedule.json": {
+    "sha256": "cd6d980b9453d0a91baf39acac00d7e5e4d23c0ffacaeca9541e31f1c8bda0d9",
+    "bytes": 166030
+  },
+  "evaluation_curve.csv": {
+    "sha256": "e2205c7c867bf892b4586da9ea0a553a73560e6b452e6725e4541bfc960debea",
+    "bytes": 396
+  },
+  "training_returns.csv": {
+    "sha256": "f68cb0269a5dec955eefe19a995322f2c291b611339cd3827622d85d952dfb60",
+    "bytes": 6792
+  },
+  "learning_curves.png": {
+    "sha256": "2f1b46196910d568abfff8ae238edd756f816157da5af6489fcf89e2ad4125d3",
+    "bytes": 585897
+  },
+  "training_cycles.csv": {
+    "sha256": "05c6da4a72134a31cf07cf3da0f95deb95008933e300d332087871bc53e28ccc",
+    "bytes": 513
+  },
+  "curves.json": {
+    "sha256": "04730af919b6df45f8f8148623954ef1c0be95d2fcf8c1fa08f8f226abe2b761",
+    "bytes": 148062
+  }
+}

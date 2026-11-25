@@ -62,6 +62,8 @@ class Detector:
             # do not pretend translation odometry measures their effect.
             bad = ex.get('direction_unavailable', False) or ex.get('stage') in ('move_blocked', 'yield_blocked')
             self.blocked[i] = self.blocked[i]+1 if bad else 0
+            if spec.kind == 'push' and ex.get('exit_reason') == 'push_no_legal_face' and committed:
+                return 'push_no_legal_face'
             if ex.get('done', False) and not self.initial_done[i] and spec.kind not in ('wait',):
                 return 'controller_end'
         contact = bool(active) and all(observation['robots'][i]['contacting_object'] and
@@ -115,10 +117,12 @@ class Environment:
             execution={k:slot.last_info.get(k) for k in FEEDBACK_FIELDS})
             for i,slot in enumerate(self.env.slots)]))
 
-    def step(self, requested, remaining_ticks=None):
+    def step(self, requested, remaining_ticks=None, *, review=None):
         if self.config.mode == 'duration':
             from .duration_execution import step_duration
-            return step_duration(self, requested, remaining_ticks)
+            return step_duration(self, requested, remaining_ticks, review=review)
+        if review is not None:
+            raise ValueError('in-flight review requires duration execution')
         env = self.env
         if env.termination is not None:
             raise ValueError('terminal environment')
@@ -132,7 +136,7 @@ class Environment:
                 raise ValueError('time-mode command exceeds remaining budget')
             env.command_index = self.decision_count
             event = env.step_command(requested)
-            reason = 'terminal' if env.termination else 'duration'
+            reason = 'terminal' if env.termination else event.get('reason', 'duration')
             public = env.public()
         else:
             before = current_event(self.history)['observation']

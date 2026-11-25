@@ -1,0 +1,8 @@
+{
+  "all_7600_development_outcomes_and_ticks_match_previous_bundle": true,
+  "all_760_scene_fixtures_match_previous_bundle": true,
+  "all_7_policy_bytes_and_semantic_groups_match_previous_bundle": true,
+  "old_panels_in_identity_registry": {
+    "evaluation.json": 200
+  }
+}

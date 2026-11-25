@@ -1,0 +1,90 @@
+[
+  {
+    "case_id": "retention_dev_2_03",
+    "first_divergence": 34,
+    "public_history_hash": "6b495dbd6260420ba5739cd5e5109d7a5704fff24ac37c0c211bbdb57c23ca5f",
+    "initial_cap": "CAP-RR-002",
+    "challenger": "CAP-RR-007",
+    "once_action": {
+      "target_id": null,
+      "a0": 57,
+      "a1": 63,
+      "ticks": 25
+    },
+    "free_action": {
+      "target_id": "entity-a",
+      "a0": 46,
+      "a1": 11,
+      "ticks": 25
+    },
+    "score_margin": 0.06368396058678627,
+    "once_success": 1,
+    "free_success": 0
+  },
+  {
+    "case_id": "retention_dev_2_09",
+    "first_divergence": 8,
+    "public_history_hash": "975671db9912547bbe07644a36dc4e252b9ef4ef3d8e4404cec401ffa7adb74d",
+    "initial_cap": "CAP-RR-001",
+    "challenger": "CAP-RR-010",
+    "once_action": {
+      "target_id": "entity-a",
+      "a0": 46,
+      "a1": 27,
+      "ticks": 40
+    },
+    "free_action": {
+      "target_id": "entity-a",
+      "a0": 18,
+      "a1": 27,
+      "ticks": 20
+    },
+    "score_margin": 0.016204655170440674,
+    "once_success": 1,
+    "free_success": 0
+  },
+  {
+    "case_id": "retention_dev_2_00",
+    "first_divergence": 3,
+    "public_history_hash": "63a632e83000fe909558d6f7107b38ff8d574afc5b5780933afbb4617a28d251",
+    "initial_cap": "CAP-RR-001",
+    "challenger": "CAP-RR-007",
+    "once_action": {
+      "target_id": null,
+      "a0": 53,
+      "a1": 61,
+      "ticks": 25
+    },
+    "free_action": {
+      "target_id": null,
+      "a0": 47,
+      "a1": 61,
+      "ticks": 25
+    },
+    "score_margin": 0.0009609460830688477,
+    "once_success": 0,
+    "free_success": 1
+  },
+  {
+    "case_id": "retention_dev_2_02",
+    "first_divergence": 2,
+    "public_history_hash": "a64897fd2d5494ef8b5e7b65d2dc6fd5026f0761b7f37ab57b17b18226a06dfb",
+    "initial_cap": "CAP-RR-001",
+    "challenger": "CAP-RR-007",
+    "once_action": {
+      "target_id": "entity-a",
+      "a0": 31,
+      "a1": 46,
+      "ticks": 40
+    },
+    "free_action": {
+      "target_id": "entity-a",
+      "a0": 31,
+      "a1": 46,
+      "ticks": 25
+    },
+    "score_margin": 0.00270003080368042,
+    "once_success": 0,
+    "free_success": 1
+  }
+]

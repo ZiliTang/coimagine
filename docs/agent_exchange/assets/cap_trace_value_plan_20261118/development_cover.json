@@ -1,0 +1,233 @@
+{
+  "population": 760,
+  "union": 570,
+  "total_runs": 7600,
+  "selection": "development-only descending marginal gain; name tie-break",
+  "greedy": [
+    {
+      "cap": "CAP-RR-009",
+      "total_success": 311,
+      "new_success": 311,
+      "cumulative": 311,
+      "remaining": 259
+    },
+    {
+      "cap": "CAP-RR-003",
+      "total_success": 309,
+      "new_success": 127,
+      "cumulative": 438,
+      "remaining": 132
+    },
+    {
+      "cap": "CAP-RR-001",
+      "total_success": 280,
+      "new_success": 50,
+      "cumulative": 488,
+      "remaining": 82
+    },
+    {
+      "cap": "CAP-RR-010",
+      "total_success": 269,
+      "new_success": 29,
+      "cumulative": 517,
+      "remaining": 53
+    },
+    {
+      "cap": "CAP-RR-006",
+      "total_success": 126,
+      "new_success": 21,
+      "cumulative": 538,
+      "remaining": 32
+    },
+    {
+      "cap": "CAP-RR-007",
+      "total_success": 203,
+      "new_success": 12,
+      "cumulative": 550,
+      "remaining": 20
+    },
+    {
+      "cap": "CAP-RR-002",
+      "total_success": 261,
+      "new_success": 10,
+      "cumulative": 560,
+      "remaining": 10
+    },
+    {
+      "cap": "CAP-RR-004",
+      "total_success": 175,
+      "new_success": 4,
+      "cumulative": 564,
+      "remaining": 6
+    },
+    {
+      "cap": "CAP-RR-008",
+      "total_success": 191,
+      "new_success": 4,
+      "cumulative": 568,
+      "remaining": 2
+    },
+    {
+      "cap": "CAP-RR-005",
+      "total_success": 165,
+      "new_success": 2,
+      "cumulative": 570,
+      "remaining": 0
+    }
+  ],
+  "omitted": [],
+  "exclusive_successes": {
+    "CAP-RR-001": 15,
+    "CAP-RR-002": 8,
+    "CAP-RR-003": 19,
+    "CAP-RR-004": 4,
+    "CAP-RR-005": 2,
+    "CAP-RR-006": 15,
+    "CAP-RR-007": 5,
+    "CAP-RR-008": 4,
+    "CAP-RR-009": 23,
+    "CAP-RR-010": 9
+  },
+  "exact_frontier": [
+    {
+      "caps": 1,
+      "max_coverage": 311,
+      "example": [
+        "CAP-RR-009"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 2,
+      "max_coverage": 438,
+      "example": [
+        "CAP-RR-003",
+        "CAP-RR-009"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 3,
+      "max_coverage": 488,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-003",
+        "CAP-RR-009"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 4,
+      "max_coverage": 517,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-003",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 5,
+      "max_coverage": 538,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-003",
+        "CAP-RR-006",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 6,
+      "max_coverage": 550,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-003",
+        "CAP-RR-006",
+        "CAP-RR-007",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 7,
+      "max_coverage": 560,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-002",
+        "CAP-RR-003",
+        "CAP-RR-006",
+        "CAP-RR-007",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 8,
+      "max_coverage": 564,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-002",
+        "CAP-RR-003",
+        "CAP-RR-004",
+        "CAP-RR-006",
+        "CAP-RR-007",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 2
+    },
+    {
+      "caps": 9,
+      "max_coverage": 568,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-002",
+        "CAP-RR-003",
+        "CAP-RR-004",
+        "CAP-RR-006",
+        "CAP-RR-007",
+        "CAP-RR-008",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    },
+    {
+      "caps": 10,
+      "max_coverage": 570,
+      "example": [
+        "CAP-RR-001",
+        "CAP-RR-002",
+        "CAP-RR-003",
+        "CAP-RR-004",
+        "CAP-RR-005",
+        "CAP-RR-006",
+        "CAP-RR-007",
+        "CAP-RR-008",
+        "CAP-RR-009",
+        "CAP-RR-010"
+      ],
+      "number_of_best_sets": 1
+    }
+  ],
+  "minimum_cover_size": 10,
+  "minimum_covers": [
+    [
+      "CAP-RR-001",
+      "CAP-RR-002",
+      "CAP-RR-003",
+      "CAP-RR-004",
+      "CAP-RR-005",
+      "CAP-RR-006",
+      "CAP-RR-007",
+      "CAP-RR-008",
+      "CAP-RR-009",
+      "CAP-RR-010"
+    ]
+  ]
+}

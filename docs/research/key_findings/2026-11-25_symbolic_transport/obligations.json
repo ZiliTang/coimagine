@@ -1,0 +1,34 @@
+{
+  "forward_and_support": {
+    "admitted": 492,
+    "valid": 94,
+    "static_contact": 214,
+    "selected": 68,
+    "selected_valid": 17,
+    "selected_static_contact": 51
+  },
+  "push_path_only": {
+    "admitted": 238,
+    "valid": 77,
+    "static_contact": 30,
+    "selected": 51,
+    "selected_valid": 17,
+    "selected_static_contact": 9
+  },
+  "both_sweeps": {
+    "admitted": 134,
+    "valid": 47,
+    "static_contact": 0,
+    "selected": 25,
+    "selected_valid": 4,
+    "selected_static_contact": 0
+  },
+  "full_contract": {
+    "admitted": 76,
+    "valid": 29,
+    "static_contact": 0,
+    "selected": 25,
+    "selected_valid": 9,
+    "selected_static_contact": 0
+  }
+}

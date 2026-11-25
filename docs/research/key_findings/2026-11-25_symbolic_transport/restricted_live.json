@@ -1,0 +1,366 @@
+{
+  "counts": {
+    "wait": 52,
+    "valid": 25
+  },
+  "rows": [
+    {
+      "id": "contract-000",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-001",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-002",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-003",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-004",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-006",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-008",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-010",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-012",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-013",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-014",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-016",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-018",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-019",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-020",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-022",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-023",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-024",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-026",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-027",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-028",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-029",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-030",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-032",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-034",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-035",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-036",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-038",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-039",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-040",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-042",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-044",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-046",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-047",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-048",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-050",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-052",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-054",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-056",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-058",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-060",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-062",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-064",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-065",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-066",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-067",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-068",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-070",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-071",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-072",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-074",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-075",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-076",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-078",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-080",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-082",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-084",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-086",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-088",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-090",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-092",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-094",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-096",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-097",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-098",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-100",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-102",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-103",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-104",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-106",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-108",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-110",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-112",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-114",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-116",
+      "choice": "wait"
+    },
+    {
+      "id": "contract-118",
+      "choice": "valid",
+      "reason": "ready",
+      "contact": false
+    },
+    {
+      "id": "contract-119",
+      "choice": "wait"
+    }
+  ]
+}

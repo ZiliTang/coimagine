@@ -1,0 +1,21 @@
+{
+  "panel_sha256": "6cee11c6087e4c3006dcabe1becc3cd114f92a750853003d288f47a97afde803",
+  "weights": {
+    "w64_s17_u24000.pt": "feec68c7b3800b951eb95d40f93a8763b51c890c68c440b280972d7d324f6d55",
+    "w64_s29_u24000.pt": "792492ce415c7f106abc233b24b065873e9da6510afadaa8a95cdb080cb2131b"
+  },
+  "early_per_scene_sha256": "8343d36657a29c7a3e40aa9d6ff6af8850cca7b587eb02e2143a2f8a0a989b02",
+  "seeds": [
+    17,
+    29
+  ],
+  "workers": 12,
+  "actor": "GA single priority teacher 64x64",
+  "updates": 24000,
+  "epsilon": 0,
+  "max_ticks": 1800,
+  "max_decisions": 300,
+  "wall_seconds": 1800,
+  "primary": "paired 24k minus 6k success rate inside the seven-CAP union",
+  "secondary": "full panel, unique-CAP and outside-union success; paired scene changes"
+}

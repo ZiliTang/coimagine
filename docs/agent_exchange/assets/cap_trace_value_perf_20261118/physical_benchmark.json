@@ -1,0 +1,127 @@
+{
+  "results": [
+    {
+      "mode": "original",
+      "case_id": "online_training_2_000",
+      "wall_seconds": 4.337307859008433,
+      "rollout_seconds": 4.14414107700577,
+      "trace_seconds": 1.8602359410288045,
+      "network_seconds": 0.3728934439859586,
+      "ticks": 735,
+      "decisions": 31,
+      "ray_acquisitions": 1534,
+      "contact_queries": 2974
+    },
+    {
+      "mode": "original",
+      "case_id": "online_training_3_000",
+      "wall_seconds": 8.856614900010754,
+      "rollout_seconds": 8.437549962996854,
+      "trace_seconds": 4.6043292109970935,
+      "network_seconds": 0.06437742400157731,
+      "ticks": 1800,
+      "decisions": 67,
+      "ray_acquisitions": 3736,
+      "contact_queries": 7270
+    },
+    {
+      "mode": "original",
+      "case_id": "online_training_4_000",
+      "wall_seconds": 6.136465207004221,
+      "rollout_seconds": 5.810220737999771,
+      "trace_seconds": 2.8463485190150095,
+      "network_seconds": 0.04471532902971376,
+      "ticks": 1154,
+      "decisions": 50,
+      "ray_acquisitions": 2410,
+      "contact_queries": 4669
+    },
+    {
+      "mode": "original",
+      "case_id": "online_training_5_000",
+      "wall_seconds": 6.667697402997874,
+      "rollout_seconds": 6.34555446000013,
+      "trace_seconds": 3.2964249490614748,
+      "network_seconds": 0.04829666698060464,
+      "ticks": 1223,
+      "decisions": 54,
+      "ray_acquisitions": 2556,
+      "contact_queries": 4949
+    },
+    {
+      "mode": "fast",
+      "case_id": "online_training_2_000",
+      "wall_seconds": 3.3842877190036234,
+      "rollout_seconds": 3.2362115620053373,
+      "trace_seconds": 1.6802051029953873,
+      "network_seconds": 0.027048757969168946,
+      "ticks": 735,
+      "decisions": 31,
+      "ray_acquisitions": 1474,
+      "contact_queries": 739
+    },
+    {
+      "mode": "fast",
+      "case_id": "online_training_3_000",
+      "wall_seconds": 7.564981021001586,
+      "rollout_seconds": 7.238720610999735,
+      "trace_seconds": 4.076368174995878,
+      "network_seconds": 0.05930767995596398,
+      "ticks": 1800,
+      "decisions": 67,
+      "ray_acquisitions": 3604,
+      "contact_queries": 1804
+    },
+    {
+      "mode": "fast",
+      "case_id": "online_training_4_000",
+      "wall_seconds": 5.555295524012763,
+      "rollout_seconds": 5.177803458005656,
+      "trace_seconds": 2.39929611995467,
+      "network_seconds": 0.04560899597709067,
+      "ticks": 1154,
+      "decisions": 50,
+      "ray_acquisitions": 2312,
+      "contact_queries": 1158
+    },
+    {
+      "mode": "fast",
+      "case_id": "online_training_5_000",
+      "wall_seconds": 6.26617336399795,
+      "rollout_seconds": 5.954551326998626,
+      "trace_seconds": 2.9876880060037365,
+      "network_seconds": 0.054669253979227506,
+      "ticks": 1223,
+      "decisions": 54,
+      "ray_acquisitions": 2450,
+      "contact_queries": 1227
+    }
+  ],
+  "parity": [
+    {
+      "case_id": "online_training_2_000",
+      "all_public_history_and_scores_equal": true,
+      "all_physical_frames_equal": true,
+      "all_transition_bytes_equal": true
+    },
+    {
+      "case_id": "online_training_3_000",
+      "all_public_history_and_scores_equal": true,
+      "all_physical_frames_equal": true,
+      "all_transition_bytes_equal": true
+    },
+    {
+      "case_id": "online_training_4_000",
+      "all_public_history_and_scores_equal": true,
+      "all_physical_frames_equal": true,
+      "all_transition_bytes_equal": true
+    },
+    {
+      "case_id": "online_training_5_000",
+      "all_public_history_and_scores_equal": true,
+      "all_physical_frames_equal": true,
+      "all_transition_bytes_equal": true
+    }
+  ],
+  "new_physical_executions": 8
+}

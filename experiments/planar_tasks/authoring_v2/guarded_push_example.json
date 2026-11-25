@@ -1,0 +1,11 @@
+{
+  "rules": [
+    {
+      "name": "push_at_clear_wall",
+      "when": {"wall_mm": [280, 320]},
+      "option": "push_short",
+      "expect": {"advance_mm": [40, 80]},
+      "then": {"scan": "change_side"}
+    }
+  ]
+}

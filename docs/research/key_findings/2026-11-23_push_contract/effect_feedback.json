@@ -1,0 +1,1 @@
+{"error":{"false_negative":3,"false_positive":4,"mae":0.02418451989561929,"median_abs":0.01866125728680074,"progress_correct":140,"sign_correct":119,"sign_n":119},"n":164,"observed":147,"statuses":{"observed":147,"support_changed":17}}

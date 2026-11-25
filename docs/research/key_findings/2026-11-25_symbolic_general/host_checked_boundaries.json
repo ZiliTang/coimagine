@@ -1,0 +1,9792 @@
+[
+  {
+    "room": "diag_symbolic_calibration_001",
+    "boundary": 20,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": [
+          5,
+          5
+        ],
+        "claim": "selected",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 5,
+        "a1": 5,
+        "ticks": 6
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": [
+        5,
+        5
+      ],
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "b6ef1942c9c66b55a90da24843d2124cd7d3824f2e617660d83d599bdf09875f",
+      "tick": 120,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_001",
+    "boundary": 100,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            9,
+            9
+          ],
+          [
+            9,
+            46
+          ],
+          [
+            46,
+            5
+          ],
+          [
+            46,
+            9
+          ]
+        ],
+        "selected": null,
+        "claim": "abstain",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              8
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              9,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              9,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              8
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              11
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              8
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              9
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              10
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              11
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 46,
+        "a1": 40,
+        "ticks": 12
+      },
+      "menu": [
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          8
+        ],
+        [
+          4,
+          9
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          4,
+          11
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          8
+        ],
+        [
+          5,
+          9
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          5,
+          11
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          8
+        ],
+        [
+          6,
+          9
+        ],
+        [
+          6,
+          10
+        ],
+        [
+          6,
+          11
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          8
+        ],
+        [
+          7,
+          9
+        ],
+        [
+          7,
+          10
+        ],
+        [
+          7,
+          11
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          8
+        ],
+        [
+          8,
+          9
+        ],
+        [
+          8,
+          10
+        ],
+        [
+          8,
+          11
+        ],
+        [
+          8,
+          44
+        ],
+        [
+          8,
+          46
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          9,
+          8
+        ],
+        [
+          9,
+          9
+        ],
+        [
+          9,
+          10
+        ],
+        [
+          9,
+          11
+        ],
+        [
+          9,
+          44
+        ],
+        [
+          9,
+          46
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          10,
+          8
+        ],
+        [
+          10,
+          9
+        ],
+        [
+          10,
+          10
+        ],
+        [
+          10,
+          11
+        ],
+        [
+          10,
+          44
+        ],
+        [
+          10,
+          46
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          11,
+          8
+        ],
+        [
+          11,
+          9
+        ],
+        [
+          11,
+          10
+        ],
+        [
+          11,
+          11
+        ],
+        [
+          11,
+          44
+        ],
+        [
+          11,
+          46
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          44,
+          8
+        ],
+        [
+          44,
+          9
+        ],
+        [
+          44,
+          10
+        ],
+        [
+          44,
+          11
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ],
+        [
+          46,
+          8
+        ],
+        [
+          46,
+          9
+        ],
+        [
+          46,
+          10
+        ],
+        [
+          46,
+          11
+        ]
+      ],
+      "selected": null,
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "a0805568029e4d5fdf6af3041432685ebf396a942376cef617313426387e9c24",
+      "tick": 600,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_002",
+    "boundary": 20,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": [
+          5,
+          5
+        ],
+        "claim": "selected",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 5,
+        "a1": 5,
+        "ticks": 6
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": [
+        5,
+        5
+      ],
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "b6ef1942c9c66b55a90da24843d2124cd7d3824f2e617660d83d599bdf09875f",
+      "tick": 120,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_002",
+    "boundary": 98,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": null,
+        "claim": "abstain",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 40,
+        "a1": 46,
+        "ticks": 12
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": null,
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "fdbab96f02d66fab2d79f03bf9e81ed4229d159decf7a65d7ed58b04cdf2a297",
+      "tick": 606,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_003",
+    "boundary": 20,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": [
+          5,
+          5
+        ],
+        "claim": "selected",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 5,
+        "a1": 5,
+        "ticks": 6
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": [
+        5,
+        5
+      ],
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "b6ef1942c9c66b55a90da24843d2124cd7d3824f2e617660d83d599bdf09875f",
+      "tick": 120,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_003",
+    "boundary": 98,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 4,
+        "passed": 4,
+        "rejected": 0,
+        "unknown": 92,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            9,
+            46
+          ],
+          [
+            13,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": [
+          46,
+          5
+        ],
+        "claim": "selected",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              8,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              9,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              9,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              10,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              11,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              12,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              13,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              13,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              14,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              15,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 46,
+        "a1": 5,
+        "ticks": 6
+      },
+      "menu": [
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          2
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ],
+        [
+          8,
+          7
+        ],
+        [
+          8,
+          44
+        ],
+        [
+          8,
+          46
+        ],
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          2
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          9,
+          5
+        ],
+        [
+          9,
+          6
+        ],
+        [
+          9,
+          7
+        ],
+        [
+          9,
+          44
+        ],
+        [
+          9,
+          46
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          2
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          10,
+          5
+        ],
+        [
+          10,
+          6
+        ],
+        [
+          10,
+          7
+        ],
+        [
+          10,
+          44
+        ],
+        [
+          10,
+          46
+        ],
+        [
+          11,
+          0
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          11,
+          2
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          11,
+          5
+        ],
+        [
+          11,
+          6
+        ],
+        [
+          11,
+          7
+        ],
+        [
+          11,
+          44
+        ],
+        [
+          11,
+          46
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          2
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          12,
+          5
+        ],
+        [
+          12,
+          6
+        ],
+        [
+          12,
+          7
+        ],
+        [
+          12,
+          44
+        ],
+        [
+          12,
+          46
+        ],
+        [
+          13,
+          0
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          13,
+          2
+        ],
+        [
+          13,
+          3
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          13,
+          5
+        ],
+        [
+          13,
+          6
+        ],
+        [
+          13,
+          7
+        ],
+        [
+          13,
+          44
+        ],
+        [
+          13,
+          46
+        ],
+        [
+          14,
+          0
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          2
+        ],
+        [
+          14,
+          3
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          14,
+          5
+        ],
+        [
+          14,
+          6
+        ],
+        [
+          14,
+          7
+        ],
+        [
+          14,
+          44
+        ],
+        [
+          14,
+          46
+        ],
+        [
+          15,
+          0
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          15,
+          2
+        ],
+        [
+          15,
+          3
+        ],
+        [
+          15,
+          4
+        ],
+        [
+          15,
+          5
+        ],
+        [
+          15,
+          6
+        ],
+        [
+          15,
+          7
+        ],
+        [
+          15,
+          44
+        ],
+        [
+          15,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": [
+        46,
+        5
+      ],
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "1fd4cbb2822357cde31ef53c0d7acf557107ef7443fb459b7e53570202223c2c",
+      "tick": 603,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_004",
+    "boundary": 20,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": [
+          5,
+          5
+        ],
+        "claim": "selected",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 5,
+        "a1": 5,
+        "ticks": 6
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": [
+        5,
+        5
+      ],
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "bfbb9694e1e4e77b84a7c39e606936cf1caa685a36893193dea0e7aad81fb56a",
+      "tick": 120,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  },
+  {
+    "room": "diag_symbolic_calibration_004",
+    "boundary": 100,
+    "report": {
+      "status": "ok",
+      "findings": [],
+      "selection_checked": true,
+      "counts": {
+        "legal": 96,
+        "proposed": 6,
+        "passed": 6,
+        "rejected": 0,
+        "unknown": 90,
+        "omitted_passing": 0
+      },
+      "omitted_passing": [],
+      "packet": {
+        "version": 1,
+        "proposed": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            46
+          ],
+          [
+            5,
+            5
+          ],
+          [
+            5,
+            46
+          ],
+          [
+            46,
+            1
+          ],
+          [
+            46,
+            5
+          ]
+        ],
+        "selected": null,
+        "claim": "abstain",
+        "widths": [],
+        "peer_predictions": [],
+        "reviews": [
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              0,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              1,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              1,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              2,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              3,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              4,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              5,
+              44
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              5,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              6,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              44
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              7,
+              46
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              0
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              4
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              44,
+              7
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              0
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              1
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              2
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              3
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              4
+            ]
+          },
+          {
+            "verdict": "pass",
+            "peer_robots": [],
+            "pair": [
+              46,
+              5
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              6
+            ]
+          },
+          {
+            "verdict": "unknown",
+            "peer_robots": [],
+            "pair": [
+              46,
+              7
+            ]
+          }
+        ]
+      },
+      "action": {
+        "target_id": "entity-a",
+        "a0": 40,
+        "a1": 46,
+        "ticks": 12
+      },
+      "menu": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          0,
+          7
+        ],
+        [
+          0,
+          44
+        ],
+        [
+          0,
+          46
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          44
+        ],
+        [
+          1,
+          46
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          2,
+          7
+        ],
+        [
+          2,
+          44
+        ],
+        [
+          2,
+          46
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          3,
+          7
+        ],
+        [
+          3,
+          44
+        ],
+        [
+          3,
+          46
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          4,
+          7
+        ],
+        [
+          4,
+          44
+        ],
+        [
+          4,
+          46
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          5,
+          7
+        ],
+        [
+          5,
+          44
+        ],
+        [
+          5,
+          46
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          6,
+          7
+        ],
+        [
+          6,
+          44
+        ],
+        [
+          6,
+          46
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          2
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          7,
+          7
+        ],
+        [
+          7,
+          44
+        ],
+        [
+          7,
+          46
+        ],
+        [
+          44,
+          0
+        ],
+        [
+          44,
+          1
+        ],
+        [
+          44,
+          2
+        ],
+        [
+          44,
+          3
+        ],
+        [
+          44,
+          4
+        ],
+        [
+          44,
+          5
+        ],
+        [
+          44,
+          6
+        ],
+        [
+          44,
+          7
+        ],
+        [
+          46,
+          0
+        ],
+        [
+          46,
+          1
+        ],
+        [
+          46,
+          2
+        ],
+        [
+          46,
+          3
+        ],
+        [
+          46,
+          4
+        ],
+        [
+          46,
+          5
+        ],
+        [
+          46,
+          6
+        ],
+        [
+          46,
+          7
+        ]
+      ],
+      "selected": null,
+      "target_id": "entity-a",
+      "source_sha256": "580791914429a8991e5e532d3d7d5ea9a1f613bbd96cd7c42b17daa4c7463cc3",
+      "observation_sha256": "faaf46ea2b7be7290eb40addb50681c11038ebd832deb406e6519bb0da3a31e3",
+      "tick": 600,
+      "menu_scope": "public_goal_translation_pairs",
+      "input_origin": "source_bound_memory",
+      "actual_command_binding": "isolated_production_first_proposal"
+    }
+  }
+]

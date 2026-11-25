@@ -1,0 +1,93 @@
+{
+  "bundle": "/home/tzl/repo/coimagine/outputs/transfers/cap_trace_value_dev_v1",
+  "priority_bundle": "/home/tzl/repo/coimagine/outputs/transfers/priority_teacher_v1",
+  "bundle_manifest_sha256": "bf75624f8ef2f19cf8fbda2f06d5af47898cf1ee60254fd49da925ad28e12f2a",
+  "new_sources": {
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/model.py": "12a3a11eaa6506ecd94f73a2978d9b21afbf4eca205e5e7a18f6e325a015e7d2",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/__init__.py": "0686797206541f5c6579e275a406d4af7935a1ebaa9e8711469c7dded7f6d1a0",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/dataset.py": "e2a8a9032b88f2c7df4aa432a0a830643a487259713e9d4858dbcbf4aa040804",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_learner.py": "19d1aa4f126baf81b5b34197095c342fbc8ffd8dce0e73653cbb31a5b23aa1ee",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/q_model.py": "2b3f54596df6f5b7a26bba59aef1a3ef3682808c5612c2121da363c76d329c75",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/runtime.py": "3545e776bc9d65cba0d0ed3a112d85c2f10d95990fc63b5491b55439423fb699",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_worker.py": "8edc356644eabad74a861d1a40fb9c595849b740f91fcb10be671f23c4ba6c84",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/instrumentation.py": "e545fdf4d98a967b54760229eb08bf9b2b67bc96cd1a0564cd3a9385d262ff55",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/full_data.py": "412492169d78cccf05e9b8ebabb4948299860f2e7ee13886911c41174c501e94",
+    "experiments/planar_tasks/semantic_rl/program_trace_value_v1/evaluation.py": "1aafdf15cbfed366f23b6870a0cf8dff68b1583d22d05861245b246d8f95c60e",
+    "experiments/planar_tasks/authoring_v2/cap_trace_value_full.py": "a1c01895569bd8c8b0517a27957f14646978b54b8722a79ab0569a8994238fcf",
+    "experiments/planar_tasks/authoring_v2/cap_trace_value_panels.py": "bbee2c64d90107b1345cc9685ae92bb04c2a24fa8fc052d4a57e88e580aec2bc"
+  },
+  "protocol": {
+    "arms": [
+      "GA",
+      "LOCAL",
+      "GLOBAL"
+    ],
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "caps": [
+      "CAP-RR-009",
+      "CAP-RR-003",
+      "CAP-RR-001",
+      "CAP-RR-010",
+      "CAP-RR-006",
+      "CAP-RR-007",
+      "CAP-RR-002"
+    ],
+    "v_updates": 16000,
+    "q_init_updates": 8000,
+    "online_updates": 6000,
+    "online_rounds": 4,
+    "episodes_per_round": 50,
+    "updates_per_round": 1500,
+    "epsilon": [
+      0.2,
+      0.15,
+      0.1,
+      0.05
+    ],
+    "offline_online_replay_fraction": [
+      0.5,
+      0.5
+    ],
+    "online_new_roots": 200,
+    "online_root_distribution": "same generator, new content-disjoint seeds",
+    "offline_train_roots": 608,
+    "offline_validation_roots": 152,
+    "normalization": "offline training boundaries only; frozen online",
+    "reward": "success terminal 1, otherwise 0; finite 1800 ticks / 300 decisions",
+    "gamma": 1,
+    "budget_truncation": "finite-task terminal mask; no bootstrap at either fixed task budget",
+    "value_target": "expert continuation Monte Carlo; behavior CAP labels only",
+    "q_target": "one real action followed by common live candidate selector",
+    "optimizer": "Adam",
+    "learning_rate": 0.0003,
+    "batch": 64,
+    "clip_grad": 1.0,
+    "target_sync": 250,
+    "feature_workers": 8,
+    "physical_workers": 12,
+    "fit_workers": 1,
+    "lidar": "numpy",
+    "monitor_roots": 32,
+    "monitor_checkpoints": [
+      "offline",
+      "online100",
+      "online200"
+    ],
+    "test_roots": 200,
+    "test_model_executions": 3600,
+    "test_cap_executions": 2000,
+    "single_cap_baselines": "all original 10; primary development-selected CAP009 plus descriptive test-best",
+    "full_physical_budget": 8264,
+    "pilot_physical_budget": 48,
+    "fixed_final_checkpoint": true,
+    "test_used_for_selection": false,
+    "offline_fit_wall_seconds": 3600,
+    "online_model_wall_seconds": 3600,
+    "whole_run_wall_seconds": 129600,
+    "authorization": "User explicitly requested autonomous complete experiment/report and additional disjoint online scenes."
+  }
+}

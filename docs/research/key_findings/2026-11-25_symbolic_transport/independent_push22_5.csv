@@ -1,0 +1,13 @@
+room,side,initial_push_ticks,initial_push_reason,orbit_ticks,orbit_reason,requested_next_push,next_push_ticks,next_push_reason,offered_control_code,control_ticks,control_reason
+contract-006,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-028,cw,0,push_no_legal_face,12,duration,1,0,push_no_legal_face,4,12,duration
+contract-038,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-044,cw,0,push_no_legal_face,12,duration,1,0,push_no_legal_face,4,12,duration
+contract-048,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-054,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-058,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-068,cw,0,push_no_legal_face,12,duration,1,0,push_no_legal_face,4,12,duration
+contract-104,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-106,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-112,ccw,0,push_no_legal_face,12,duration,17,0,push_no_legal_face,4,12,duration
+contract-118,cw,0,push_no_legal_face,12,duration,1,0,push_no_legal_face,4,12,duration
