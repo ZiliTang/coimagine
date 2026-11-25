@@ -107,3 +107,29 @@ def test_current_startup_predicate_cannot_be_overridden_by_stale_report():
     prepared["symbols"]["legal_a"] = False
     gateway = Gateway(program, mode="author")
     assert gateway.decide(prepared)["selected"] == "b"
+
+
+def test_broad_proof_is_reused_only_after_universal_check():
+    program,prepared=setup()
+    original=program.policy.check;calls=[]
+    def counted(current,*args,**kwargs):
+        calls.append(current)
+        return original(current,*args,**kwargs)
+    program.policy.check=counted
+    gateway=Gateway(program,invariants={"legal_b":True})
+    assert gateway.decide(prepared)["selected"]=="a"
+    prepared["symbols"]["legal_b"]=False
+    assert gateway.decide(prepared)["selected"]=="a"
+    assert calls==[{"legal_a":True}]
+
+
+def test_unresolved_prior_path_does_not_spend_futile_online_query():
+    program,prepared=setup()
+    for report in prepared["reports"].values():report["allowed"]=False
+    class UnusedOnline:
+        def run(self,*args):
+            raise AssertionError("new samples cannot remove an earlier unresolved path")
+    gateway=Gateway(program,model=Model(),rollout=UnusedOnline())
+    result=gateway.decide(prepared)
+    assert result["selected"] is None
+    assert gateway.ledger["online_queries"]==0

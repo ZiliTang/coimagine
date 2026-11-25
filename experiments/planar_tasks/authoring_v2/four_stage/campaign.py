@@ -13,6 +13,8 @@ EXTRA_GUIDES = [
     "experiments/planar_tasks/authoring_v2/checked_policy_example.py",
     "experiments/planar_tasks/authoring_v2/four_stage/README.md",
     "docs/research/future_directions/2026-11-25_cap_author_packet.md",
+    "experiments/planar_tasks/authoring_v2/four_stage/geometry_kernel.cpp",
+    "tools/cap_four_stage_campaign.py",
 ]
 
 

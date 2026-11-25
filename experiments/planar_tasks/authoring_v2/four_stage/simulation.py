@@ -14,10 +14,16 @@ from experiments.planar_tasks.relational_search.contract import digest
 
 
 def episode(fixture, source, *, model=None, rollout=None, mode="author",
-            max_ticks=1800, max_decisions=450, wall_seconds=600, heartbeat=None):
+            max_ticks=1800, max_decisions=450, wall_seconds=600, heartbeat=None,
+            frontend=None):
     program = verify(source)
     world = Environment(fixture, EventConfig(mode="duration"), fast_feedback=True, record_details=True)
-    frontend = PublicFrontend()
+    if frontend is None:
+        if 'native-grid-dependencies-v1' in source:
+            from .native_frontend import NativeFrontend
+            frontend=NativeFrontend(semantic_names=program.host["metrics"])
+        else:
+            frontend=PublicFrontend()
     gateway = Gateway(program, model=model, rollout=rollout, process_check=ProcessChecker(frontend),
                       mode=mode, invariants={"legal:brake": True})
     started = time.monotonic()

@@ -89,8 +89,9 @@ def evaluate_candidates(context: cython.const[cython.double][:],
 '''
 
 
-def build(decision_source):
-    host = schema()
+def build(decision_source, *, lean=False):
+    from .specialization import specialized_schema
+    host = specialized_schema(decision_source) if lean else schema()
     p = Extractor(decision_source, host)
     function = ast.unparse(p.function)
     commands = {name: [*opt["pair"], opt["ticks"], opt["family"] in ("push", "orbit")]
@@ -99,7 +100,7 @@ def build(decision_source):
               'SEMANTIC_API = "typed-stream-v1"\n'
               'NAMES = ["constant"]\nSTATE_NAMES = ["tick"]\nHISTORY_LENGTH = 1\n'
               'POLICY_CHECK_RULES = {"version": 1, "widths": {}, "peer_models": {}}\n'
-              'FOUR_STAGE_PROFILE = "host-public-preparation-v1"\n'
+              'FOUR_STAGE_PROFILE = ' + repr("native-grid-dependencies-v1" if lean else "host-public-preparation-v1") + '\n'
               'SEMANTIC_REGISTRY = ' + repr(list(host["metrics"])) + '\n'
               'ACTION_COMMANDS = ' + repr(commands) + '\n' + function + '\n' + WRAPPER)
     if len(source.encode()) > 49152:
@@ -112,16 +113,23 @@ def verify(source):
     functions = [n for n in parsed.body if isinstance(n, ast.FunctionDef) and n.name == "decide"]
     if len(functions) != 1:
         raise ValueError("missing or duplicate third stage")
-    regenerated = build(ast.unparse(functions[0]))
+    profiles = [n.value.value for n in parsed.body if isinstance(n, ast.Assign)
+                and any(isinstance(t,ast.Name) and t.id=="FOUR_STAGE_PROFILE" for t in n.targets)
+                and isinstance(n.value,ast.Constant)]
+    if profiles not in (["host-public-preparation-v1"],["native-grid-dependencies-v1"]):
+        raise ValueError("unknown or duplicate four-stage profile")
+    lean=profiles[0]=="native-grid-dependencies-v1"
+    regenerated = build(ast.unparse(functions[0]),lean=lean)
     if ast.dump(parsed) != ast.dump(ast.parse(regenerated)):
         raise ValueError("carrier differs from its declared public preparation/checking profile")
-    return Extractor(source, schema())
+    from .specialization import specialized_schema
+    return Extractor(source, specialized_schema(source) if lean else schema())
 
 
-def memory_packet(prepared, permissions):
+def memory_packet(prepared, permissions, registry=None):
     z = prepared["symbols"]
     packet = dict(four_stage_tick=prepared["observation"]["tick"],
-                  four_stage_values=[z[k] for k in schema()["metrics"]],
+                  four_stage_values=[z[k] for k in (schema()["metrics"] if registry is None else registry)],
                   four_stage_permissions={k: bool(v) for k, v in permissions.items()})
     if len(json.dumps(packet, separators=(",", ":"), allow_nan=False).encode()) > 8192:
         raise ValueError("prepared public memory exceeds typed-stream limit")
@@ -129,5 +137,5 @@ def memory_packet(prepared, permissions):
 
 
 def checked_boundary(source, prepared, permissions):
-    return dict(observation=prepared["observation"], memory=memory_packet(prepared, permissions),
+    return dict(observation=prepared["observation"], memory=memory_packet(prepared, permissions,verify(source).host["metrics"]),
                 source_sha256=hashlib.sha256(source.encode()).hexdigest())

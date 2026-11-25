@@ -45,12 +45,12 @@ bool intersection(const Ray& a,const Ray& b,P& p){
   if(t<0 || t>1 || s<0 || s>1)return false;
   p=a.a+u*t;return true;
 }
-struct Cell {bool free=false;bool initialized=false;std::vector<Poly> remain;};
+struct Cell {bool free=false;bool occupied=false;bool initialized=false;std::vector<Poly> remain;};
 struct Grid {
   double h,w,height;int nx,ny;F min_area;
   std::vector<Cell> cells;std::vector<std::vector<Ray>> scans;
   F wx0=0,wy0=0,wx1,wy1;
-  uint64_t certificates=0,resets=0;
+  uint64_t certificates=0,resets=0,free_count=0;
   Grid(double x,double y,double s,double m):h(s),w(x),height(y),nx(std::ceil(x/s)),ny(std::ceil(y/s)),min_area(m),cells(nx*ny),wx1(x),wy1(y){}
   Poly square(int x,int y)const{F a=x*F(h),b=y*F(h);return {{a,b},{a+h,b},{a+h,b+h},{a,b+h}};}
   void add(Poly poly,bool initial=false){
@@ -72,7 +72,7 @@ struct Grid {
         F side=cross(d,{cx-poly[i].x,cy-poly[i].y});F radius=(std::abs(d.x)+std::abs(d.y))*h/2;
         if(side+radius<0){outside=true;break;}if(side-radius<0)inside=false;}
       if(outside)continue;
-      if(inside){c.free=true;c.initialized=true;c.remain.clear();continue;}
+      if(inside){c.free=true;++free_count;c.initialized=true;c.remain.clear();continue;}
       if(!c.initialized){c.remain={square(x,y)};c.initialized=true;}
       std::vector<Poly> remain;
       for(const Poly& p:c.remain){
@@ -84,7 +84,7 @@ struct Grid {
         }
       }
       if(remain.size()>48){c.remain={square(x,y)};++resets;} // lose evidence, never invent free cells
-      else {c.remain=std::move(remain);if(c.remain.empty()){c.free=true;c.remain.shrink_to_fit();}}
+      else {c.remain=std::move(remain);if(c.remain.empty()){c.free=true;++free_count;c.remain.shrink_to_fit();}}
     }
   }
   void pair(const std::vector<Ray>& a,const std::vector<Ray>& b){
@@ -109,7 +109,8 @@ struct Grid {
   }
   // Test a convex outer envelope. Every intersected cell must have a complete
   // certificate. Native separating-axis rejection avoids polygon construction.
-  double missing(const double* v,int n)const{
+  double missing(const double* v,int n,double* occupied=nullptr)const{
+    if(occupied)*occupied=0;
     if(n<3)return std::numeric_limits<double>::infinity();
     Poly p;for(int i=0;i<n;++i)p.push_back({v[2*i],v[2*i+1]});if(!convex(p))return std::numeric_limits<double>::infinity();
     F x0=p[0].x,x1=x0,y0=p[0].y,y1=y0;for(P q:p){x0=std::min(x0,q.x);x1=std::max(x1,q.x);y0=std::min(y0,q.y);y1=std::max(y1,q.y);}
@@ -118,12 +119,13 @@ struct Grid {
     int ay=std::max(0,int(std::floor(y0/h))),by=std::min(ny-1,int(std::floor(y1/h)));
     int unknown=0;
     for(int y=ay;y<=by;++y)for(int x=ax;x<=bx;++x){
-      if(cells[y*nx+x].free)continue;
+      const Cell& cell=cells[y*nx+x];
+      if(cell.free && !cell.occupied)continue;
       F cx=(x+.5L)*h,cy=(y+.5L)*h;bool separate=false;
       for(int i=0;i<n;++i){P d=p[(i+1)%n]-p[i];F side=cross(d,{cx-p[i].x,cy-p[i].y});
         F radius=(std::abs(d.x)+std::abs(d.y))*h/2;
         if(side+radius<0){separate=true;break;}}
-      if(!separate)++unknown;
+      if(!separate){if(!cell.free)++unknown;if(occupied&&cell.occupied)++*occupied;}
     }
     return unknown*h*h;
   }
@@ -138,9 +140,11 @@ void* cap_grid_new(double w,double h,double resolution,double min_area){
 void cap_grid_delete(void* p){delete static_cast<Grid*>(p);}
 void* cap_grid_clone(void* p){try{return new Grid(*static_cast<Grid*>(p));}catch(...){return nullptr;}}
 void cap_grid_window(void* p,double x0,double y0,double x1,double y1){auto* g=static_cast<Grid*>(p);g->wx0=x0;g->wy0=y0;g->wx1=x1;g->wy1=y1;}
+void cap_grid_hits(void* p,const double* xy,int n){auto* g=static_cast<Grid*>(p);for(int i=0;i<n;++i){int x=std::clamp(int(std::floor(xy[2*i]/g->h)),0,g->nx-1);int y=std::clamp(int(std::floor(xy[2*i+1]/g->h)),0,g->ny-1);g->cells[y*g->nx+x].occupied=true;}}
 int cap_grid_update(void* p,const double* rays){try{static_cast<Grid*>(p)->update(rays);return 0;}catch(...){return -1;}}
 int cap_grid_certificate(void* p,const double* xy,int n){try{Poly q;for(int i=0;i<n;++i)q.push_back({xy[2*i],xy[2*i+1]});static_cast<Grid*>(p)->add(q,true);return 0;}catch(...){return -1;}}
 double cap_grid_missing(void* p,const double* xy,int n){try{return static_cast<Grid*>(p)->missing(xy,n);}catch(...){return std::numeric_limits<double>::infinity();}}
+void cap_grid_query(void* p,const double* xy,int n,double* out){try{out[0]=static_cast<Grid*>(p)->missing(xy,n,out+1);}catch(...){out[0]=std::numeric_limits<double>::infinity();out[1]=0;}}
 void cap_grid_mask(void* p,uint8_t* out){auto* g=static_cast<Grid*>(p);for(size_t i=0;i<g->cells.size();++i)out[i]=g->cells[i].free;}
-void cap_grid_stats(void* p,uint64_t* out){auto* g=static_cast<Grid*>(p);out[0]=g->certificates;out[1]=g->resets;out[2]=g->cells.size();out[3]=0;for(auto& c:g->cells)out[3]+=c.free;}
+void cap_grid_stats(void* p,uint64_t* out){auto* g=static_cast<Grid*>(p);out[0]=g->certificates;out[1]=g->resets;out[2]=g->cells.size();out[3]=g->free_count;}
 }

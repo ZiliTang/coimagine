@@ -25,6 +25,7 @@ def state(world):
         robot_speeds=[math.hypot(b.velocity.x, b.velocity.y) for b in backend.robot_bodies],
         target_static=any(c["pair"] == "object_wall" and c.get("entity_id") == world.env.primary_id for c in contacts),
         robot_static=any(c["pair"] == "robot_wall" for c in contacts),
+        robot_other=any(c["pair"] == "robot_object" and c.get("entity_id",world.env.primary_id) != world.env.primary_id for c in contacts),
         peer=any(c["pair"] == "robot_robot" for c in contacts),
         target_other=any(c["pair"] == "object_object" and c.get("entity_id") == world.env.primary_id for c in contacts))
 
@@ -70,20 +71,21 @@ def measure(world, command, *, remaining=None, regions=None):
                 process=process_bounds(start, samples),
                 target_static=any(s["target_static"] for s in [start, *samples]),
                 robot_static=any(s["robot_static"] for s in [start, *samples]),
+                robot_other=any(s["robot_other"] for s in [start, *samples]),
                 peer=any(s["peer"] for s in [start, *samples]),
                 target_other=any(s["target_other"] for s in [start, *samples]),
                 goal_gain=math.dist(start["target_xy"], goal) - math.dist(end["target_xy"], goal),
                 envelope_violations=violations, seconds=time.monotonic() - begun)
 
 
-def command_and_stop(world, command, *, brake_ticks=40, regions=None):
+def command_and_stop(world, command, *, brake_ticks=40, brake_chunk=4, regions=None):
     """Label one command and its physical stopping tail, with separate endpoint."""
     root = measure(world, command, regions=regions)
     endpoint = deepcopy(observation(world))
     tails = []
     left = brake_ticks
     while left > 0 and not world.env.termination:
-        ticks = min(4, left)
+        ticks = min(brake_chunk, left)
         row = measure(world, dict(target_id=None, a0=44, a1=44, ticks=ticks), regions=regions)
         tails.append(row)
         actual = row["event"]["periods"]
@@ -99,5 +101,6 @@ def command_and_stop(world, command, *, brake_ticks=40, regions=None):
         interrupted_by_termination=bool(world.env.termination),
         full_target_static=any(s["target_static"] for s in [root["start"], *samples]),
         full_robot_static=any(s["robot_static"] for s in [root["start"], *samples]),
+        full_robot_other=any(s["robot_other"] for s in [root["start"], *samples]),
         full_peer=any(s["peer"] for s in [root["start"], *samples]),
         envelope_violations=[v for row in [root, *tails] for v in row["envelope_violations"]])

@@ -27,7 +27,7 @@ FLAGS = ["-std=c++17", "-O3", "-shared", "-fPIC", "-fno-fast-math", "-ffp-contra
 
 
 def identity():
-    return dict(profile="closed-ray-grid-cpp-v1", source_sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
+    return dict(profile="closed-ray-grid-cpp-passive-v2", source_sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(),
                 flags=FLAGS, machine=platform.machine(), system=platform.system())
 
 
@@ -50,8 +50,14 @@ def build():
                     raise RuntimeError(result.stderr)
                 manifest = dict(identity=identity(), binary_sha256=hashlib.sha256((tmp / "geometry.so").read_bytes()).hexdigest(),
                                 compiler=subprocess.check_output(["g++", "--version"], text=True).splitlines()[0])
+                (tmp / "geometry_kernel.cpp").write_bytes(SOURCE.read_bytes())
                 (tmp / "manifest.json").write_text(json.dumps(manifest, indent=2)+"\n")
                 os.rename(tmp, dest)
+        if not (dest / "geometry_kernel.cpp").exists():
+            expected=json.loads((dest / "manifest.json").read_text())["identity"]["source_sha256"]
+            if hashlib.sha256(SOURCE.read_bytes()).hexdigest()!=expected:
+                raise ValueError("cannot archive a different kernel source")
+            (dest / "geometry_kernel.cpp").write_bytes(SOURCE.read_bytes())
     return json.loads((dest / "manifest.json").read_text())
 
 
@@ -72,12 +78,16 @@ def kernel():
     lib.cap_grid_clone.restype = ptr
     lib.cap_grid_window.argtypes = [ptr, double, double, double, double]
     lib.cap_grid_window.restype = None
+    lib.cap_grid_hits.argtypes = [ptr, arr, integer]
+    lib.cap_grid_hits.restype = None
     lib.cap_grid_update.argtypes = [ptr, arr]
     lib.cap_grid_update.restype = integer
     lib.cap_grid_certificate.argtypes = [ptr, arr, integer]
     lib.cap_grid_certificate.restype = integer
     lib.cap_grid_missing.argtypes = [ptr, arr, integer]
     lib.cap_grid_missing.restype = double
+    lib.cap_grid_query.argtypes = [ptr, arr, integer, arr]
+    lib.cap_grid_query.restype = None
     lib.cap_grid_mask.argtypes = [ptr, np.ctypeslib.ndpointer(dtype=np.uint8, flags="C_CONTIGUOUS")]
     lib.cap_grid_mask.restype = None
     lib.cap_grid_stats.argtypes = [ptr, np.ctypeslib.ndpointer(dtype=np.uint64, flags="C_CONTIGUOUS")]
@@ -103,6 +113,7 @@ class NativeEvidenceMap:
         self.last_tick = None
         self._tree = None
         self._queries = {}
+        self._initial_keys = set()
         self.ledger = dict(scans=0, rays=0, certified_cells=0, sensor_conflicts=0)
 
     def __del__(self):
@@ -127,6 +138,7 @@ class NativeEvidenceMap:
     @property
     def assumptions(self):
         return ("static geometry", "exact public rays and odometry", "minimum static component area="+str(self.minimum_area),
+                "non-target objects initially at rest and unactuated; no-contact invariant required to retain their occupied cells",
                 "coarse closed-ray grid resolution="+str(self.resolution), "ray arrangement stride ticks="+str(self.scan_stride_ticks),
                 "long-double clipping; area degeneracy threshold 1e-24 m2")
 
@@ -143,8 +155,15 @@ class NativeEvidenceMap:
             if not p.equals(p.convex_hull):
                 continue
             xy = np.ascontiguousarray(p.exterior.coords[:-1], dtype=np.float64)
+            # Quantization is used ONLY to omit near-duplicate evidence, never
+            # to expand a free certificate. This also bounds repeated clipping
+            # of floating-point variants of a stationary object's same face.
+            key=np.round(xy,5).tobytes()
+            if key in self._initial_keys:
+                continue
             if kernel().cap_grid_certificate(self.ptr, xy, len(xy)):
                 raise RuntimeError("native certificate failed")
+            self._initial_keys.add(key)
         self._queries = {}
 
     def update(self, o):
@@ -158,20 +177,27 @@ class NativeEvidenceMap:
             pending, self.pending = self.pending, []
             for p in pending:
                 self.add_initial_certificate(p, source="declared_initial_separation")
-        rays = []
+        rays, hits = [], []
         for robot in o["robots"]:
             s = robot["scan"]
             if len(s["distances"]) != 72:
                 raise ValueError("fixed 72 rays required")
             x,y = s["origin"]
-            for angle,d,valid,category in zip(s["ray_angles"],s["distances"],s["valid"],s["category"]):
+            for angle,d,valid,category,entity in zip(s["ray_angles"],s["distances"],s["valid"],s["category"],s["entity_ids"]):
                 if not math.isfinite(d) or d < 0:
                     raise ValueError("invalid range")
                 c, sn = math.cos(angle), math.sin(angle)
                 length = max(0., d-self.endpoint_erosion)
                 rays.append((x,y,x+length*c,y+length*sn))
-                if valid and category == 2:
-                    self.hits[(round(x+d*c,6),round(y+d*sn,6))] = o["tick"]
+                passive = category == 1 and entity is not None and entity != o["goal"]["target_id"]
+                if valid and (category == 2 or passive):
+                    hit=(x+d*c,y+d*sn)
+                    hits.append(hit)
+                    # Bounded cell summary; precise input remains in public
+                    # observation records. Occupied cells are conservative.
+                    self.hits[(math.floor(hit[0]/self.resolution),math.floor(hit[1]/self.resolution))] = o["tick"]
+        if hits:
+            kernel().cap_grid_hits(self.ptr,np.ascontiguousarray(hits,dtype=np.float64),len(hits))
         # Only spend arrangement work near current possible body sweeps. The
         # rest stays unknown until a later observation makes it relevant.
         points = [[r["own"]["x"], r["own"]["y"]] for r in o["robots"]]
@@ -196,15 +222,12 @@ class NativeEvidenceMap:
     def query_parts(self, parts):
         if not self.ptr:
             raise ValueError("map requires public initialization")
-        if self._tree is None:
-            self._tree = shapely.STRtree(shapely.points(list(self.hits)) if self.hits else [])
-        missing, hit_indices = 0., set()
+        missing, count = 0., 0
         for p in parts:
             if p is None or p.is_empty:
                 continue
             key = p.wkb
             if key not in self._queries:
-                hits = self._tree.query(p, predicate="covers")
                 # Sixteen support halfplanes give an OUTER approximation;
                 # reducing edge count cannot turn unknown space into free.
                 points = np.asarray(p.convex_hull.exterior.coords[:-1],dtype=np.float64)
@@ -216,12 +239,12 @@ class NativeEvidenceMap:
                 det = normals[:,0]*nxt[:,1]-normals[:,1]*nxt[:,0]
                 xy = np.ascontiguousarray(np.column_stack(((support*nxt[:,1]-normals[:,1]*snxt)/det,
                                                (normals[:,0]*snxt-support*nxt[:,0])/det)),dtype=np.float64)
-                value = kernel().cap_grid_missing(self.ptr,xy,len(xy))
-                self._queries[key] = value, hits
+                result=np.zeros(2,dtype=np.float64)
+                kernel().cap_grid_query(self.ptr,xy,len(xy),result)
+                self._queries[key] = float(result[0]), int(result[1])
             value, hits = self._queries[key]
-            hit_indices.update(hits)
+            count += hits
             missing += value
-        count = len(hit_indices)
         status = "occupied" if count else "unknown" if missing else "free"
         return RegionEvidence(status, float(missing), count, tuple(self.ticks), self.assumptions)
 

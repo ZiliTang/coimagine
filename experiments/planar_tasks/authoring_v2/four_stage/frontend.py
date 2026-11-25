@@ -46,6 +46,19 @@ def options():
 OPTIONS = options()
 
 
+class DemandMap(dict):
+    """Host-only current-boundary geometry; never an author/predictor input."""
+    def __init__(self, resolve):
+        super().__init__()
+        self.resolve = resolve
+
+    def __missing__(self, key):
+        return self.resolve(key)
+
+    def __deepcopy__(self, memo):
+        return deepcopy(dict(self), memo)
+
+
 def schema():
     metrics = {
         "seen": dict(unit="bool"),
@@ -76,7 +89,7 @@ def schema():
 
 
 class PublicFrontend:
-    def __init__(self, contract=None, *, evidence=None):
+    def __init__(self, contract=None, *, evidence=None, semantic_names=None):
         self.contract = contract or MotionContract()
         self.evidence = evidence if evidence is not None else CachedEvidenceMap(minimum_static_component_area=self.contract.minimum_static_component_area)
         self.memory = base.initial_memory()
@@ -85,6 +98,9 @@ class PublicFrontend:
         self.initialized = False
         self.last_tick = None
         self.last_packet = None
+        self.semantic_names = None if semantic_names is None else frozenset(semantic_names)
+        self._generation = 0
+        self.refine_stationary_pose = True
         self.recent_observations = []
         self.ledger = dict(boundaries=0, seconds=0.)
 
@@ -123,7 +139,21 @@ class PublicFrontend:
         return region
 
     def prepare(self, raw_observation):
-        o = public_observation(raw_observation)
+        return self._prepare_projected(public_observation(raw_observation))
+
+    def prepare_history(self, history):
+        """Host-only borrow from the already projected lightweight recorder.
+
+        No author callback receives the recorder. The source event is replaced,
+        not mutated, at the next boundary; forecast inputs are copied separately.
+        Arbitrary packets still pass prepare()'s full whitelist and validation.
+        """
+        from experiments.planar_tasks.semantic_rl.memory_flow import MemoryHistory,current_event
+        if not isinstance(history,MemoryHistory):
+            raise TypeError("verified lightweight public history required")
+        return self._prepare_projected(current_event(history)["observation"])
+
+    def _prepare_projected(self, o):
         if o["tick"] == self.last_tick and self.last_packet is not None:
             if o != self.last_packet["observation"]:
                 raise ValueError("different public packet at the same boundary")
@@ -131,12 +161,19 @@ class PublicFrontend:
         if self.last_tick is not None and o["tick"] < self.last_tick:
             raise ValueError("public history cannot run backwards")
         started = time.monotonic()
+        self._generation += 1
+        generation = self._generation
         self.memory = base.update_memory(self.memory, dict(observation=o))
         pose = rectangle_pose(o, error=self.contract.pose_error)
-        if pose is not None and self.target_stationary:
+        if pose is not None and self.target_stationary and self.refine_stationary_pose:
             if self.pose_history is not None:
                 pose.outer = pose.outer.intersection(self.pose_history.outer)
-                pose.inner = unary_union([pose.inner, self.pose_history.inner])
+                if self.refine_stationary_pose is True:
+                    pose.inner = unary_union([pose.inner, self.pose_history.inner])
+                elif self.pose_history.inner.area > pose.inner.area:
+                    # Keep one already certified inner set. Repeated unions
+                    # of nearly identical faces are optional tightening only.
+                    pose.inner = self.pose_history.inner
                 if pose.outer.is_empty:
                     pose = None
             if pose is not None:
@@ -150,7 +187,7 @@ class PublicFrontend:
                     self.contract.robot_radius + self.contract.initial_static_separation),
                     source="declared_initial_separation")
             self.initialized = True
-        if pose is not None and self.target_stationary:
+        if pose is not None and self.target_stationary and (generation==1 or self.refine_stationary_pose):
             self.evidence.add_initial_certificate(pose.inner.buffer(self.contract.initial_static_separation),
                                                   source="declared_initial_separation")
         self.evidence.update(o)
@@ -191,8 +228,17 @@ class PublicFrontend:
             target_bound = opt["family"] in ("push", "orbit")
             legal = tuple(opt["pair"]) in (menu if target_bound else global_menu)
             legal = bool(legal and (pose is not None or not target_bound))
-            command = dict(target_id=o["goal"]["target_id"] if target_bound else None,
+            z["legal:"+name] = legal
+            commands[name] = dict(target_id=o["goal"]["target_id"] if target_bound else None,
                            a0=opt["pair"][0], a1=opt["pair"][1], ticks=opt["ticks"])
+
+        def compute(name):
+            if generation != self._generation:
+                raise ValueError("deferred geometry used after its public boundary")
+            if name in reports:
+                return reports[name]
+            opt = OPTIONS[name]
+            legal = z["legal:"+name]
             # PUSH's declared disk bound is direction independent; ORBIT's is
             # side independent. Reuse only geometrically identical queries.
             key = (opt["family"], tuple(opt["robots"]), opt["ticks"],
@@ -214,16 +260,32 @@ class PublicFrontend:
             bound_valid = pose is not None and speed <= .325
             flags = dict(legal=legal, free=evidence.certified, occupied=evidence.status == "occupied",
                          unknown=evidence.status == "unknown", dynamic=bool(dynamic), bound_valid=bool(bound_valid))
-            z.update({f"{flag}:{name}": value for flag, value in flags.items()})
-            z["missing:" + name] = min(100., evidence.unknown_area_m2)
+            values = {f"{flag}:{name}": value for flag, value in flags.items()}
+            values["missing:"+name] = min(100., evidence.unknown_area_m2)
+            z.update({k:v for k,v in values.items() if self.semantic_names is None or k in self.semantic_names})
             report_evidence = dict(status=evidence.status, unknown_area_m2=evidence.unknown_area_m2,
                 occupied_hits=evidence.occupied_hits, evidence_ticks=evidence.evidence_ticks,
                 assumptions=evidence.assumptions)
             reports[name] = dict(**flags, evidence=report_evidence,
                                  allowed=bool(legal and evidence.certified and dynamic and bound_valid),
                                  quality="conditional_on_declared_host_assumptions")
-            commands[name] = command
             regions[name] = region
+            return reports[name]
+
+        if self.semantic_names is not None:
+            reports = DemandMap(compute)
+            def resolve_region(name):
+                compute(name)
+                return regions[name]
+            regions = DemandMap(resolve_region)
+        for name in OPTIONS:
+            if self.semantic_names is None or any(k in self.semantic_names for k in
+                    (f"{flag}:{name}" for flag in ("free","occupied","unknown","dynamic","bound_valid","missing"))):
+                compute(name)
+        if self.semantic_names is not None:
+            z = {k:v for k,v in z.items() if k in self.semantic_names}
+            if set(z) != self.semantic_names:
+                raise ValueError("unavailable registered semantic")
         self.ledger["boundaries"] += 1
         self.ledger["seconds"] += time.monotonic() - started
         self.last_tick = o["tick"]

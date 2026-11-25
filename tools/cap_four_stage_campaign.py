@@ -8,7 +8,10 @@ import traceback
 from experiments.planar_tasks.authoring_v2.four_stage import campaign
 from experiments.planar_tasks.authoring_v2.four_stage.carrier import build, checked_boundary
 from experiments.planar_tasks.authoring_v2.four_stage.frontend import PublicFrontend
-from experiments.planar_tasks.authoring_v2.four_stage.simulation import episode
+from experiments.planar_tasks.authoring_v2.four_stage.execution import run, audit
+from experiments.planar_tasks.authoring_v2.four_stage.native_frontend import NativeFrontend
+from experiments.planar_tasks.authoring_v2.four_stage.native_geometry import build as build_native,identity
+from experiments.planar_tasks.authoring_v2.four_stage.carrier import verify
 from experiments.planar_tasks.authoring_v2.symbolic_general.simulation import observation
 from experiments.planar_tasks.semantic_rl.environment import Environment, EventConfig
 from tools.cap_fault_curriculum_rooms import panel, SEEDS
@@ -19,6 +22,7 @@ BASE = ROOT / "outputs/semantic_rl/cap_four_stage_v1"
 
 
 def prepare(name, source_path):
+    build_native()
     rooms = BASE / "rooms.json"
     if not rooms.exists():
         splits = dict(author=(261125411, 8), fit=(261125421, 48),
@@ -45,14 +49,20 @@ def prepare(name, source_path):
         K="executed online simulation branches per 100 decision boundaries",
         task_cost="elapsed physical seconds on success; 180 seconds on failure",
         identity="Current conversational CAP author; prior history visible; no isolated author or separately metered model call claimed.",
+        geometry=dict(identity(),resolution=.01,scan_stride_ticks=16,
+                      registration="extract policy dependencies; other candidate geometry on demand",
+                      occupied="cells with static hits; count is conservative and may duplicate across body envelopes"),
         fixtures_sha256=sha(rooms), rules="No outcome-based room filtering; confirmation excluded from fitting and author revision.")
     package = BASE / "authors" / name
-    source = build(source_path.read_text())
+    source = build(source_path.read_text(),lean=True)
+    program=verify(source)
     c = campaign.create(package, next(iter(groups["author"].values())), source, protocol)
     bounds = BASE / "checks" / name
     for i, fixture in enumerate(list(groups["author"].values())[:3]):
         world = Environment(fixture, EventConfig(mode="duration"), fast_feedback=True)
-        prepared = PublicFrontend().prepare(observation(world))
+        prepared = NativeFrontend(semantic_names=program.host["metrics"]).prepare(observation(world))
+        for action in prepared["commands"]:
+            prepared["reports"][action]
         permissions = {a:r["allowed"] for a,r in prepared["reports"].items()}
         save(bounds / f"boundary_{i}.json", checked_boundary(source, prepared, permissions))
     print(dict(package=str(c.path), checks=str(bounds)), flush=True)
@@ -62,8 +72,11 @@ def worker(job):
     path = Path(job["out"])
     save(path / "started.json", dict(at=time.time(), reservation_ticks=1800))
     try:
-        result = episode(job["fixture"], job["source"], mode="author",
+        result = run(job["fixture"], job["source"], mode="author",
             heartbeat=lambda v: save(path / "heartbeat.json", v))
+        physical=audit(result)
+        save(path / "physical_audit.json.gz",physical)
+        result["summary"]["physical_audit"]=physical["summary"]
         result.update(fixture=job["fixture"], fixture_record=job["record"])
         result["summary"]["room"] = job["room"]
         save(path / "result.json.gz", result)

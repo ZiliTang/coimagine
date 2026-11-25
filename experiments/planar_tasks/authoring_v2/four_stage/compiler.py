@@ -204,11 +204,13 @@ class Extractor:
 
     def native_candidates(self, primitive):
         """Independent concrete parity check of the validated original function."""
-        namespace = {"__builtins__": {}, "range": range, "Q": Q, "abs": abs, "min": min, "max": max}
-        module = ast.Module(body=[self.function], type_ignores=[])
-        exec(compile(ast.fix_missing_locations(module), "<validated-decide>", "exec"), namespace)
+        if not hasattr(self, "_native_function"):
+            namespace = {"__builtins__": {}, "range": range, "Q": Q, "abs": abs, "min": min, "max": max}
+            module = ast.Module(body=[self.function], type_ignores=[])
+            exec(compile(ast.fix_missing_locations(module), "<validated-decide>", "exec"), namespace)
+            self._native_function = namespace["decide"]
         values = self.policy.values(primitive)
-        return namespace["decide"](values)
+        return self._native_function(values)
 
     def select(self, primitive, admit):
         """Current boundary: first admitted candidate; all scores remain eligible."""

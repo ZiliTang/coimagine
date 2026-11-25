@@ -50,10 +50,13 @@ selection. Reports must distinguish startup, predictive admission and completion
 ## Geometry and evidence
 
 Initial separation, exact public ranges/odometry, static-obstacle component size,
-target CAD and motion envelopes are declared assumptions. The free-space map uses
-the existing closed-ray-cell construction; cached queries preserve its semantics.
-The map concerns static geometry; it is not a certificate about arbitrary movement
-of other objects. Peer, target and process-effect audits remain separately visible.
+target CAD and motion envelopes are declared assumptions. NativeFrontend uses a
+versioned C++ closed-ray grid, currently 1 cm cells and a 16-tick arrangement stride.
+Only wholly covered cells become FREE; this approximation is not equivalent to
+the earlier exact polygon profile. Non-target observed object hits are occupied.
+Retaining those cells assumes these passive objects start at rest, receive no
+commands and remain untouched. This is not a certificate about arbitrary moving
+objects. Peer, target, passive-body and process audits remain separately visible.
 The first profile offers 69 short commands: two PUSH durations, both/single roles,
 single-robot MOVE, independent ORBIT and BRAKE.
 
@@ -61,9 +64,27 @@ Physical audits use backend state only in physical.py for offline labels, includ
 each actual tick and the stopping tail. No environment or audit state crosses the
 gateway or prediction interface.
 
+Effect semantics refer to the end of the requested command. Process bounds cover
+that command and a prescribed 40-tick BRAKE tail. An accepted tail may supply a
+conditional stopping certificate at the next boundary; it does not certify zero
+speed, and actual speed and prediction misses are independently audited. A path
+strictly inside a predicted motion envelope is covered, not a two-sided error.
+
+Predictor support checks both robots' velocities/reference velocities separately
+from the many ray channels. Public execution stages can define calibration modes;
+insufficient independent rooms leave a mode uncalibrated. Finite online nominal
+rollouts require a separately calibrated error adapter before admitting actions.
+New rollout samples cannot erase an existing possible unsafe mode.
+
+BRAKE may make successor startup existence trivial. This proof does not establish
+task progress or that the next runtime check admits the intended productive step.
+Stopped and productive outcomes must therefore remain separate in evaluation.
+
 ## Development status
 
 The task book is docs/agent_exchange/tasks/CAP_Four_Stage_20261125.md.
-Initial integration trajectories are diagnostics, not submitted CAP rounds or
-confirmation evidence. Full author sessions, model fitting, deployment rollout,
-checked submission and final paired evaluation are still being integrated.
+The first checked/frozen author round and its eight-room evaluation are complete
+with zero task successes. Development forks, model fitting and second-author
+counterexample repairs are active. Final policy/model freezing, at least two
+model updates, calibrated online admission and independent paired confirmation
+remain required; development results are not confirmation evidence.

@@ -3376,5 +3376,47 @@
         "旧碰撞前的净距摘要"
       ]
     ]
+  },
+  {
+    "id": "four-stage-loop",
+    "direction": "cap-verification",
+    "date": "2026-11-25",
+    "title": "四段式候选重选与一步预测：先修复开发反例，再冻结迭代",
+    "folder": "2026-11-25_four_stage_loop",
+    "run": "cap_four_stage_v1",
+    "motivation": "显式分开当前选择、启动条件、过程范围与预测后的备选选择，并保留公开历史在线试算。",
+    "goal": "两轮作者开发后冻结策略，完成至少两轮效果模型更新，在独立房间比较安全、C/F/K与整局成功。",
+    "result": "首轮8开发房推进0、成功0/8。首批32物理房完成5627条分叉。第二轮仍停滞，两个早停探针各有2/3次经验放行越出预测运动范围。",
+    "analysis": "零接触不能替代预测覆盖。正在修补包络校准、运动状态支持域和制动尾段依据，并补采切换状态；确认房尚未评估。",
+    "progress": [
+      {
+        "label": "首轮冻结开发房",
+        "glob": "author_runs/r1_native_01/*/summary.json",
+        "total": 8
+      },
+      {
+        "label": "首批房间与探索流程",
+        "counter": "data/warmup_v0/progress.json",
+        "key": "completed",
+        "total": 64
+      },
+      {
+        "label": "切换状态补采",
+        "counter": "data/transition_warmup01/progress.json",
+        "key": "completed",
+        "total": 32
+      },
+      {
+        "label": "冻结后的确认与完整报告",
+        "file": "FINISHED.json",
+        "total": 1
+      }
+    ],
+    "assets": [
+      [
+        "performance.md",
+        "几何提速与分项耗时"
+      ]
+    ]
   }
 ]
